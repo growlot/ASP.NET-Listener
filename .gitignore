@@ -8,3 +8,6 @@ bin
 StyleCop.Cache
 *.suo
 *.user
+/*.vssscc
+/packages/
+!packages/repositories.config
