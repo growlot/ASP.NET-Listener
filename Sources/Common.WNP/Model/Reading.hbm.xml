@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.WNP.Model"
+                   assembly="AMSLLC.Listener.Common.WNP">
+
+  <class name="Reading" table="wndba.TREADING" lazy="false">
+
+    <id name="Id">
+      <column name="ID" />
+      <generator class="native" />
+    </id>
+
+    <many-to-one  name="Owner"
+                  class="Owner"
+                  column="OWNER"
+                  cascade="none" />
+
+    <property name="EquipmentNumber" column="EQP_NO" type="AnsiString" length="20" />
+    <property name="ReadIndex" column="READ_INDEX" />
+    <property name="ReadDate" column="READ_DATE" type="Timestamp"  />
+    <property name="ReadingValue" column="reading" type="AnsiString" length="10" />
+    <property name="ReadLabel" column="read_label" type="AnsiString" length="20" />
+  </class>
+
+</hibernate-mapping>

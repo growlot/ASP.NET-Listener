@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.Model"
+                   assembly="AMSLLC.Listener.Common">
+
+  <!-- Mappings for class 'Config' -->
+  <class name="Device" table="Device" lazy="false">
+
+    <!-- Identity mapping -->
+    <id name="Id">
+      <column name="DeviceId" />
+      <generator class="native" />
+    </id>
+
+    <many-to-one  name="Company"
+                  class="Company"
+                  column="CompanyId"
+                  cascade="none" />
+
+    <many-to-one  name="EquipmentType"
+                  class="EquipmentType"
+                  column="EquipmentTypeId"
+                  cascade="none" />
+
+    <!-- Simple mappings -->
+    <property name="ExternalId" column="ExternalId" />
+    <property name="EquipmentNumber" column="EquipmentNumber" />
+
+  </class>
+
+</hibernate-mapping>

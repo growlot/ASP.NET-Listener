@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.WNP.Model"
+                   assembly="AMSLLC.Listener.Common.WNP">
+
+  <class name="MeterBarcode" table="wndba.TBARCODE" lazy="false">
+
+    <!-- Fields from common barcode -->
+    <composite-id name="BarcodeId" class="BarcodeIdentifier">
+      <key-many-to-one 
+        name="Owner" 
+        class="Owner"
+        column="OWNER" /> 
+      <key-property name="LookupCode" column="AEP_CODE" type="AnsiString" length="20" />
+    </composite-id>
+
+    <property name="Description" column="description" type="AnsiString" length="50" />
+
+    <property name="CustomField1" column="BC_USER01" type="AnsiString" length="20" />
+    <property name="CustomField2" column="BC_USER02" type="AnsiString" length="20" />
+    <property name="CustomField3" column="BC_USER03" type="AnsiString" length="20" />
+    <property name="CustomField4" column="BC_USER04" type="AnsiString" length="20" />
+    <property name="CustomField5" column="BC_USER05" type="AnsiString" length="20" />
+    <property name="CustomField6" column="BC_USER06" type="AnsiString" length="20" />
+    <property name="CustomField7" column="BC_USER07" type="AnsiString" length="20" />
+    <property name="CustomField8" column="BC_USER08" type="AnsiString" length="20" />
+    <property name="CustomField9" column="BC_USER09" type="AnsiString" length="20" />
+    <property name="CustomField10" column="BC_USER10" type="AnsiString" length="20" />
+    <property name="CustomField11" column="BC_USER11" type="AnsiString" length="20" />
+    <property name="CustomField12" column="BC_USER12" type="AnsiString" length="20" />
+    <property name="CustomField13" column="BC_USER13" type="AnsiString" length="20" />
+    <property name="CustomField14" column="BC_USER14" type="AnsiString" length="20" />
+    <property name="CustomField15" column="BC_USER15" type="AnsiString" length="20" />
+    <property name="CustomField16" column="BC_USER16" type="AnsiString" length="20" />
+    <property name="CustomField17" column="BC_USER17" type="AnsiString" length="20" />
+    <property name="CustomField18" column="BC_USER18" type="AnsiString" length="20" />
+    <property name="CustomField19" column="BC_USER19" type="AnsiString" length="20" />
+    <property name="CustomField20" column="BC_USER20" type="AnsiString" length="20" />
+    <property name="CustomField21" column="BC_USER21" type="AnsiString" length="20" />
+    <property name="CustomField22" column="BC_USER22" type="AnsiString" length="20" />
+
+    <!-- Fields from meter barcode -->
+    <property name="Wire" column="WIRE" />
+    <property name="Amp" column="AMP" />
+    <property name="Volt" column="VOLT" />
+    <property name="KH" column="KH" type="AnsiString" length="10" />
+    <property name="Phase" column="PHASE" />
+    <property name="Form" column="FORM" type="AnsiString" length="30" />
+    <property name="Base" column="BASE" />
+    <property name="RegisterRatio" column="REG_RATIO" type="AnsiString" length="11" />
+
+    <property name="TestRevision" column="TEST_REV" />
+    <property name="StandardMode" column="STD_MODE" type="AnsiString" length="30" />
+    <property name="DwellTime" column="DWELL_TIME" />
+    <property name="Optics" column="SS_OPTICS" type="AnsiString" length="30" />
+    <property name="TestTime" column="TEST_TIME" />
+    <property name="TestProgressMeasure" column="TIME_REV" type="AnsiChar" />
+    <property name="TestService" column="TEST_SERVICE" type="AnsiString" length="30" />
+
+    <property name="TestSequence" column="TEST_SEQUENCE" type="AnsiString" length="50" />
+    <property name="TestLimitAsFound" column="TEST_LIMIT_AF" />
+    <property name="TestLimitAsLeft" column="TEST_LIMIT_AL" />
+
+  </class>
+
+</hibernate-mapping>
+

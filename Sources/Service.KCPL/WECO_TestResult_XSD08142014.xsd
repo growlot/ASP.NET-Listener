@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="W1-CreateActivityInboundComm">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="externalSystem" type="xs:string" />
+        <xs:element name="externalReferenceId" type="xs:string" />
+        <xs:element name="externalPkValue1" type="xs:string" />
+        <xs:element name="rawMessage" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="badgeNo" type="xs:string" minOccurs="0" />
+              <xs:element name="testDateTime" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="testType">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string" />
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="testerId" type="xs:string" minOccurs="0" />
+              <xs:element name="testResults" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="seriesPowerFactor" type="xs:string" minOccurs="0" />
+                    <xs:element name="testLocation" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string" />
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="asFound" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="fullLoad" type="xs:string" minOccurs="0" />
+                          <xs:element name="lightLoad" type="xs:string" minOccurs="0" />
+                          <xs:element name="weightedAverage" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="asLeft" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="fullLoad" type="xs:string" minOccurs="0" />
+                          <xs:element name="lightLoad" type="xs:string" minOccurs="0" />
+                          <xs:element name="weightedAverage" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="meterReadsList" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="meterReads" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="channel" type="xs:string" minOccurs="0" />
+                                <xs:element name="reading" type="xs:string" minOccurs="0" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="W1-CreateActivityInboundComm" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

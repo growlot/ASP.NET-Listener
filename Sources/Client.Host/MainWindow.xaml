@@ -1,0 +1,67 @@
+﻿<Window x:Class="AMSLLC.Listener.Client.Host.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Web Service Demo" Height="560" Width="525">
+    <Grid>
+        <TabControl Margin="0,0,0,198">
+            <TabItem Name="DeviceShopTestTab" Header="Device Shop Test">
+                <Grid Margin="0,0,0,0">
+                    <Label Content="Service Type:" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" VerticalAlignment="Top" Width="189"/>
+                    <ComboBox Name="enteredServiceTypeDST" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="168" Height="28" IsEditable="True">
+                        <ComboBoxItem Content="Electric" Tag="E" IsSelected="True" />
+                        <ComboBoxItem Content="Gass" Tag="G" />
+                    </ComboBox>
+                    <Label Content="Service Type:" HorizontalAlignment="Left" Height="28" Margin="10,50,0,0" VerticalAlignment="Top" Width="189"/>
+                    <ComboBox Name="enteredEqipmentTypeDST" HorizontalAlignment="Left" Margin="204,50,0,0" VerticalAlignment="Top" Width="168" Height="28" IsEditable="True">
+                        <ComboBoxItem Content="Electric Meter" Tag="EM" IsSelected="True" />
+                        <ComboBoxItem Content="CT" Tag="CT" />
+                        <ComboBoxItem Content="PT" Tag="PT" />
+                    </ComboBox>
+                    <Label Content="Equipment Number:" HorizontalAlignment="Left" Height="28" Margin="10,90,0,0" VerticalAlignment="Top" Width="189"/>
+                    <TextBox Name="enteredEquipmenNumberDST" HorizontalAlignment="Left" Height="28" Margin="204,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Text="123456789"/>
+                    <Label Content="Test Date:" HorizontalAlignment="Left" Height="28" Margin="10,130,0,0" VerticalAlignment="Top" Width="189"/>
+                    <TextBox Name="enteredTestDateDST" HorizontalAlignment="Left" Height="28" Margin="204,130,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Text="2014-10-05 23:11:37"/>
+                    <Button Content="Execute Request" HorizontalAlignment="Left" Height="28" Margin="176,265,0,0" VerticalAlignment="Top" Width="130" IsDefault="True" Click="DeviceShopTest"/>
+                </Grid>
+            </TabItem>
+            <TabItem Name="DeviceRetrieveTab" Header="Device Retrieve">
+                <Grid Margin="0,0,0,0">
+                    <Label Content="Service Type:" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" VerticalAlignment="Top" Width="189"/>
+                    <ComboBox Name="enteredServiceTypeDRT" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="168" Height="28" IsEditable="True">
+                        <ComboBoxItem Content="Electric" Tag="E" IsSelected="True" />
+                        <ComboBoxItem Content="Gass" Tag="G" />
+                    </ComboBox>
+                    <Label Content="Service Type:" HorizontalAlignment="Left" Height="28" Margin="10,50,0,0" VerticalAlignment="Top" Width="189"/>
+                    <ComboBox Name="enteredEqipmentTypeDRT" HorizontalAlignment="Left" Margin="204,50,0,0" VerticalAlignment="Top" Width="168" Height="28" IsEditable="True">
+                        <ComboBoxItem Content="Electric Meter" Tag="EM" IsSelected="True" />
+                        <ComboBoxItem Content="CT" Tag="CT" />
+                        <ComboBoxItem Content="PT" Tag="PT" />
+                    </ComboBox>
+                    <Label Content="Equipment Number:" HorizontalAlignment="Left" Height="28" Margin="10,90,0,0" VerticalAlignment="Top" Width="189"/>
+                    <TextBox Name="enteredEquipmenNumberDRT" HorizontalAlignment="Left" Height="28" Margin="204,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Text="123456789"/>
+                    <Button Content="Execute Request" HorizontalAlignment="Left" Height="28" Margin="176,265,0,0" VerticalAlignment="Top" Width="130" IsDefault="True" Click="DeviceReceive"/>
+                </Grid>
+            </TabItem>
+            <TabItem Name="BarcodeTab" Header="Classification Code">
+                <Grid Margin="0,0,0,0">
+                    <Button Content="ExportBarcodes" HorizontalAlignment="Left" Height="28" Margin="90,265,0,0" VerticalAlignment="Top" Width="130" IsDefault="True" Click="ExportBarcodes"/>
+                    <Button Content="SendBarcodes" HorizontalAlignment="Left" Height="28" Margin="288,265,0,0" VerticalAlignment="Top" Width="130" IsDefault="True" Click="SendBarcodes"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Separator HorizontalAlignment="Left" Height="7" Margin="29,414,0,0" VerticalAlignment="Top" Width="472"/>
+        <Label Content="Request Duration" HorizontalAlignment="Left" Height="28" Margin="17,487,0,0" VerticalAlignment="Top" Width="130"/>
+        <TextBox Name="requestDuration" HorizontalAlignment="Left" Height="28" Margin="152,487,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="253" IsReadOnly="True"/>
+        <Separator HorizontalAlignment="Left" Height="7" Margin="29,471,0,0" VerticalAlignment="Top" Width="472"/>
+        <Label Content="Service Call Status" HorizontalAlignment="Left" Height="28" Margin="17,431,0,0" VerticalAlignment="Top" Width="130"/>
+        <TextBox Name="serviceCallStatus" HorizontalAlignment="Left" Height="28" Margin="152,431,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="355" IsReadOnly="True"/>
+        <Button Content="Exit" HorizontalAlignment="Left" Margin="426,493,0,0" VerticalAlignment="Top" Width="75" Click="Exit"/>
+        <Grid HorizontalAlignment="Left" Height="193" Margin="0,336,0,0" VerticalAlignment="Top" Width="517">
+            <ComboBox Name="ServiceAddress" HorizontalAlignment="Left" Margin="152,21,0,0" VerticalAlignment="Top" Width="355" Height="28" IsEditable="True">
+                <ComboBoxItem Content="http://localhost:8733/AlliantService/" />
+                <ComboBoxItem Content="http://localhost:8733/KCPLService/" IsSelected="True" />
+            </ComboBox>
+        </Grid>
+        <Label Content="Web Service Address" HorizontalAlignment="Left" Height="28" Margin="17,357,0,0" VerticalAlignment="Top" Width="130"/>
+    </Grid>
+</Window>

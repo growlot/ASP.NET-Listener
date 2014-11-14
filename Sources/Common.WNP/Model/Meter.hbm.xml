@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.WNP.Model"
+                   assembly="AMSLLC.Listener.Common.WNP">
+
+  <class name="Meter" table="wndba.teqp_meter" lazy="false">
+
+    <!-- Fields from common equipment -->
+    <id name="Id">
+      <column name="ID" />
+      <generator class="native" />
+    </id>
+
+    <many-to-one  name="Owner"
+                  class="Owner"
+                  column="OWNER"
+                  cascade="none" />
+
+    <property name="EquipmentNumber" column="EQP_NO" type="AnsiString" length="20" />
+    
+    <property name="TestProgram" column="TEST_PROGRAM" type="AnsiString" length="20" />
+    <property name="Location" column="LOCATION" type="AnsiString" length="20" />
+    <property name="EquipmentStatus" column="EQP_STATUS" type="AnsiString" length="20" />
+    <property name="ShopStatus" column="SHOP_STATUS" type="AnsiString" length="20" />
+    <property name="Manufacturer" column="MFR" type="AnsiString" length="3" />
+    <property name="SerialNumber" column="SERIAL_NO" type="AnsiString" length="20" />
+    <property name="ModelNumber" column="MODEL_NO" type="AnsiString" length="30" />
+
+    <property name="CustomField1" column="METER_USER01" type="AnsiString" length="50" />
+    <property name="CustomField2" column="METER_USER02" type="AnsiString" length="50" />
+    <property name="CustomField3" column="METER_USER03" type="AnsiString" length="50" />
+    <property name="CustomField4" column="METER_USER04" type="AnsiString" length="50" />
+    <property name="CustomField5" column="METER_USER05" type="AnsiString" length="50" />
+    <property name="CustomField6" column="METER_USER06" type="AnsiString" length="50" />
+    <property name="CustomField7" column="METER_USER07" type="AnsiString" length="50" />
+    <property name="CustomField8" column="METER_USER08" type="AnsiString" length="50" />
+    <property name="CustomField9" column="METER_USER09" type="AnsiString" length="50" />
+    <property name="CustomField10" column="METER_USER10" type="AnsiString" length="50" />
+    <property name="CustomField11" column="METER_USER11" type="AnsiString" length="50" />
+    <property name="CustomField12" column="METER_USER12" type="AnsiString" length="50" />
+    <property name="CustomField13" column="METER_USER13" type="AnsiString" length="50" />
+    <property name="CustomField14" column="METER_USER14" type="AnsiString" length="50" />
+    <property name="CustomField15" column="METER_USER15" type="AnsiString" length="50" />
+    <property name="CustomField16" column="METER_USER16" type="AnsiString" length="50" />
+
+    <!-- Fields from meter -->
+    <property name="MeterCode" column="METER_CODE" type="AnsiString" length="20" />
+    <property name="FirmwareRevision1" column="FIRMWARE_REV01" type="AnsiString" length="20" />
+    <property name="FirmwareRevision2" column="FIRMWARE_REV02" type="AnsiString" length="20" />
+    <property name="Phase" column="PHASE" />
+    <property name="Wire" column="WIRE" />
+    <property name="RegisterRatio" column="REGISTER_RATIO" type="AnsiString" length="20" />
+    <property name="Form" column="FORM" type="AnsiString" length="10" />
+    <property name="Base" column="BASE" />
+    <property name="KH" column="KH" type="AnsiString" length="10" />
+    <property name="TestAmps" column="TEST_AMPS" />
+    <property name="TestVolts" column="TEST_VOLTS" />
+    <property name="AmiId1" column="AMI_ID1" type="AnsiString" length="30" />
+    <property name="ProgramId" column="program_id" type="AnsiString" length="20" />
+
+  </class>
+
+</hibernate-mapping>
+

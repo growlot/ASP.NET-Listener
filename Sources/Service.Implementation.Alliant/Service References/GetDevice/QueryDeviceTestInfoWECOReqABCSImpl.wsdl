@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:ns="http://schemas.xmlsoap.org/ws/2003/03/addressing" xmlns:svcdoc="http://xmlns.oracle.com/Services/Documentation/V1" xmlns:tns="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="QueryDeviceTestInfoWECOReqABCSImpl" targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <documentation>
+    <svcdoc:Service>
+      <svcdoc:Description>WECO DeviceTestInfo Service</svcdoc:Description>
+      <svcdoc:DisplayName>QueryDeviceTestInfoWECOReqABCSImpl</svcdoc:DisplayName>
+      <svcdoc:Version>1.00</svcdoc:Version>
+      <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+      <svcdoc:Industry>Utilities</svcdoc:Industry>
+    </svcdoc:Service>
+  </documentation>
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1">
+      <xsd:element name="QueryDeviceTestInfoABM" type="tns:QueryDeviceTestInfoABMType">
+        <xsd:annotation>
+          <xsd:documentation>WECO Device Test Info ABM</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="QueryDeviceTestInfoResponseABM" type="tns:QueryDeviceTestInfoResponseABMType">
+        <xsd:annotation>
+          <xsd:documentation>WECO Device Test Info Response ABM</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="QueryDeviceTestInfoFault" type="tns:QueryDeviceTestInfoFaultType" />
+      <xsd:complexType name="QueryDeviceTestInfoABMType">
+        <xsd:sequence>
+          <xsd:element minOccurs="1" name="DeviceType" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              Device type describes whether the device is Electric (MR), CT or a PT 
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="1" name="ServiceType" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                          This contains Service Type Code , 'E'
+                         </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="1" name="DeviceNumber" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              Device Number is the Meter Number
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="1" name="Company" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              Company Indicates the company Code , IPL (I) and WPL (W) 
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="1" name="Tester" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              This will contain the valid Tester ID 
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="1" name="TestStandard" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              This contains the valid Test board/prover
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="1" name="TestLocation" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              This contains the valid Device Testing location code or its corresponding disribution center 
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="QueryDeviceTestInfoResponseABMType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="ClassificationCode" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              This contains Classification Code 
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="TestReason" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              This contains the reason for Test
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="NewDeviceIndicator" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                              This field indicates whether the device is new
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="LastTestDate" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation>
+                              This field will contain the last test date in YYYY-MM-DD format. 
+                             </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="LossCompensationCodeFlag" type="xsd:string" />
+          <xsd:element minOccurs="0" name="CommunicationBoardVersion" type="xsd:string" />
+          <xsd:element minOccurs="0" name="CommunicationModuleFirmwareVersion" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="QueryDeviceTestInfoFaultType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" ref="tns:FaultNotification" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="FaultNotificationType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="BusinessComponentID" type="xsd:string" />
+          <xsd:element minOccurs="0" name="ReportingDateTime" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="CorrectiveAction" type="xsd:string" />
+          <xsd:element minOccurs="0" ref="tns:FaultMessage" />
+          <xsd:element minOccurs="0" ref="tns:FaultingService" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="FaultMessageType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Text" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Severity" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Stack" type="xsd:string" />
+          <xsd:element minOccurs="0" name="ApplicationFaultData" type="xsd:anyType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="FaultingServiceType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="ID" type="xsd:string" />
+          <xsd:element minOccurs="0" name="ImplementationCode" type="xsd:string" />
+          <xsd:element minOccurs="0" name="InstanceID" type="xsd:string" />
+          <xsd:element minOccurs="0" name="ExecutionContextID" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>Also known as ECID in SOA Suite. This is an ID generated for a group of service invocations/executions</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="FaultNotification" type="tns:FaultNotificationType" />
+      <xsd:element name="FaultMessage" type="tns:FaultMessageType" />
+      <xsd:element name="FaultingService" type="tns:FaultingServiceType" />
+    </xsd:schema>
+  </types>
+  <message name="QueryDeviceTestInfoReqMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used as the request payload to the Query Device Test Information </svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="QueryDeviceTestInfoABM" element="tns:QueryDeviceTestInfoABM" />
+  </message>
+  <message name="QueryDeviceTestInfoRespMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used as the response payload to the Query Device Test Information</svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="QueryDeviceTestInfoResponseABM" element="tns:QueryDeviceTestInfoResponseABM" />
+  </message>
+  <message name="QueryDeviceTestInfoFaultMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used for propagating Error Context and Error Message</svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="QueryDeviceTestInfoFault" element="tns:QueryDeviceTestInfoFault" />
+  </message>
+  <portType name="DeviceTestInfoABCS">
+    <documentation>
+      <svcdoc:Interface>
+        <svcdoc:Description>This interface contains operations for the Request-Response patterns</svcdoc:Description>
+        <svcdoc:DisplayName>WECO Query Device Test Info Interface</svcdoc:DisplayName>
+        <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+      </svcdoc:Interface>
+    </documentation>
+    <operation name="Query">
+      <documentation>
+        <svcdoc:Operation>
+          <svcdoc:Description>This operation is used to Query DeviceTestInfo.</svcdoc:Description>
+          <svcdoc:MEP>SYNC_REQ_RESPONSE</svcdoc:MEP>
+          <svcdoc:DisplayName>QueryDeviceTestInfo</svcdoc:DisplayName>
+          <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+          <svcdoc:Scope>Public</svcdoc:Scope>
+        </svcdoc:Operation>
+      </documentation>
+      <input message="tns:QueryDeviceTestInfoReqMsg" />
+      <output message="tns:QueryDeviceTestInfoRespMsg" />
+      <fault name="Fault" message="tns:QueryDeviceTestInfoFaultMsg" />
+    </operation>
+  </portType>
+  <binding name="DeviceTestInfoABCSSOAP11Binding" type="tns:DeviceTestInfoABCS">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="Query">
+      <soap:operation soapAction="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query" style="document" />
+      <input>
+        <soap:body use="literal" parts="QueryDeviceTestInfoABM" />
+      </input>
+      <output>
+        <soap:body use="literal" parts="QueryDeviceTestInfoResponseABM" />
+      </output>
+      <fault name="fault">
+        <soap:fault use="literal" name="fault" namespace="" />
+      </fault>
+    </operation>
+  </binding>
+  <service name="DeviceTestInfoABCS">
+    <port name="DeviceTestInfoABCSPort" binding="tns:DeviceTestInfoABCSSOAP11Binding">
+      <soap:address location="ENDPOINT_LOCATION" />
+    </port>
+  </service>
+</definitions>

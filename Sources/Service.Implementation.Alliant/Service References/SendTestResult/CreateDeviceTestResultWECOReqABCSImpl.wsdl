@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:ns="http://schemas.xmlsoap.org/ws/2003/03/addressing" xmlns:svcdoc="http://xmlns.oracle.com/Services/Documentation/V1" xmlns:tns="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestResult/V1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="CreateDeviceTestResultWECOReqABCSImpl" targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestResult/V1" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <documentation>
+    <svcdoc:Service>
+      <svcdoc:Description>WECO DeviceTestResult Service</svcdoc:Description>
+      <svcdoc:DisplayName>CreateDeviceTestResultWECOReqABCSImpl</svcdoc:DisplayName>
+      <svcdoc:Version>1.00</svcdoc:Version>
+      <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+      <svcdoc:Industry>Utilities</svcdoc:Industry>
+    </svcdoc:Service>
+  </documentation>
+  <types>
+    <xsd:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestResult/V1">
+      <xs:element name="CreateDeviceTestResultABM" type="tns:CreateDeviceTestResultABMType">
+        <xs:annotation>
+          <xs:documentation>WECO Device Test Results ABM</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="CreateDeviceTestResultABMType">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="ServiceType" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              Service type indicates whether the device is Electric(E) or Gas (G)
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="Company" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              Company Indicates the company Code , IPL (I) and WPL (W) 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="NewDeviceIndicator" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This field indicates whether the device is new
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="DeviceType" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              Device type describes whether the device is Electric/Gas (MR), CT or a PT 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="DeviceNumber" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              Device Number is the Meter Number
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="TestStartDateTime" type="xs:dateTime">
+            <xs:annotation>
+              <xs:documentation>
+                                Test Date + Test Time translate to YYYY-MM-DD-HH:MM:SS format
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="TestLocation" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This contains the valid Device Testing location code or its corresponding disribution center 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="Tester" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This will contain the valid Tester ID 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="TestStandard" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This contains the valid Test board/prover
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="RepairedBy" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This contains the Repaired By
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="RepairDateTime" type="xs:dateTime">
+            <xs:annotation>
+              <xs:documentation>
+                              This contains the repair date
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="ClassificationCode" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This contains Classification Code 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="Comments" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This field will contain comments. 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="RepairType" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This field will Repair Type. 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="TestReason" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This field will contain Test Reason. 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="RetirementReason" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This field will contain Reason for Retirement. 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="unbounded" ref="tns:ExtendedAttribute">
+            <xs:annotation>
+              <xs:documentation>
+                              This field will be used for future purposes. 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="DeviceAttribute">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" name="ElectricDevice">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element minOccurs="0" name="SFL" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="SPF" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="SLL" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="AFL" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="APF" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="BFL" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="BPF" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="CFL" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="CPF" type="xs:decimal" />
+                      <xs:element minOccurs="0" name="CreepCode" type="xs:string" />
+                      <xs:element minOccurs="0" name="ConditionCode" type="xs:int" />
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" name="TransformerAttribute">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" name="RatioTested" type="xs:string" />
+                <xs:element minOccurs="0" name="TestBurden" type="xs:decimal" />
+                <xs:element minOccurs="0" name="VoltageForInsulationTest" type="xs:string" />
+                <xs:element minOccurs="0" name="InsulationTestPassOrFail" type="xs:string" />
+                <xs:element minOccurs="0" name="HighBurdenLLRatio" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates High Burden Low Ratio
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="HighBurdenFLRatio" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates High Burden Full Ratio
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="HighBurdenLLAngle" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates High Burden low Angle
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="HighBurdenFLAngle" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates High Burden Full Angle
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="TestAmpsLL" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates Low Test Amps
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="TestAmpsFL" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates Full Test Amps
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="AccuracyClassLL" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates Low Accuracy Class
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="AccuracyClassFL" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates Full Accuracy Class
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="TestVoltsFL" type="xs:decimal">
+                  <xs:annotation>
+                    <xs:documentation>
+                                                     Indicates Full Test Volts
+                                                    </xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="CreateDeviceTestResultResponseABM" type="tns:CreateDeviceTestResultResponseABMType">
+        <xs:annotation>
+          <xs:documentation>Device Test Info ABM</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="CreateDeviceTestResultResponseABMType">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DeviceTestStatus" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                                    This will be used and applicable only for new meters or devices and is sent in the response
+                            </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="DeviceTestID" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              For new devices, this will be the device test staging id.  For existing devices in inventory, this will be the device test id in OUCCB 
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="ResultMessage" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                              This will be used for Response Comments
+                             </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CreateDeviceTestResultFaultType">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" ref="tns:FaultNotification" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="FaultNotificationType">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="BusinessComponentID" type="xs:string" />
+          <xs:element minOccurs="0" name="ReportingDateTime" type="xs:dateTime" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="CorrectiveAction" type="xs:string" />
+          <xs:element minOccurs="0" ref="tns:FaultMessage" />
+          <xs:element minOccurs="0" ref="tns:FaultingService" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="FaultMessageType">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Code" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="Text" type="xs:string" />
+          <xs:element minOccurs="0" name="Severity" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="Stack" type="xs:string" />
+          <xs:element minOccurs="0" name="ApplicationFaultData" type="xs:anyType" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="FaultingServiceType">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ID" type="xs:string" />
+          <xs:element minOccurs="0" name="ImplementationCode" type="xs:string" />
+          <xs:element minOccurs="0" name="InstanceID" type="xs:string" />
+          <xs:element minOccurs="0" name="ExecutionContextID" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Also known as ECID in SOA Suite. This is an ID generated for a group of service invocations/executions</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="CreateDeviceTestResultFault" type="tns:CreateDeviceTestResultFaultType">
+        <xs:annotation>
+          <xs:documentation />
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="FaultNotification" type="tns:FaultNotificationType" />
+      <xs:element name="FaultMessage" type="tns:FaultMessageType" />
+      <xs:element name="FaultingService" type="tns:FaultingServiceType" />
+      <xs:element name="ExtendedAttribute" type="tns:ExtendedAttributeType" />
+      <xs:complexType name="ExtendedAttributeType">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Name" type="xs:string" />
+          <xs:element minOccurs="0" name="Value" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xsd:schema>
+  </types>
+  <message name="CreateDeviceTestResultReqMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used as the request payload to the Create Device Test Result Information </svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="CreateDeviceTestResultABM" element="tns:CreateDeviceTestResultABM" />
+  </message>
+  <message name="CreateDeviceTestResultRespMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used as the response payload to the Create Device Test Result Information</svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="CreateDeviceTestResultResponseABM" element="tns:CreateDeviceTestResultResponseABM" />
+  </message>
+  <message name="CreateDeviceTestResultFaultMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used for propagating Error Context and Error Message</svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="CreateDeviceTestResultFault" element="tns:CreateDeviceTestResultFault" />
+  </message>
+  <portType name="DeviceTestResultABCS">
+    <documentation>
+      <svcdoc:Interface>
+        <svcdoc:Description>This interface contains operations for the Request-Response patterns</svcdoc:Description>
+        <svcdoc:DisplayName>WECO Create Device Test Info Interface</svcdoc:DisplayName>
+        <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+      </svcdoc:Interface>
+    </documentation>
+    <operation name="Create">
+      <documentation>
+        <svcdoc:Operation>
+          <svcdoc:Description>This operation is used to Create DeviceTestResult.</svcdoc:Description>
+          <svcdoc:MEP>SYNC_REQ_RESPONSE</svcdoc:MEP>
+          <svcdoc:DisplayName>CreateDeviceTestResult</svcdoc:DisplayName>
+          <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+          <svcdoc:Scope>Public</svcdoc:Scope>
+        </svcdoc:Operation>
+      </documentation>
+      <input message="tns:CreateDeviceTestResultReqMsg" />
+      <output message="tns:CreateDeviceTestResultRespMsg" />
+      <fault name="Fault" message="tns:CreateDeviceTestResultFaultMsg" />
+    </operation>
+  </portType>
+  <binding name="DeviceTestResultABCSSOAP11Binding" type="tns:DeviceTestResultABCS">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="Create">
+      <soap:operation soapAction="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestResult/V1/Create" style="document" />
+      <input>
+        <soap:body use="literal" parts="CreateDeviceTestResultABM" />
+      </input>
+      <output>
+        <soap:body use="literal" parts="CreateDeviceTestResultResponseABM" />
+      </output>
+      <fault name="fault">
+        <soap:fault use="literal" name="fault" namespace="" />
+      </fault>
+    </operation>
+  </binding>
+  <service name="DeviceTestResultABCS">
+    <port name="DeviceTestResultABCSPort" binding="tns:DeviceTestResultABCSSOAP11Binding">
+      <soap:address location="ENDPOINT_LOCATION" />
+    </port>
+  </service>
+</definitions>

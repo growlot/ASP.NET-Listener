@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1" elementFormDefault="qualified" targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="UpdateDeviceClassificationCodeABM" type="tns:UpdateDeviceClassificationCodeABMType" />
+  <xs:complexType name="UpdateDeviceClassificationCodeABMType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="BatchNumber" type="xs:int" />
+      <xs:element minOccurs="0" maxOccurs="1" name="BatchesTotal" type="xs:int" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="UpdateDeviceClassificationCode" type="tns:DeviceClassificationCodeType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DeviceClassificationCodeType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="ClassificationCode" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="DeviceDescription" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="DeviceType" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Status" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Manufacturer" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Model" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="ForceRetirementSwitch" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="MaterialID" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="AssetProfileID" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="DeviceTestType" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="TemplateDevice" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="ElectricDevice">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="IPLSelectionType" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="IPLTestInterval" type="xs:int" />
+            <xs:element minOccurs="0" maxOccurs="1" name="WPLSelectionType" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="WPLTestInterval" type="xs:int" />
+            <xs:element minOccurs="0" maxOccurs="1" name="BatteryLife" type="xs:int" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Wire" type="xs:int" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Stator" type="xs:decimal" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Ampacity" type="xs:int" />
+            <xs:element minOccurs="0" maxOccurs="1" name="TestAmps" type="xs:decimal" />
+            <xs:element minOccurs="0" maxOccurs="1" name="VoltageClass" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="TestVoltage" type="xs:int" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Constant" type="xs:decimal" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Phase" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Form" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Base" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="RegisterRatio" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="AMIIndicator" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="ERTIndicator" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="TransformerRatedIndicator" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="NetworkIndicator" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="RemoteConnectDisconnectIndicator" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="RecorderExists" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="LossCompensationCapableIndicator" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="TestSequence" type="xs:string" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" maxOccurs="1" name="TransformerAttribute">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="AccuracyClass" type="xs:decimal" />
+            <xs:element minOccurs="0" maxOccurs="1" name="ConstructionType" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="BasicLightingImpulseLevel" type="xs:decimal" />
+            <xs:element minOccurs="0" maxOccurs="1" name="InsulationVoltageClass" type="xs:decimal" />
+            <xs:element minOccurs="0" maxOccurs="1" name="InsulatingMedium" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="DeviceApplicationEnvironment" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="NumberOfRatios" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="CurrentTransformer">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" maxOccurs="1" name="LightLoadPercentage" type="xs:decimal" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="PrimaryCurrentRatio1" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="PrimaryCurrentRatio2" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="OhmsBurden1" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="OhmsBurden2" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="Ratio1RatingFactor" type="xs:decimal" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="Ratio2RatingFactor" type="xs:decimal" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="1" name="PotentialTransformer">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" maxOccurs="1" name="PrimaryVoltageRatio1" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="PrimaryVoltageRatio2" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="VoltAmpsBurden1" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="VoltAmpsBurden2" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="DualSecondary" type="xs:string" />
+                  <xs:element minOccurs="0" maxOccurs="1" name="Fused" type="xs:string" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

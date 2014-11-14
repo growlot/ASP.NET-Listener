@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.WNP.Model"
+                   assembly="AMSLLC.Listener.Common.WNP">
+
+  <!-- Mappings for class 'Config' -->
+  <class name="Owner" table="wndba.TOWNER" lazy="false">
+
+    <!-- Identity mapping -->
+    <id name="Id">
+      <column name="OWNER" />
+    </id>
+
+    <!-- Simple mappings -->
+    <property name="Description" column="OWNER_DESC" />
+  </class>
+
+</hibernate-mapping>
+

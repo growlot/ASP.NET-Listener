@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.Model"
+                   assembly="AMSLLC.Listener.Common">
+
+  <!-- Mappings for class 'Config' -->
+  <class name="TransactionLogState" table="TransactionLogState" lazy="false">
+
+    <!-- Identity mapping -->
+    <id name="Id" unsaved-value="-1">
+      <column name="TransactionLogStateId" />
+      <generator class="native" />
+    </id>
+
+    <many-to-one  name="TransactionLog"
+                  class="TransactionLog"
+                  column="TransactionLogId"
+                  cascade="none" 
+                  fetch="join" />
+
+    <many-to-one  name="TransactionState"
+                 class="TransactionState"
+                 column="TransactionStateId"
+                 cascade="none" 
+                 fetch="join" />
+
+    <property name="ExecutionTime" column="ExecutionTime" />
+    
+  </class>
+
+</hibernate-mapping>

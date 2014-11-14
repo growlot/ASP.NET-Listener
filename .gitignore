@@ -1,0 +1,10 @@
+/$tf/
+/Releases/
+obj
+bin
+*.vspscc
+/TestResults/
+/WSDL/
+StyleCop.Cache
+*.suo
+*.user

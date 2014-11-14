@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.Model"
+                   assembly="AMSLLC.Listener.Common">
+  
+  <!-- Mappings for class 'TransactionSource' -->
+  <class name="TransactionSource" table="TransactionSource" lazy="false">
+    
+    <!-- Identity mapping -->
+    <id name="Id">
+      <column name="TransactionSourceId" />
+    </id>
+
+    <property name="Description" column="Description" />
+
+  </class>
+
+</hibernate-mapping>

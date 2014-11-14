@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.WNP.Model"
+                   assembly="AMSLLC.Listener.Common.WNP">
+
+  <class name="PotentialTransformer" table="wndba.teqp_pt" lazy="false">
+
+    <!-- Fields from common equipment -->
+    <id name="Id">
+      <column name="ID" />
+      <generator class="native" />
+    </id>
+
+    <many-to-one  name="Owner"
+                  class="Owner"
+                  column="OWNER"
+                  cascade="none" />
+
+    <property name="EquipmentNumber" column="EQP_NO" type="AnsiString" length="20" />
+
+    <property name="TestProgram" column="TEST_PROGRAM" type="AnsiString" length="20" />
+    <property name="Location" column="LOCATION" type="AnsiString" length="20" />
+    <property name="EquipmentStatus" column="EQP_STATUS" type="AnsiString" length="20" />
+    <property name="ShopStatus" column="SHOP_STATUS" type="AnsiString" length="20" />
+    <property name="Manufacturer" column="MFR" type="AnsiString" length="3" />
+    <property name="SerialNumber" column="SERIAL_NO" type="AnsiString" length="20" />
+    <property name="ModelNumber" column="MODEL_NO" type="AnsiString" length="30" />
+
+    <property name="CustomField1" column="PT_USER01" type="AnsiString" length="50" />
+    <property name="CustomField2" column="PT_USER02" type="AnsiString" length="50" />
+    <property name="CustomField3" column="PT_USER03" type="AnsiString" length="50" />
+    <property name="CustomField4" column="PT_USER04" type="AnsiString" length="50" />
+    <property name="CustomField5" column="PT_USER05" type="AnsiString" length="50" />
+    <property name="CustomField6" column="PT_USER06" type="AnsiString" length="50" />
+    <property name="CustomField7" column="PT_USER07" type="AnsiString" length="50" />
+    <property name="CustomField8" column="PT_USER08" type="AnsiString" length="50" />
+    <property name="CustomField9" column="PT_USER09" type="AnsiString" length="50" />
+    <property name="CustomField10" column="PT_USER010" type="AnsiString" length="50" />
+    <property name="CustomField11" column="PT_USER011" type="AnsiString" length="50" />
+    <property name="CustomField12" column="PT_USER012" type="AnsiString" length="50" />
+    <property name="CustomField13" column="PT_USER013" type="AnsiString" length="50" />
+    <property name="CustomField14" column="PT_USER014" type="AnsiString" length="50" />
+    <property name="CustomField15" column="PT_USER015" type="AnsiString" length="50" />
+    <property name="CustomField16" column="PT_USER016" type="AnsiString" length="50" />
+
+    <!-- Fields from common transformer -->
+    <property name="TransformerCode" column="TRANSFORMER_CODE" type="AnsiString" length="20" />
+  </class>
+
+</hibernate-mapping>

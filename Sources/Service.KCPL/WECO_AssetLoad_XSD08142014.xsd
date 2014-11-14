@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="W1-InitialSyncRequestAsset">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="externalSystem" type="xs:string" />
+        <xs:element name="externalReferenceId" type="xs:string" />
+        <xs:element name="externalPkValue1" type="xs:string" />
+        <xs:element name="syncRequestDetails" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="original" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="finalSnapshot" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="assetType" type="xs:string" minOccurs="0" />
+                          <xs:element name="boStatus" type="xs:string" minOccurs="0" />
+                          <xs:element name="specification" type="xs:string" minOccurs="0" />
+                          <xs:element name="configuration" type="xs:string" minOccurs="0" />
+                          <xs:element name="customElements" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:simpleContent msdata:ColumnName="customElements_Column" msdata:Ordinal="0">
+                                <xs:extension base="xs:anyType">
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="formattedElements" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="manufacturer" type="xs:string" minOccurs="0" />
+                                <xs:element name="model" type="xs:string" />
+                                <xs:element name="numberOfDials" type="xs:string" />
+                                <xs:element name="badgeNo" type="xs:string" />
+                                <xs:element name="serialNo" type="xs:string" />
+                                <xs:element name="itronId" type="xs:string" />
+                                <xs:element name="hhfId" type="xs:string" />
+                                <xs:element name="endpointId" type="xs:string" />
+                                <xs:element name="metrologyFirmware" type="xs:string" />
+                                <xs:element name="commModuleFirmware" type="xs:string" />
+                                <xs:element name="zigbeeFirmware" type="xs:string" />
+                                <xs:element name="dcw" type="xs:string" />
+                                <xs:element name="meterForm" type="xs:string" />
+                                <xs:element name="kh" type="xs:string" />
+                                <xs:element name="base" type="xs:string" />
+                                <xs:element name="meterClass" type="xs:string" />
+                                <xs:element name="wires" type="xs:string" />
+                                <xs:element name="voltage" type="xs:string" />
+                                <xs:element name="phase" type="xs:string" />
+                                <xs:element name="testAmps" type="xs:string" />
+                                <xs:element name="ownershipTerritory" type="xs:string" minOccurs="0" />
+                                <xs:element name="disconnectSwitchStatus" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string" />
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="meterReceiptDate" type="xs:dateTime" />
+                                <xs:element name="warrantyExpirationDate" type="xs:date" minOccurs="0" />
+                                <xs:element name="warrantyDetail" type="xs:string" minOccurs="0" />
+                                <xs:element name="vendor" type="xs:string" minOccurs="0" />
+                                <xs:element name="vendorPartNo" type="xs:string" minOccurs="0" />
+                                <xs:element name="purchaseOrderNo" type="xs:string" minOccurs="0" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="W1-InitialSyncRequestAsset" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

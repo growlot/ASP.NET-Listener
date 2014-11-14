@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.Model"
+                   assembly="AMSLLC.Listener.Common">
+
+  <!-- Mappings for class 'Config' -->
+  <class name="TransactionStatus" table="TransactionStatus" lazy="false">
+
+    <!-- Identity mapping -->
+    <id name="Id">
+      <column name="TransactionStatusId" />
+    </id>
+
+    <property name="Description" column="Description" />
+
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.WNP.Model"
+                   assembly="AMSLLC.Listener.Common.WNP">
+
+  <class name="PotentialTransformerTestResult" table="wndba.TPT_TEST_RESULTS" lazy="false">
+
+    <!-- Fields from common test results -->
+    <id name="Id">
+      <column name="ID" />
+      <generator class="native" />
+    </id>
+
+    <many-to-one  name="Owner"
+                  class="Owner"
+                  column="OWNER"
+                  cascade="none" />
+
+    <property name="EquipmentNumber" column="EQP_NO" type="AnsiString" length="20" />
+    <property name="Location" column="TEST_LOCATION" type="AnsiString" length="20" />
+    <property name="TesterId" column="TESTER_ID" type="AnsiString" length="30" />
+    <property name="TestDate" column="TEST_DATE_START" type="Timestamp" />
+    <property name="TestDateStop" column="TEST_DATE_STOP" />
+
+    <property name="CustomField1" column="RESULTS_USER01" type="AnsiString" length="50" />
+    <property name="CustomField2" column="RESULTS_USER02" type="AnsiString" length="50" />
+    <property name="CustomField3" column="RESULTS_USER03" type="AnsiString" length="50" />
+    <property name="CustomField4" column="RESULTS_USER04" type="AnsiString" length="50" />
+    <property name="CustomField5" column="RESULTS_USER05" type="AnsiString" length="50" />
+    <property name="CustomField6" column="RESULTS_USER06" type="AnsiString" length="50" />
+    <property name="CustomField7" column="RESULTS_USER07" type="AnsiString" length="50" />
+
+    <!-- Fields from transformer test results -->
+    <property name="PrimaryTestReason" column="PRI_TEST_REASON" length="3" />
+    <property name="SelectedRatio" column="SELECTED_RATIO" length="10" />
+    <property name="RatioCorrection" column="RCF" />
+    <property name="PhaseError" column="PHASE_ERROR" />
+    <property name="Burden" column="BURDEN_VALUE" />
+    <property name="AccuracyClass" column="ACCURACY" />
+    <property name="LoadLabel" column="LOAD_LABEL" length="2" />
+
+    <!-- Fields from current transformer test results -->
+    <property name="TestVoltage" column="TEST_VOLTAGE" />
+
+  </class>
+
+</hibernate-mapping>
+

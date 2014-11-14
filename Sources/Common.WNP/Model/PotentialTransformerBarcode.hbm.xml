@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="AMSLLC.Listener.Common.WNP.Model"
+                   assembly="AMSLLC.Listener.Common.WNP">
+
+  <class name="PotentialTransformerBarcode" table="wndba.tbarcode_pt" lazy="false">
+
+    <!-- Fields from common barcode -->
+    <composite-id name="BarcodeId" class="BarcodeIdentifier">
+      <key-many-to-one
+        name="Owner"
+        class="Owner"
+        column="OWNER" />
+      <key-property name="LookupCode" column="AEP_CODE" type="AnsiString" length="20" />
+    </composite-id>
+
+    <property name="Description" column="description" type="AnsiString" length="50" />
+
+    <property name="CustomField1" column="BC_USER01" type="AnsiString" length="20" />
+    <property name="CustomField2" column="BC_USER02" type="AnsiString" length="20" />
+    <property name="CustomField3" column="BC_USER03" type="AnsiString" length="20" />
+    <property name="CustomField4" column="BC_USER04" type="AnsiString" length="20" />
+    <property name="CustomField5" column="BC_USER05" type="AnsiString" length="20" />
+    <property name="CustomField6" column="BC_USER06" type="AnsiString" length="20" />
+    <property name="CustomField7" column="BC_USER07" type="AnsiString" length="20" />
+    <property name="CustomField8" column="BC_USER08" type="AnsiString" length="20" />
+    <property name="CustomField9" column="BC_USER09" type="AnsiString" length="20" />
+    <property name="CustomField10" column="BC_USER10" type="AnsiString" length="20" />
+    <property name="CustomField11" column="BC_USER11" type="AnsiString" length="20" />
+    <property name="CustomField12" column="BC_USER12" type="AnsiString" length="20" />
+    <property name="CustomField13" column="BC_USER13" type="AnsiString" length="20" />
+    <property name="CustomField14" column="BC_USER14" type="AnsiString" length="20" />
+    <property name="CustomField15" column="BC_USER15" type="AnsiString" length="20" />
+    <property name="CustomField16" column="BC_USER16" type="AnsiString" length="20" />
+    <property name="CustomField17" column="BC_USER17" type="AnsiString" length="20" />
+    <property name="CustomField18" column="BC_USER18" type="AnsiString" length="20" />
+    <property name="CustomField19" column="BC_USER19" type="AnsiString" length="20" />
+    <property name="CustomField20" column="BC_USER20" type="AnsiString" length="20" />
+    <property name="CustomField21" column="BC_USER21" type="AnsiString" length="20" />
+    <property name="CustomField22" column="BC_USER22" type="AnsiString" length="20" />
+
+    <!-- Fields from transformer barcode -->
+    <property name="Taps" column="taps" />
+    <property name="Ratio" column="nameplate_ratio" type="AnsiString" length="20" />
+    <property name="AccuracyClass1" column="accuracy_class" />
+    <property name="AccuracyClass2" column="accuracy_class2" />
+
+    <!-- Fields from current transformer barcode -->
+    <property name="Burden1" column="burden_value" type="AnsiString" length="2" />
+    <property name="Burden2" column="burden_value2" type="AnsiString" length="2" />
+  </class>
+
+</hibernate-mapping>
+
