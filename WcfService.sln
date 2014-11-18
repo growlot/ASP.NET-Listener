@@ -45,6 +45,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Globalization", "Sources\Gl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Implementation.KCPL", "Sources\Service.Implementation.KCPL\Service.Implementation.KCPL.csproj", "{020E077C-8CE4-4250-8A4E-B80A0DF1E993}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Unit.Tests", "Sources\Common.nUnit.Tests\Common.Unit.Tests.csproj", "{1ED28129-680B-424C-9D39-448DDD21E832}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Implementation.Unit.Test", "Sources\Client.Implementation.Unit.Test\Client.Implementation.Unit.Test.csproj", "{8CFDFC4E-F28F-48CC-86E4-32E281B59215}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 12
@@ -180,6 +184,22 @@ Global
 		{020E077C-8CE4-4250-8A4E-B80A0DF1E993}.Release|Any CPU.Build.0 = Release|Any CPU
 		{020E077C-8CE4-4250-8A4E-B80A0DF1E993}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{020E077C-8CE4-4250-8A4E-B80A0DF1E993}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1ED28129-680B-424C-9D39-448DDD21E832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED28129-680B-424C-9D39-448DDD21E832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED28129-680B-424C-9D39-448DDD21E832}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1ED28129-680B-424C-9D39-448DDD21E832}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1ED28129-680B-424C-9D39-448DDD21E832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED28129-680B-424C-9D39-448DDD21E832}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED28129-680B-424C-9D39-448DDD21E832}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1ED28129-680B-424C-9D39-448DDD21E832}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8CFDFC4E-F28F-48CC-86E4-32E281B59215}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CFDFC4E-F28F-48CC-86E4-32E281B59215}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CFDFC4E-F28F-48CC-86E4-32E281B59215}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8CFDFC4E-F28F-48CC-86E4-32E281B59215}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8CFDFC4E-F28F-48CC-86E4-32E281B59215}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CFDFC4E-F28F-48CC-86E4-32E281B59215}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CFDFC4E-F28F-48CC-86E4-32E281B59215}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8CFDFC4E-F28F-48CC-86E4-32E281B59215}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

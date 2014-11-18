@@ -250,13 +250,20 @@ namespace AMSLLC.Listener.Client.Implementation
                 throw new ArgumentNullException("response", "Can not finish transaction if response is not provided.");
             }
 
+            // message can not exceed 1000 symbols, because of database field limitation.
+            string message = response.Message;
+            if (message != null && message.Length > 1000)
+            {
+                message = message.Substring(0, 1000);
+            }
+
             if (response.ReturnCode != 0)
             {
-                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, response.Message.Substring(0, 1000), response.DebugInfo);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, message, response.DebugInfo);
             }
             else
             {
-                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Succeeded);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Succeeded, message, response.DebugInfo);
             }
 
             this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);

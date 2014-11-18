@@ -10,6 +10,15 @@
         <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.#ctor">
             <summary>Initializes a new instance of type StubIPersistenceManager</summary>
         </member>
+        <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.amsllclc::AMSLLC#Listener#Common#IPersistenceManager#DeleteAll``1">
+            <summary>Sets the stub of IPersistenceManager.DeleteAll()</summary>
+        </member>
+        <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.amsllclc::AMSLLC#Listener#Common#IPersistenceManager#GetByKey``1(System.Object)">
+            <summary>Sets the stub of IPersistenceManager.GetByKey(Object key)</summary>
+        </member>
+        <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.amsllclc::AMSLLC#Listener#Common#IPersistenceManager#GetByKey``1(System.Object,System.Boolean)">
+            <summary>Sets the stub of IPersistenceManager.GetByKey(Object key, Boolean lazy)</summary>
+        </member>
         <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.amsllclc::AMSLLC#Listener#Common#IPersistenceManager#RetrieveAll``1(AMSLLC.Listener.Common.SessionAction)">
             <summary>Sets the stub of IPersistenceManager.RetrieveAll(SessionAction sessionAction)</summary>
         </member>
@@ -25,14 +34,26 @@
         <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.amsllclc::AMSLLC#Listener#Common#IPersistenceManager#Save``1(``0)">
             <summary>Sets the stub of IPersistenceManager.Save(!!0 item)</summary>
         </member>
+        <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.amsllclc::AMSLLC#Listener#Common#IPersistenceManager#SaveBulk``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Sets the stub of IPersistenceManager.SaveBulk(IEnumerable`1&lt;!!0&gt; items)</summary>
+        </member>
         <member name="F:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.ConnectionStringGet">
             <summary>Sets the stub of IPersistenceManager.get_ConnectionString()</summary>
         </member>
         <member name="F:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.DatabaseGet">
             <summary>Sets the stub of IPersistenceManager.get_Database()</summary>
         </member>
+        <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.DeleteAllOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Action)">
+            <summary>Sets stubs of DeleteAll()</summary>
+        </member>
         <member name="F:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.Dispose">
             <summary>Sets the stub of IDisposable.Dispose()</summary>
+        </member>
+        <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.GetByKeyOf1Object``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Object,``0})">
+            <summary>Sets stubs of GetByKey(Object key)</summary>
+        </member>
+        <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.GetByKeyOf1ObjectBoolean``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Object,System.Boolean,``0})">
+            <summary>Sets stubs of GetByKey(Object key, Boolean lazy)</summary>
         </member>
         <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.RetrieveAllEqualOf1DetachedCriteria``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{NHibernate.Criterion.DetachedCriteria,System.Collections.Generic.IList{``0}})">
             <summary>Sets stubs of RetrieveAllEqual(DetachedCriteria selectCriteria)</summary>
@@ -45,6 +66,9 @@
         </member>
         <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.RetrieveFirstEqualOf1StringObject``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.String,System.Object,``0})">
             <summary>Sets stubs of RetrieveFirstEqual(String propertyName, Object propertyValue)</summary>
+        </member>
+        <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.SaveBulkOf1IEnumerableOfM0``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Action{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of SaveBulk(IEnumerable`1&lt;!!0&gt; items)</summary>
         </member>
         <member name="M:AMSLLC.Listener.Common.Fakes.StubIPersistenceManager.SaveOf1M0``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Action{``0})">
             <summary>Sets stubs of Save(!!0 item)</summary>

@@ -38,7 +38,6 @@ namespace Common.Unit.Tests
         {
             ITransactionManager transactionLogManager;
 
-            // Create the fake stockFeed:
             using (var persistenceManager = new AMSLLC.Listener.Common.Fakes.StubIPersistenceManager())
             {
                 persistenceManager.RetrieveFirstEqualOf1StringObject<TransactionLog>((propertyName, propertyValue) =>
