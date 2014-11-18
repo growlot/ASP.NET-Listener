@@ -36,12 +36,6 @@
     <property name="CustomField8" column="METER_USER08" type="AnsiString" length="50" />
     <property name="CustomField9" column="METER_USER09" type="AnsiString" length="50" />
     <property name="CustomField10" column="METER_USER10" type="AnsiString" length="50" />
-    <property name="CustomField11" column="METER_USER11" type="AnsiString" length="50" />
-    <property name="CustomField12" column="METER_USER12" type="AnsiString" length="50" />
-    <property name="CustomField13" column="METER_USER13" type="AnsiString" length="50" />
-    <property name="CustomField14" column="METER_USER14" type="AnsiString" length="50" />
-    <property name="CustomField15" column="METER_USER15" type="AnsiString" length="50" />
-    <property name="CustomField16" column="METER_USER16" type="AnsiString" length="50" />
 
     <!-- Fields from meter -->
     <property name="MeterCode" column="METER_CODE" type="AnsiString" length="20" />
@@ -58,6 +52,12 @@
     <property name="AmiId1" column="AMI_ID1" type="AnsiString" length="30" />
     <property name="ProgramId" column="program_id" type="AnsiString" length="20" />
 
+    <property name="CustomField11" column="METER_USER11" type="AnsiString" length="50" />
+    <property name="CustomField12" column="METER_USER12" type="AnsiString" length="50" />
+    <property name="CustomField13" column="METER_USER13" type="AnsiString" length="50" />
+    <property name="CustomField14" column="METER_USER14" type="AnsiString" length="50" />
+    <property name="CustomField15" column="METER_USER15" type="AnsiString" length="50" />
+    <property name="CustomField16" column="METER_USER16" type="AnsiString" length="50" />
   </class>
 
 </hibernate-mapping>

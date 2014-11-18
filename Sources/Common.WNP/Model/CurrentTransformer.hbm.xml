@@ -35,13 +35,7 @@
     <property name="CustomField7" column="CT_USER07" type="AnsiString" length="50" />
     <property name="CustomField8" column="CT_USER08" type="AnsiString" length="50" />
     <property name="CustomField9" column="CT_USER09" type="AnsiString" length="50" />
-    <property name="CustomField10" column="CT_USER010" type="AnsiString" length="50" />
-    <property name="CustomField11" column="CT_USER011" type="AnsiString" length="50" />
-    <property name="CustomField12" column="CT_USER012" type="AnsiString" length="50" />
-    <property name="CustomField13" column="CT_USER013" type="AnsiString" length="50" />
-    <property name="CustomField14" column="CT_USER014" type="AnsiString" length="50" />
-    <property name="CustomField15" column="CT_USER015" type="AnsiString" length="50" />
-    <property name="CustomField16" column="CT_USER016" type="AnsiString" length="50" />
+    <property name="CustomField10" column="CT_USER10" type="AnsiString" length="50" />
 
     <!-- Fields from common transformer -->
     <property name="TransformerCode" column="TRANSFORMER_CODE" type="AnsiString" length="20" />

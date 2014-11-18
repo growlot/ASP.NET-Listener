@@ -132,5 +132,53 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The program identifier.
         /// </value>
         public string ProgramId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 11.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 11.
+        /// </value>
+        public string CustomField11 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 12.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 12.
+        /// </value>
+        public string CustomField12 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 13.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 13.
+        /// </value>
+        public string CustomField13 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 14.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 14.
+        /// </value>
+        public string CustomField14 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 15.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 15.
+        /// </value>
+        public string CustomField15 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 16.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 16.
+        /// </value>
+        public string CustomField16 { get; set; }
     }
 }
