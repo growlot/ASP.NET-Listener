@@ -252,7 +252,7 @@ namespace AMSLLC.Listener.Client.Implementation
 
             if (response.ReturnCode != 0)
             {
-                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, response.Message, response.DebugInfo);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, response.Message.Substring(0, 1000), response.DebugInfo);
             }
             else
             {
