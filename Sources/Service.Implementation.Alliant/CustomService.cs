@@ -100,7 +100,24 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = ex.Detail.FaultMessage.Code,
+                        Message = this.stringManager.GetString("CheckListenerLogReport", CultureInfo.CurrentCulture),
+                        DebugInfo = writer.ToString()
+                    };
+
+                    throw new FaultException<ServiceFaultDetails>(transformedException, transformedException.Message);
+                }
+            }
+            catch (FaultException<Alliant.GetDevice.FaultNotificationType[]> ex)
+            {
+                Log.Error("Customer service call returned error.", ex);
+                using (TextWriter writer = new StringWriter(CultureInfo.InvariantCulture))
+                {
+                    var serializer = new XmlSerializer(typeof(Alliant.GetDevice.FaultNotificationType[]));
+                    serializer.Serialize(writer, ex.Detail);
+                    Log.Error(writer.ToString());
+                    ServiceFaultDetails transformedException = new ServiceFaultDetails()
+                    {
+                        Message = this.stringManager.GetString("CheckListenerLogReport", CultureInfo.CurrentCulture),
                         DebugInfo = writer.ToString()
                     };
 
@@ -243,7 +260,24 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = ex.Detail.FaultMessage.Code,
+                        Message = this.stringManager.GetString("CheckListenerLogReport", CultureInfo.CurrentCulture),
+                        DebugInfo = writer.ToString()
+                    };
+
+                    throw new FaultException<ServiceFaultDetails>(transformedException, transformedException.Message);
+                }
+            }
+            catch (FaultException<Alliant.SendTestResult.FaultNotificationType[]> ex)
+            {
+                Log.Error("Customer service call returned error.", ex);
+                using (TextWriter writer = new StringWriter(CultureInfo.InvariantCulture))
+                {
+                    var serializer = new XmlSerializer(typeof(Alliant.SendTestResult.FaultNotificationType[]));
+                    serializer.Serialize(writer, ex.Detail);
+                    Log.Error(writer.ToString());
+                    ServiceFaultDetails transformedException = new ServiceFaultDetails()
+                    {
+                        Message = this.stringManager.GetString("CheckListenerLogReport", CultureInfo.CurrentCulture),
                         DebugInfo = writer.ToString()
                     };
 
@@ -395,8 +429,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (File.Exists(mockupFileFault))
             {
-                Alliant.GetDevice.FaultNotificationType detail = Utilities.ReadFromXmlFile<Alliant.GetDevice.FaultNotificationType>(mockupFileFault);
-                FaultException<Alliant.GetDevice.FaultNotificationType> ex = new FaultException<Alliant.GetDevice.FaultNotificationType>(detail);
+                Alliant.GetDevice.FaultNotificationType[] detail = (Utilities.ReadFromXmlFile<List<Alliant.GetDevice.FaultNotificationType>>(mockupFileFault)).ToArray<Alliant.GetDevice.FaultNotificationType>();
+                FaultException<Alliant.GetDevice.FaultNotificationType[]> ex = new FaultException<Alliant.GetDevice.FaultNotificationType[]>(detail);
 
                 throw ex;
             }
@@ -426,6 +460,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     ////};
                     ////Utilities.WriteToXmlFile<QueryDeviceTestInfoResponseABMType>(mockupFileDefault, alliantResponse);
 
+                    ////List<Alliant.GetDevice.FaultNotificationType> faults = new List<GetDevice.FaultNotificationType>();
                     ////Alliant.GetDevice.FaultNotificationType fault = new Alliant.GetDevice.FaultNotificationType()
                     ////{
                     ////    BusinessComponentID = "123",
@@ -438,6 +473,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     ////        InstanceID = "222"
                     ////    },
                     ////    ReportingDateTime = DateTime.Now,
+                    ////    ReportingDateTimeSpecified = true,
                     ////    FaultMessage = new GetDevice.FaultMessageType()
                     ////    {
                     ////        Code = "ns0:assertFailure",
@@ -446,7 +482,31 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     ////        Severity = "Critical"
                     ////    }
                     ////};
-                    ////Utilities.WriteToXmlFile<Alliant.GetDevice.FaultNotificationType>(mockupFileFault, fault);
+                    ////faults.Add(fault);
+                    ////fault = new Alliant.GetDevice.FaultNotificationType()
+                    ////{
+                    ////    BusinessComponentID = "2123",
+                    ////    CorrectiveAction = new string[] { "2Fix value", "Fix other value" },
+                    ////    FaultingService = new Alliant.GetDevice.FaultingServiceType()
+                    ////    {
+                    ////        ID = "2456",
+                    ////        ExecutionContextID = "2789",
+                    ////        ImplementationCode = "2111",
+                    ////        InstanceID = "2222"
+                    ////    },
+                    ////    ReportingDateTime = DateTime.Now,
+                    ////    ReportingDateTimeSpecified = true,
+                    ////    FaultMessage = new GetDevice.FaultMessageType()
+                    ////    {
+                    ////        Code = "2ns0:assertFailure",
+                    ////        Text = new string[] { "2See error Stack." },
+                    ////        Stack = new string[] { "2ns0:assertFailurefaultName" },
+                    ////        Severity = "2Critical"
+                    ////    }
+                    ////};
+                    ////faults.Add(fault);
+                    ////Utilities.WriteToXmlFile<List<Alliant.GetDevice.FaultNotificationType>>(mockupFileFault, faults);
+                
      
                     string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("GetDeviceMockupFileNotFound", CultureInfo.CurrentCulture), mockupFile, mockupFileDefault);
                     Log.Error(message);
@@ -484,8 +544,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (File.Exists(mockupFileFault))
             {
-                Alliant.SendTestResult.FaultNotificationType detail = Utilities.ReadFromXmlFile<Alliant.SendTestResult.FaultNotificationType>(mockupFileFault);
-                FaultException<Alliant.SendTestResult.FaultNotificationType> ex = new FaultException<Alliant.SendTestResult.FaultNotificationType>(detail);
+                Alliant.SendTestResult.FaultNotificationType[] detail = (Utilities.ReadFromXmlFile<List<Alliant.SendTestResult.FaultNotificationType>>(mockupFileFault)).ToArray<Alliant.SendTestResult.FaultNotificationType>();
+                FaultException<Alliant.SendTestResult.FaultNotificationType[]> ex = new FaultException<Alliant.SendTestResult.FaultNotificationType[]>(detail);
 
                 throw ex;
             }
@@ -510,6 +570,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     ////};
                     ////Utilities.WriteToXmlFile<CreateDeviceTestResultResponseABMType>(mockupFileDefault, alliantResponse);
 
+                    ////List<Alliant.SendTestResult.FaultNotificationType> faults = new List<SendTestResult.FaultNotificationType>();
                     ////Alliant.SendTestResult.FaultNotificationType fault = new Alliant.SendTestResult.FaultNotificationType()
                     ////{
                     ////    BusinessComponentID = "123",
@@ -531,7 +592,30 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     ////        Severity = "Critical"
                     ////    }
                     ////};
-                    ////Utilities.WriteToXmlFile<Alliant.SendTestResult.FaultNotificationType>(mockupFileFault, fault);
+                    ////faults.Add(fault);
+                    ////fault = new Alliant.SendTestResult.FaultNotificationType()
+                    ////{
+                    ////    BusinessComponentID = "2123",
+                    ////    CorrectiveAction = new string[] { "2Fix value", "Fix other value" },
+                    ////    FaultingService = new Alliant.SendTestResult.FaultingServiceType()
+                    ////    {
+                    ////        ID = "2456",
+                    ////        ExecutionContextID = "2789",
+                    ////        ImplementationCode = "2111",
+                    ////        InstanceID = "2222"
+                    ////    },
+                    ////    ReportingDateTime = DateTime.Now,
+                    ////    ReportingDateTimeSpecified = true,
+                    ////    FaultMessage = new SendTestResult.FaultMessageType()
+                    ////    {
+                    ////        Code = "2ns0:assertFailure",
+                    ////        Text = new string[] { "2See error Stack." },
+                    ////        Stack = new string[] { "2ns0:assertFailurefaultName" },
+                    ////        Severity = "2Critical"
+                    ////    }
+                    ////};
+                    ////faults.Add(fault);
+                    ////Utilities.WriteToXmlFile<List<Alliant.SendTestResult.FaultNotificationType>>(mockupFileFault, faults);
 
                     string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("SendDeviceTestMockupFileNotFound", CultureInfo.CurrentCulture), mockupFile, mockupFileDefault);
                     Log.Error(message);

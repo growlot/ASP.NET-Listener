@@ -61,6 +61,15 @@ namespace AMSLLC.Listener.Globalization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please see Listener Log report for full error..
+        /// </summary>
+        internal static string CheckListenerLogReport {
+            get {
+                return ResourceManager.GetString("CheckListenerLogReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Company with name {0} not supported..
         /// </summary>
         internal static string CompanyNotSupported {
