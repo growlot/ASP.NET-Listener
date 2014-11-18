@@ -737,7 +737,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             }
 
             DateTime tempDate;
-            if (DateTime.TryParse(meterTest.CustomField7, out tempDate))
+            if (DateTime.TryParse(meterTest.CustomField3, out tempDate))
             {
                 alliantRequest.RepairDateTimeSpecified = true;
                 alliantRequest.RepairDateTime = tempDate;
