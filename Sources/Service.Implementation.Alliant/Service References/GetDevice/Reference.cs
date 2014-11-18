@@ -289,7 +289,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.GetDevice {
         
         private string newDeviceIndicatorField;
         
-        private System.DateTime lastTestDateField;
+        private System.Nullable<System.DateTime> lastTestDateField;
         
         private bool lastTestDateFieldSpecified;
         
@@ -336,8 +336,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.GetDevice {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
-        public System.DateTime LastTestDate {
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=3)]
+        public System.Nullable<System.DateTime> LastTestDate {
             get {
                 return this.lastTestDateField;
             }
@@ -526,10 +526,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.GetDevice {
     public interface DeviceTestInfoABCS {
         
         // CODEGEN: Generating message contract since the operation Query is neither RPC nor document wrapped.
-        [System.ServiceModel.OperationContractAttribute(Action="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1/DeviceTestInfoAB" +
-            "CS/QueryRequest", ReplyAction="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1/DeviceTestInfoAB" +
-            "CS/QueryResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.FaultNotificationType[]), Action="http://www.w3.org/2005/08/addressing/soap/fault", Name="QueryDeviceTestInfoFault")]
+        [System.ServiceModel.OperationContractAttribute(Action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query", ReplyAction="*")]
+        [System.ServiceModel.FaultContractAttribute(typeof(AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.FaultNotificationType[]), Action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query", Name="QueryDeviceTestInfoFault")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.QueryResponse Query(AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.QueryRequest request);
     }

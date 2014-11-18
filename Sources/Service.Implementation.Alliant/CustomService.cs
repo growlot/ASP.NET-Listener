@@ -308,10 +308,13 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 CustomField1 = device.EquipmentType.ServiceType.ExternalCode,
                 CustomField2 = device.EquipmentType.ExternalCode,
                 CustomField3 = alliantResponse.NewDeviceIndicator,
-                CustomField4 = alliantResponse.LastTestDate.ToLongDateString(),
                 CustomField5 = alliantResponse.LossCompensationCodeFlag,
                 CustomField6 = alliantResponse.TestReason
             };
+            if (alliantResponse.LastTestDate.HasValue)
+            {
+                meter.CustomField4 = ((DateTime)alliantResponse.LastTestDate).ToLongDateString();
+            }
 
             this.WnpSystem.AddOrReplaceEquipment(meter);
         }
@@ -331,9 +334,12 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 CustomField1 = device.EquipmentType.ServiceType.ExternalCode,
                 CustomField2 = device.EquipmentType.ExternalCode,
                 CustomField3 = alliantResponse.NewDeviceIndicator,
-                CustomField4 = alliantResponse.LastTestDate.ToLongDateString(),
                 CustomField5 = alliantResponse.TestReason
             };
+            if (alliantResponse.LastTestDate.HasValue)
+            {
+                ct.CustomField4 = ((DateTime)alliantResponse.LastTestDate).ToLongDateString();
+            }
 
             this.WnpSystem.AddOrReplaceEquipment(ct);
         }
@@ -353,9 +359,12 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 CustomField1 = device.EquipmentType.ServiceType.ExternalCode,
                 CustomField2 = device.EquipmentType.ExternalCode,
                 CustomField3 = alliantResponse.NewDeviceIndicator,
-                CustomField4 = alliantResponse.LastTestDate.ToLongDateString(),
                 CustomField5 = alliantResponse.TestReason
             };
+            if (alliantResponse.LastTestDate.HasValue)
+            {
+                pt.CustomField4 = ((DateTime)alliantResponse.LastTestDate).ToLongDateString();
+            }
 
             this.WnpSystem.AddOrReplaceEquipment(pt);
         }

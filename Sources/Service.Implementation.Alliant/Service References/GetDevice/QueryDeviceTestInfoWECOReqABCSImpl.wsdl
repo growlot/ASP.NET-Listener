@@ -98,7 +98,7 @@
                              </xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="LastTestDate" type="xsd:dateTime">
+          <xsd:element minOccurs="0" name="LastTestDate" nillable="true" type="xsd:dateTime">
             <xsd:annotation>
               <xsd:documentation>
                               This field will contain the last test date in YYYY-MM-DD format. 
@@ -194,7 +194,7 @@
       </documentation>
       <input message="tns:QueryDeviceTestInfoReqMsg" />
       <output message="tns:QueryDeviceTestInfoRespMsg" />
-      <fault name="Fault" message="tns:QueryDeviceTestInfoFaultMsg" />
+      <fault name="QueryDeviceTestInfoFault" message="tns:QueryDeviceTestInfoFaultMsg" />
     </operation>
   </portType>
   <binding name="DeviceTestInfoABCSSOAP11Binding" type="tns:DeviceTestInfoABCS">
@@ -207,7 +207,7 @@
       <output>
         <soap:body use="literal" parts="QueryDeviceTestInfoResponseABM" />
       </output>
-      <fault name="fault">
+      <fault name="QueryDeviceTestInfoFault">
         <soap:fault use="literal" name="fault" namespace="" />
       </fault>
     </operation>
