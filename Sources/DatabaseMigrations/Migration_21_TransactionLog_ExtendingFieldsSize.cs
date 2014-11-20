@@ -16,16 +16,30 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// Performs a database migration
     /// </summary>
     [Migration(21)]
-    public class Migration_21_TransactionLog_ExtendingFieldsSize : AutoReversingMigration
+    public class Migration_21_TransactionLog_ExtendingFieldsSize : Migration
     {
         /// <summary>
         /// Performs the database migration
         /// </summary>
         public override void Up()
         {
+            Delete.Column("DebugInfo").FromTable("TransactionLog");
+
             Alter.Table("TransactionLog")
-                .AlterColumn("Message").AsString(1000).Nullable()
-                .AlterColumn("DebugInfo").AsString(Int32.MaxValue).Nullable();
+                .AlterColumn("Message").AsString(1000)
+                .AddColumn("DebugInfo").AsString(Int32.MaxValue).Nullable();
+        }
+
+        public override void Down()
+        {
+            Delete
+                .Column("Message")
+                .Column("DebugInfo")
+                .FromTable("TransactionLog");
+
+            Alter.Table("TransactionLog")
+                .AddColumn("Message").AsString().Nullable()
+                .AddColumn("DebugInfo").AsString().Nullable();
         }
     }
 }
