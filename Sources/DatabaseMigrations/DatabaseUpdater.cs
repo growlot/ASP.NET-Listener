@@ -52,6 +52,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
             // var announcer = new TextWriterAnnouncer(s => System.Diagnostics.Debug.WriteLine(s));
             TextWriterAnnouncer announcer = new TextWriterAnnouncer(s => Logger.Info(s));
 
+            announcer.ShowElapsedTime = false;
+            announcer.ShowSql = true;
+
             Assembly assembly = typeof(DatabaseUpdater).Assembly;
 
             RunnerContext migrationContext = new RunnerContext(announcer)
