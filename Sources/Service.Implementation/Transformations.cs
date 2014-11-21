@@ -133,7 +133,7 @@ namespace AMSLLC.Listener.Service.Implementation
             {
                 MeterTestResult meterTestResult = meterTestResults.Single<MeterTestResult>(e => e.Element == element && e.TestType == testType);
                 result = meterTestResult.AsLeft;
-                result = (float)Math.Round((decimal)result, 2, MidpointRounding.ToEven);
+                result = (float)Math.Round((decimal)result, 2, MidpointRounding.AwayFromZero);
             }
             catch (InvalidOperationException)
             {
@@ -158,7 +158,7 @@ namespace AMSLLC.Listener.Service.Implementation
             {
                 MeterTestResult meterTestResult = meterTestResults.Single<MeterTestResult>(e => e.Element == element && e.TestType == testType);
                 result = meterTestResult.AsFound;
-                result = (float)Math.Round((decimal)result, 2, MidpointRounding.ToEven);
+                result = (float)Math.Round((decimal)result, 2, MidpointRounding.AwayFromZero);
             }
             catch (InvalidOperationException)
             {
