@@ -173,20 +173,36 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 Class = meter.CustomField3,
                 DateTested = meterTest.TestDate,
                 Form = meter.Form,
-                KH = decimal.Parse(meter.KH, CultureInfo.InvariantCulture),
-                Manufacturer = meter.Manufacturer,
+                Manufacturer = meter.CustomField16,
                 MeterSerialNumber = meter.SerialNumber,
                 MeterType = meter.ModelNumber,
                 NWH = "NWH",
-                Phase = int.Parse(meter.Phase.ToString(), CultureInfo.InvariantCulture),
                 RegisterRatio = meter.RegisterRatio,
                 RegisterType = meter.CustomField7,
                 RepairCode = meterTest.CustomField1,
                 TesterId = meterTest.TesterId,
                 TestType = meterTest.TestReason,
-                Volts = (decimal)meter.TestVolts,
-                Wires = int.Parse(meter.Wire.ToString(), CultureInfo.InvariantCulture)
+                Volts = (decimal)meter.TestVolts
             };
+            
+            int tempInt;
+            if (int.TryParse(meter.Phase.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
+            {
+                gmoCisFile.Phase = tempInt;
+            };
+
+            if (int.TryParse(meter.Wire.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
+            {
+                gmoCisFile.Wires = tempInt;
+            };
+
+            decimal tempDecimal;
+            if (decimal.TryParse(meter.KH, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDecimal))
+            {
+                gmoCisFile.KH = tempDecimal;
+            };
+
+
             IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, device.Company.Id, device.EquipmentType.InternalCode, deviceTest.TestDate);
             if (testComments.Count > 0)
             {
@@ -251,7 +267,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 CompanyCode = meter.MeterCode,
                 FirmwareRevision = meter.FirmwareRevision1,
                 Form = meter.Form.PadLeft(2, '0'),
-                KH = decimal.Parse(meter.KH, CultureInfo.InvariantCulture),
                 KYZPresent = meter.CustomField8,
                 Location = meterTest.Location,
                 Manufacturer = meter.Manufacturer,
@@ -268,6 +283,13 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 TestStartDate = meterTest.TestDate,
                 Volts = (int)Math.Ceiling(meter.TestVolts)
             };
+
+            decimal tempDecimal;
+            if (decimal.TryParse(meter.KH, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDecimal))
+            {
+                kcplCisFile.KH = tempDecimal;
+            };
+
             IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, device.Company.Id, device.EquipmentType.InternalCode, deviceTest.TestDate);
             if (testComments.Count > 0)
             {
