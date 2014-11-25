@@ -22,36 +22,12 @@ namespace Common.Unit.Tests
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentNullException))]
-        public void ConfigManagerInitializationShouldThrowExceptionIfPersistenceManagerIsNotSpecified()
+        public void TransactionLogManagerInitializationShouldThrowExceptionIfPersistenceManagerIsNotSpecified()
         {
             ITransactionManager transactionLogManager;
 
             transactionLogManager = new TransactionManager(null);
             transactionLogManager.ToString();
-        }
-
-        /// <summary>
-        /// Tests if IsEnabled returns true.
-        /// </summary>
-        [TestMethod]
-        public void AfterUpdateTransactionStateNewTransactionStateShouldBeReturned()
-        {
-            ITransactionManager transactionLogManager;
-
-            using (var persistenceManager = new AMSLLC.Listener.Common.Fakes.StubIPersistenceManager())
-            {
-                persistenceManager.RetrieveFirstEqualOf1StringObject<TransactionLog>((propertyName, propertyValue) =>
-                {
-                    TransactionLog transaction = new TransactionLog(1);
-                    return transaction;
-                });
-                IPersistenceController persistenceController = new PersistenceController();
-                persistenceController.InitializeListenerClientSystems(persistenceManager);
-                transactionLogManager = new TransactionManager(persistenceController);
-                transactionLogManager.UpdateTransactionState(1, TransactionStateLookup.ClientEnd);
-
-                // Assert.AreEqual(url, settings.GetConfigSettingValue(ConfigSettingNameLookup.ListenerUrl));
-            }
         }
     }
 }
