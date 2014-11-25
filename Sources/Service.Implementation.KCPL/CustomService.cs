@@ -149,7 +149,9 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </exception>
         private string PrepareElectricMeterTestResultsForGmoCisFile(Device device, DeviceTest deviceTest, Meter meter)
         {
-            IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, device.Company.Id, deviceTest.TestDate);
+            int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
+
+            IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
             MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
             GmoCisFile gmoCisFile = new GmoCisFile()
             {
@@ -171,6 +173,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 BarcodeId = meterTest.TestStandard,
                 Base = meter.Base.ToString(),
                 Class = meter.CustomField3,
+                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
                 DateTested = meterTest.TestDate,
                 Form = meter.Form,
                 Manufacturer = meter.CustomField16,
@@ -202,20 +205,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 gmoCisFile.KH = tempDecimal;
             };
 
-
-            IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, device.Company.Id, device.EquipmentType.InternalCode, deviceTest.TestDate);
-            if (testComments.Count > 0)
-            {
-                if (testComments.Count > 1)
-                {
-                    throw new InvalidOperationException("Can not prepare GMO CIS file export entry, because there is more than one comment related to this test.");
-                }
-
-                Comment testComment = testComments.First<Comment>();
-                gmoCisFile.Comments = testComment.CommentText;
-            }
-
-            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, device.Company.Id, deviceTest.TestDate, "KWH READING");
+            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "KWH READING");
             if (testReadings.Count > 0)
             {
                 if (testReadings.Count > 1)
@@ -246,7 +236,9 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </exception>
         private string PrepareElectricMeterTestResultsForKcplCisFile(Device device, DeviceTest deviceTest, Meter meter)
         {
-            IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, device.Company.Id, deviceTest.TestDate);
+            int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
+
+            IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
             MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
             KcplCisFile kcplCisFile = new KcplCisFile()
             {
@@ -290,7 +282,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 kcplCisFile.KH = tempDecimal;
             };
 
-            IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, device.Company.Id, device.EquipmentType.InternalCode, deviceTest.TestDate);
+            IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate);
             if (testComments.Count > 0)
             {
                 if (testComments.Count > 1)
@@ -302,7 +294,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 kcplCisFile.Comment = testComment.CommentText;
             }
 
-            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, device.Company.Id, deviceTest.TestDate, "AL DMD");
+            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "AL DMD");
             if (testReadings.Count > 0)
             {
                 if (testReadings.Count > 1)

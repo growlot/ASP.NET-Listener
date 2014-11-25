@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Common.WNP
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Common.WNP.Model;
     using NHibernate.Criterion;
@@ -175,6 +176,33 @@ namespace AMSLLC.Listener.Common.WNP
             criteria.Add(Restrictions.Eq("CreateDate", testDate));
 
             return this.persistenceManager.RetrieveAllEqual<Comment>(criteria);
+        }
+
+        /// <summary>
+        /// Gets the comments related to specific test and concatenates them to one string.
+        /// </summary>
+        /// <param name="equipmentNumber">The equipment number.</param>
+        /// <param name="ownerId">The owner identifier.</param>
+        /// <param name="equipmentType">Type of the equipment.</param>
+        /// <param name="testDate">The test date.</param>
+        /// <returns>The concatenated comments or null if no comments were found.</returns>
+        public string GetTestCommentsConcatenated(string equipmentNumber, int ownerId, string equipmentType, DateTime testDate)
+        {
+            string result = null;
+
+            DetachedCriteria criteria = DetachedCriteria.For<Comment>();
+            criteria.Add(Restrictions.Eq("EquipmentNumber", equipmentNumber));
+            criteria.Add(Restrictions.Eq("Owner", new Owner(ownerId)));
+            criteria.Add(Restrictions.Eq("EquipmentType", equipmentType));
+            criteria.Add(Restrictions.Eq("CreateDate", testDate));
+
+            IList<Comment> comments = this.persistenceManager.RetrieveAllEqual<Comment>(criteria);
+            if (comments.Count > 0)
+            {
+                result = string.Join(" ", comments.Select(i => i.CommentText));
+            }
+
+            return result;
         }
 
         /// <summary>

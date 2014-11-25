@@ -689,6 +689,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             alliantRequest = new CreateDeviceTestResultABMType()
             {
                 ClassificationCode = meter.MeterCode,
+                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
                 Company = device.Company.ExternalCode,
                 DeviceAttribute = new CreateDeviceTestResultABMTypeDeviceAttribute()
                 {
@@ -743,18 +744,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 alliantRequest.RepairDateTime = tempDate;
             }
 
-            IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate);
-            if (testComments.Count > 0)
-            {
-                if (testComments.Count > 1)
-                {
-                    throw new InvalidOperationException("Found more than one comment related to this test. Only one comment is currently supported.");
-                }
-
-                Comment testComment = testComments.First<Comment>();
-                alliantRequest.Comments = testComment.CommentText;
-            }
-
             return alliantRequest;
         }
 
@@ -782,6 +771,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             alliantRequest = new CreateDeviceTestResultABMType()
             {
                 ClassificationCode = ct.TransformerCode,
+                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
                 Company = device.Company.ExternalCode,
                 DeviceNumber = ct.EquipmentNumber,
                 DeviceType = device.EquipmentType.ExternalCode,
@@ -829,18 +819,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 alliantRequest.RepairDateTime = tempDate;
             }
 
-            IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate);
-            if (testComments.Count > 0)
-            {
-                if (testComments.Count > 1)
-                {
-                    throw new InvalidOperationException("Found more than one comment related to this test. Only one comment is currently supported.");
-                }
-
-                Comment testComment = testComments.First<Comment>();
-                alliantRequest.Comments = testComment.CommentText;
-            }
-
             return alliantRequest;
         }
         
@@ -867,6 +845,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             alliantRequest = new CreateDeviceTestResultABMType()
             {
                 ClassificationCode = pt.TransformerCode,
+                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
                 Company = device.Company.ExternalCode,
                 DeviceNumber = pt.EquipmentNumber,
                 DeviceType = device.EquipmentType.ExternalCode,
@@ -908,18 +887,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             {
                 alliantRequest.RepairDateTimeSpecified = true;
                 alliantRequest.RepairDateTime = tempDate;
-            }
-
-            IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate);
-            if (testComments.Count > 0)
-            {
-                if (testComments.Count > 1)
-                {
-                    throw new InvalidOperationException("Found more than one comment related to this test. Only one comment is currently supported.");
-                }
-
-                Comment testComment = testComments.First<Comment>();
-                alliantRequest.Comments = testComment.CommentText;
             }
 
             return alliantRequest;
