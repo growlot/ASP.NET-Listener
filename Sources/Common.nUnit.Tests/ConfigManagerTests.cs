@@ -22,14 +22,13 @@ namespace Common.Unit.Tests
         /// <summary>
         /// Tests if config manager throws exception if it is initialized without persistence controller
         /// </summary>
-        [TestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "settings", Justification = "Exception expected so no need to use variable"), TestMethod]
         [ExpectedException(typeof(System.ArgumentNullException))]
         public void ConfigManagerInitializationShouldThrowExceptionIfPersistenceManagerIsNotSpecified()
         {
             IConfigManager settings;
 
             settings = new ConfigManager(null);
-            settings.ToString();
         }
 
         /// <summary>

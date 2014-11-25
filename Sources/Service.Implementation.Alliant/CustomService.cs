@@ -299,8 +299,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 Log.Error("Service call timed out.", ex);
                 throw;
             }
-
-
+            
             if (alliantResponse != null)
             {
                 // save test results id received from CC&B
@@ -429,7 +428,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (File.Exists(mockupFileFault))
             {
-                Alliant.GetDevice.FaultNotificationType[] detail = (Utilities.ReadFromXmlFile<List<Alliant.GetDevice.FaultNotificationType>>(mockupFileFault)).ToArray<Alliant.GetDevice.FaultNotificationType>();
+                Alliant.GetDevice.FaultNotificationType[] detail = Utilities.ReadFromXmlFile<List<Alliant.GetDevice.FaultNotificationType>>(mockupFileFault).ToArray<Alliant.GetDevice.FaultNotificationType>();
                 FaultException<Alliant.GetDevice.FaultNotificationType[]> ex = new FaultException<Alliant.GetDevice.FaultNotificationType[]>(detail);
 
                 throw ex;
@@ -506,8 +505,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     ////};
                     ////faults.Add(fault);
                     ////Utilities.WriteToXmlFile<List<Alliant.GetDevice.FaultNotificationType>>(mockupFileFault, faults);
-                
-     
+                     
                     string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("GetDeviceMockupFileNotFound", CultureInfo.CurrentCulture), mockupFile, mockupFileDefault);
                     Log.Error(message);
                     throw new FileNotFoundException(message);
@@ -544,7 +542,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (File.Exists(mockupFileFault))
             {
-                Alliant.SendTestResult.FaultNotificationType[] detail = (Utilities.ReadFromXmlFile<List<Alliant.SendTestResult.FaultNotificationType>>(mockupFileFault)).ToArray<Alliant.SendTestResult.FaultNotificationType>();
+                Alliant.SendTestResult.FaultNotificationType[] detail = Utilities.ReadFromXmlFile<List<Alliant.SendTestResult.FaultNotificationType>>(mockupFileFault).ToArray<Alliant.SendTestResult.FaultNotificationType>();
                 FaultException<Alliant.SendTestResult.FaultNotificationType[]> ex = new FaultException<Alliant.SendTestResult.FaultNotificationType[]>(detail);
 
                 throw ex;

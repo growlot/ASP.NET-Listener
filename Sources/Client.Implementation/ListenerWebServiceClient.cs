@@ -10,12 +10,14 @@ namespace AMSLLC.Listener.Client.Implementation
     using System.Configuration;
     using System.Diagnostics;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Resources;
     using System.ServiceModel;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Xml.Serialization;
     using AMSLLC.Listener.Client.Implementation.ListenerService;
     using AMSLLC.Listener.Client.Implementation.Messages;
     using AMSLLC.Listener.Common;
@@ -23,8 +25,6 @@ namespace AMSLLC.Listener.Client.Implementation
     using AMSLLC.Listener.Common.Model;
     using AMSLLC.Listener.Globalization;
     using log4net;
-    using System.IO;
-    using System.Xml.Serialization;
 
     /// <summary>
     /// Implements listener web service calls

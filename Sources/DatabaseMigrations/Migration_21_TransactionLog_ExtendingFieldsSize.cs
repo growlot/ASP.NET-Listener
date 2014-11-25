@@ -27,9 +27,12 @@ namespace AMSLLC.Listener.DatabaseMigrations
 
             Alter.Table("TransactionLog")
                 .AlterColumn("Message").AsString(1000)
-                .AddColumn("DebugInfo").AsString(Int32.MaxValue).Nullable();
+                .AddColumn("DebugInfo").AsString(int.MaxValue).Nullable();
         }
 
+        /// <summary>
+        /// Reverts the database migration 
+        /// </summary>
         public override void Down()
         {
             Delete

@@ -1,16 +1,27 @@
-﻿namespace Client.Implementation.Unit.Test
+﻿//-----------------------------------------------------------------------
+// <copyright file="ListenerWebServiceClientTests.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Client.Implementation.Unit.Test
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using AMSLLC.Listener.Common.Model;
-    using AMSLLC.Listener.Common;
-    using NHibernate.Criterion;
     using AMSLLC.Listener.Client.Implementation;
     using AMSLLC.Listener.Client.Implementation.Messages;
+    using AMSLLC.Listener.Common;
+    using AMSLLC.Listener.Common.Model;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NHibernate.Criterion;
 
+    /// <summary>
+    /// Tests Listener web service client
+    /// </summary>
     [TestClass]
     public class ListenerWebServiceClientTests
     {
+        /// <summary>
+        /// Failed transaction should be saved with long message.
+        /// </summary>
         [TestMethod]
         public void FailedTransactionShouldBeSavedWithLongMessage()
         {
@@ -41,9 +52,13 @@
                 ListenerWebServiceClientTester webServiceClient = new ListenerWebServiceClientTester(persistenceManager);
                 webServiceClient.FinishTransaction(response, transactionId);
             }
+
             Assert.IsTrue(saveVisited);
         }
 
+        /// <summary>
+        /// Failed transaction should be saved.
+        /// </summary>
         [TestMethod]
         public void FailedTransactionShouldBeSaved()
         {
@@ -77,8 +92,11 @@
             }
         }
 
+        /// <summary>
+        /// Successful transaction should be saved.
+        /// </summary>
         [TestMethod]
-        public void SuccessfullTransactionShouldBeSaved()
+        public void SuccessfulTransactionShouldBeSaved()
         {
             bool saveVisited = false;
             TransactionLog transactionLog = null;
@@ -108,13 +126,25 @@
             Assert.IsTrue(saveVisited);
         }
 
+        /// <summary>
+        /// Exposes protected methods for testing
+        /// </summary>
         private class ListenerWebServiceClientTester : ListenerWebServiceClient
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ListenerWebServiceClientTester"/> class.
+            /// </summary>
+            /// <param name="persistenceManager">The persistence manager.</param>
             public ListenerWebServiceClientTester(IPersistenceManager persistenceManager)
                 : base(persistenceManager)
             { 
             }
 
+            /// <summary>
+            /// Finishes the transaction by setting transaction status and last transaction state.
+            /// </summary>
+            /// <param name="response">The response.</param>
+            /// <param name="transactionId">The transaction identifier.</param>
             public new void FinishTransaction(ClientResponse response, int transactionId)
             {
                 base.FinishTransaction(response, transactionId);

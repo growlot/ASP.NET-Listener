@@ -139,14 +139,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         /// <param name="device">The device.</param>
         /// <param name="deviceTest">The device test.</param>
-        /// <returns>The electric meter test results as a string.</returns>
-        /// <exception cref="System.InvalidOperationException">
-        /// Meter can not be found in WNP.
+        /// <param name="meter">The meter.</param>
+        /// <returns>
+        /// The electric meter test results as a string.
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">Meter can not be found in WNP.
         /// or
         /// Can not prepare GMO CIS file export entry, because there is more than one comment related to this test.
         /// or
-        /// Can not prepare GMO CIS file export entry, because there is more than one reading related to this test.
-        /// </exception>
+        /// Can not prepare GMO CIS file export entry, because there is more than one reading related to this test.</exception>
         private string PrepareElectricMeterTestResultsForGmoCisFile(Device device, DeviceTest deviceTest, Meter meter)
         {
             int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
@@ -197,18 +198,18 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             if (int.TryParse(meter.Phase.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
             {
                 gmoCisFile.Phase = tempInt;
-            };
+            }
 
             if (int.TryParse(meter.Wire.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
             {
                 gmoCisFile.Wires = tempInt;
-            };
+            }
 
             decimal tempDecimal;
             if (decimal.TryParse(meter.KH, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDecimal))
             {
                 gmoCisFile.KH = tempDecimal;
-            };
+            }
 
             IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "KWH READING");
             if (testReadings.Count > 0)
@@ -231,14 +232,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         /// <param name="device">The device.</param>
         /// <param name="deviceTest">The device test.</param>
-        /// <returns>The electric meter test results as a string.</returns>
-        /// <exception cref="System.InvalidOperationException">
-        /// Meter can not be found in WNP.
+        /// <param name="meter">The meter.</param>
+        /// <returns>
+        /// The electric meter test results as a string.
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">Meter can not be found in WNP.
         /// or
         /// Can not prepare GMO CIS file export entry, because there is more than one comment related to this test.
         /// or
-        /// Can not prepare GMO CIS file export entry, because there is more than one reading related to this test.
-        /// </exception>
+        /// Can not prepare GMO CIS file export entry, because there is more than one reading related to this test.</exception>
         private string PrepareElectricMeterTestResultsForKcplCisFile(Device device, DeviceTest deviceTest, Meter meter)
         {
             int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
@@ -290,7 +292,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             if (decimal.TryParse(meter.KH, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDecimal))
             {
                 kcplCisFile.KH = tempDecimal;
-            };
+            }
 
             IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate);
             if (testComments.Count > 0)
