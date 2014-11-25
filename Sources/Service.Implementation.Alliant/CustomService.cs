@@ -684,6 +684,11 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             }
 
             IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
+            if (meterTestResults.Count == 0)
+            {
+                throw new InvalidOperationException("Meter test results can not be found in WNP.");
+            } 
+            
             MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
 
             alliantRequest = new CreateDeviceTestResultABMType()
@@ -765,6 +770,11 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             }
 
             IList<CurrentTransformerTestResult> ctTestResults = this.WnpSystem.GetEquipmentTestResult<CurrentTransformerTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
+            if (ctTestResults.Count == 0)
+            {
+                throw new InvalidOperationException("Current transformer test results can not be found in WNP.");
+            }
+
             CurrentTransformerTestResult ctTestFullLoad = ctTestResults.Single<CurrentTransformerTestResult>(e => e.LoadLabel == "FL");
             CurrentTransformerTestResult ctTestLightLoad = ctTestResults.Single<CurrentTransformerTestResult>(e => e.LoadLabel == "LL");
 
@@ -840,6 +850,11 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             }
 
             IList<PotentialTransformerTestResult> ptTestResults = this.WnpSystem.GetEquipmentTestResult<PotentialTransformerTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
+            if (ptTestResults.Count == 0)
+            {
+                throw new InvalidOperationException("Potential transformer test results can not be found in WNP.");
+            }
+
             PotentialTransformerTestResult ptTestFullLoad = ptTestResults.Single<PotentialTransformerTestResult>(e => e.LoadLabel == "FL");
 
             alliantRequest = new CreateDeviceTestResultABMType()

@@ -152,6 +152,11 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
 
             IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
+            if (meterTestResults.Count == 0)
+            {
+                throw new InvalidOperationException("Meter test results can not be found in WNP.");
+            }
+
             MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
             GmoCisFile gmoCisFile = new GmoCisFile()
             {
@@ -239,6 +244,11 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
 
             IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
+            if (meterTestResults.Count == 0)
+            {
+                throw new InvalidOperationException("Meter test results can not be found in WNP.");
+            }
+
             MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
             KcplCisFile kcplCisFile = new KcplCisFile()
             {
