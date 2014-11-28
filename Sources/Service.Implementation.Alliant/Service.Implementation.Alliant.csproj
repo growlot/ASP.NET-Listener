@@ -103,6 +103,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CustomService.cs" />
+    <Compile Include="RequestConstructor.cs" />
     <Compile Include="Service References\GetDevice\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

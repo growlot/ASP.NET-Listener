@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.Common
     using System.Data.SqlClient;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Text;
     using System.Xml.Serialization;
@@ -221,6 +222,49 @@ namespace AMSLLC.Listener.Common
                     reader.Close();
                 }
             }
-        }    
+        }
+        
+        /// <summary>
+        /// Trims all string properties, and sets null for empty or white space strings.
+        /// </summary>
+        /// <typeparam name="T">Instance type</typeparam>
+        /// <param name="instance">The instance.</param>
+        /// <returns>Sanitized instance</returns>
+        public static T Sanitize<T>(T instance)
+        {
+            if (instance == null)
+            {
+                return instance;
+            }
+
+            var props = instance.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                //// Ignore non-string properties
+                .Where(prop => prop.PropertyType == typeof(string))
+                //// Ignore indexers
+                .Where(prop => prop.GetIndexParameters().Length == 0)
+                //// Must be both readable and writable
+                .Where(prop => prop.CanWrite && prop.CanRead);
+
+            foreach (PropertyInfo prop in props)
+            {
+                string value = (string)prop.GetValue(instance, null);
+                if (value != null)
+                {
+                    if (string.IsNullOrWhiteSpace(value))
+                    {
+                        value = null;
+                    }
+                    else
+                    {
+                        value = value.Trim();
+                    }
+
+                    prop.SetValue(instance, value, null);
+                }
+            }
+
+            return instance;
+        }   
     }
 }

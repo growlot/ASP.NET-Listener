@@ -43,7 +43,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// Called when [send test data].
         /// </summary>
         /// <param name="request">The request.</param>
-        /// <param name="device">The device.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <exception cref="System.ArgumentNullException">
         /// request;Can not send device test data if request is not specified.
@@ -52,16 +51,11 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// or
         /// deviceTest;Can not send device test data if device test is not specified.
         /// </exception>
-        protected override void OnSendTestData(SendTestDataServiceRequest request, Device device, DeviceTest deviceTest)
+        protected override void OnSendTestData(SendTestDataServiceRequest request, DeviceTest deviceTest)
         {
             if (request == null)
             {
                 throw new ArgumentNullException("request", "Can not send device test data if request is not specified.");
-            }
-
-            if (device == null)
-            {
-                throw new ArgumentNullException("device", "Can not send device test data if device is not specified.");
             }
 
             if (deviceTest == null)
@@ -69,6 +63,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 throw new ArgumentNullException("deviceTest", "Can not send device test data if device test is not specified.");
             }
 
+            Device device = deviceTest.Device;
             Meter meter = this.WnpSystem.GetEquipment<Meter>(device.EquipmentNumber, device.Company.Id);
             if (meter == null)
             {

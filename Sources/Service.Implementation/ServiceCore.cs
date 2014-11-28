@@ -147,10 +147,9 @@ namespace AMSLLC.Listener.Service.Implementation
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceStart);
 
-                Device device = this.DeviceManager.GetDevice(request.DeviceId);
                 DeviceTest deviceTest = this.DeviceManager.GetDeviceTest(request.DeviceTestId);
 
-                this.OnSendTestData(request, device, deviceTest);
+                this.OnSendTestData(request, deviceTest);
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceEnd);
             }
@@ -176,10 +175,9 @@ namespace AMSLLC.Listener.Service.Implementation
         /// Called when [send test data]. Must override with client specific implementation.
         /// </summary>
         /// <param name="request">The request.</param>
-        /// <param name="device">The device.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <exception cref="System.NotImplementedException">This transaction type is not available for your company.</exception>
-        protected virtual void OnSendTestData(SendTestDataServiceRequest request, Device device, DeviceTest deviceTest)
+        protected virtual void OnSendTestData(SendTestDataServiceRequest request, DeviceTest deviceTest)
         {
             throw new NotImplementedException("This transaction type is not available for your company.");
         }

@@ -76,11 +76,33 @@ namespace AMSLLC.Listener.Common.WNP
         /// </returns>
         public T GetEquipment<T>(string equipmentNumber, int ownerId) where T : IEquipment
         {
+            return this.GetEquipment<T>(equipmentNumber, ownerId, true);
+        }
+
+        /// <summary>
+        /// Gets the equipment.
+        /// </summary>
+        /// <typeparam name="T">The equipment type.</typeparam>
+        /// <param name="equipmentNumber">The equipment number.</param>
+        /// <param name="ownerId">The owner identifier.</param>
+        /// <param name="sanitized">If set to <c>true</c> trim spaces from strings and set to null if string is empty.</param>
+        /// <returns>
+        /// The equipment.
+        /// </returns>
+        public T GetEquipment<T>(string equipmentNumber, int ownerId, bool sanitized) where T : IEquipment
+        {
             DetachedCriteria criteria = DetachedCriteria.For<T>();
             criteria.Add(Restrictions.Eq("EquipmentNumber", equipmentNumber));
             criteria.Add(Restrictions.Eq("Owner", new Owner(ownerId)));
 
-            return this.persistenceManager.RetrieveFirstEqual<T>(criteria);
+            T equipment = this.persistenceManager.RetrieveFirstEqual<T>(criteria);
+
+            if (sanitized)
+            {
+                equipment = Utilities.Sanitize(equipment);
+            }
+
+            return equipment;
         }
 
         /// <summary>
@@ -95,12 +117,40 @@ namespace AMSLLC.Listener.Common.WNP
         /// </returns>
         public IList<T> GetEquipmentTestResult<T>(string equipmentNumber, int ownerId, DateTime testDate) where T : IEquipmentTestResult
         {
+             return this.GetEquipmentTestResult<T>(equipmentNumber, ownerId, testDate, true);
+        }
+
+        /// <summary>
+        /// Gets equipment test result.
+        /// </summary>
+        /// <typeparam name="T">The equipment test result type.</typeparam>
+        /// <param name="equipmentNumber">The equipment number.</param>
+        /// <param name="ownerId">The owner identifier.</param>
+        /// <param name="testDate">The test date.</param>
+        /// <param name="sanitized">If set to <c>true</c> trim spaces from strings and set to null if string is empty.</param>
+        /// <returns>
+        /// The equipment test result
+        /// </returns>
+        public IList<T> GetEquipmentTestResult<T>(string equipmentNumber, int ownerId, DateTime testDate, bool sanitized) where T : IEquipmentTestResult
+        {
             DetachedCriteria criteria = DetachedCriteria.For<T>();
             criteria.Add(Restrictions.Eq("EquipmentNumber", equipmentNumber));
             criteria.Add(Restrictions.Eq("Owner", new Owner(ownerId)));
             criteria.Add(Restrictions.Eq("TestDate", testDate));
 
-            return this.persistenceManager.RetrieveAllEqual<T>(criteria);
+            IList<T> testResults = this.persistenceManager.RetrieveAllEqual<T>(criteria);
+            if (sanitized)
+            {
+                IList<T> sanitizedTestResults = new List<T>();
+                foreach (T testResult in testResults)
+                {
+                    sanitizedTestResults.Add(Utilities.Sanitize(testResult));
+                }
+
+                testResults = sanitizedTestResults;
+            } 
+            
+            return testResults;
         }
 
         /// <summary>

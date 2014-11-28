@@ -175,7 +175,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// Called when [send test data].
         /// </summary>
         /// <param name="request">The request.</param>
-        /// <param name="device">The device.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <exception cref="System.ArgumentNullException">
         /// request;Can not send device test data if request is not specified.
@@ -188,16 +187,11 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <exception cref="System.ArgumentException">
         /// </exception>
         /// <exception cref="System.IO.FileNotFoundException"></exception>
-        protected override void OnSendTestData(SendTestDataServiceRequest request, Device device, DeviceTest deviceTest)
+        protected override void OnSendTestData(SendTestDataServiceRequest request, DeviceTest deviceTest)
         {
             if (request == null)
             {
                 throw new ArgumentNullException("request", "Can not send device test data if request is not specified.");
-            }
-
-            if (device == null)
-            {
-                throw new ArgumentNullException("device", "Can not send device test data if device is not specified.");
             }
 
             if (deviceTest == null)
@@ -205,7 +199,10 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 throw new ArgumentNullException("deviceTest", "Can not send device test data if device test is not specified.");
             }
 
+            Device device = deviceTest.Device;
             CreateDeviceTestResultABMType alliantRequest;
+
+            RequestConstructor requestConstructor = new RequestConstructor(this.WnpSystem);
 
             switch (device.EquipmentType.ServiceType.ExternalCode)
             {
@@ -213,13 +210,13 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     switch (device.EquipmentType.ExternalCode)
                     {
                         case "MR":
-                            alliantRequest = this.PrepareElectricMeterTestResultsRequest(device, deviceTest);
+                            alliantRequest = requestConstructor.PrepareElectricMeterTestResultsRequest(deviceTest);
                             break;
                         case "CT":
-                            alliantRequest = this.PrepareCurrentTransformerTestResultsRequest(device, deviceTest);
+                            alliantRequest = requestConstructor.PrepareCurrentTransformerTestResultsRequest(deviceTest);
                             break;
                         case "PT":
-                            alliantRequest = this.PreparePotentialTransformerTestResultsRequest(device, deviceTest);
+                            alliantRequest = requestConstructor.PreparePotentialTransformerTestResultsRequest(deviceTest);
                             break;
                         default:
                             string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.Description, device.EquipmentType.ServiceType.Description);
@@ -237,7 +234,10 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             CreateDeviceTestResultResponseABMType alliantResponse;
 
             bool useMockup;
-            bool.TryParse(ConfigurationManager.AppSettings["Test.UseMockup"], out useMockup);
+            if (!bool.TryParse(ConfigurationManager.AppSettings["Test.UseMockup"], out useMockup))
+            {
+                useMockup = false;
+            }
 
             try
             {
@@ -662,247 +662,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             }
 
             return alliantResponse;
-        }
-
-        /// <summary>
-        /// Prepares the electric meter test results request.
-        /// </summary>
-        /// <param name="device">The device.</param>
-        /// <param name="deviceTest">The device test.</param>
-        /// <returns>The alliant request.</returns>
-        /// <exception cref="System.InvalidOperationException">Meter can not be found in WNP.</exception>
-        private CreateDeviceTestResultABMType PrepareElectricMeterTestResultsRequest(Device device, DeviceTest deviceTest)
-        {
-            CreateDeviceTestResultABMType alliantRequest;
-            int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
-            Meter meter = this.WnpSystem.GetEquipment<Meter>(device.EquipmentNumber, owner);
-            if (meter == null)
-            {
-                throw new InvalidOperationException("Meter can not be found in WNP.");
-            }
-
-            IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
-            if (meterTestResults.Count == 0)
-            {
-                throw new InvalidOperationException("Meter test results can not be found in WNP.");
-            } 
-            
-            MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
-
-            alliantRequest = new CreateDeviceTestResultABMType()
-            {
-                ClassificationCode = meter.MeterCode,
-                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
-                Company = device.Company.ExternalCode,
-                DeviceAttribute = new CreateDeviceTestResultABMTypeDeviceAttribute()
-                {
-                    ElectricDevice = new CreateDeviceTestResultABMTypeDeviceAttributeElectricDevice()
-                    {
-                        AFL = (decimal)Transformations.GetAsLeft(meterTestResults, 'A', "FL"),
-                        APF = (decimal)Transformations.GetAsLeft(meterTestResults, 'A', "PF"),
-                        BFL = (decimal)Transformations.GetAsLeft(meterTestResults, 'B', "FL"),
-                        BPF = (decimal)Transformations.GetAsLeft(meterTestResults, 'B', "PF"),
-                        CFL = (decimal)Transformations.GetAsLeft(meterTestResults, 'C', "FL"),
-                        CPF = (decimal)Transformations.GetAsLeft(meterTestResults, 'C', "PF"),
-                        CreepCode = meterTest.CustomField6,
-                        SFL = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "FL"),
-                        SLL = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "LL"),
-                        SPF = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "PF")
-                    }
-                },
-                DeviceNumber = meter.EquipmentNumber,
-                DeviceType = device.EquipmentType.ExternalCode,
-                NewDeviceIndicator = meter.CustomField3,
-                RepairedBy = meterTest.CustomField2,
-                RepairType = meterTest.CustomField4,
-                RetirementReason = string.IsNullOrWhiteSpace(meterTest.CustomField5) ? null : meterTest.CustomField5,
-                ServiceType = device.EquipmentType.ServiceType.ExternalCode,
-                Tester = meterTest.TesterId,
-                TestLocation = meterTest.Location,
-                TestReason = meterTest.CustomField1,
-                TestStandard = meterTest.TestStandard,
-                TestStartDateTime = meterTest.TestDate
-            };
-            alliantRequest.DeviceAttribute.ElectricDevice.AFLSpecified = alliantRequest.DeviceAttribute.ElectricDevice.AFL == 0 ? false : true;
-            alliantRequest.DeviceAttribute.ElectricDevice.APFSpecified = alliantRequest.DeviceAttribute.ElectricDevice.APF == 0 ? false : true;
-            alliantRequest.DeviceAttribute.ElectricDevice.BFLSpecified = alliantRequest.DeviceAttribute.ElectricDevice.BFL == 0 ? false : true;
-            alliantRequest.DeviceAttribute.ElectricDevice.BPFSpecified = alliantRequest.DeviceAttribute.ElectricDevice.BPF == 0 ? false : true;
-            alliantRequest.DeviceAttribute.ElectricDevice.CFLSpecified = alliantRequest.DeviceAttribute.ElectricDevice.CFL == 0 ? false : true;
-            alliantRequest.DeviceAttribute.ElectricDevice.CPFSpecified = alliantRequest.DeviceAttribute.ElectricDevice.CPF == 0 ? false : true;
-            alliantRequest.DeviceAttribute.ElectricDevice.SFLSpecified = alliantRequest.DeviceAttribute.ElectricDevice.SFL == 0 ? false : true;
-            alliantRequest.DeviceAttribute.ElectricDevice.SLLSpecified = alliantRequest.DeviceAttribute.ElectricDevice.SLL == 0 ? false : true;
-            alliantRequest.DeviceAttribute.ElectricDevice.SPFSpecified = alliantRequest.DeviceAttribute.ElectricDevice.SPF == 0 ? false : true;
-
-            int tempInt;
-            if (int.TryParse(meterTest.CustomField7, out tempInt))
-            {
-                alliantRequest.DeviceAttribute.ElectricDevice.ConditionCodeSpecified = true;
-                alliantRequest.DeviceAttribute.ElectricDevice.ConditionCode = tempInt;
-            }
-
-            DateTime tempDate;
-            if (DateTime.TryParse(meterTest.CustomField3, out tempDate))
-            {
-                alliantRequest.RepairDateTimeSpecified = true;
-                alliantRequest.RepairDateTime = tempDate;
-            }
-
-            return alliantRequest;
-        }
-
-        /// <summary>
-        /// Prepares the current transformer test results request.
-        /// </summary>
-        /// <param name="device">The device.</param>
-        /// <param name="deviceTest">The device test.</param>
-        /// <returns>The alliant request.</returns>
-        /// <exception cref="System.InvalidOperationException">Current transformer can not be found in WNP.</exception>
-        private CreateDeviceTestResultABMType PrepareCurrentTransformerTestResultsRequest(Device device, DeviceTest deviceTest)
-        {
-            CreateDeviceTestResultABMType alliantRequest;
-            int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
-            CurrentTransformer ct = this.WnpSystem.GetEquipment<CurrentTransformer>(device.EquipmentNumber, owner);
-            if (ct == null)
-            {
-                throw new InvalidOperationException("Current transformer can not be found in WNP.");
-            }
-
-            IList<CurrentTransformerTestResult> ctTestResults = this.WnpSystem.GetEquipmentTestResult<CurrentTransformerTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
-            if (ctTestResults.Count == 0)
-            {
-                throw new InvalidOperationException("Current transformer test results can not be found in WNP.");
-            }
-
-            CurrentTransformerTestResult ctTestFullLoad = ctTestResults.Single<CurrentTransformerTestResult>(e => e.LoadLabel == "FL");
-            CurrentTransformerTestResult ctTestLightLoad = ctTestResults.Single<CurrentTransformerTestResult>(e => e.LoadLabel == "LL");
-
-            alliantRequest = new CreateDeviceTestResultABMType()
-            {
-                ClassificationCode = ct.TransformerCode,
-                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
-                Company = device.Company.ExternalCode,
-                DeviceNumber = ct.EquipmentNumber,
-                DeviceType = device.EquipmentType.ExternalCode,
-                NewDeviceIndicator = ct.CustomField3,
-                RepairedBy = ctTestFullLoad.CustomField2,
-                RepairType = ctTestFullLoad.CustomField4,
-                RetirementReason = string.IsNullOrWhiteSpace(ctTestFullLoad.CustomField5) ? null : ctTestFullLoad.CustomField5,
-                ServiceType = device.EquipmentType.ServiceType.ExternalCode,
-                Tester = ctTestFullLoad.TesterId,
-                TestLocation = ctTestFullLoad.Location,
-                TestReason = ctTestFullLoad.PrimaryTestReason,
-                TestStandard = ctTestFullLoad.CustomField1,
-                TestStartDateTime = ctTestFullLoad.TestDate,
-                TransformerAttribute = new CreateDeviceTestResultABMTypeTransformerAttribute()
-                {
-                    AccuracyClassFL = (decimal)ctTestFullLoad.AccuracyClass,
-                    AccuracyClassFLSpecified = true,
-                    AccuracyClassLL = (decimal)ctTestLightLoad.AccuracyClass,
-                    AccuracyClassLLSpecified = true,
-                    HighBurdenFLAngle = (decimal)ctTestFullLoad.PhaseError,
-                    HighBurdenFLAngleSpecified = true,
-                    HighBurdenFLRatio = (decimal)ctTestFullLoad.RatioCorrection,
-                    HighBurdenFLRatioSpecified = true,
-                    HighBurdenLLAngle = (decimal)ctTestLightLoad.PhaseError,
-                    HighBurdenLLAngleSpecified = true,
-                    HighBurdenLLRatio = (decimal)ctTestLightLoad.RatioCorrection,
-                    HighBurdenLLRatioSpecified = true,
-                    RatioTested = ctTestFullLoad.SelectedRatio,
-                    InsulationTestPassOrFail = ctTestFullLoad.CustomField7,
-                    TestAmpsFL = (decimal)ctTestFullLoad.TestCurrent,
-                    TestAmpsFLSpecified = true,
-                    TestAmpsLL = (decimal)ctTestLightLoad.TestCurrent,
-                    TestAmpsLLSpecified = true,
-                    TestBurden = (decimal)ctTestFullLoad.Burden,
-                    TestBurdenSpecified = true,
-                    TestVoltsFLSpecified = false,
-                    VoltageForInsulationTest = ctTestFullLoad.CustomField6
-                }
-            };
-
-            DateTime tempDate;
-            if (DateTime.TryParse(ctTestFullLoad.CustomField3, out tempDate))
-            {
-                alliantRequest.RepairDateTimeSpecified = true;
-                alliantRequest.RepairDateTime = tempDate;
-            }
-
-            return alliantRequest;
-        }
-        
-        /// <summary>
-        /// Prepares the potential transformer test results request.
-        /// </summary>
-        /// <param name="device">The device.</param>
-        /// <param name="deviceTest">The device test.</param>
-        /// <returns>The alliant request.</returns>
-        /// <exception cref="System.InvalidOperationException">Potential transformer can not be found in WNP.</exception>
-        private CreateDeviceTestResultABMType PreparePotentialTransformerTestResultsRequest(Device device, DeviceTest deviceTest)
-        {
-            CreateDeviceTestResultABMType alliantRequest;
-            int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
-            PotentialTransformer pt = this.WnpSystem.GetEquipment<PotentialTransformer>(device.EquipmentNumber, owner);
-            if (pt == null)
-            {
-                throw new InvalidOperationException("Potential transformer can not be found in WNP.");
-            }
-
-            IList<PotentialTransformerTestResult> ptTestResults = this.WnpSystem.GetEquipmentTestResult<PotentialTransformerTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
-            if (ptTestResults.Count == 0)
-            {
-                throw new InvalidOperationException("Potential transformer test results can not be found in WNP.");
-            }
-
-            PotentialTransformerTestResult ptTestFullLoad = ptTestResults.Single<PotentialTransformerTestResult>(e => e.LoadLabel == "FL");
-
-            alliantRequest = new CreateDeviceTestResultABMType()
-            {
-                ClassificationCode = pt.TransformerCode,
-                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
-                Company = device.Company.ExternalCode,
-                DeviceNumber = pt.EquipmentNumber,
-                DeviceType = device.EquipmentType.ExternalCode,
-                NewDeviceIndicator = pt.CustomField3,
-                RepairedBy = ptTestFullLoad.CustomField2,
-                RepairType = ptTestFullLoad.CustomField4,
-                RetirementReason = string.IsNullOrWhiteSpace(ptTestFullLoad.CustomField5) ? null : ptTestFullLoad.CustomField5,
-                ServiceType = device.EquipmentType.ServiceType.ExternalCode,
-                Tester = ptTestFullLoad.TesterId,
-                TestLocation = ptTestFullLoad.Location,
-                TestReason = ptTestFullLoad.PrimaryTestReason,
-                TestStandard = ptTestFullLoad.CustomField1,
-                TestStartDateTime = ptTestFullLoad.TestDate,
-                TransformerAttribute = new CreateDeviceTestResultABMTypeTransformerAttribute()
-                {
-                    AccuracyClassFL = (decimal)ptTestFullLoad.AccuracyClass,
-                    AccuracyClassFLSpecified = true,
-                    AccuracyClassLLSpecified = false,
-                    HighBurdenFLAngle = (decimal)ptTestFullLoad.PhaseError,
-                    HighBurdenFLAngleSpecified = true,
-                    HighBurdenFLRatio = (decimal)ptTestFullLoad.RatioCorrection,
-                    HighBurdenFLRatioSpecified = true,
-                    HighBurdenLLAngleSpecified = false,
-                    HighBurdenLLRatioSpecified = false,
-                    RatioTested = ptTestFullLoad.SelectedRatio,
-                    InsulationTestPassOrFail = ptTestFullLoad.CustomField7,
-                    TestAmpsFLSpecified = false,
-                    TestAmpsLLSpecified = false,
-                    TestBurden = (decimal)ptTestFullLoad.Burden,
-                    TestBurdenSpecified = true,
-                    TestVoltsFL = (decimal)ptTestFullLoad.TestVoltage,
-                    TestVoltsFLSpecified = true,
-                    VoltageForInsulationTest = ptTestFullLoad.CustomField6
-                }
-            };
-
-            DateTime tempDate;
-            if (DateTime.TryParse(ptTestFullLoad.CustomField3, out tempDate))
-            {
-                alliantRequest.RepairDateTimeSpecified = true;
-                alliantRequest.RepairDateTime = tempDate;
-            }
-
-            return alliantRequest;
         }
     }
 }
