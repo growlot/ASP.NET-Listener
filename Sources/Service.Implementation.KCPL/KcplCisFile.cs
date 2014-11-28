@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(16)]
-        [FieldConverter(ConverterKind.Date, "MM/dd/yyHH:MM:ss")]
+        [FieldConverter(ConverterKind.Date, "MM/dd/yyHH:mm:ss")]
         public DateTime TestStartDate;
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(8)]
-        [FieldConverter(ConverterKind.Date, "HH:MM:ss")]
+        [FieldConverter(ConverterKind.Date, "HH:mm:ss")]
         public DateTime TestEndTime;
 
         /// <summary>
