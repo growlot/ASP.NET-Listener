@@ -267,6 +267,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA"),
                 Balance = meterTest.CustomField4,
                 Base = meter.Base.ToString(),
+                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
                 Company = "KCP&L",
                 CompanyCode = meter.MeterCode,
                 FirmwareRevision = meter.FirmwareRevision1,
@@ -292,18 +293,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             if (decimal.TryParse(meter.KH, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDecimal))
             {
                 kcplCisFile.KH = tempDecimal;
-            }
-
-            IList<Comment> testComments = this.WnpSystem.GetTestComment(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate);
-            if (testComments.Count > 0)
-            {
-                if (testComments.Count > 1)
-                {
-                    throw new InvalidOperationException("Can not prepare GMO CIS file export entry, because there is more than one comment related to this test.");
-                }
-
-                Comment testComment = testComments.First<Comment>();
-                kcplCisFile.Comment = testComment.CommentText;
             }
 
             IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "AL DMD");
