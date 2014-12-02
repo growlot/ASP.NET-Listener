@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.Client.Implementation
     using System.Linq;
     using AMSLLC.Listener.Client.Implementation.Messages;
     using AMSLLC.Listener.Common;
+    using AMSLLC.Listener.Common.Lookup;
     using AMSLLC.Listener.Common.Model;
 
     /// <summary>
@@ -70,22 +71,34 @@ namespace AMSLLC.Listener.Client.Implementation
 
             EquipmentType equipmentType = this.deviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
 
-            Device device = this.deviceManager.GetDevice(request.CompanyId, request.EquipmentNumber, equipmentType.Id);
             IList<TransactionLogResponse> logResponse = new List<TransactionLogResponse>();
-
-            if (device != null)
+            TransactionLog searchCriteria = new TransactionLog();
+            if (request.EquipmentNumber != null && request.EquipmentType != null)
             {
-                IList<TransactionLog> log = this.transactionLogManager.GetDeviceTransactions(device.Id);
-
-                logResponse = ((List<TransactionLog>)log).ConvertAll<TransactionLogResponse>(x => new TransactionLogResponse
-                {
-                    TransactionSource = x.TransactionSource.Description,
-                    TransactionStatus = x.TransactionStatus.Description,
-                    TransactionType = x.TransactionType.Description,
-                    TransactionStart = x.TransactionLogState.OrderByDescending(y => y.Id).Last().ExecutionTime,
-                    TestDate = (x.DeviceTest != null) ? (DateTime?)x.DeviceTest.TestDate : null
-                });
+                searchCriteria.Device = this.deviceManager.GetDevice(request.CompanyId, request.EquipmentNumber, equipmentType.Id);
             }
+
+            if (request.FailedOnly)
+            {
+                searchCriteria.TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Failed);
+            }
+
+            searchCriteria.TransactionStart = request.LogDate;
+
+            IList<TransactionLog> log = this.transactionLogManager.GetTransactions(searchCriteria);
+
+            logResponse = ((List<TransactionLog>)log).ConvertAll<TransactionLogResponse>(x => new TransactionLogResponse
+            {
+                TransactionSource = x.TransactionSource.Description,
+                TransactionStatus = x.TransactionStatus.Description,
+                TransactionType = x.TransactionType.Description,
+                TransactionStart = (DateTime)x.TransactionStart,
+                TestDate = x.DeviceTest != null ? (DateTime?)x.DeviceTest.TestDate : null,
+                ErrorMessage = request.IncludeDetails ? x.Message : null,
+                DebugInfo = request.IncludeDetails ? x.DebugInfo : null,
+                EquipmentNumber = x.Device != null ? x.Device.EquipmentNumber : null,
+                EquipmentType = x.Device != null ? x.Device.EquipmentType.Description : null
+            });
 
             return logResponse;
         }

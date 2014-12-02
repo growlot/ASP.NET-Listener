@@ -96,15 +96,15 @@ namespace AMSLLC.Listener.Common
         }
 
         /// <summary>
-        /// Gets all the transactions for specified device.
+        /// Gets all the transactions for specified search criteria.
         /// </summary>
-        /// <param name="deviceId">The device identifier.</param>
+        /// <param name="searchCriteria">The search criteria.</param>
         /// <returns>
-        /// List of transactions for specified device
+        /// List of transactions for specified search criteria
         /// </returns>
-        public IList<TransactionLog> GetDeviceTransactions(int deviceId)
+        public IList<TransactionLog> GetTransactions(TransactionLog searchCriteria)
         {
-            return this.listenerSystem.GetDeviceTransactions(deviceId);
+            return this.listenerSystem.GetTransactions(searchCriteria);
         }
     }
 }

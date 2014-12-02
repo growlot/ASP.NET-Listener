@@ -111,6 +111,7 @@
     <Compile Include="Migration_18_TransactionLogState_Create.cs" />
     <Compile Include="Migration_20_PopulateCustomerData.cs" />
     <Compile Include="Migration_21_TransactionLog_ExtendingFieldsSize.cs" />
+    <Compile Include="Migration_22_TransactionLog_AddStartEndTimes.cs" />
     <Compile Include="Migration_6_TransactionSource_Create.cs" />
     <Compile Include="Migration_4_TransactionState_Create.cs" />
     <Compile Include="GlobalSuppressions.cs" />

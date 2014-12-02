@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.Common
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using AMSLLC.Listener.Common.Lookup;
     using AMSLLC.Listener.Common.Model;
     using NHibernate.Criterion;
     using NHibernate.Transform;
@@ -65,6 +66,10 @@ namespace AMSLLC.Listener.Common
             transaction.TransactionStatus = new TransactionStatus(transactionStatusId);
             transaction.Message = message;
             transaction.DebugInfo = debugInfo;
+            if (transactionStatusId == (int)TransactionStatusLookup.Succeeded || transactionStatusId == (int)TransactionStatusLookup.Failed)
+            {
+                transaction.TransactionEnd = DateTime.Now;
+            }
 
             this.persistenceManager.Save<TransactionLog>(transaction);
         }
@@ -86,6 +91,7 @@ namespace AMSLLC.Listener.Common
             TransactionLog transaction = new TransactionLog();
             transaction.TransactionType = new TransactionType(transactionTypeId);
             transaction.TransactionStatus = new TransactionStatus(transactionStatusId);
+            transaction.TransactionStart = DateTime.Now;
             if (deviceId != null)
             {
                 transaction.Device = new Device((int)deviceId);
@@ -109,21 +115,42 @@ namespace AMSLLC.Listener.Common
         }
 
         /// <summary>
-        /// Gets the transaction list for specified device
+        /// Gets the transaction list for specified search criteria.
         /// </summary>
-        /// <param name="deviceId">The device identifier.</param>
+        /// <param name="searchCriteria">The search criteria.</param>
         /// <returns>
-        /// Returns list of device transactions.
+        /// Returns list of transactions.
         /// </returns>
-        public IList<TransactionLog> GetDeviceTransactions(int deviceId)
+        /// <exception cref="System.ArgumentNullException">searchCriteria;Can not get transaction log if no search criteria is specified</exception>
+        public IList<TransactionLog> GetTransactions(TransactionLog searchCriteria)
         {
+            if (searchCriteria == null)
+            {
+                throw new ArgumentNullException("searchCriteria", "Can not get transaction log if no search criteria is specified");
+            }
+
             DetachedCriteria criteria = DetachedCriteria.For<TransactionLog>();
-            criteria.Add(Restrictions.Eq("Device", new Device(deviceId)));
+            if (searchCriteria.Device != null)
+            {
+                criteria.Add(Restrictions.Eq("Device", searchCriteria.Device));
+            }
+
+            if (searchCriteria.TransactionStatus != null)
+            {
+                criteria.Add(Restrictions.Eq("TransactionStatus", searchCriteria.TransactionStatus));
+            }
+
+            if (searchCriteria.TransactionStart.HasValue)
+            {
+                criteria.Add(Restrictions.Ge("TransactionStart", searchCriteria.TransactionStart));
+                criteria.Add(Restrictions.Lt("TransactionStart", ((DateTime)searchCriteria.TransactionStart).AddDays(1)));
+            }
+
             criteria.SetResultTransformer(Transformers.DistinctRootEntity);
 
             return this.persistenceManager.RetrieveAllEqual<TransactionLog>(criteria);
         }
-
+        
         /// <summary>
         /// Adds the device.
         /// </summary>

@@ -89,6 +89,22 @@ namespace AMSLLC.Listener.Common.Model
         public TransactionSource TransactionSource { get; set; }
 
         /// <summary>
+        /// Gets or sets the transaction start.
+        /// </summary>
+        /// <value>
+        /// The transaction start.
+        /// </value>
+        public DateTime? TransactionStart { get; set; }
+
+        /// <summary>
+        /// Gets or sets the transaction end.
+        /// </summary>
+        /// <value>
+        /// The transaction end.
+        /// </value>
+        public DateTime? TransactionEnd { get; set; }
+
+        /// <summary>
         /// Gets the transaction log state.
         /// </summary>
         /// <value>

@@ -54,12 +54,12 @@ namespace AMSLLC.Listener.Common
         void UpdateTransactionStatus(int transactionId, TransactionStatusLookup transactionStatus, string message, string debugInfo);
 
         /// <summary>
-        /// Gets all the transactions for specified device.
+        /// Gets all the transactions for specified search criteria.
         /// </summary>
-        /// <param name="deviceId">The device identifier.</param>
+        /// <param name="searchCriteria">The search criteria.</param>
         /// <returns>
-        /// List of transactions for specified device
+        /// List of transactions for specified search criteria
         /// </returns>
-        IList<TransactionLog> GetDeviceTransactions(int deviceId);
+        IList<TransactionLog> GetTransactions(TransactionLog searchCriteria);
     }
 }

@@ -51,5 +51,37 @@ namespace AMSLLC.Listener.Client.Implementation.Messages
         /// The test date if transaction was sending test results. Null otherwise.
         /// </value>
         public DateTime? TestDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the error message.
+        /// </summary>
+        /// <value>
+        /// The error message.
+        /// </value>
+        public string ErrorMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the debug information.
+        /// </summary>
+        /// <value>
+        /// The debug information.
+        /// </value>
+        public string DebugInfo { get; set; }
+
+        /// <summary>
+        /// Gets or sets the equipment number.
+        /// </summary>
+        /// <value>
+        /// The equipment number.
+        /// </value>
+        public string EquipmentNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the equipment.
+        /// </summary>
+        /// <value>
+        /// The type of the equipment.
+        /// </value>
+        public string EquipmentType { get; set; }
     }
 }

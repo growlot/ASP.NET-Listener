@@ -55,7 +55,9 @@
       <one-to-many class="TransactionLogState"/>
       
     </bag>
-    
+
+    <property name="TransactionStart" column="TransactionStart" />
+    <property name="TransactionEnd" column="TransactionEnd" />
     <property name="Message" column="Message" />
     <property name="DebugInfo" column="DebugInfo" />
 
