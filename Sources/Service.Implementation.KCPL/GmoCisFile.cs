@@ -173,7 +173,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(10)]
         [FieldTrim(TrimMode.Right)]
-        public string BarcodeId;
+        public string BoardId;
 
         /// <summary>
         /// The comments

@@ -8,6 +8,7 @@
       <Word>cis</Word> <!-- customer information system -->
       <Word>kcpl</Word>
       <Word>amr</Word> <!-- from WNP database -->
+      <Word>weco</Word>
     </Recognized>
     <!--		<Compound>
 		  <Term CompoundAlternate="ManifestFix">manifestfix</Term>
@@ -20,6 +21,7 @@
       <Acronym>KCPL</Acronym> <!-- Kansas City Power & Light-->
       <Acronym>WNP</Acronym> <!-- Watt Net Pluss -->
       <Acronym>SOR</Acronym> <!-- System of record -->
+      <Acronym>WECO</Acronym> <!-- WECO company -->
     </CasingExceptions>
   </Acronyms>
 </Dictionary>

@@ -100,5 +100,13 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The station identifier.
         /// </value>
         public string StationId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the WECO serial number.
+        /// </summary>
+        /// <value>
+        /// The WECO serial number.
+        /// </value>
+        public string WecoSerialNumber { get; set; }
     }
 }

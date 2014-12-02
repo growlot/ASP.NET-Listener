@@ -156,37 +156,37 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
             GmoCisFile gmoCisFile = new GmoCisFile()
             {
+                Manufacturer = meter.CustomField16,
+                MeterSerialNumber = meter.EquipmentNumber,
+                NWH = "NWH",
+                DateTested = meterTest.TestDate,
+                TesterId = meterTest.TesterId,
+                MeterType = meter.ModelNumber,
+                Class = meter.CustomField3,
+                RegisterRatio = meter.RegisterRatio,
+                RegisterType = meter.CustomField7,
+                BoardId = meterTest.WecoSerialNumber,
+                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
+                RepairCode = null, // not used
+                TestType = meterTest.TestReason,
+                Form = meter.Form,
+                Base = meter.Base.ToString(),
+                Volts = (decimal)meter.TestVolts,
                 Amps = (decimal)meter.TestAmps,
+                AsFoundFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "FL"),
+                AsFoundPowerFactor = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "PF"),
+                AsFoundLightLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "LL"),
                 AsFoundAFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'A', "FL"),
                 AsFoundBFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'B', "FL"),
                 AsFoundCFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'C', "FL"),
-                AsFoundFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "FL"),
-                AsFoundLightLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "LL"),
-                AsFoundPowerFactor = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "PF"),
-                AsFoundWeightedAverage = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "WA"),
+                AsLeftFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "FL"),
+                AsLeftPowerFactor = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "PF"),
+                AsLeftLightLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "LL"),
                 AsLeftAFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'A', "FL"),
                 AsLeftBFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'B', "FL"),
                 AsLeftCFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'C', "FL"),
-                AsLeftFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "FL"),
-                AsLeftLightLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "LL"),
-                AsLeftPowerFactor = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "PF"),
-                AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA"),
-                BarcodeId = meterTest.TestStandard,
-                Base = meter.Base.ToString(),
-                Class = meter.CustomField3,
-                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
-                DateTested = meterTest.TestDate,
-                Form = meter.Form,
-                Manufacturer = meter.CustomField16,
-                MeterSerialNumber = meter.SerialNumber,
-                MeterType = meter.ModelNumber,
-                NWH = "NWH",
-                RegisterRatio = meter.RegisterRatio,
-                RegisterType = meter.CustomField7,
-                RepairCode = meterTest.CustomField1,
-                TesterId = meterTest.TesterId,
-                TestType = meterTest.TestReason,
-                Volts = (decimal)meter.TestVolts
+                AsFoundWeightedAverage = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "WA"),
+                AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA")
             };
             
             int tempInt;
@@ -211,7 +211,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             {
                 if (testReadings.Count > 1)
                 {
-                    throw new InvalidOperationException("Can not prepare GMO CIS file export entry, because there is more than one reading related to this test.");
+                    throw new InvalidOperationException("Can not prepare GMO CIS file export entry, because there is more than one KWH reading related to this test.");
                 }
 
                 Reading testReading = testReadings.First<Reading>();
@@ -249,39 +249,39 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
             KcplCisFile kcplCisFile = new KcplCisFile()
             {
-                AmrModuleNumber = meter.AmiId1,
-                AsFoundDemand = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "DMD"),
+                TesterId = meterTest.TesterId.PadLeft(7, '0'),
+                TestStartDate = meterTest.TestDate,
+                TestEndTime = meterTest.TestDateStop,
+                StationNumber = meterTest.StationId,
+                Location = meterTest.Location,
+                TestCode = meterTest.TestReason,
+                Manufacturer = meter.Manufacturer,
+                CompanyCode = meter.MeterCode,
+                MeterNumber = meter.EquipmentNumber,
+                Form = meter.Form.PadLeft(2, '0'),
+                Base = meter.Base.ToString(),
+                Volts = (int)Math.Ceiling(meter.TestVolts),
                 AsFoundFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "FL"),
                 AsFoundLightLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "LL"),
                 AsFoundPowerFactor = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "PF"),
-                AsFoundWeightedAverage = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "WA"),
-                AsLeftDemand = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "DMD"),
                 AsLeftFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "FL"),
                 AsLeftLightLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "LL"),
                 AsLeftPowerFactor = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "PF"),
-                AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA"),
                 Balance = meterTest.CustomField4,
-                Base = meter.Base.ToString(),
-                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
-                Company = "KCP&L",
-                CompanyCode = meter.MeterCode,
-                FirmwareRevision = meter.FirmwareRevision1,
-                Form = meter.Form.PadLeft(2, '0'),
-                KYZPresent = meter.CustomField8,
-                Location = meterTest.Location,
-                Manufacturer = meter.Manufacturer,
-                MeterNumber = meter.SerialNumber,
+                AsFoundDemand = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "DMD"),
+                AsLeftDemand = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "DMD"),
+                AsFoundWeightedAverage = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "WA"),
+                AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA"),
                 MeterStatus = meter.CustomField13,
-                ProgramCode = meter.ProgramId,
-                RepairCode1 = meterTest.CustomField1,
-                RepairCode2 = meterTest.CustomField2,
-                RepairCode3 = meterTest.CustomField3,
-                StationNumber = meterTest.StationId,
-                TestCode = meterTest.TestReason,
-                TestEndTime = meterTest.TestDateStop,
-                TesterId = meterTest.TesterId.PadLeft(7, '0'),
-                TestStartDate = meterTest.TestDate,
-                Volts = (int)Math.Ceiling(meter.TestVolts)
+                Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
+                AmrModuleNumber = meter.CustomField2.PadLeft(10, '0'),
+                FirmwareRevision = meter.FirmwareRevision1,
+                ProgramCode = null, // not used
+                KYZPresent = meter.CustomField8,
+                RepairCode1 = null, // not used
+                RepairCode2 = null, // not used
+                RepairCode3 = null, // not used
+                Company = "KCP&L",
             };
 
             decimal tempDecimal;
@@ -295,7 +295,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             {
                 if (testReadings.Count > 1)
                 {
-                    throw new InvalidOperationException("Can not prepare GMO CIS file export entry, because there is more than one reading related to this test.");
+                    throw new InvalidOperationException("Can not prepare GMO CIS file export entry, because there is more than one AL DMD reading related to this test.");
                 }
 
                 Reading testReading = testReadings.First<Reading>();
