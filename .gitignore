@@ -11,3 +11,4 @@ StyleCop.Cache
 /*.vssscc
 /packages/
 !packages/repositories.config
+/FakesAssemblies/*.Fakes.dll
