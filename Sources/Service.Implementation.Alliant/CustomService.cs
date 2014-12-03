@@ -342,7 +342,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 CustomField2 = device.EquipmentType.ExternalCode,
                 CustomField3 = alliantResponse.NewDeviceIndicator,
                 CustomField5 = alliantResponse.LossCompensationCodeFlag,
-                CustomField6 = alliantResponse.TestReason
+                CustomField20 = alliantResponse.TestReason
             };
             if (alliantResponse.LastTestDate.HasValue)
             {

@@ -58,6 +58,10 @@
     <property name="CustomField14" column="METER_USER14" type="AnsiString" length="50" />
     <property name="CustomField15" column="METER_USER15" type="AnsiString" length="50" />
     <property name="CustomField16" column="METER_USER16" type="AnsiString" length="50" />
+    <property name="CustomField17" column="METER_USER17" type="AnsiString" length="50" />
+    <property name="CustomField18" column="METER_USER18" type="AnsiString" length="50" />
+    <property name="CustomField19" column="METER_USER19" type="AnsiString" length="50" />
+    <property name="CustomField20" column="METER_USER20" type="AnsiString" length="50" />
   </class>
 
 </hibernate-mapping>

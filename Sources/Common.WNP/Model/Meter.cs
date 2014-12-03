@@ -180,5 +180,37 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The meter custom field 16.
         /// </value>
         public string CustomField16 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 17.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 17.
+        /// </value>
+        public string CustomField17 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 18.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 18.
+        /// </value>
+        public string CustomField18 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 19.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 19.
+        /// </value>
+        public string CustomField19 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter custom field 20.
+        /// </summary>
+        /// <value>
+        /// The meter custom field 20.
+        /// </value>
+        public string CustomField20 { get; set; }
     }
 }
