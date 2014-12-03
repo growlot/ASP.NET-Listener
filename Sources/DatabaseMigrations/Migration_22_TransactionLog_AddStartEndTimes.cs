@@ -26,27 +26,6 @@ namespace AMSLLC.Listener.DatabaseMigrations
             Alter.Table("TransactionLog")
                 .AddColumn("TransactionStart").AsDateTime().NotNullable().SetExistingRowsTo(DateTime.Now)
                 .AddColumn("TransactionEnd").AsDateTime().Nullable();
-
-            Execute.Sql(@"
-                UPDATE TransactionLog 
-                    SET TransactionStart = 
-	                    (
-		                    SELECT TOP(1) ExecutionTime 
-		                    FROM TransactionLogState
-		                    WHERE TransactionLog.TransactionLogId = TransactionLogId
-		                    ORDER BY ExecutionTime ASC
-	                    )");
-
-            Execute.Sql(@"
-                UPDATE TransactionLog 
-                    SET TransactionEnd = 
-	                    (
-		                    SELECT TOP(1) ExecutionTime 
-		                    FROM TransactionLogState
-		                    WHERE TransactionLog.TransactionLogId = TransactionLogId
-		                    ORDER BY ExecutionTime DESC
-	                    )
-	                WHERE TransactionStatusId != 1");
         }
 
         /// <summary>
