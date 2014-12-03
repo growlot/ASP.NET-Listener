@@ -81,12 +81,12 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                             {
                                 case "KCPL":
                                     string kcplCisEntry = this.PrepareElectricMeterTestResultsForKcplCisFile(device, deviceTest, meter);
-                                    SaveResultsToFile(kcplCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.KcplCis"], "Kcpl.txt");
+                                    SaveResultsToFile(kcplCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.KcplCis"]);
                                     break;
                                 case "MPS":
                                 case "SJLP":
                                     string gmoCisEntry = this.PrepareElectricMeterTestResultsForGmoCisFile(device, deviceTest, meter);
-                                    SaveResultsToFile(gmoCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.GmoCis"], "Gmo.txt");
+                                    SaveResultsToFile(gmoCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.GmoCis"]);
                                     break;
                                 default:
                                     message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), device.Company.Name);
@@ -116,11 +116,10 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// Saves the results to file.
         /// </summary>
         /// <param name="results">The test results string.</param>
-        /// <param name="fileLocation">The file location.</param>
-        /// <param name="fileName">Name of the file.</param>
-        private static void SaveResultsToFile(string results, string fileLocation, string fileName)
+        /// <param name="exportFile">The export file.</param>
+        private static void SaveResultsToFile(string results, string exportFile)
         {
-            string exportFile = Path.Combine(fileLocation, fileName);
+            string fileLocation = Path.GetDirectoryName(exportFile);
             Directory.CreateDirectory(fileLocation);
 
             using (StreamWriter writer = File.AppendText(exportFile))
