@@ -76,6 +76,12 @@ namespace AMSLLC.Listener.Client.Implementation
             if (request.EquipmentNumber != null && request.EquipmentType != null)
             {
                 searchCriteria.Device = this.deviceManager.GetDevice(request.CompanyId, request.EquipmentNumber, equipmentType.Id);
+                
+                // if device information was provided, but device is not found in Listener database, then there are not TransactionLogs for this device.
+                if (searchCriteria.Device == null)
+                {
+                    return logResponse;
+                }
             }
 
             if (request.FailedOnly)
