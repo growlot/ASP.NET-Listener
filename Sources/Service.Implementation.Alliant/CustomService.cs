@@ -90,12 +90,12 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     alliantResponse = this.GetDeviceResponseFromWebService(request.TransactionId, alliantRequest);
                 }
             }
-            catch (FaultException<Alliant.GetDevice.FaultNotificationType> ex)
+            catch (FaultException<Alliant.GetDevice.FaultNotification> ex)
             {
                 Log.Error("Customer service call returned error.", ex);
                 using (TextWriter writer = new StringWriter(CultureInfo.InvariantCulture))
                 {
-                    var serializer = new XmlSerializer(typeof(Alliant.GetDevice.FaultNotificationType));
+                    var serializer = new XmlSerializer(typeof(Alliant.GetDevice.FaultNotification));
                     serializer.Serialize(writer, ex.Detail);
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
@@ -107,12 +107,12 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     throw new FaultException<ServiceFaultDetails>(transformedException, transformedException.Message);
                 }
             }
-            catch (FaultException<Alliant.GetDevice.FaultNotificationType[]> ex)
+            catch (FaultException<Alliant.GetDevice.FaultNotification[]> ex)
             {
                 Log.Error("Customer service call returned error.", ex);
                 using (TextWriter writer = new StringWriter(CultureInfo.InvariantCulture))
                 {
-                    var serializer = new XmlSerializer(typeof(Alliant.GetDevice.FaultNotificationType[]));
+                    var serializer = new XmlSerializer(typeof(Alliant.GetDevice.FaultNotification[]));
                     serializer.Serialize(writer, ex.Detail);
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
@@ -428,8 +428,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (File.Exists(mockupFileFault))
             {
-                Alliant.GetDevice.FaultNotificationType[] detail = Utilities.ReadFromXmlFile<List<Alliant.GetDevice.FaultNotificationType>>(mockupFileFault).ToArray<Alliant.GetDevice.FaultNotificationType>();
-                FaultException<Alliant.GetDevice.FaultNotificationType[]> ex = new FaultException<Alliant.GetDevice.FaultNotificationType[]>(detail);
+                Alliant.GetDevice.FaultNotification[] detail = Utilities.ReadFromXmlFile<List<Alliant.GetDevice.FaultNotification>>(mockupFileFault).ToArray<Alliant.GetDevice.FaultNotification>();
+                FaultException<Alliant.GetDevice.FaultNotification[]> ex = new FaultException<Alliant.GetDevice.FaultNotification[]>(detail);
 
                 throw ex;
             }

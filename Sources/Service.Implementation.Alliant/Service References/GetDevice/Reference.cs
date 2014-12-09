@@ -17,7 +17,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.GetDevice {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1")]
-    public partial class FaultNotificationType : object, System.ComponentModel.INotifyPropertyChanged {
+    public partial class FaultNotification : object, System.ComponentModel.INotifyPropertyChanged {
         
         private string businessComponentIDField;
         
@@ -527,7 +527,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.GetDevice {
         
         // CODEGEN: Generating message contract since the operation Query is neither RPC nor document wrapped.
         [System.ServiceModel.OperationContractAttribute(Action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query", ReplyAction="*")]
-        [System.ServiceModel.FaultContractAttribute(typeof(AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.FaultNotificationType[]), Action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query", Name="QueryDeviceTestInfoFault")]
+        [System.ServiceModel.FaultContractAttribute(typeof(AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.FaultNotification[]), Action = "http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query", Name = "QueryDeviceTestInfoFault")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.QueryResponse Query(AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.QueryRequest request);
     }
