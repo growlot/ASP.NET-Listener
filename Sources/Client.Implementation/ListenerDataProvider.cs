@@ -69,15 +69,17 @@ namespace AMSLLC.Listener.Client.Implementation
                 throw new ArgumentNullException("request", "Can not retrieve transaction log when request is not specified.");
             }
 
-            EquipmentType equipmentType = this.deviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
-
             IList<TransactionLogResponse> logResponse = new List<TransactionLogResponse>();
             TransactionLog searchCriteria = new TransactionLog();
             if (request.EquipmentNumber != null && request.EquipmentType != null)
             {
+                EquipmentType equipmentType = this.deviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
+                if (equipmentType == null)
+                {
+                    return logResponse;
+                }
+
                 searchCriteria.Device = this.deviceManager.GetDevice(request.CompanyId, request.EquipmentNumber, equipmentType.Id);
-                
-                // if device information was provided, but device is not found in Listener database, then there are not TransactionLogs for this device.
                 if (searchCriteria.Device == null)
                 {
                     return logResponse;
