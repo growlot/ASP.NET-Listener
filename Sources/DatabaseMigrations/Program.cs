@@ -31,8 +31,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
             try
             {
                 DatabaseUpdater databaseUpdater = new DatabaseUpdater();
-
-                // databaseUpdater.DestroyDatabase();
+                                
+                //// databaseUpdater.Downgrade(21);
+                //// databaseUpdater.DestroyDatabase();
                 databaseUpdater.UpdateDatabase();
 
                 Console.WriteLine("**");

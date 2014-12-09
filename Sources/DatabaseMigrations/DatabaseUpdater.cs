@@ -114,6 +114,14 @@ namespace AMSLLC.Listener.DatabaseMigrations
         }
 
         /// <summary>
+        /// Downgrades database to specific version.
+        /// </summary>
+        public void Downgrade(int version)
+        {
+            this.runner.MigrateDown(version, true);
+        }
+
+        /// <summary>
         /// Updates database to latest version.
         /// </summary>
         public void UpdateDatabase()
