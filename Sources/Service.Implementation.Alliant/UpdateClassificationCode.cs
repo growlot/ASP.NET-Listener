@@ -222,7 +222,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 CustomField12 = classificationCode.ElectricDevice.VoltageClass,
                 CustomField13 = classificationCode.ElectricDevice.AMIIndicator,
                 CustomField14 = classificationCode.ElectricDevice.ERTIndicator,
-                CustomField15 = classificationCode.ElectricDevice.TestSequence,
                 CustomField16 = classificationCode.ElectricDevice.TransformerRatedIndicator,
                 CustomField17 = classificationCode.ElectricDevice.NetworkIndicator,
                 CustomField20 = classificationCode.ElectricDevice.RemoteConnectDisconnectIndicator,
@@ -237,6 +236,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 RegisterRatio = classificationCode.ElectricDevice.RegisterRatio,
                 Volt = (float)classificationCode.ElectricDevice.TestVoltage,
                 Wire = classificationCode.ElectricDevice.Wire,
+                TestSequence = classificationCode.ElectricDevice.TestSequence,
                 
                 // Default values
                 TestRevision = 1,
@@ -246,7 +246,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 TestTime = 20,
                 TestProgressMeasure = 'R',
                 TestService = "1 Phase",
-                TestSequence = "Default",
                 TestLimitAsFound = 1,
                 TestLimitAsLeft = 1
             };
