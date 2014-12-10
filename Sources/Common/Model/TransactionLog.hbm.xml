@@ -59,7 +59,7 @@
     <property name="TransactionStart" column="TransactionStart" />
     <property name="TransactionEnd" column="TransactionEnd" />
     <property name="Message" column="Message" />
-    <property name="DebugInfo" column="DebugInfo" />
+    <property name="DebugInfo" column="DebugInfo" type="StringClob" />
 
   </class>
 

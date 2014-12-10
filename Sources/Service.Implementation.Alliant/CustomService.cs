@@ -100,7 +100,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = this.stringManager.GetString("CheckListenerLogReport", CultureInfo.CurrentCulture),
+                        Message = string.Join(" ", ex.Detail.FaultMessage.Text),
                         DebugInfo = writer.ToString()
                     };
 
@@ -117,7 +117,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = this.stringManager.GetString("CheckListenerLogReport", CultureInfo.CurrentCulture),
+                        Message = string.Join(" ", ex.Detail[0].FaultMessage.Text),
                         DebugInfo = writer.ToString()
                     };
 
@@ -250,34 +250,34 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     alliantResponse = this.SendDeviceTestResponseFromWebService(request.TransactionId, alliantRequest);
                 }
             }
-            catch (FaultException<Alliant.SendTestResult.FaultNotificationType> ex)
+            catch (FaultException<Alliant.SendTestResult.FaultNotification> ex)
             {
                 Log.Error("Customer service call returned error.", ex);
                 using (TextWriter writer = new StringWriter(CultureInfo.InvariantCulture))
                 {
-                    var serializer = new XmlSerializer(typeof(Alliant.SendTestResult.FaultNotificationType));
+                    var serializer = new XmlSerializer(typeof(Alliant.SendTestResult.FaultNotification));
                     serializer.Serialize(writer, ex.Detail);
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = this.stringManager.GetString("CheckListenerLogReport", CultureInfo.CurrentCulture),
+                        Message = string.Join(" ", ex.Detail.FaultMessage.Text),
                         DebugInfo = writer.ToString()
                     };
 
                     throw new FaultException<ServiceFaultDetails>(transformedException, transformedException.Message);
                 }
             }
-            catch (FaultException<Alliant.SendTestResult.FaultNotificationType[]> ex)
+            catch (FaultException<Alliant.SendTestResult.FaultNotification[]> ex)
             {
                 Log.Error("Customer service call returned error.", ex);
                 using (TextWriter writer = new StringWriter(CultureInfo.InvariantCulture))
                 {
-                    var serializer = new XmlSerializer(typeof(Alliant.SendTestResult.FaultNotificationType[]));
+                    var serializer = new XmlSerializer(typeof(Alliant.SendTestResult.FaultNotification[]));
                     serializer.Serialize(writer, ex.Detail);
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = this.stringManager.GetString("CheckListenerLogReport", CultureInfo.CurrentCulture),
+                        Message = string.Join(" ", ex.Detail[0].FaultMessage.Text),
                         DebugInfo = writer.ToString()
                     };
 
@@ -542,8 +542,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (File.Exists(mockupFileFault))
             {
-                Alliant.SendTestResult.FaultNotificationType[] detail = Utilities.ReadFromXmlFile<List<Alliant.SendTestResult.FaultNotificationType>>(mockupFileFault).ToArray<Alliant.SendTestResult.FaultNotificationType>();
-                FaultException<Alliant.SendTestResult.FaultNotificationType[]> ex = new FaultException<Alliant.SendTestResult.FaultNotificationType[]>(detail);
+                Alliant.SendTestResult.FaultNotification[] detail = Utilities.ReadFromXmlFile<List<Alliant.SendTestResult.FaultNotification>>(mockupFileFault).ToArray<Alliant.SendTestResult.FaultNotification>();
+                FaultException<Alliant.SendTestResult.FaultNotification[]> ex = new FaultException<Alliant.SendTestResult.FaultNotification[]>(detail);
 
                 throw ex;
             }

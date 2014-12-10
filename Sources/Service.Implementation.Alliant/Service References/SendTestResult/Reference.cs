@@ -17,7 +17,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestResult/V1")]
-    public partial class FaultNotificationType : object, System.ComponentModel.INotifyPropertyChanged {
+    public partial class FaultNotification : object, System.ComponentModel.INotifyPropertyChanged
+    {
         
         private string businessComponentIDField;
         
@@ -1371,7 +1372,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult {
         [System.ServiceModel.OperationContractAttribute(Action="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestResult/V1/DeviceTestResu" +
             "ltABCS/CreateRequest", ReplyAction="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestResult/V1/DeviceTestResu" +
             "ltABCS/CreateResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult.FaultNotificationType[]), Action="http://www.w3.org/2005/08/addressing/soap/fault", Name="CreateDeviceTestResultFault")]
+        [System.ServiceModel.FaultContractAttribute(typeof(AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult.FaultNotification[]), Action = "http://www.w3.org/2005/08/addressing/soap/fault", Name = "CreateDeviceTestResultFault")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult.CreateResponse Create(AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult.CreateRequest request);
     }
