@@ -79,37 +79,47 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// </exception>
         public void Update(Update request)
         {
+            string message;
+            
             if (request == null)
             {
-                throw new FaultException("Can not process request because it is null.");
+                message = "Can not process request because it is null.";
+                Log.Error(message);
+                throw new FaultException(message);
             }
 
             UpdateDeviceClassificationCodeABMType alliantRequest = request.UpdateDeviceClassificationCodeABM;
             if (alliantRequest == null)
             {
-                throw new FaultException("Can not process request because UpdateDeviceClassificationCodeABM is null.");
+                message = "Can not process request because UpdateDeviceClassificationCodeABM is null.";
+                Log.Error(message);
+                throw new FaultException(message);
             }
 
             if (alliantRequest.BatchesTotalSpecified == false || alliantRequest.BatchNumberSpecified == false)
             {
-                throw new FaultException("Can not process request because BatchesTotal or BatchNumber is not specified.");
+                message = "Can not process request because BatchesTotal or BatchNumber is not specified.";
+                Log.Error(message);
+                throw new FaultException(message);
             }
 
             if (alliantRequest.BatchesTotal != 1 || alliantRequest.BatchNumber != 1)
             {
-                throw new FaultException("Batching is currently not supported. Both BatchesTotal and BatchNumber must be set to 1 and all data must be send in one request.");
+                message = "Batching is currently not supported. Both BatchesTotal and BatchNumber must be set to 1 and all data must be send in one request.";
+                Log.Error(message);
+                throw new FaultException(message);
             }
 
             int transactionId = this.transactionLogManager.NewTransaction(TransactionTypeLookup.GetClassificationCodes, null, null, null, TransactionSourceLookup.WebServiceCall);
-            this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceStart);
-
-            IList<MeterBarcode> meterBarcodes = new List<MeterBarcode>();
-            IList<CurrentTransformerBarcode> currentTransformerBarcodes = new List<CurrentTransformerBarcode>();
-            IList<PotentialTransformerBarcode> potentialTransformerBarcodes = new List<PotentialTransformerBarcode>();
-            IList<Company> companies = this.deviceManager.GetCompanies();
-
             try
             {
+                this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceStart);
+
+                IList<MeterBarcode> meterBarcodes = new List<MeterBarcode>();
+                IList<CurrentTransformerBarcode> currentTransformerBarcodes = new List<CurrentTransformerBarcode>();
+                IList<PotentialTransformerBarcode> potentialTransformerBarcodes = new List<PotentialTransformerBarcode>();
+                IList<Company> companies = this.deviceManager.GetCompanies();
+
                 foreach (Company company in companies)
                 {
                     Owner owner = new Owner(int.Parse(company.InternalCode, CultureInfo.InvariantCulture));
@@ -206,8 +216,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             MeterBarcode result = new MeterBarcode()
             {
-                Amp = (float)classificationCode.ElectricDevice.TestAmps,
-                Base = char.Parse(classificationCode.ElectricDevice.Base),
                 CustomField1 = classificationCode.Status,
                 CustomField2 = classificationCode.Manufacturer,
                 CustomField3 = classificationCode.Model,
@@ -216,9 +224,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 CustomField6 = classificationCode.AssetProfileID,
                 CustomField7 = classificationCode.DeviceTestType,
                 CustomField8 = classificationCode.TemplateDevice,
-                CustomField9 = classificationCode.ElectricDevice.BatteryLife.ToString(CultureInfo.InvariantCulture),
-                CustomField10 = classificationCode.ElectricDevice.Stator.ToString(CultureInfo.InvariantCulture),
-                CustomField11 = classificationCode.ElectricDevice.Ampacity.ToString(CultureInfo.InvariantCulture),
                 CustomField12 = classificationCode.ElectricDevice.VoltageClass,
                 CustomField13 = classificationCode.ElectricDevice.AMIIndicator,
                 CustomField14 = classificationCode.ElectricDevice.ERTIndicator,
@@ -229,13 +234,9 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 CustomField22 = classificationCode.ElectricDevice.LossCompensationCapableIndicator,
                 Description = classificationCode.DeviceDescription,
                 Form = classificationCode.ElectricDevice.Form,
-                KH = classificationCode.ElectricDevice.Constant.ToString(CultureInfo.InvariantCulture),
                 LookupCode = classificationCode.ClassificationCode,
                 Owner = owner,
-                Phase = int.Parse(classificationCode.ElectricDevice.Phase, CultureInfo.InvariantCulture),
                 RegisterRatio = classificationCode.ElectricDevice.RegisterRatio,
-                Volt = (float)classificationCode.ElectricDevice.TestVoltage,
-                Wire = classificationCode.ElectricDevice.Wire,
                 TestSequence = classificationCode.ElectricDevice.TestSequence,
                 
                 // Default values
@@ -250,16 +251,69 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 TestLimitAsLeft = 1
             };
 
+            if (classificationCode.ElectricDevice.TestAmpsSpecified)
+            {
+                result.Amp = (float)classificationCode.ElectricDevice.TestAmps;
+            }
+
+            char tmpChar;
+            if (char.TryParse(classificationCode.ElectricDevice.Base, out tmpChar))
+            {
+                result.Base = tmpChar;
+            }
+
+            if (classificationCode.ElectricDevice.BatteryLifeSpecified)
+            {
+                result.CustomField9 = classificationCode.ElectricDevice.BatteryLife.ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (classificationCode.ElectricDevice.StatorSpecified)
+            {
+                result.CustomField10 = classificationCode.ElectricDevice.Stator.ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (classificationCode.ElectricDevice.AmpacitySpecified)
+            {
+                result.CustomField11 = classificationCode.ElectricDevice.Ampacity.ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (classificationCode.ElectricDevice.ConstantSpecified)
+            {
+                result.KH = classificationCode.ElectricDevice.Constant.ToString(CultureInfo.InvariantCulture);
+            }
+
+            int tempInt;
+            if (int.TryParse(classificationCode.ElectricDevice.Phase, NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
+            {
+                result.Phase = tempInt;
+            }
+
+            if (classificationCode.ElectricDevice.TestVoltageSpecified)
+            {
+                result.Volt = (float)classificationCode.ElectricDevice.TestVoltage;
+            }
+
+            if (classificationCode.ElectricDevice.WireSpecified)
+            {
+                result.Wire = classificationCode.ElectricDevice.Wire;
+            }
+            
             if (externalCode == "I")
             {
                 result.CustomField18 = classificationCode.ElectricDevice.IPLSelectionType;
-                result.CustomField19 = classificationCode.ElectricDevice.IPLTestInterval.ToString(CultureInfo.InvariantCulture);
+                if (classificationCode.ElectricDevice.IPLTestIntervalSpecified)
+                {
+                    result.CustomField19 = classificationCode.ElectricDevice.IPLTestInterval.ToString(CultureInfo.InvariantCulture);
+                }
             }
 
             if (externalCode == "W")
             {
                 result.CustomField18 = classificationCode.ElectricDevice.WPLSelectionType;
-                result.CustomField19 = classificationCode.ElectricDevice.WPLTestInterval.ToString(CultureInfo.InvariantCulture);
+                if (classificationCode.ElectricDevice.WPLTestIntervalSpecified)
+                {
+                    result.CustomField19 = classificationCode.ElectricDevice.WPLTestInterval.ToString(CultureInfo.InvariantCulture);
+                }
             }
 
             return result;
@@ -287,8 +341,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             CurrentTransformerBarcode result = new CurrentTransformerBarcode()
             {
-                Burden1 = float.Parse(classificationCode.TransformerAttribute.CurrentTransformer.OhmsBurden1, CultureInfo.InvariantCulture),
-                Burden2 = float.Parse(classificationCode.TransformerAttribute.CurrentTransformer.OhmsBurden2, CultureInfo.InvariantCulture),
                 CustomField1 = classificationCode.Status,
                 CustomField2 = classificationCode.Manufacturer,
                 CustomField3 = classificationCode.Model,
@@ -303,8 +355,19 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 Description = classificationCode.DeviceDescription,
                 LookupCode = classificationCode.ClassificationCode,
                 Owner = owner,
-                Taps = int.Parse(classificationCode.TransformerAttribute.NumberOfRatios, CultureInfo.InvariantCulture)
             };
+
+            float tempFloat;
+            int tempInt;
+            if (float.TryParse(classificationCode.TransformerAttribute.CurrentTransformer.OhmsBurden1, NumberStyles.Float, CultureInfo.InvariantCulture, out tempFloat))
+            {
+                result.Burden1 = tempFloat;
+            }
+
+            if (float.TryParse(classificationCode.TransformerAttribute.CurrentTransformer.OhmsBurden2, NumberStyles.Float, CultureInfo.InvariantCulture, out tempFloat))
+            {
+                result.Burden2 = tempFloat;
+            }
 
             if (classificationCode.TransformerAttribute.AccuracyClassSpecified)
             {
@@ -335,21 +398,26 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             {
                 result.CustomField16 = classificationCode.TransformerAttribute.CurrentTransformer.LightLoadPercentage.ToString(CultureInfo.InvariantCulture);
             }
-
-            switch (result.Taps)
+            
+            if (int.TryParse(classificationCode.TransformerAttribute.NumberOfRatios, NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
             {
-                case 1:
-                    result.Ratio = classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio1;
-                    break;
-                case 2:
-                    string ratio1 = classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio1;
-                    ratio1 = ratio1.Substring(0, Math.Max(ratio1.IndexOf(':'), 0));
-                    result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}/{1}", ratio1, classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio2);
-                    break;
-                default:
-                    Log.Error(string.Format(CultureInfo.InvariantCulture, "Can not determine current transformer classification code {0} ratio, because only 1 or 2 is allowed for number of ratios, but actual value was {1}", classificationCode.ClassificationCode, result.Taps));
-                    break;
-            }           
+                result.Taps = tempInt;
+
+                switch (result.Taps)
+                {
+                    case 1:
+                        result.Ratio = classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio1;
+                        break;
+                    case 2:
+                        string ratio1 = classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio1;
+                        ratio1 = ratio1.Substring(0, Math.Max(ratio1.IndexOf(':'), 0));
+                        result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}/{1}", ratio1, classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio2);
+                        break;
+                    default:
+                        Log.Error(string.Format(CultureInfo.InvariantCulture, "Can not determine current transformer classification code {0} ratio, because only 1 or 2 is allowed for number of ratios, but actual value was {1}", classificationCode.ClassificationCode, result.Taps));
+                        break;
+                }
+            }
 
             return result;
         }
@@ -392,7 +460,6 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 Description = classificationCode.DeviceDescription,
                 LookupCode = classificationCode.ClassificationCode,
                 Owner = owner,
-                Taps = int.Parse(classificationCode.TransformerAttribute.NumberOfRatios, CultureInfo.InvariantCulture)
             };
 
             if (classificationCode.TransformerAttribute.AccuracyClassSpecified)
@@ -410,19 +477,25 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 result.CustomField11 = classificationCode.TransformerAttribute.InsulationVoltageClass.ToString(CultureInfo.InvariantCulture);
             }
 
-            switch (result.Taps)
+            int tempInt;
+            if (int.TryParse(classificationCode.TransformerAttribute.NumberOfRatios, NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
             {
-                case 1:
-                    result.Ratio = classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio1;
-                    break;
-                case 2:
-                    string ratio1 = classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio1;
-                    ratio1 = ratio1.Substring(0, Math.Max(ratio1.IndexOf(':'), 0));
-                    result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}/{1}", ratio1, classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio2);
-                    break;
-                default:
-                    Log.Error(string.Format(CultureInfo.InvariantCulture, "Can not determine potential transformer classification code {0} ratio, because only 1 or 2 is allowed for number of ratios, but actual value was {1}", classificationCode.ClassificationCode, result.Taps));
-                    break;
+                result.Taps = tempInt;
+
+                switch (result.Taps)
+                {
+                    case 1:
+                        result.Ratio = classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio1;
+                        break;
+                    case 2:
+                        string ratio1 = classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio1;
+                        ratio1 = ratio1.Substring(0, Math.Max(ratio1.IndexOf(':'), 0));
+                        result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}/{1}", ratio1, classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio2);
+                        break;
+                    default:
+                        Log.Error(string.Format(CultureInfo.InvariantCulture, "Can not determine potential transformer classification code {0} ratio, because only 1 or 2 is allowed for number of ratios, but actual value was {1}", classificationCode.ClassificationCode, result.Taps));
+                        break;
+                }
             }
 
             return result;
