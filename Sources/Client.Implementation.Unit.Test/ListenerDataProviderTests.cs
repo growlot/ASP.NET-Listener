@@ -21,11 +21,13 @@ namespace Client.Implementation.Unit.Test
     public class ListenerDataProviderTests
     {
         /// <summary>
-        /// Get transaction log results should be empty if equipment type is not supported.
+        /// Get transaction log results should not perform search if equipment type is not supported.
+        /// It should return empty list.
         /// </summary>
         [TestMethod]
-        public void GetTransactionLogResultsShouldBeEmptyIfEquipmentTypeIsNotSupported()
+        public void GetTransactionLogResultsShouldNotPerformSearchIfEquipmentTypeIsNotSupported()
         {
+            bool searchPerformed = false;
             IList<TransactionLogResponse> response;
             TransactionLogRequest request = new TransactionLogRequest()
             {
@@ -42,22 +44,34 @@ namespace Client.Implementation.Unit.Test
                     return null;
                 });
 
+                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<TransactionLog>((criteria) =>
+                {
+                    searchPerformed = true;
+                    return new List<TransactionLog>();
+                });
+
                 ListenerDataProvider dataProider = new ListenerDataProvider(persistenceManager);
                 response = dataProider.GetTransactionLog(request);
             }
 
-            Assert.AreEqual(response.Count, 0);
+            Assert.AreEqual(response.Count, 0, "Response should contain empty list");
+            Assert.AreEqual(false, searchPerformed);
         }
 
         /// <summary>
-        /// Get transaction log results should be empty if device does not exist.
+        /// Get transaction log results should not perform search if device does not exist.
+        /// It should return empty list.
         /// </summary>
         [TestMethod]
-        public void GetTransactionLogResultsShouldBeEmptyIfDeviceDoesNotExist()
+        public void GetTransactionLogResultsShouldNotPerformSearchIfDeviceDoesNotExist()
         {
+            bool searchPerformed = false;
+            bool triedToRetrieveDevice = false;
+
             IList<TransactionLogResponse> response;
             TransactionLogRequest request = new TransactionLogRequest()
             {
+                CompanyId = 0,
                 ServiceType = "E",
                 EquipmentType = "EM",
                 EquipmentNumber = "123"
@@ -68,31 +82,27 @@ namespace Client.Implementation.Unit.Test
             {
                 persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<EquipmentType>((criteria) =>
                 {
-                    EquipmentType equipmentType = new EquipmentType()
-                    {
-                        Id = 1,
-                        Description = "Electric Meter",
-                        InternalCode = "EM",
-                        ServiceType = new ServiceType()
-                        {
-                            Id = 1,
-                            Description = "Electric",
-                            InternalCode = "E"                            
-                        }
-                    };
-
-                    return equipmentType;
+                    return new EquipmentType(1);
                 });
-                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<Device>((criteria) =>
+                persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<Device>((criteria) =>
                 {
+                    triedToRetrieveDevice = true;
                     return null;
+                });
+
+                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<TransactionLog>((criteria) =>
+                {
+                    searchPerformed = true;
+                    return new List<TransactionLog>();
                 });
 
                 ListenerDataProvider dataProider = new ListenerDataProvider(persistenceManager);
                 response = dataProider.GetTransactionLog(request);
             }
 
-            Assert.AreEqual(response.Count, 0);
+            Assert.AreEqual(response.Count, 0, "Response should contain empty list");
+            Assert.AreEqual(true, triedToRetrieveDevice, "Device retrieval should be called");
+            Assert.AreEqual(false, searchPerformed, "Search should not be performed");
         }
     }
 }
