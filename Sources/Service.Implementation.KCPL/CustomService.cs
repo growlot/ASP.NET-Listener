@@ -273,7 +273,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA"),
                 MeterStatus = meter.CustomField13,
                 Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
-                AmrModuleNumber = meter.CustomField2.PadLeft(10, '0'),
+                AmrModuleNumber = meter.CustomField2 != null ? meter.CustomField2.PadLeft(10, '0') : "0".PadLeft(10, '0'),
                 FirmwareRevision = meter.FirmwareRevision1,
                 ProgramCode = null, // not used
                 KYZPresent = meter.CustomField8,
