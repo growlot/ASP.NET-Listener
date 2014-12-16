@@ -158,34 +158,49 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 Manufacturer = meter.CustomField16,
                 MeterSerialNumber = meter.EquipmentNumber,
                 NWH = "NWH",
-                DateTested = meterTest.TestDate,
+                TestStartTime = meterTest.TestDate,
+                TestEndTime = meterTest.TestDateStop,
                 TesterId = meterTest.TesterId,
-                MeterType = meter.ModelNumber,
+                IndependentBusinessUnit = meter.CustomField1 == "MPS" ? "MOWAC" : "MOWAF",
+                MeterType = meter.CustomField10,
+                Wires2 = "W",
                 Class = meter.CustomField3,
                 RegisterRatio = meter.RegisterRatio,
                 RegisterType = meter.CustomField7,
+                DemandInterval2 = "M",
+                MeterConstant = 1,
                 BoardId = meterTest.WecoSerialNumber,
+                CommentsPrefix = meter.CustomField1 == "MPS" ? "MPS" : "SJ ",
                 Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
-                RepairCode = null, // not used
-                TestType = meterTest.TestReason,
+                CommentDate = meterTest.TestDate,
+                Codes = "RSN TEST 02 REPR CODE 08",
+                RetireReason = meter.CustomField9,
+                SetupTypeCode = meterTest.TestReason,
                 Form = meter.Form,
                 Base = meter.Base.ToString(),
                 Volts = (decimal)meter.TestVolts,
                 Amps = (decimal)meter.TestAmps,
-                AsFoundFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "FL"),
-                AsFoundPowerFactor = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "PF"),
-                AsFoundLightLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "LL"),
-                AsFoundAFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'A', "FL"),
-                AsFoundBFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'B', "FL"),
-                AsFoundCFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'C', "FL"),
-                AsLeftFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "FL"),
-                AsLeftPowerFactor = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "PF"),
-                AsLeftLightLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "LL"),
-                AsLeftAFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'A', "FL"),
-                AsLeftBFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'B', "FL"),
-                AsLeftCFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'C', "FL"),
-                AsFoundWeightedAverage = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "WA"),
-                AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA")
+                AsFoundFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "FL", -999.99F),
+                AsFoundPowerFactor = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "PF", -999.99F),
+                AsFoundLightLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "LL", -999.99F),
+                AsFoundAFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'A', "FL", -999.99F),
+                NotUsed13 = "-999.99-999.99",
+                AsFoundBFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'B', "FL", -999.99F),
+                NotUsed14 = "-999.99-999.99",
+                AsFoundCFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'C', "FL", -999.99F),
+                NotUsed15 = "-999.99-999.99",
+                AsLeftFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "FL", -999.99F),
+                AsLeftPowerFactor = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "PF", -999.99F),
+                AsLeftLightLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "LL", -999.99F),
+                AsLeftAFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'A', "FL", -999.99F),
+                NotUsed16 = "-999.99-999.99",
+                AsLeftBFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'B', "FL", -999.99F),
+                NotUsed17 = "-999.99-999.99",
+                AsLeftCFullLoad = (decimal)Transformations.GetAsLeft(meterTestResults, 'C', "FL", -999.99F),
+                NotUsed18 = "-999.99-999.99",
+                AsFoundWeightedAverage = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "WA", -999.99F),
+                AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA", -999.99F),
+                LineEnd = "    0    0                    900  900  1-999.99000   0.00000NO      600"
             };
             
             int tempInt;
@@ -214,7 +229,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 }
 
                 Reading testReading = testReadings.First<Reading>();
-                gmoCisFile.AsFoundRead = testReading.ReadingValue;
+                gmoCisFile.KWHReading = testReading.ReadingValue;
             }
 
             FileHelperEngine engine = new FileHelperEngine(typeof(GmoCisFile));

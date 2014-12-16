@@ -124,8 +124,11 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <param name="meterTestResults">The list of meter test results.</param>
         /// <param name="element">The element.</param>
         /// <param name="testType">Type of the test.</param>
-        /// <returns>Returns the AsLeft if specific element and testType exists in test result set. Returns 0 otherwise.</returns>
-        public static float GetAsLeft(IList<MeterTestResult> meterTestResults, char element, string testType)
+        /// <param name="defaultNotFound">The default value used if test results not found.</param>
+        /// <returns>
+        /// Returns the AsLeft if specific element and testType exists in test result set. Returns specified defaultNotFound value otherwise.
+        /// </returns>
+        public static float GetAsLeft(IList<MeterTestResult> meterTestResults, char element, string testType, float defaultNotFound)
         {
             float result;
 
@@ -137,7 +140,45 @@ namespace AMSLLC.Listener.Service.Implementation
             }
             catch (InvalidOperationException)
             {
-                result = 0;
+                result = defaultNotFound;
+            }
+
+            return result;
+        }
+        
+        /// <summary>
+        /// Gets the AsLeft test value for specific test result.
+        /// </summary>
+        /// <param name="meterTestResults">The list of meter test results.</param>
+        /// <param name="element">The element.</param>
+        /// <param name="testType">Type of the test.</param>
+        /// <returns>Returns the AsLeft if specific element and testType exists in test result set. Returns 0 otherwise.</returns>
+        public static float GetAsLeft(IList<MeterTestResult> meterTestResults, char element, string testType)
+        {
+            return GetAsLeft(meterTestResults, element, testType, 0);
+        }
+
+        /// <summary>
+        /// Gets the AsLeft test value for specific test result.
+        /// </summary>
+        /// <param name="meterTestResults">The list of meter test results.</param>
+        /// <param name="element">The element.</param>
+        /// <param name="testType">Type of the test.</param>
+        /// <param name="defaultNotFound">The default value used if test results not found.</param>
+        /// <returns>Returns the AsLeft if specific element and testType exists in test result set. Returns specified defaultNotFound value otherwise.</returns>
+        public static float GetAsFound(IList<MeterTestResult> meterTestResults, char element, string testType, float defaultNotFound)
+        {
+            float result;
+
+            try
+            {
+                MeterTestResult meterTestResult = meterTestResults.Single<MeterTestResult>(e => e.Element == element && e.TestType == testType);
+                result = meterTestResult.AsFound;
+                result = (float)Math.Round((decimal)result, 2, MidpointRounding.AwayFromZero);
+            }
+            catch (InvalidOperationException)
+            {
+                result = defaultNotFound;
             }
 
             return result;
@@ -151,21 +192,8 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <param name="testType">Type of the test.</param>
         /// <returns>Returns the AsLeft if specific element and testType exists in test result set. Returns 0 otherwise.</returns>
         public static float GetAsFound(IList<MeterTestResult> meterTestResults, char element, string testType)
-        {
-            float result;
-
-            try
-            {
-                MeterTestResult meterTestResult = meterTestResults.Single<MeterTestResult>(e => e.Element == element && e.TestType == testType);
-                result = meterTestResult.AsFound;
-                result = (float)Math.Round((decimal)result, 2, MidpointRounding.AwayFromZero);
-            }
-            catch (InvalidOperationException)
-            {
-                result = 0;
-            }
-
-            return result;
+        {            
+            return GetAsFound(meterTestResults, element, testType, 0);
         }
     }
 }
