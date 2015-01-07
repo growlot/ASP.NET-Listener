@@ -135,6 +135,9 @@
   <data name="GetDeviceMockupFileNotFound" xml:space="preserve">
     <value>Neither device specific {0}, nor default {1} mockup file was found.</value>
   </data>
+  <data name="ImportFailedForSomeRecords" xml:space="preserve">
+    <value>Import failed for some records</value>
+  </data>
   <data name="SendDeviceTestMockupFileNotFound" xml:space="preserve">
     <value>Neither device test specific {0}, nor default {1} mockup file was found.</value>
   </data>

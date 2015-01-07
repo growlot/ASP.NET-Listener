@@ -115,6 +115,15 @@ namespace AMSLLC.Listener.Globalization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import failed for some records.
+        /// </summary>
+        internal static string ImportFailedForSomeRecords {
+            get {
+                return ResourceManager.GetString("ImportFailedForSomeRecords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Neither device test specific {0}, nor default {1} mockup file was found..
         /// </summary>
         internal static string SendDeviceTestMockupFileNotFound {

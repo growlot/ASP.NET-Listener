@@ -161,7 +161,6 @@ namespace AMSLLC.Listener.Common.WNP
         /// <returns>
         /// The barcode
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">barcode;Can not retrieve meter barcode, if retrieval criteria is not specified.</exception>
         /// <exception cref="ArgumentNullException">barcode;Can not retrieve barcode, if retrieval criteria is not specified.</exception>
         public T GetBarcode<T>(T barcode) where T : IBarcode
         {
@@ -171,8 +170,7 @@ namespace AMSLLC.Listener.Common.WNP
             }
 
             DetachedCriteria criteria = DetachedCriteria.For<T>();
-            criteria.Add(Restrictions.Eq("LookupCode", barcode.LookupCode));
-            criteria.Add(Restrictions.Eq("Owner", barcode.Owner));
+            criteria.Add(Restrictions.Eq("BarcodeId", barcode.BarcodeId));
 
             return this.persistenceManager.RetrieveFirstEqual<T>(criteria);
         }
