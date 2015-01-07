@@ -45,7 +45,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// The WNP system
         /// </summary>
         private WNPSystem wnpSystem;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateClassificationCode"/> class.
         /// </summary>
@@ -79,82 +79,56 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// </exception>
         public void Update(Update request)
         {
-            string message;
-            
-            if (request == null)
-            {
-                message = "Can not process request because it is null.";
-                Log.Error(message);
-                throw new FaultException(message);
-            }
-
-            UpdateDeviceClassificationCodeABMType alliantRequest = request.UpdateDeviceClassificationCodeABM;
-            if (alliantRequest == null)
-            {
-                message = "Can not process request because UpdateDeviceClassificationCodeABM is null.";
-                Log.Error(message);
-                throw new FaultException(message);
-            }
-
-            if (alliantRequest.BatchesTotalSpecified == false || alliantRequest.BatchNumberSpecified == false)
-            {
-                message = "Can not process request because BatchesTotal or BatchNumber is not specified.";
-                Log.Error(message);
-                throw new FaultException(message);
-            }
-
-            if (alliantRequest.BatchesTotal != 1 || alliantRequest.BatchNumber != 1)
-            {
-                message = "Batching is currently not supported. Both BatchesTotal and BatchNumber must be set to 1 and all data must be send in one request.";
-                Log.Error(message);
-                throw new FaultException(message);
-            }
-
             int transactionId = this.transactionLogManager.NewTransaction(TransactionTypeLookup.GetClassificationCodes, null, null, null, TransactionSourceLookup.WebServiceCall);
+            this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceStart);
+
             try
             {
-                this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceStart);
+                ValidateRequest(request);
 
                 IList<MeterBarcode> meterBarcodes = new List<MeterBarcode>();
                 IList<CurrentTransformerBarcode> currentTransformerBarcodes = new List<CurrentTransformerBarcode>();
                 IList<PotentialTransformerBarcode> potentialTransformerBarcodes = new List<PotentialTransformerBarcode>();
                 IList<Company> companies = this.deviceManager.GetCompanies();
 
-                foreach (Company company in companies)
+                foreach (DeviceClassificationCodeType classificationCode in request.UpdateDeviceClassificationCodeABM.UpdateDeviceClassificationCode)
                 {
-                    Owner owner = new Owner(int.Parse(company.InternalCode, CultureInfo.InvariantCulture));
-
-                    foreach (DeviceClassificationCodeType classificationCode in alliantRequest.UpdateDeviceClassificationCode)
+                    DeviceClassificationCodeType classificationCodeTransformed = TransformClassificationCode(classificationCode);
+                    if (ClassificationCodeValid(classificationCodeTransformed))
                     {
-                        switch (classificationCode.DeviceType)
+                        foreach (Company company in companies)
                         {
-                            case "MR":
-                                MeterBarcode meterBarcode = CreateMeterBarcodeRecord(classificationCode, owner, company.ExternalCode);
-                                if (meterBarcode != null)
-                                {
-                                    meterBarcodes.Add(meterBarcode);
-                                }
+                            Owner owner = new Owner(int.Parse(company.InternalCode, CultureInfo.InvariantCulture));
+                            switch (classificationCodeTransformed.DeviceType)
+                            {
+                                case "MR":
+                                    MeterBarcode meterBarcode = CreateMeterBarcodeRecord(classificationCodeTransformed, owner, company.ExternalCode);
+                                    if (meterBarcode != null)
+                                    {
+                                        meterBarcodes.Add(meterBarcode);
+                                    }
 
-                                break;
-                            case "CT":
-                                CurrentTransformerBarcode currentTransformerBarcode = CreateCurrentTransformerBarcodeRecord(classificationCode, owner);
-                                if (currentTransformerBarcode != null)
-                                {
-                                    currentTransformerBarcodes.Add(currentTransformerBarcode);
-                                }
+                                    break;
+                                case "CT":
+                                    CurrentTransformerBarcode currentTransformerBarcode = CreateCurrentTransformerBarcodeRecord(classificationCodeTransformed, owner);
+                                    if (currentTransformerBarcode != null)
+                                    {
+                                        currentTransformerBarcodes.Add(currentTransformerBarcode);
+                                    }
 
-                                break;
-                            case "PT":
-                                PotentialTransformerBarcode potentialTransformerBarcode = CreatePotentialTransformerBarcodeRecord(classificationCode, owner);
-                                if (potentialTransformerBarcode != null)
-                                {
-                                    potentialTransformerBarcodes.Add(potentialTransformerBarcode);
-                                }
+                                    break;
+                                case "PT":
+                                    PotentialTransformerBarcode potentialTransformerBarcode = CreatePotentialTransformerBarcodeRecord(classificationCodeTransformed, owner);
+                                    if (potentialTransformerBarcode != null)
+                                    {
+                                        potentialTransformerBarcodes.Add(potentialTransformerBarcode);
+                                    }
 
-                                break;
-                            default:
-                                Log.Error(string.Format(CultureInfo.InvariantCulture, "Unsupported device type {0} in classification code {1}.", classificationCode.DeviceType, classificationCode.ClassificationCode));
-                                break;
+                                    break;
+                                default:
+                                    Log.Error(string.Format(CultureInfo.InvariantCulture, "Unsupported device type {0} in classification code {1}.", classificationCodeTransformed.DeviceType, classificationCodeTransformed.ClassificationCode));
+                                    break;
+                            }
                         }
                     }
                 }
@@ -191,10 +165,125 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             {
                 Log.Error(ex);
                 this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, ex.Message, ex.ToString());
-                throw;
             }
 
             this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceEnd);
+        }
+
+        /// <summary>
+        /// Validates the request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <exception cref="ArgumentException">Throws exception if request is empty or any of the required fields are not present.
+        /// </exception>
+        private static void ValidateRequest(Update request)
+        {
+            string message;
+
+            if (request == null)
+            {
+                message = "Can not process request because it is null.";
+                Log.Error(message);
+                throw new ArgumentException(message);
+            }
+
+            UpdateDeviceClassificationCodeABMType alliantRequest = request.UpdateDeviceClassificationCodeABM;
+            if (alliantRequest == null)
+            {
+                message = "Can not process request because UpdateDeviceClassificationCodeABM is null.";
+                Log.Error(message);
+                throw new ArgumentException(message);
+            }
+
+            if (alliantRequest.BatchesTotalSpecified == false || alliantRequest.BatchNumberSpecified == false)
+            {
+                message = "Can not process request because BatchesTotal or BatchNumber is not specified.";
+                Log.Error(message);
+                throw new ArgumentException(message);
+            }
+
+            if (alliantRequest.BatchesTotal != 1 || alliantRequest.BatchNumber != 1)
+            {
+                message = "Batching is currently not supported. Both BatchesTotal and BatchNumber must be set to 1 and all data must be send in one request.";
+                Log.Error(message);
+                throw new ArgumentException(message);
+            }
+        }
+
+        /// <summary>
+        /// Performs any known valid classification code transformations so that it would pass validation and could be successfully inserted to database.
+        /// </summary>
+        /// <param name="classificationCode">The classification code.</param>
+        /// <returns>The transformed classification code.</returns>
+        private static DeviceClassificationCodeType TransformClassificationCode(DeviceClassificationCodeType classificationCode)
+        {
+            // Trim whitespaces on both ends and truncate string to 50 chars.
+            classificationCode.DeviceDescription = classificationCode.DeviceDescription.Trim();
+            if (classificationCode.DeviceDescription.Length > 50)
+            {
+                classificationCode.DeviceDescription = classificationCode.DeviceDescription.Substring(0, 50);
+            }
+
+            // Translate "SW" base to 'Z'
+            if (classificationCode.ElectricDevice != null && classificationCode.ElectricDevice.Base == "SW")
+            {
+                classificationCode.ElectricDevice.Base = "Z";
+            }
+
+            return classificationCode;
+        }
+
+        /// <summary>
+        /// Checks if classification code is valid.
+        /// </summary>
+        /// <param name="classificationCode">The classification code.</param>
+        /// <returns>True if classification code is valid and should be included in WNP database. False otherwise.</returns>
+        private static bool ClassificationCodeValid(DeviceClassificationCodeType classificationCode)
+        {
+            bool valid = true;
+            if (classificationCode.DeviceDescription.Length > 50)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a description longer than 50 symbols: {1}", classificationCode.ClassificationCode, classificationCode.DeviceDescription);
+                Log.Error(message);
+                valid = false;
+            }
+
+            if (classificationCode.ElectricDevice != null && classificationCode.ElectricDevice.Base.Length > 1)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a Base value longer than 1 symbol: {1}", classificationCode.ClassificationCode, classificationCode.ElectricDevice.Base);
+                Log.Error(message);
+                valid = false;
+            }
+
+            if (classificationCode.ElectricDevice != null && classificationCode.ElectricDevice.RegisterRatio.Length > 11)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a RegisterRatio value longer than 11 symbol: {1}", classificationCode.ClassificationCode, classificationCode.ElectricDevice.RegisterRatio);
+                Log.Error(message);
+                valid = false;
+            }
+
+            if (classificationCode.ElectricDevice != null && classificationCode.ElectricDevice.TestSequence.Length > 50)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a TestSequence value longer than 50 symbol: {1}", classificationCode.ClassificationCode, classificationCode.ElectricDevice.TestSequence);
+                Log.Error(message);
+                valid = false;
+            }
+
+            if (classificationCode.TransformerAttribute != null && classificationCode.TransformerAttribute.PotentialTransformer != null && classificationCode.TransformerAttribute.PotentialTransformer.VoltAmpsBurden1.Length > 2)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a VoltAmpsBurden1 value longer than 2 symbols: {1}", classificationCode.ClassificationCode, classificationCode.TransformerAttribute.PotentialTransformer.VoltAmpsBurden1);
+                Log.Error(message);
+                valid = false;
+            }
+
+            if (classificationCode.TransformerAttribute != null && classificationCode.TransformerAttribute.PotentialTransformer != null && classificationCode.TransformerAttribute.PotentialTransformer.VoltAmpsBurden2.Length > 2)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a VoltAmpsBurden2 value longer than 2 symbols: {1}", classificationCode.ClassificationCode, classificationCode.TransformerAttribute.PotentialTransformer.VoltAmpsBurden2);
+                Log.Error(message);
+                valid = false;
+            }
+
+            return valid;
         }
 
         /// <summary>
@@ -297,7 +386,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             {
                 result.Wire = classificationCode.ElectricDevice.Wire;
             }
-            
+
             if (externalCode == "I")
             {
                 result.CustomField18 = classificationCode.ElectricDevice.IPLSelectionType;
