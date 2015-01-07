@@ -102,9 +102,7 @@
     <None Include="..\Service.Host\App.config">
       <Link>App.config</Link>
     </None>
-    <Fakes Include="Fakes\AMSLLC.Listener.Common.fakes">
-      <SubType>Designer</SubType>
-    </Fakes>
+    <Fakes Include="Fakes\AMSLLC.Listener.Common.fakes" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
