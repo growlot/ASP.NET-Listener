@@ -268,6 +268,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 TestStartDate = meterTest.TestDate,
                 TestEndTime = meterTest.TestDateStop,
                 StationNumber = meterTest.StationId,
+                TestStandard = meterTest.TestStandard,
                 Location = meterTest.Location,
                 TestCode = meterTest.TestReason,
                 Manufacturer = meter.Manufacturer,
@@ -305,7 +306,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 kcplCisFile.KH = tempDecimal;
             }
 
-            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "AL DMD");
+            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "KWH READING");
             if (testReadings.Count > 0)
             {
                 if (testReadings.Count > 1)

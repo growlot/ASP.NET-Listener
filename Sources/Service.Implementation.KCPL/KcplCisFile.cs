@@ -54,7 +54,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        public string NotUsed1;
+        public string TestStandard;
 
         /// <summary>
         /// The location
