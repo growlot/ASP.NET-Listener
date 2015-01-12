@@ -112,6 +112,8 @@
     <Compile Include="MessageBasedSoap\DispatchBodyElementAttribute.cs" />
     <Compile Include="MessageBasedSoap\DispatchByBodyElementBehaviorAttribute.cs" />
     <Compile Include="MessageBasedSoap\DispatchByBodyElementOperationSelector.cs" />
+    <Compile Include="MessageBasedSoap\IXmlNamespaceExtension.cs" />
+    <Compile Include="MessageBasedSoap\MessageBasedSoapWebService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceCore.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
