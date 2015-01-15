@@ -102,32 +102,32 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="DatabaseUpdater.cs" />
-    <Compile Include="Migration_10_ServiceType_Populate.cs" />
-    <Compile Include="Migration_11_Company_Create.cs" />
-    <Compile Include="Migration_12_EquipmentType_Create.cs" />
-    <Compile Include="Migration_15_DeviceTest_Create.cs" />
-    <Compile Include="Migration_13_EquipmentType_Populate.cs" />
-    <Compile Include="Migration_16_Batch_Create.cs" />
-    <Compile Include="Migration_18_TransactionLogState_Create.cs" />
-    <Compile Include="Migration_20_PopulateCustomerData.cs" />
-    <Compile Include="Migration_21_TransactionLog_ExtendingFieldsSize.cs" />
-    <Compile Include="Migration_22_TransactionLog_AddStartEndTimes.cs" />
-    <Compile Include="Migration_6_TransactionSource_Create.cs" />
-    <Compile Include="Migration_4_TransactionState_Create.cs" />
+    <Compile Include="v2.0.0\Migration_10_ServiceType_Populate.cs" />
+    <Compile Include="v2.0.0\Migration_11_Company_Create.cs" />
+    <Compile Include="v2.0.0\Migration_12_EquipmentType_Create.cs" />
+    <Compile Include="v2.0.0\Migration_15_DeviceTest_Create.cs" />
+    <Compile Include="v2.0.0\Migration_13_EquipmentType_Populate.cs" />
+    <Compile Include="v2.0.0\Migration_16_Batch_Create.cs" />
+    <Compile Include="v2.0.0\Migration_18_TransactionLogState_Create.cs" />
+    <Compile Include="v2.0.0\Migration_20_PopulateCustomerData.cs" />
+    <Compile Include="v2.0.0\Migration_21_TransactionLog_ExtendingFieldsSize.cs" />
+    <Compile Include="v2.0.0\Migration_22_TransactionLog_AddStartEndTimes.cs" />
+    <Compile Include="v2.0.0\Migration_6_TransactionSource_Create.cs" />
+    <Compile Include="v2.0.0\Migration_4_TransactionState_Create.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Migration_1_TransactionType_Create.cs" />
-    <Compile Include="Migration_2_TransactionStatus_Create.cs" />
-    <Compile Include="Migration_3_TransactionStatus_Populate.cs" />
-    <Compile Include="Migration_5_TransactionState_Populate.cs" />
-    <Compile Include="Migration_7_TransactionSource_Populate.cs" />
-    <Compile Include="Migration_17_TransactionLog_Create.cs">
+    <Compile Include="v2.0.0\Migration_1_TransactionType_Create.cs" />
+    <Compile Include="v2.0.0\Migration_2_TransactionStatus_Create.cs" />
+    <Compile Include="v2.0.0\Migration_3_TransactionStatus_Populate.cs" />
+    <Compile Include="v2.0.0\Migration_5_TransactionState_Populate.cs" />
+    <Compile Include="v2.0.0\Migration_7_TransactionSource_Populate.cs" />
+    <Compile Include="v2.0.0\Migration_17_TransactionLog_Create.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Migration_8_TransactionType_Populate.cs" />
-    <Compile Include="Migration_14_Device_Create.cs" />
-    <Compile Include="Migration_19_PopulateCustomerData.cs" />
-    <Compile Include="Migration_99999999_PopulateCustomerData.cs" />
-    <Compile Include="Migration_9_ServiceType_Create.cs" />
+    <Compile Include="v2.0.0\Migration_8_TransactionType_Populate.cs" />
+    <Compile Include="v2.0.0\Migration_14_Device_Create.cs" />
+    <Compile Include="v2.0.0\Migration_19_PopulateCustomerData.cs" />
+    <Compile Include="v2.0.0\Migration_99999999_PopulateCustomerData.cs" />
+    <Compile Include="v2.0.0\Migration_9_ServiceType_Create.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
