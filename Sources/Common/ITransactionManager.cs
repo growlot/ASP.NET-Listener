@@ -54,6 +54,15 @@ namespace AMSLLC.Listener.Common
         void UpdateTransactionStatus(int transactionId, TransactionStatusLookup transactionStatus, string message, string debugInfo);
 
         /// <summary>
+        /// Updates the transaction status, based on operation return code.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="returnCode">The return code.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="debugInfo">The debug information.</param>
+        void UpdateTransactionStatus(int transactionId, int returnCode, string message, string debugInfo);
+
+        /// <summary>
         /// Gets all the transactions for specified search criteria.
         /// </summary>
         /// <param name="searchCriteria">The search criteria.</param>

@@ -149,7 +149,8 @@ namespace AMSLLC.Listener.Client.Implementation
                 }
             }
 
-            this.FinishTransaction(response, transactionId);
+            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+            this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
 
             return response;
         }
@@ -233,40 +234,10 @@ namespace AMSLLC.Listener.Client.Implementation
                 }
             }
 
-            this.FinishTransaction(response, transactionId);
+            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+            this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
 
             return response;
-        }
-
-        /// <summary>
-        /// Finishes the transaction by setting transaction status and last transaction state.
-        /// </summary>
-        /// <param name="response">The response.</param>
-        /// <param name="transactionId">The transaction identifier.</param>
-        protected void FinishTransaction(ClientResponse response, int transactionId)
-        {
-            if (response == null)
-            {
-                throw new ArgumentNullException("response", "Can not finish transaction if response is not provided.");
-            }
-
-            // message can not exceed 1000 symbols, because of database field limitation.
-            string message = response.Message;
-            if (message != null && message.Length > 1000)
-            {
-                message = message.Substring(0, 1000);
-            }
-
-            if (response.ReturnCode != 0)
-            {
-                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, message, response.DebugInfo);
-            }
-            else
-            {
-                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Succeeded, message, response.DebugInfo);
-            }
-
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
         }
 
         /// <summary>

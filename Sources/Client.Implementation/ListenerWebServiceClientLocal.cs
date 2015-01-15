@@ -126,7 +126,8 @@ namespace AMSLLC.Listener.Client.Implementation
                 }
             }
 
-            this.FinishTransaction(response, transactionId);
+            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+            this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
 
             return response;
         }
@@ -166,9 +167,8 @@ namespace AMSLLC.Listener.Client.Implementation
             int transactionId = this.TransactionLogManager.NewTransaction(TransactionTypeLookup.SendTestData, device.Id, deviceTestId, null, TransactionSourceLookup.WNP);
             this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
 
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientSendMessage);
-
-            this.FinishTransaction(response, transactionId);
+            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+            this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
 
             return response;
         }

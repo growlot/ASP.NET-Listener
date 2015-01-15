@@ -92,9 +92,34 @@ namespace AMSLLC.Listener.Common
         /// <param name="debugInfo">The debug information.</param>
         public void UpdateTransactionStatus(int transactionId, TransactionStatusLookup transactionStatus, string message, string debugInfo)
         {
+            // message can not exceed 1000 symbols, because of database field limitation.
+            if (message != null && message.Length > 1000)
+            {
+                message = message.Substring(0, 1000);
+            } 
+            
             this.listenerSystem.UpdateTransactionLogStatus(transactionId, (int)transactionStatus, message, debugInfo);
         }
 
+        /// <summary>
+        /// Updates the transaction status, based on operation return code.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="returnCode">The return code.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="debugInfo">The debug information.</param>
+        public void UpdateTransactionStatus(int transactionId, int returnCode, string message, string debugInfo)
+        {
+            if (returnCode != 0)
+            {
+                this.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, message, debugInfo);
+            }
+            else
+            {
+                this.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Succeeded, message, debugInfo);
+            }
+        }
+        
         /// <summary>
         /// Gets all the transactions for specified search criteria.
         /// </summary>
