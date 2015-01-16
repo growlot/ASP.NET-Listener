@@ -127,6 +127,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public void UpdateDatabase()
         {
+            // this.runner.MigrateUp(200001007, true);
             this.runner.MigrateUp(true);
         }
 

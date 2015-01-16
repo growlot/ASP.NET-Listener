@@ -102,6 +102,8 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="DatabaseUpdater.cs" />
+    <Compile Include="v2.0.1\Migration_200001006_TransactionType_Recreate.cs" />
+    <Compile Include="v2.0.1\Migration_200001001_TransactionData_Create.cs" />
     <Compile Include="v2.0.0\Migration_10_ServiceType_Populate.cs" />
     <Compile Include="v2.0.0\Migration_11_Company_Create.cs" />
     <Compile Include="v2.0.0\Migration_12_EquipmentType_Create.cs" />
@@ -130,6 +132,12 @@
     <Compile Include="v2.0.0\Migration_9_ServiceType_Create.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="v2.0.1\Migration_200001003_TransactionDirection_Create.cs" />
+    <Compile Include="v2.0.1\Migration_200001002_TransactionData_Populate.cs" />
+    <Compile Include="v2.0.1\Migration_200001004_TransactionDirection_Populate.cs" />
+    <Compile Include="v2.0.1\Migration_200001005_ExternalSystem_Create.cs" />
+    <Compile Include="v2.0.1\Migration_200001007_PopulateCustomerData.cs" />
+    <Compile Include="v2.0.1\Migration_200001008_TransactionLog_UpdateSchema.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">
