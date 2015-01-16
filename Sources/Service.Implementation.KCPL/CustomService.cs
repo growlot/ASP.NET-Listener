@@ -156,7 +156,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             GmoCisFile gmoCisFile = new GmoCisFile()
             {
                 Manufacturer = meter.CustomField16,
-                MeterSerialNumber = meter.EquipmentNumber,
+                MeterSerialNumber = meter.SerialNumber,
                 NWH = "NWH",
                 TestStartTime = meterTest.TestDate,
                 TestEndTime = meterTest.TestDateStop,
@@ -273,7 +273,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 TestCode = meterTest.TestReason,
                 Manufacturer = meter.Manufacturer,
                 CompanyCode = meter.MeterCode,
-                MeterNumber = meter.EquipmentNumber,
+                MeterNumber = meter.SerialNumber,
                 Form = meter.Form.PadLeft(2, '0'),
                 Base = meter.Base.ToString(),
                 Volts = (int)Math.Ceiling(meter.TestVolts),
