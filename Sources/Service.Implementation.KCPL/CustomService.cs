@@ -165,7 +165,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 MeterType = meter.CustomField10,
                 Wires2 = "W",
                 Class = meter.CustomField3,
-                RegisterRatio = meter.RegisterRatio,
                 RegisterType = meter.CustomField7,
                 DemandInterval2 = "M",
                 MeterConstant = 1,
@@ -218,7 +217,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             decimal tempDecimal;
             if (decimal.TryParse(meter.KH, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDecimal))
             {
-                gmoCisFile.KH = tempDecimal;
+                gmoCisFile.KH1 = tempDecimal;
+                gmoCisFile.KH2 = tempDecimal;
             }
 
             IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "KWH READING");

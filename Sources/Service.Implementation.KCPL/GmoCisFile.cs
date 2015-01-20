@@ -156,8 +156,9 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(15)]
-        [FieldTrim(TrimMode.Right)]
-        public string RegisterRatio;
+        [FieldAlign(AlignMode.Left)]
+        [FieldConverter(typeof(FormattedDecimalConverter), "0.00000")]
+        public decimal KH1;
 
         /// <summary>
         /// The register type
@@ -292,7 +293,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(9)]
         [FieldConverter(typeof(FormattedDecimalConverter), "0.00000")]
-        public decimal KH;
+        public decimal KH2;
 
         /// <summary>
         /// The volts
