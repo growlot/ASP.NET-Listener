@@ -260,12 +260,20 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         [FieldFixedLength(10)]
         [FieldTrim(TrimMode.Right)]
         public string AmrModuleNumber;
+        
+        /// <summary>
+        /// The program code
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        [FieldFixedLength(2)]
+        [FieldTrim(TrimMode.Right)]
+        public string RetireReason;
 
         /// <summary>
         /// The firmware revision
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(8)]
+        [FieldFixedLength(6)]
         [FieldTrim(TrimMode.Right)]
         public string FirmwareRevision;
 
@@ -275,7 +283,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(2)]
         [FieldTrim(TrimMode.Right)]
-        public string ProgramCode;
+        public string NotUsed3;
 
         /// <summary>
         /// The KYZ present
@@ -286,42 +294,10 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         public string KYZPresent;
 
         /// <summary>
-        /// The repair code1
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(2)]
-        [FieldTrim(TrimMode.Right)]
-        public string RepairCode1;
-
-        /// <summary>
-        /// The repair code2
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(2)]
-        [FieldTrim(TrimMode.Right)]
-        public string RepairCode2;
-
-        /// <summary>
-        /// The repair code3
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(2)]
-        [FieldTrim(TrimMode.Right)]
-        public string RepairCode3;
-
-        /// <summary>
         /// The not used3
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(2)]
-        [FieldTrim(TrimMode.Right)]
-        public string NotUsed3;
-
-        /// <summary>
-        /// The not used4
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(2)]
+        [FieldFixedLength(10)]
         [FieldTrim(TrimMode.Right)]
         public string NotUsed4;
 

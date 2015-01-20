@@ -291,12 +291,9 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 MeterStatus = meter.CustomField13,
                 Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
                 AmrModuleNumber = meter.CustomField2 != null ? meter.CustomField2.PadLeft(10, '0') : string.Empty,
+                RetireReason = meter.CustomField9,
                 FirmwareRevision = meter.FirmwareRevision1,
-                ProgramCode = null, // not used
                 KYZPresent = meter.CustomField8,
-                RepairCode1 = null, // not used
-                RepairCode2 = null, // not used
-                RepairCode3 = null, // not used
                 Company = "KCP&L",
             };
 
