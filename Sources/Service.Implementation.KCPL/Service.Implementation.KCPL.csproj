@@ -116,6 +116,9 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="CustomService.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ITransactionResponse.cs" />
+    <Compile Include="Messages\TransactionResponseServiceRequest.cs" />
     <Compile Include="NullableFormattedDecimalConverter.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
@@ -127,6 +130,7 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransactionResponseService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
