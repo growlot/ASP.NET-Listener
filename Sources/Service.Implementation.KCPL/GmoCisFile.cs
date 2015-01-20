@@ -272,12 +272,19 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         public string NotUsed10;
 
         /// <summary>
-        /// The reason
+        /// The first two symbols of AEP code (used to indicate test setup)
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(7)]
+        [FieldFixedLength(2)]
+        public string AepTestSetup;
+
+        /// <summary>
+        /// The AEP reason
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        [FieldFixedLength(5)]
         [FieldTrim(TrimMode.Right)]
-        public string SetupTypeCode;
+        public string NotUsed11;
 
         /// <summary>
         /// The form
@@ -316,7 +323,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(1)]
-        public string NotUsed11;
+        public string NotUsed12;
 
         /// <summary>
         /// The amps
@@ -331,7 +338,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(138)]
-        public string NotUsed12;
+        public string NotUsed13;
 
         /// <summary>
         /// As found full load
@@ -370,7 +377,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(14)]
-        public string NotUsed13;
+        public string NotUsed14;
 
         /// <summary>
         /// As found b full load
@@ -385,7 +392,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(14)]
-        public string NotUsed14;
+        public string NotUsed15;
 
         /// <summary>
         /// As found c full load
@@ -400,7 +407,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(14)]
-        public string NotUsed15;
+        public string NotUsed16;
 
         /// <summary>
         /// As left full load
@@ -439,7 +446,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(14)]
-        public string NotUsed16;
+        public string NotUsed17;
 
         /// <summary>
         /// As left b full load
@@ -454,7 +461,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(14)]
-        public string NotUsed17;
+        public string NotUsed18;
 
         /// <summary>
         /// As left c full load
@@ -469,7 +476,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(14)]
-        public string NotUsed18;
+        public string NotUsed19;
 
         /// <summary>
         /// As found weighted average

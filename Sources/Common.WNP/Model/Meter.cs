@@ -134,6 +134,15 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public string ProgramId { get; set; }
 
         /// <summary>
+        /// Gets or sets the aep code.
+        /// </summary>
+        /// <value>
+        /// The aep code.
+        /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Acronym for American Electric Power.")]
+        public string AepCode { get; set; }
+
+        /// <summary>
         /// Gets or sets the meter custom field 11.
         /// </summary>
         /// <value>

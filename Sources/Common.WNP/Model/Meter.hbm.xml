@@ -25,6 +25,7 @@
     <property name="Manufacturer" column="MFR" type="AnsiString" length="3" />
     <property name="SerialNumber" column="SERIAL_NO" type="AnsiString" length="20" />
     <property name="ModelNumber" column="MODEL_NO" type="AnsiString" length="30" />
+    <property name="AepCode" column="aep_code" type="AnsiString" length="20" />
 
     <property name="CustomField1" column="METER_USER01" type="AnsiString" length="50" />
     <property name="CustomField2" column="METER_USER02" type="AnsiString" length="50" />
