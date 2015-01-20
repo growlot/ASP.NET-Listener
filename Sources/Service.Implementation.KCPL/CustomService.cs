@@ -173,7 +173,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
                 CommentDate = meterTest.TestDate,
                 Codes = "RSN TEST 09 REPR CODE 08",
-                RetireReason = meter.CustomField9,
                 SetupTypeCode = meterTest.TestReason,
                 Form = meter.Form,
                 Base = meter.Base.ToString(),
@@ -202,6 +201,25 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 AsLeftWeightedAverage = (decimal)Transformations.GetAsLeft(meterTestResults, 'S', "WA", -999.99F),
                 LineEnd = "    0    0                    900  900  1-999.99000   0.00000NO      600"
             };
+
+            if (!string.IsNullOrWhiteSpace(meter.CustomField9))
+            {
+                switch (meter.CustomField9)
+                {
+                    case "OB":
+                        gmoCisFile.RetireReason = "01";
+                        break;
+                    case "MD":
+                        gmoCisFile.RetireReason = "02";
+                        break;
+                    case "TM":
+                        gmoCisFile.RetireReason = "03";
+                        break;
+                    default:
+                        gmoCisFile.RetireReason = "04";
+                        break;
+                }
+            }
             
             int tempInt;
             if (int.TryParse(meter.Phase.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
