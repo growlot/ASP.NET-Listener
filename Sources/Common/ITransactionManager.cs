@@ -20,15 +20,14 @@ namespace AMSLLC.Listener.Common
         /// <summary>
         /// Starts new transaction.
         /// </summary>
-        /// <param name="transactionType">Type of the transaction.</param>
+        /// <param name="transactionTypeId">The transaction type identifier.</param>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="deviceTestId">The device test identifier.</param>
         /// <param name="batchId">The batch identifier.</param>
-        /// <param name="transactionSource">The transaction source.</param>
         /// <returns>
         /// The transaction identifier for this new transaction.
         /// </returns>
-        int NewTransaction(TransactionTypeLookup transactionType, int? deviceId, int? deviceTestId, int? batchId, TransactionSourceLookup transactionSource);
+        int NewTransaction(int transactionTypeId, int? deviceId, int? deviceTestId, int? batchId);
 
         /// <summary>
         /// Updates the state of the transaction.
@@ -70,5 +69,23 @@ namespace AMSLLC.Listener.Common
         /// List of transactions for specified search criteria
         /// </returns>
         IList<TransactionLog> GetTransactions(TransactionLog searchCriteria);
+
+        /// <summary>
+        /// Gets the transaction information.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <returns>
+        /// The transaction information.
+        /// </returns>
+        TransactionLog GetTransaction(int transactionId);
+
+        /// <summary>
+        /// Gets the transaction type list.
+        /// </summary>
+        /// <param name="transactionData">The transaction data.</param>
+        /// <param name="transactionDirection">The transaction direction.</param>
+        /// <param name="transactionSource">The transaction source.</param>
+        /// <returns>The list of transactions that need to be run.</returns>
+        IList<TransactionType> GetTransactionTypes(TransactionDataLookup transactionData, TransactionDirectionLookup transactionDirection, TransactionSourceLookup transactionSource);
     }
 }

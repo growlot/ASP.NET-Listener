@@ -98,7 +98,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         }
         
         /// <summary>
-        /// Updates the specified request.
+        /// Updates barcodes in WNP database.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <exception cref="System.ServiceModel.FaultException">
@@ -111,83 +111,17 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// </exception>
         public void Update(Update request)
         {
-            int transactionId = this.transactionLogManager.NewTransaction(TransactionTypeLookup.GetClassificationCodes, null, null, null, TransactionSourceLookup.WebServiceCall);
-            this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceStart);
+            IList<TransactionType> transactionTypes = this.transactionLogManager.GetTransactionTypes(TransactionDataLookup.Barcode, TransactionDirectionLookup.Incoming, TransactionSourceLookup.WebServiceCall);
 
-            this.transactionLogDebugMessage = string.Empty;
-            this.meterBarcodes = new List<MeterBarcode>();
-            this.currentTransformerBarcodes = new List<CurrentTransformerBarcode>();
-            this.potentialTransformerBarcodes = new List<PotentialTransformerBarcode>();
-            this.companies = this.deviceManager.GetCompanies();
-
-            try
+            // do nothing if no transactions are configured for this action.
+            if (transactionTypes.Count == 0)
             {
-                ValidateRequest(request);
-
-                foreach (DeviceClassificationCodeType classificationCode in request.UpdateDeviceClassificationCodeABM.UpdateDeviceClassificationCode)
-                {
-                    DeviceClassificationCodeType classificationCodeTransformed = TransformClassificationCode(classificationCode);
-                    switch (classificationCodeTransformed.DeviceType)
-                    {
-                        case "MR":
-                            this.ProcessMeterBarcodeClassificationCode(classificationCodeTransformed);
-                            break;
-                        case "CT":
-                            this.ProcessCurrentTransformerBarcodeClassificationCode(classificationCodeTransformed);
-                            break;
-                        case "PT":
-                            this.ProcessPotentialTransformerBarcodeClassificationCode(classificationCodeTransformed);
-                            break;
-                        default:
-                            Log.Error(string.Format(CultureInfo.InvariantCulture, "Unsupported device type {0} in classification code {1}.", classificationCodeTransformed.DeviceType, classificationCodeTransformed.ClassificationCode));
-                            break;
-                    }
-                }
-
-                List<MeterBarcode> currentMeterBarcodes = this.wnpSystem.GetBarcodes<MeterBarcode>() as List<MeterBarcode>;
-                List<MeterBarcode> updatableMeterBarcodes = currentMeterBarcodes.Intersect<MeterBarcode>(this.meterBarcodes, new BarcodeMeterIdComparer()).ToList();
-
-                foreach (MeterBarcode meterBarcode in updatableMeterBarcodes)
-                {
-                    MeterBarcode sourceBarcode = currentMeterBarcodes.Single<MeterBarcode>(item => ((item.Owner.Id == meterBarcode.Owner.Id) && (item.LookupCode == meterBarcode.LookupCode)));
-                    MeterBarcode targetBarcode = this.meterBarcodes.Single<MeterBarcode>(item => ((item.Owner.Id == meterBarcode.Owner.Id) && (item.LookupCode == meterBarcode.LookupCode)));
-                    
-                    targetBarcode.TestRevision = sourceBarcode.TestRevision;
-                    targetBarcode.StandardMode = sourceBarcode.StandardMode;
-                    targetBarcode.DwellTime = sourceBarcode.DwellTime;
-                    targetBarcode.Optics = sourceBarcode.Optics;
-                    targetBarcode.TestTime = sourceBarcode.TestTime;
-                    targetBarcode.TestProgressMeasure = sourceBarcode.TestProgressMeasure;
-                    targetBarcode.TestService = sourceBarcode.TestService;
-                    targetBarcode.TestLimitAsFound = sourceBarcode.TestLimitAsFound;
-                    targetBarcode.TestLimitAsLeft = sourceBarcode.TestLimitAsLeft;
-                }
-
-                this.wnpSystem.CleanBarcodes<MeterBarcode>();
-                this.wnpSystem.UpdateBarcodes<MeterBarcode>(this.meterBarcodes);
-
-                this.wnpSystem.CleanBarcodes<CurrentTransformerBarcode>();
-                this.wnpSystem.UpdateBarcodes<CurrentTransformerBarcode>(this.currentTransformerBarcodes);
-
-                this.wnpSystem.CleanBarcodes<PotentialTransformerBarcode>();
-                this.wnpSystem.UpdateBarcodes<PotentialTransformerBarcode>(this.potentialTransformerBarcodes);
-
-                this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Succeeded);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-                this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, ex.Message, ex.ToString());
-                throw;
+                return;
             }
 
-            if (!string.IsNullOrEmpty(this.transactionLogDebugMessage))
+            foreach (TransactionType transactionType in transactionTypes)
             {
-                this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, this.stringManager.GetString("ImportFailedForSomeRecords", CultureInfo.CurrentCulture), this.transactionLogDebugMessage);
-            }
-            else 
-            {
-                this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceEnd);
+                this.ProcessTransaction(request, transactionType);
             }
         }
 
@@ -556,6 +490,91 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             }
 
             return result;
+        }
+        
+        /// <summary>
+        /// Processes the transaction.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="transactionType">The transaction type.</param>
+        private void ProcessTransaction(Update request, TransactionType transactionType)
+        {
+            int transactionId = this.transactionLogManager.NewTransaction(transactionType.Id, null, null, null);
+            this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceStart);
+
+            this.transactionLogDebugMessage = string.Empty;
+            this.meterBarcodes = new List<MeterBarcode>();
+            this.currentTransformerBarcodes = new List<CurrentTransformerBarcode>();
+            this.potentialTransformerBarcodes = new List<PotentialTransformerBarcode>();
+            this.companies = this.deviceManager.GetCompanies();
+
+            try
+            {
+                ValidateRequest(request);
+
+                foreach (DeviceClassificationCodeType classificationCode in request.UpdateDeviceClassificationCodeABM.UpdateDeviceClassificationCode)
+                {
+                    DeviceClassificationCodeType classificationCodeTransformed = TransformClassificationCode(classificationCode);
+                    switch (classificationCodeTransformed.DeviceType)
+                    {
+                        case "MR":
+                            this.ProcessMeterBarcodeClassificationCode(classificationCodeTransformed);
+                            break;
+                        case "CT":
+                            this.ProcessCurrentTransformerBarcodeClassificationCode(classificationCodeTransformed);
+                            break;
+                        case "PT":
+                            this.ProcessPotentialTransformerBarcodeClassificationCode(classificationCodeTransformed);
+                            break;
+                        default:
+                            Log.Error(string.Format(CultureInfo.InvariantCulture, "Unsupported device type {0} in classification code {1}.", classificationCodeTransformed.DeviceType, classificationCodeTransformed.ClassificationCode));
+                            break;
+                    }
+                }
+
+                List<MeterBarcode> currentMeterBarcodes = this.wnpSystem.GetBarcodes<MeterBarcode>() as List<MeterBarcode>;
+                List<MeterBarcode> updatableMeterBarcodes = currentMeterBarcodes.Intersect<MeterBarcode>(this.meterBarcodes, new BarcodeMeterIdComparer()).ToList();
+
+                foreach (MeterBarcode meterBarcode in updatableMeterBarcodes)
+                {
+                    MeterBarcode sourceBarcode = currentMeterBarcodes.Single<MeterBarcode>(item => ((item.Owner.Id == meterBarcode.Owner.Id) && (item.LookupCode == meterBarcode.LookupCode)));
+                    MeterBarcode targetBarcode = this.meterBarcodes.Single<MeterBarcode>(item => ((item.Owner.Id == meterBarcode.Owner.Id) && (item.LookupCode == meterBarcode.LookupCode)));
+
+                    targetBarcode.TestRevision = sourceBarcode.TestRevision;
+                    targetBarcode.StandardMode = sourceBarcode.StandardMode;
+                    targetBarcode.DwellTime = sourceBarcode.DwellTime;
+                    targetBarcode.Optics = sourceBarcode.Optics;
+                    targetBarcode.TestTime = sourceBarcode.TestTime;
+                    targetBarcode.TestProgressMeasure = sourceBarcode.TestProgressMeasure;
+                    targetBarcode.TestService = sourceBarcode.TestService;
+                    targetBarcode.TestLimitAsFound = sourceBarcode.TestLimitAsFound;
+                    targetBarcode.TestLimitAsLeft = sourceBarcode.TestLimitAsLeft;
+                }
+
+                this.wnpSystem.CleanBarcodes<MeterBarcode>();
+                this.wnpSystem.UpdateBarcodes<MeterBarcode>(this.meterBarcodes);
+
+                this.wnpSystem.CleanBarcodes<CurrentTransformerBarcode>();
+                this.wnpSystem.UpdateBarcodes<CurrentTransformerBarcode>(this.currentTransformerBarcodes);
+
+                this.wnpSystem.CleanBarcodes<PotentialTransformerBarcode>();
+                this.wnpSystem.UpdateBarcodes<PotentialTransformerBarcode>(this.potentialTransformerBarcodes);
+
+                this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Succeeded);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, ex.Message, ex.ToString());
+                throw;
+            }
+
+            if (!string.IsNullOrEmpty(this.transactionLogDebugMessage))
+            {
+                this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, this.stringManager.GetString("ImportFailedForSomeRecords", CultureInfo.CurrentCulture), this.transactionLogDebugMessage);
+            }
+
+            this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceEnd);
         }
 
         /// <summary>

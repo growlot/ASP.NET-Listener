@@ -50,17 +50,16 @@ namespace AMSLLC.Listener.Common
         /// <summary>
         /// Starts new transaction.
         /// </summary>
-        /// <param name="transactionType">Type of the transaction.</param>
+        /// <param name="transactionTypeId">The transaction type identifier.</param>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="deviceTestId">The device test identifier.</param>
         /// <param name="batchId">The batch identifier.</param>
-        /// <param name="transactionSource">The transaction source.</param>
         /// <returns>
         /// The transaction identifier for this new transaction.
         /// </returns>
-        public int NewTransaction(TransactionTypeLookup transactionType, int? deviceId, int? deviceTestId, int? batchId, TransactionSourceLookup transactionSource)
+        public int NewTransaction(int transactionTypeId, int? deviceId, int? deviceTestId, int? batchId)
         {
-            return this.listenerSystem.AddTransactionLog((int)transactionType, (int)TransactionStatusLookup.InProgress, deviceId, deviceTestId, batchId, (int)transactionSource);
+            return this.listenerSystem.AddTransactionLog(transactionTypeId, (int)TransactionStatusLookup.InProgress, deviceId, deviceTestId, batchId);
         }
 
         /// <summary>
@@ -130,6 +129,30 @@ namespace AMSLLC.Listener.Common
         public IList<TransactionLog> GetTransactions(TransactionLog searchCriteria)
         {
             return this.listenerSystem.GetTransactions(searchCriteria);
+        }
+
+        /// <summary>
+        /// Gets the transaction information.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <returns>
+        /// The transaction information.
+        /// </returns>
+        public TransactionLog GetTransaction(int transactionId)
+        {
+            return this.listenerSystem.GetTransaction(transactionId);
+        }
+
+        /// <summary>
+        /// Gets the transaction type list.
+        /// </summary>
+        /// <param name="transactionData">The transaction data.</param>
+        /// <param name="transactionDirection">The transaction direction.</param>
+        /// <param name="transactionSource">The transaction source.</param>
+        /// <returns>The list of transactions that need to be run.</returns>
+        public IList<TransactionType> GetTransactionTypes(TransactionDataLookup transactionData, TransactionDirectionLookup transactionDirection, TransactionSourceLookup transactionSource)
+        {
+            return this.listenerSystem.GetTransactionTypes((int)transactionData, (int)transactionDirection, (int)transactionSource);
         }
     }
 }

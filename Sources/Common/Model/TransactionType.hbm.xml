@@ -11,7 +11,32 @@
       <column name="TransactionTypeId" />
     </id>
 
+    <property name="Name" column="Name" />
     <property name="Description" column="Description" />
+
+    <many-to-one  name="ExternalSystem"
+                  class="ExternalSystem"
+                  column="ExternalSystemId"
+                  cascade="none"
+                  fetch="join" />
+
+    <many-to-one  name="TransactionData"
+                  class="TransactionData"
+                  column="TransactionDataId"
+                  cascade="none"
+                  fetch="join" />
+
+    <many-to-one  name="TransactionDirection"
+                  class="TransactionDirection"
+                  column="TransactionDirectionId"
+                  cascade="none"
+                  fetch="join" />
+    
+    <many-to-one  name="TransactionSource"
+                  class="TransactionSource"
+                  column="TransactionSourceId"
+                  cascade="none"
+                  fetch="join" />
 
   </class>
 

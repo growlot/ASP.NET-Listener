@@ -97,9 +97,9 @@ namespace AMSLLC.Listener.Client.Implementation
 
             logResponse = ((List<TransactionLog>)log).ConvertAll<TransactionLogResponse>(x => new TransactionLogResponse
             {
-                TransactionSource = x.TransactionSource.Description,
+                TransactionSource = x.TransactionType.TransactionSource.Description,
                 TransactionStatus = x.TransactionStatus.Description,
-                TransactionType = x.TransactionType.Description,
+                TransactionType = x.TransactionType.Name,
                 TransactionStart = (DateTime)x.TransactionStart,
                 TestDate = x.DeviceTest != null ? (DateTime?)x.DeviceTest.TestDate : null,
                 ErrorMessage = request.IncludeDetails ? x.Message : null,

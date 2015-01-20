@@ -24,12 +24,6 @@
                   cascade="none"
                   fetch="join" />
 
-    <many-to-one  name="TransactionSource"
-                  class="TransactionSource"
-                  column="TransactionSourceId"
-                  cascade="none"
-                  fetch="join" />
-
     <many-to-one  name="Device"
                   class="Device"
                   column="DeviceId"

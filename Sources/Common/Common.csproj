@@ -110,6 +110,11 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="Lookup\TransactionDataLookup.cs" />
+    <Compile Include="Lookup\TransactionDirectionLookup.cs" />
+    <Compile Include="Model\ExternalSystem.cs" />
+    <Compile Include="Model\TransactionData.cs" />
+    <Compile Include="Model\TransactionDirection.cs" />
     <Compile Include="NHibernateOracleIdentityGenerator.cs" />
     <Compile Include="DeviceManager.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -123,7 +128,6 @@
     <Compile Include="Lookup\TransactionSourceLookup.cs" />
     <Compile Include="Lookup\TransactionStateLookup.cs" />
     <Compile Include="Lookup\TransactionStatusLookup.cs" />
-    <Compile Include="Lookup\TransactionTypeLookup.cs" />
     <Compile Include="Model\Batch.cs" />
     <Compile Include="Model\Company.cs" />
     <Compile Include="Model\Config.cs">
@@ -192,6 +196,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Model\Batch.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model\TransactionData.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model\TransactionDirection.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model\ExternalSystem.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

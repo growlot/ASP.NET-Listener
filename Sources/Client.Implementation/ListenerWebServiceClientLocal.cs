@@ -95,17 +95,24 @@ namespace AMSLLC.Listener.Client.Implementation
             ClientResponse response = new ClientResponse()
             {
                 ReturnCode = 0,
-                Message = this.StringManager.GetString("DeviceReceivedSuccess", CultureInfo.CurrentCulture)
             };
+
+            IList<TransactionType> transactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.Device, TransactionDirectionLookup.Incoming, TransactionSourceLookup.WNP);
+
+            // do nothing if no transactions are configured for this action.
+            if (transactionTypes.Count == 0)
+            {
+                return response;
+            }
 
             Device device = this.CreateDevice(request);
             int deviceId = this.DeviceManager.GetOrCreateDevice(device).Id;
 
-            int transactionId = this.TransactionLogManager.NewTransaction(TransactionTypeLookup.GetDevice, deviceId, null, null, TransactionSourceLookup.WNP);
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
-
-            if (response.ReturnCode == 0)
+            foreach (TransactionType transactionType in transactionTypes)
             {
+                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, deviceId, null, null);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
+                
                 switch (request.EquipmentType)
                 {
                     case "EM":
@@ -124,10 +131,10 @@ namespace AMSLLC.Listener.Client.Implementation
                         Log.Info("Adding dummy potential transformer device.");
                         break;
                 }
-            }
 
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
-            this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
+            }
 
             return response;
         }
@@ -151,8 +158,15 @@ namespace AMSLLC.Listener.Client.Implementation
             ClientResponse response = new ClientResponse()
             {
                 ReturnCode = 0,
-                Message = this.StringManager.GetString("DeviceShopTestSuccess", CultureInfo.CurrentCulture)
             };
+
+            IList<TransactionType> transactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.DeviceTest, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
+
+            // do nothing if no transactions are configured for this action.
+            if (transactionTypes.Count == 0)
+            {
+                return response;
+            }
 
             Device device = this.CreateDevice(request);
             device = this.DeviceManager.GetOrCreateDevice(device);
@@ -164,11 +178,13 @@ namespace AMSLLC.Listener.Client.Implementation
             };
             int deviceTestId = this.DeviceManager.GetOrCreateDeviceTest(deviceTest).Id;
 
-            int transactionId = this.TransactionLogManager.NewTransaction(TransactionTypeLookup.SendTestData, device.Id, deviceTestId, null, TransactionSourceLookup.WNP);
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
-
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
-            this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
+            foreach (TransactionType transactionType in transactionTypes)
+            {
+                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, deviceTestId, null);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
+            }
 
             return response;
         }

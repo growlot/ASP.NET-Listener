@@ -81,14 +81,6 @@ namespace AMSLLC.Listener.Common.Model
         public Batch Batch { get; set; }
 
         /// <summary>
-        /// Gets or sets the transaction source.
-        /// </summary>
-        /// <value>
-        /// The transaction source.
-        /// </value>
-        public TransactionSource TransactionSource { get; set; }
-
-        /// <summary>
         /// Gets or sets the transaction start.
         /// </summary>
         /// <value>

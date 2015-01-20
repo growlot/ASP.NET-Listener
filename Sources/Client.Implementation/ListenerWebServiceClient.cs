@@ -92,65 +92,87 @@ namespace AMSLLC.Listener.Client.Implementation
             ClientResponse response = new ClientResponse()
             {
                 ReturnCode = 0,
-                Message = this.StringManager.GetString("DeviceReceivedSuccess", CultureInfo.CurrentCulture)
             };
+
+            IList<TransactionType> transactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.Device, TransactionDirectionLookup.Incoming, TransactionSourceLookup.WNP);
+
+            // do nothing if no transactions are configured for this action.
+            if (transactionTypes.Count == 0)
+            {
+                return response;
+            }
 
             Device device = this.CreateDevice(request);
             int deviceId = this.DeviceManager.GetOrCreateDevice(device).Id;
 
-            int transactionId = this.TransactionLogManager.NewTransaction(TransactionTypeLookup.GetDevice, deviceId, null, null, TransactionSourceLookup.WNP);
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
-
-            GetDeviceServiceRequest serviceRequest = null;
-
-            using (Service1Client client = new Service1Client("BasicHttpBinding_IService1", request.ListenerUrl.ToString()))
+            foreach (TransactionType transactionType in transactionTypes)
             {
-                try
-                {
-                    this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientSendMessage);
-                    serviceRequest = new GetDeviceServiceRequest()
-                    {
-                        TransactionId = transactionId,
-                        DeviceId = deviceId,
-                        Location = request.Location,
-                        TesterId = request.TesterId,
-                        TestStandard = request.TestStandard
-                    };
-                    client.GetDevice(serviceRequest);
-                }
-                catch (FaultException<ServiceFaultDetails> ex)
-                {
-                    Log.Error("Customer service call returned error.", ex);
-                    Log.Error(ex.Detail.DebugInfo);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Detail.Message;
-                    response.DebugInfo = ex.Detail.DebugInfo;
-                }
-                catch (FaultException ex)
-                {
-                    Log.Error("Service call returned error.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Message;
-                    response.DebugInfo = ex.ToString();
-                }
-                catch (CommunicationException ex)
-                {
-                    Log.Error("Service call failed.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
-                    response.DebugInfo = ex.ToString();
-                }
-                catch (TimeoutException ex)
-                {
-                    Log.Error("Service call timed out.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceCallTimeout", CultureInfo.CurrentCulture);
-                    response.DebugInfo = ex.ToString();
-                }
-            }
+                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, null, null);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
 
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
-            this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
+                int returnCode = 0;
+                string message = null;
+                string debugInfo = null;
+                
+                GetDeviceServiceRequest serviceRequest = null;
+
+                using (Service1Client client = new Service1Client("BasicHttpBinding_IService1", request.ListenerUrl.ToString()))
+                {
+                    try
+                    {
+                        this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientSendMessage);
+                        serviceRequest = new GetDeviceServiceRequest()
+                        {
+                            TransactionId = transactionId,
+                            DeviceId = deviceId,
+                            Location = request.Location,
+                            TesterId = request.TesterId,
+                            TestStandard = request.TestStandard
+                        };
+                        client.GetDevice(serviceRequest);
+                    }
+                    catch (FaultException<ServiceFaultDetails> ex)
+                    {
+                        Log.Error("Customer service call returned error.", ex);
+                        Log.Error(ex.Detail.DebugInfo);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Detail.Message;
+                        debugInfo = ex.Detail.DebugInfo;
+                    }
+                    catch (FaultException ex)
+                    {
+                        Log.Error("Service call returned error.", ex);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Message;
+                        debugInfo = ex.ToString();
+                    }
+                    catch (CommunicationException ex)
+                    {
+                        Log.Error("Service call failed.", ex);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
+                        debugInfo = ex.ToString();
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        Log.Error("Service call timed out.", ex);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceCallTimeout", CultureInfo.CurrentCulture);
+                        debugInfo = ex.ToString();
+                    }
+                }
+
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
+
+                if (returnCode != 0)
+                {
+                    response.ReturnCode = returnCode;
+                }
+
+                response.Message += Environment.NewLine + message;
+                response.DebugInfo += Environment.NewLine + debugInfo; 
+            }
 
             return response;
         }
@@ -173,8 +195,15 @@ namespace AMSLLC.Listener.Client.Implementation
             ClientResponse response = new ClientResponse()
             {
                 ReturnCode = 0,
-                Message = this.StringManager.GetString("DeviceShopTestSuccess", CultureInfo.CurrentCulture)
             };
+
+            IList<TransactionType> transactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.DeviceTest, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
+
+            // do nothing if no transactions are configured for this action.
+            if (transactionTypes.Count == 0)
+            {
+                return response;
+            }
 
             Device device = this.CreateDevice(request);
             device = this.DeviceManager.GetOrCreateDevice(device);
@@ -185,57 +214,73 @@ namespace AMSLLC.Listener.Client.Implementation
                 TestDate = request.TestDate
             };
             int deviceTestId = this.DeviceManager.GetOrCreateDeviceTest(deviceTest).Id;
-
-            int transactionId = this.TransactionLogManager.NewTransaction(TransactionTypeLookup.SendTestData, device.Id, deviceTestId, null, TransactionSourceLookup.WNP);
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
-
-            using (Service1Client client = new Service1Client("BasicHttpBinding_IService1", request.ListenerUrl.ToString()))
+            
+            foreach (TransactionType transactionType in transactionTypes)
             {
-                try
-                {
-                    this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientSendMessage);
+                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, deviceTestId, null);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
 
-                    SendTestDataServiceRequest serviceRequest = new SendTestDataServiceRequest()
+                int returnCode = 0;
+                string message = null;
+                string debugInfo = null;
+
+                using (Service1Client client = new Service1Client("BasicHttpBinding_IService1", request.ListenerUrl.ToString()))
+                {
+                    try
                     {
-                        TransactionId = transactionId,
-                        DeviceId = device.Id,
-                        DeviceTestId = deviceTestId
-                    };
-                    client.SendTestData(serviceRequest);
-                }
-                catch (FaultException<ServiceFaultDetails> ex)
-                {
-                    Log.Error("Customer service call returned error.", ex);
-                    Log.Error(ex.Detail.DebugInfo);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Detail.Message;
-                    response.DebugInfo = ex.Detail.DebugInfo;
-                }
-                catch (FaultException ex)
-                {
-                    Log.Error("Service call returned error.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Message;
-                    response.DebugInfo = ex.ToString();
-                }
-                catch (CommunicationException ex)
-                {
-                    Log.Error("Service call failed.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
-                    response.DebugInfo = ex.ToString();
-                }
-                catch (TimeoutException ex)
-                {
-                    Log.Error("Service call timed out.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceCallTimeout", CultureInfo.CurrentCulture);
-                    response.DebugInfo = ex.ToString();
-                }
-            }
+                        this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientSendMessage);
 
-            this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
-            this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
+                        SendTestDataServiceRequest serviceRequest = new SendTestDataServiceRequest()
+                        {
+                            TransactionId = transactionId,
+                            DeviceId = device.Id,
+                            DeviceTestId = deviceTestId
+                        };
+                        client.SendTestData(serviceRequest);
+                    }
+                    catch (FaultException<ServiceFaultDetails> ex)
+                    {
+                        Log.Error("Customer service call returned error.", ex);
+                        Log.Error(ex.Detail.DebugInfo);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Detail.Message;
+                        debugInfo = ex.Detail.DebugInfo;
+                    }
+                    catch (FaultException ex)
+                    {
+                        Log.Error("Service call returned error.", ex);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Message;
+                        debugInfo = ex.ToString();
+                    }
+                    catch (CommunicationException ex)
+                    {
+                        Log.Error("Service call failed.", ex);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
+                        debugInfo = ex.ToString();
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        Log.Error("Service call timed out.", ex);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceCallTimeout", CultureInfo.CurrentCulture);
+                        debugInfo = ex.ToString();
+                    }
+                }
+
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
+
+                if (returnCode != 0)
+                {
+                    response.ReturnCode = returnCode;
+                }
+
+                response.Message += Environment.NewLine + message;
+                response.DebugInfo += Environment.NewLine + debugInfo;
+            }
 
             return response;
         }

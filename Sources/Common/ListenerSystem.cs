@@ -82,11 +82,10 @@ namespace AMSLLC.Listener.Common
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="deviceTestId">The device test identifier.</param>
         /// <param name="batchId">The batch identifier.</param>
-        /// <param name="transactionSourceId">The transaction source identifier.</param>
         /// <returns>
         /// Id of new transaction.
         /// </returns>
-        public int AddTransactionLog(int transactionTypeId, int transactionStatusId, int? deviceId, int? deviceTestId, int? batchId, int transactionSourceId)
+        public int AddTransactionLog(int transactionTypeId, int transactionStatusId, int? deviceId, int? deviceTestId, int? batchId)
         {
             TransactionLog transaction = new TransactionLog();
             transaction.TransactionType = new TransactionType(transactionTypeId);
@@ -106,8 +105,6 @@ namespace AMSLLC.Listener.Common
             {
                 transaction.Batch = new Batch((int)batchId);
             }
-
-            transaction.TransactionSource = new TransactionSource(transactionSourceId);
 
             this.persistenceManager.Save<TransactionLog>(transaction);
 
@@ -151,6 +148,18 @@ namespace AMSLLC.Listener.Common
             return this.persistenceManager.RetrieveAllEqual<TransactionLog>(criteria);
         }
         
+        /// <summary>
+        /// Gets the transaction information.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <returns>
+        /// The transaction information.
+        /// </returns>
+        public TransactionLog GetTransaction(int transactionId)
+        {
+            return this.persistenceManager.GetByKey<TransactionLog>(transactionId);
+        }
+
         /// <summary>
         /// Adds the device.
         /// </summary>
@@ -280,6 +289,25 @@ namespace AMSLLC.Listener.Common
         public IList<Company> GetCompanies()
         {
             return this.persistenceManager.RetrieveAll<Company>(SessionAction.BeginAndEnd);
+        }
+
+        /// <summary>
+        /// Gets the transaction type list.
+        /// </summary>
+        /// <param name="transactionDataId">The transaction data identifier.</param>
+        /// <param name="transactionDirectionId">The transaction direction identifier.</param>
+        /// <param name="transactionSourceId">The transaction source identifier.</param>
+        /// <returns>
+        /// The list of transactions that need to be run.
+        /// </returns>
+        public IList<TransactionType> GetTransactionTypes(int transactionDataId, int transactionDirectionId, int transactionSourceId)
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<TransactionType>();
+            criteria.Add(Restrictions.Eq("TransactionData", new TransactionData(transactionDataId)));
+            criteria.Add(Restrictions.Eq("TransactionDirection", new TransactionDirection(transactionDirectionId)));
+            criteria.Add(Restrictions.Eq("TransactionSource", new TransactionSource(transactionSourceId)));
+
+            return this.persistenceManager.RetrieveAllEqual<TransactionType>(criteria);
         }
     }
 }

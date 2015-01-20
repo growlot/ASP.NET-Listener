@@ -21,6 +21,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
     using AMSLLC.Listener.Globalization;
     using AMSLLC.Listener.Service.Contract;
     using AMSLLC.Listener.Service.Implementation;
+    using AMSLLC.Listener.Service.Implementation.KCPL.Messages;
+    using AMSLLC.Listener.Service.Implementation.MessageBasedSoap;
     using FileHelpers;
     using log4net;
 
@@ -63,13 +65,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 throw new ArgumentNullException("deviceTest", "Can not send device test data if device test is not specified.");
             }
 
+            Log.Info("KCPL Send Test Data");
+
             Device device = deviceTest.Device;
             Meter meter = this.WnpSystem.GetEquipment<Meter>(device.EquipmentNumber, device.Company.Id);
             if (meter == null)
             {
                 throw new InvalidOperationException("Meter can not be found in WNP.");
-            } 
-            
+            }
+
             string message;
             switch (device.EquipmentType.ServiceType.ExternalCode)
             {
@@ -77,23 +81,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     switch (device.EquipmentType.ExternalCode)
                     {
                         case "EM":
-                            switch (meter.CustomField1)
-                            {
-                                case "KCPL":
-                                    string kcplCisEntry = this.PrepareElectricMeterTestResultsForKcplCisFile(device, deviceTest, meter);
-                                    SaveResultsToFile(kcplCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.KcplCis"]);
-                                    break;
-                                case "MPS":
-                                case "SJLP":
-                                    string gmoCisEntry = this.PrepareElectricMeterTestResultsForGmoCisFile(device, deviceTest, meter);
-                                    SaveResultsToFile(gmoCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.GmoCis"]);
-                                    break;
-                                default:
-                                    message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), device.Company.Name);
-                                    Log.Error(message);
-                                    throw new ArgumentException(message);
-                            }
-
+                            this.ProcessMeterTestResults(device, deviceTest, meter, request.TransactionId);
                             break;
                         default:
                             message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.Description, device.EquipmentType.ServiceType.Description);
@@ -107,9 +95,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     Log.Error(message1);
                     throw new ArgumentException(message1);
             } 
-            
-            Log.Info("KCPL Send Test Data");
-            this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceSendMessage);
         }
 
         /// <summary>
@@ -128,6 +113,68 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             }
         }
 
+        /// <summary>
+        /// Processes the test results of electric meter.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="deviceTest">The device test.</param>
+        /// <param name="meter">The meter.</param>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <exception cref="System.ArgumentException">Throws exception if device company is not supported.</exception>
+        private void ProcessMeterTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId)
+        {
+            switch (meter.CustomField1)
+            {
+                case "KCPL":
+                    this.ProcessKcplTestResults(device, deviceTest, meter, transactionId);
+                    break;
+                case "MPS":
+                case "SJLP":
+                    this.ProcessGmoTestResults(device, deviceTest, meter, transactionId);
+                    break;
+                default:
+                    string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), device.Company.Name);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
+            }
+        }
+        
+        /// <summary>
+        /// Processes the KCPL test results.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="deviceTest">The device test.</param>
+        /// <param name="meter">The meter.</param>
+        /// <param name="transactionId">The transaction identifier.</param>
+        private void ProcessKcplTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId)
+        {
+            TransactionLog transactionLog = this.TransactionLogManager.GetTransaction(transactionId);
+            
+            if (transactionLog.TransactionType.ExternalSystem.Name == "CIS")
+            {
+                string kcplCisEntry = this.PrepareElectricMeterTestResultsForKcplCisFile(device, deviceTest, meter);
+                SaveResultsToFile(kcplCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.KcplCis"]);
+            }
+        }
+
+        /// <summary>
+        /// Processes the GMO test results.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="deviceTest">The device test.</param>
+        /// <param name="meter">The meter.</param>
+        /// <param name="transactionId">The transaction identifier.</param>
+        private void ProcessGmoTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId)
+        {
+            TransactionLog transactionLog = this.TransactionLogManager.GetTransaction(transactionId);
+
+            if (transactionLog.TransactionType.ExternalSystem.Name == "CIS")
+            {
+                string gmoCisEntry = this.PrepareElectricMeterTestResultsForGmoCisFile(device, deviceTest, meter);
+                SaveResultsToFile(gmoCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.GmoCis"]);
+            }
+        }
+        
         /// <summary>
         /// Prepares the electric meter test results for GMO cis file.
         /// </summary>
