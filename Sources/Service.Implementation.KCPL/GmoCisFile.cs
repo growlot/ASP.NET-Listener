@@ -97,7 +97,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// The not used4
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(30)]
+        [FieldFixedLength(24)]
         public string NotUsed4;
 
         /// <summary>
