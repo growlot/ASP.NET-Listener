@@ -78,12 +78,20 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         public string IndependentBusinessUnit;
 
         /// <summary>
-        /// As found read
+        /// KWH read
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(10)]
         [FieldTrim(TrimMode.Right)]
         public string KWHReading;
+
+        /// <summary>
+        /// Demand read
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        [FieldFixedLength(6)]
+        [FieldAlign(AlignMode.Right)]
+        public string DemandReading;
 
         /// <summary>
         /// The not used4

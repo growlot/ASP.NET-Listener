@@ -251,6 +251,18 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 gmoCisFile.KWHReading = testReading.ReadingValue;
             }
 
+            testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "AF DMD");
+            if (testReadings.Count > 0)
+            {
+                if (testReadings.Count > 1)
+                {
+                    throw new InvalidOperationException("Can not prepare GMO CIS file export entry, because there is more than one AL DMD reading related to this test.");
+                }
+
+                Reading testReading = testReadings.First<Reading>();
+                gmoCisFile.DemandReading = testReading.ReadingValue;
+            }
+
             FileHelperEngine engine = new FileHelperEngine(typeof(GmoCisFile));
             return engine.WriteString(new GmoCisFile[] { gmoCisFile });
         }
