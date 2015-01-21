@@ -28,6 +28,11 @@ namespace AMSLLC.Listener.Common.Lookup
         /// <summary>
         /// The transaction has failed
         /// </summary>
-        Failed = 2
+        Failed = 2,
+
+        /// <summary>
+        /// The transaction has been skipped
+        /// </summary>
+        Skipped = 3
     }
 }

@@ -138,6 +138,7 @@
     <Compile Include="v2.0.1\Migration_200001005_ExternalSystem_Create.cs" />
     <Compile Include="v2.0.1\Migration_200001007_PopulateCustomerData.cs" />
     <Compile Include="v2.0.1\Migration_200001008_TransactionLog_UpdateSchema.cs" />
+    <Compile Include="v2.0.1\Migration_200001009_TransactionStatus_Populate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">
