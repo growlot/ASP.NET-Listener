@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
     using System.ServiceModel;
     using System.ServiceModel.Channels;
     using System.Xml;
+    using System.Xml.Serialization;
     using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Common.Lookup;
     using AMSLLC.Listener.Globalization;
@@ -63,10 +64,10 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 throw new ArgumentNullException("request");
             }
 
-            using (XmlDictionaryReader reader = request.GetReaderAtBodyContents())
+            using (XmlReader reader = request.GetReaderAtBodyContents())
             {
-                var serializer = new DataContractSerializer(typeof(TransactionResponseServiceRequest));
-                TransactionResponseServiceRequest transactionResponse = (TransactionResponseServiceRequest)serializer.ReadObject(reader);
+                var serializer = new XmlSerializer(typeof(TransactionResponseServiceRequest));
+                TransactionResponseServiceRequest transactionResponse = (TransactionResponseServiceRequest)serializer.Deserialize(reader);
 
                 int transactionId;
                 
