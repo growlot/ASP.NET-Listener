@@ -65,6 +65,14 @@ namespace AMSLLC.Listener.Common.Model
         public ExternalSystem ExternalSystem { get; set; }
 
         /// <summary>
+        /// Gets or sets the transaction completion.
+        /// </summary>
+        /// <value>
+        /// The transaction completion.
+        /// </value>
+        public TransactionCompletion TransactionCompletion { get; set; }
+
+        /// <summary>
         /// Gets or sets the transaction data.
         /// </summary>
         /// <value>

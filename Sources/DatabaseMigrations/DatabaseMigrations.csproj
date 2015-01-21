@@ -57,7 +57,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\FxCopRuleSets\DatabaseMigrations.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -116,7 +116,6 @@
     <Compile Include="v2.0.0\Migration_22_TransactionLog_AddStartEndTimes.cs" />
     <Compile Include="v2.0.0\Migration_6_TransactionSource_Create.cs" />
     <Compile Include="v2.0.0\Migration_4_TransactionState_Create.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="v2.0.0\Migration_1_TransactionType_Create.cs" />
     <Compile Include="v2.0.0\Migration_2_TransactionStatus_Create.cs" />
     <Compile Include="v2.0.0\Migration_3_TransactionStatus_Populate.cs" />
@@ -139,6 +138,10 @@
     <Compile Include="v2.0.1\Migration_200001007_PopulateCustomerData.cs" />
     <Compile Include="v2.0.1\Migration_200001008_TransactionLog_UpdateSchema.cs" />
     <Compile Include="v2.0.1\Migration_200001009_TransactionStatus_Populate.cs" />
+    <Compile Include="v2.0.1\Migration_200001010_TransactionCompletion_Create.cs" />
+    <Compile Include="v2.0.1\Migration_200001011_TransactionCompletion_Populate.cs" />
+    <Compile Include="v2.0.1\Migration_200001012_TransactionType_Update.cs" />
+    <Compile Include="v2.0.1\Migration_200001013_PopulateCustomerData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">

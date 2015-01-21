@@ -20,6 +20,12 @@
                   cascade="none"
                   fetch="join" />
 
+    <many-to-one  name="TransactionCompletion"
+                  class="TransactionCompletion"
+                  column="TransactionCompletionId"
+                  cascade="none"
+                  fetch="join" />
+
     <many-to-one  name="TransactionData"
                   class="TransactionData"
                   column="TransactionDataId"
@@ -37,7 +43,6 @@
                   column="TransactionSourceId"
                   cascade="none"
                   fetch="join" />
-
   </class>
 
 </hibernate-mapping>
