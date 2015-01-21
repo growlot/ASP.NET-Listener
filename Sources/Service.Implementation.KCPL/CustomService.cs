@@ -39,7 +39,12 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <summary>
         /// The string manager
         /// </summary>
-        private ResourceManager stringManager = Init.StringManager;
+        private static readonly ResourceManager StringManager = Init.StringManager;
+
+        /// <summary>
+        /// The string manager for customer specific notifications.
+        /// </summary>
+        private static readonly ResourceManager CustomStringManager = new ResourceManager("AMSLLC.Listener.Service.Implementation.KCPL.Properties.Resources", Assembly.GetExecutingAssembly());
 
         /// <summary>
         /// Called when [send test data].
@@ -84,14 +89,14 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                             this.ProcessMeterTestResults(device, deviceTest, meter, request.TransactionId);
                             break;
                         default:
-                            message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.Description, device.EquipmentType.ServiceType.Description);
+                            message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.Description, device.EquipmentType.ServiceType.Description);
                             Log.Error(message);
                             throw new ArgumentException(message);
                     }
 
                     break;
                 default:
-                    string message1 = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("ServiceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.ServiceType.Description);
+                    string message1 = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("ServiceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.ServiceType.Description);
                     Log.Error(message1);
                     throw new ArgumentException(message1);
             } 
@@ -133,7 +138,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     this.ProcessGmoTestResults(device, deviceTest, meter, transactionId);
                     break;
                 default:
-                    string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), device.Company.Name);
+                    string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), device.Company.Name);
                     Log.Error(message);
                     throw new ArgumentException(message);
             }
@@ -155,6 +160,25 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 string kcplCisEntry = this.PrepareElectricMeterTestResultsForKcplCisFile(device, deviceTest, meter);
                 SaveResultsToFile(kcplCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.KcplCis"]);
             }
+            else
+            {
+                TestResultServiceRequest serviceRequest = this.PrepareElectricMeterTestResultsForODM(device, deviceTest, meter);
+                serviceRequest.listenerTransactionId = transactionId.ToString(CultureInfo.InvariantCulture);
+                Uri address = new Uri(ConfigurationManager.AppSettings["Kcpl.AssetTestResult.Url"]);
+
+                try
+                {
+                    this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceSendMessage);
+                    MessageBasedSoapWebService.CallWebService<TestResultServiceRequest>(address, serviceRequest);
+                }
+                catch (Exception ex)
+                {
+                    string message = StringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
+                    Log.Error(message, ex);
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, message, ex.ToString());
+                    throw;
+                }
+            }
         }
 
         /// <summary>
@@ -172,6 +196,12 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             {
                 string gmoCisEntry = this.PrepareElectricMeterTestResultsForGmoCisFile(device, deviceTest, meter);
                 SaveResultsToFile(gmoCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.GmoCis"]);
+            }
+            else
+            {
+                string message = CustomStringManager.GetString("SkipGMODevice", CultureInfo.CurrentCulture);
+                Log.Info(message);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
             }
         }
         
@@ -367,6 +397,110 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
             FileHelperEngine engine = new FileHelperEngine(typeof(KcplCisFile));
             return engine.WriteString(new KcplCisFile[] { kcplCisFile });
+        }
+
+        /// <summary>
+        /// Prepares the electric meter test results for ODM.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="deviceTest">The device test.</param>
+        /// <param name="meter">The meter.</param>
+        /// <returns>
+        /// The electric meter test results as a string.
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">Meter can not be found in WNP.
+        /// or
+        /// Can not prepare GMO CIS file export entry, because there is more than one comment related to this test.
+        /// or
+        /// Can not prepare GMO CIS file export entry, because there is more than one reading related to this test.</exception>
+        private TestResultServiceRequest PrepareElectricMeterTestResultsForODM(Device device, DeviceTest deviceTest, Meter meter)
+        {
+            int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
+
+            IList<MeterTestResult> meterTestResults = this.WnpSystem.GetEquipmentTestResult<MeterTestResult>(device.EquipmentNumber, owner, deviceTest.TestDate);
+            if (meterTestResults.Count == 0)
+            {
+                throw new InvalidOperationException("Meter test results can not be found in WNP.");
+            }
+
+            MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
+            TestResultServiceRequest serviceRequest = new TestResultServiceRequest()
+            {
+                badgeNo = meter.EquipmentNumber,
+                testDateTime = meterTest.TestDate,
+                testerId = meterTest.TesterId,
+                testResults = new TestResultServiceRequestTestResults()
+                {
+                    asFound = new TestResultServiceRequestTestResultsAsFound()
+                    {
+                        fullLoad = Transformations.GetAsFound(meterTestResults, 'S', "FL").ToString(CultureInfo.InvariantCulture),
+                        lightLoad = Transformations.GetAsFound(meterTestResults, 'S', "LL").ToString(CultureInfo.InvariantCulture),
+                        weightedAverage = Transformations.GetAsFound(meterTestResults, 'S', "WA").ToString(CultureInfo.InvariantCulture)
+                    },
+                    asLeft = new TestResultServiceRequestTestResultsAsLeft()
+                    {
+                        fullLoad = Transformations.GetAsLeft(meterTestResults, 'S', "FL").ToString(CultureInfo.InvariantCulture),
+                        lightLoad = Transformations.GetAsLeft(meterTestResults, 'S', "LL").ToString(CultureInfo.InvariantCulture),
+                        weightedAverage = Transformations.GetAsLeft(meterTestResults, 'S', "WA").ToString(CultureInfo.InvariantCulture)
+                    },
+                    seriesPowerFactor = Transformations.GetAsLeft(meterTestResults, 'S', "PF").ToString(CultureInfo.InvariantCulture)
+                }
+            };
+            
+            switch (meterTest.Location)
+            {
+                case "FL":
+                    serviceRequest.testLocation = TestResultServiceRequestTestLocation.FL;
+                    break;
+                case "MN":
+                    serviceRequest.testLocation = TestResultServiceRequestTestLocation.MN;
+                    break;
+                case "SH":
+                    serviceRequest.testLocation = TestResultServiceRequestTestLocation.SH;
+                    break;
+                default:
+                    string message = string.Format(CultureInfo.InvariantCulture, "Test Location {0} is not supported by ODM.", meterTest.Location);
+                    Log.Error(message);
+                    throw new InvalidOperationException(message);
+            }
+
+            switch (meterTest.TestReason)
+            {
+                case "MT":
+                    serviceRequest.testType = TestResultServiceRequestTestType.MT;
+                    break;
+                case "NS":
+                    serviceRequest.testType = TestResultServiceRequestTestType.NS;
+                    break;
+                case "NT":
+                    serviceRequest.testType = TestResultServiceRequestTestType.NT;
+                    break;
+                case "SS":
+                    serviceRequest.testType = TestResultServiceRequestTestType.SS;
+                    break;
+                default:
+                    string message = string.Format(CultureInfo.InvariantCulture, "Test Type {0} is not supported by ODM.", meterTest.Location);
+                    Log.Error(message);
+                    throw new InvalidOperationException(message);
+            }
+
+            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate);
+            if (testReadings.Count > 0)
+            {
+                serviceRequest.testResults.meterReadsList = new TestResultServiceRequestTestResultsMeterReads[testReadings.Count];
+                int i = 0;
+                foreach (Reading testReading in testReadings)
+                {
+                    serviceRequest.testResults.meterReadsList[i] = new TestResultServiceRequestTestResultsMeterReads()
+                    {
+                        channel = testReading.ReadLabel,
+                        reading = testReading.ReadingValue
+                    };
+                    i++;
+                }
+            }
+
+            return serviceRequest;
         }
     }
 }

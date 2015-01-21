@@ -163,15 +163,20 @@ namespace AMSLLC.Listener.Client.Implementation
                 }
 
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
-                this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
+                
+                TransactionLog transaction = this.TransactionLogManager.GetTransaction(transactionId);
+                if (transaction.TransactionStatus.Id == (int)TransactionStatusLookup.InProgress && transaction.TransactionType.TransactionCompletion.Id == (int)TransactionCompletionLookup.Default)
+                {
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
+                }
 
                 if (returnCode != 0)
                 {
                     response.ReturnCode = returnCode;
                 }
 
-                response.Message += Environment.NewLine + message;
-                response.DebugInfo += Environment.NewLine + debugInfo; 
+                response.Message += message;
+                response.DebugInfo += debugInfo; 
             }
 
             return response;
@@ -271,15 +276,19 @@ namespace AMSLLC.Listener.Client.Implementation
 
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
 
-                this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
+                TransactionLog transaction = this.TransactionLogManager.GetTransaction(transactionId);
+                if (transaction.TransactionStatus.Id == (int)TransactionStatusLookup.InProgress && transaction.TransactionType.TransactionCompletion.Id == (int)TransactionCompletionLookup.Default)
+                {
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
+                }
 
                 if (returnCode != 0)
                 {
                     response.ReturnCode = returnCode;
                 }
 
-                response.Message += Environment.NewLine + message;
-                response.DebugInfo += Environment.NewLine + debugInfo;
+                response.Message += message;
+                response.DebugInfo += debugInfo;
             }
 
             return response;

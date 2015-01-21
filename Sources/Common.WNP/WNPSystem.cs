@@ -273,5 +273,24 @@ namespace AMSLLC.Listener.Common.WNP
 
             return this.persistenceManager.RetrieveAllEqual<Reading>(criteria);
         }
+
+        /// <summary>
+        /// Gets the test reading.
+        /// </summary>
+        /// <param name="equipmentNumber">The equipment number.</param>
+        /// <param name="ownerId">The owner identifier.</param>
+        /// <param name="testDate">The test date.</param>
+        /// <returns>
+        /// Reading value.
+        /// </returns>
+        public IList<Reading> GetTestReading(string equipmentNumber, int ownerId, DateTime testDate)
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<Reading>();
+            criteria.Add(Restrictions.Eq("EquipmentNumber", equipmentNumber));
+            criteria.Add(Restrictions.Eq("Owner", new Owner(ownerId)));
+            criteria.Add(Restrictions.Eq("ReadDate", testDate));
+
+            return this.persistenceManager.RetrieveAllEqual<Reading>(criteria);
+        }
     }
 }
