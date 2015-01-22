@@ -480,15 +480,10 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 switch (result.Taps)
                 {
                     case 1:
-                        result.Ratio = classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio1;
+                        result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}:5", classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio1);
                         break;
                     case 2:
-                        string ratio1 = classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio1;
-                        ratio1 = ratio1.Substring(0, Math.Max(ratio1.IndexOf(':'), 0));
-                        result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}/{1}", ratio1, classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio2);
-                        break;
-                    default:
-                        Log.Error(string.Format(CultureInfo.InvariantCulture, "Can not determine current transformer classification code {0} ratio, because only 1 or 2 is allowed for number of ratios, but actual value was {1}", classificationCode.ClassificationCode, result.Taps));
+                        result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}/{1}:5", classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio1, classificationCode.TransformerAttribute.CurrentTransformer.PrimaryCurrentRatio2);
                         break;
                 }
             }
@@ -559,15 +554,10 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 switch (result.Taps)
                 {
                     case 1:
-                        result.Ratio = classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio1;
+                        result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}:1", classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio1);
                         break;
                     case 2:
-                        string ratio1 = classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio1;
-                        ratio1 = ratio1.Substring(0, Math.Max(ratio1.IndexOf(':'), 0));
-                        result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}/{1}", ratio1, classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio2);
-                        break;
-                    default:
-                        Log.Error(string.Format(CultureInfo.InvariantCulture, "Can not determine potential transformer classification code {0} ratio, because only 1 or 2 is allowed for number of ratios, but actual value was {1}", classificationCode.ClassificationCode, result.Taps));
+                        result.Ratio = string.Format(CultureInfo.InvariantCulture, "{0}/{1}:1", classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio1, classificationCode.TransformerAttribute.PotentialTransformer.PrimaryVoltageRatio2);
                         break;
                 }
             }
