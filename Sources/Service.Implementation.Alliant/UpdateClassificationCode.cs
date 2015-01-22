@@ -13,6 +13,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
     using System.Linq;
     using System.Resources;
     using System.Runtime.Serialization;
+    using System.Security.Permissions;
     using System.ServiceModel;
     using System.Text;
     using AMSLLC.Listener.Common;
@@ -111,6 +112,22 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// </exception>
         public void Update(Update request)
         {
+            string userName = null;
+            string group = null;
+
+            if (!string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["WebService.Service.UserName"]))
+            {
+                userName = ConfigurationManager.AppSettings["WebService.Service.UserName"];
+            }
+
+            if (!string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["WebService.Service.Group"]))
+            {
+                group = ConfigurationManager.AppSettings["WebService.Service.Group"];
+            }
+
+            PrincipalPermission principalPerm = new PrincipalPermission(userName, group);
+            principalPerm.Demand();
+
             int transactionId = this.transactionLogManager.NewTransaction(TransactionTypeLookup.GetClassificationCodes, null, null, null, TransactionSourceLookup.WebServiceCall);
             this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceStart);
 
