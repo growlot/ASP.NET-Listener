@@ -71,7 +71,7 @@ namespace AMSLLC.Listener.Client.Implementation
 
             IList<TransactionLogResponse> logResponse = new List<TransactionLogResponse>();
             TransactionLog searchCriteria = new TransactionLog();
-            if (request.EquipmentNumber != null && request.EquipmentType != null)
+            if (!string.IsNullOrWhiteSpace(request.EquipmentNumber) && !string.IsNullOrWhiteSpace(request.EquipmentType))
             {
                 EquipmentType equipmentType = this.deviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
                 if (equipmentType == null)
