@@ -26,17 +26,17 @@ namespace Service.Implementation.Unit.Test
             IList<MeterTestResult> meterTestResults = new List<MeterTestResult>();
             MeterTestResult meterTestResult = new MeterTestResult()
             {
-                AsLeft = (float)100.125,
-                AsFound = (float)100.135,
+                AsLeft = 100.125M,
+                AsFound = 100.135M,
                 Element = 'S',
                 TestType = "LL"
             };
             meterTestResults.Add(meterTestResult);
-            float resultAsLeft = Transformations.GetAsLeft(meterTestResults, 'S', "LL");
-            float resultAsFound = Transformations.GetAsFound(meterTestResults, 'S', "LL");
+            decimal resultAsLeft = Transformations.GetAsLeft(meterTestResults, 'S', "LL");
+            decimal resultAsFound = Transformations.GetAsFound(meterTestResults, 'S', "LL");
 
-            Assert.AreEqual((float)100.13, resultAsLeft);
-            Assert.AreEqual((float)100.14, resultAsFound);
+            Assert.AreEqual(100.13M, resultAsLeft);
+            Assert.AreEqual(100.14M, resultAsFound);
         }
     }
 }

@@ -35,6 +35,6 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test current (Amps).
         /// </value>
-        public float TestCurrent { get; set; }
+        public decimal TestCurrent { get; set; }
     }
 }

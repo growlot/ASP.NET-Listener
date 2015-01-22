@@ -59,7 +59,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// As found.
         /// </value>
-        public float AsFound { get; set; }
+        public decimal AsFound { get; set; }
 
         /// <summary>
         /// Gets or sets as left.
@@ -67,7 +67,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// As left.
         /// </value>
-        public float AsLeft { get; set; }
+        public decimal AsLeft { get; set; }
         
         /// <summary>
         /// Gets or sets the test amps.
@@ -75,7 +75,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test amps.
         /// </value>
-        public float TestAmps { get; set; }
+        public decimal TestAmps { get; set; }
 
         /// <summary>
         /// Gets or sets the test volts.
@@ -83,7 +83,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test volts.
         /// </value>
-        public float TestVolts { get; set; }
+        public decimal TestVolts { get; set; }
 
         /// <summary>
         /// Gets or sets the test reason.

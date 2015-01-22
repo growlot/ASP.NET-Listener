@@ -107,7 +107,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test amps.
         /// </value>
-        public float TestAmps { get; set; }
+        public decimal TestAmps { get; set; }
 
         /// <summary>
         /// Gets or sets the test volts.
@@ -115,7 +115,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test volts.
         /// </value>
-        public float TestVolts { get; set; }
+        public decimal TestVolts { get; set; }
 
         /// <summary>
         /// Gets or sets the ami id1.

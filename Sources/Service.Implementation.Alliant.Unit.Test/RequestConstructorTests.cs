@@ -228,67 +228,67 @@ namespace Service.Implementation.Alliant.Unit.Test
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'S';
                     meterTestResult.TestType = "FL";
-                    meterTestResult.AsFound = (float)100.10;
-                    meterTestResult.AsLeft = (float)100.11;
+                    meterTestResult.AsFound = 100.10M;
+                    meterTestResult.AsLeft = 100.11M;
                     break;
                 case 2:
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'S';
                     meterTestResult.TestType = "LL";
-                    meterTestResult.AsFound = (float)100.12;
-                    meterTestResult.AsLeft = (float)100.13;
+                    meterTestResult.AsFound = 100.12M;
+                    meterTestResult.AsLeft = 100.13M;
                     break;
                 case 3:
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'S';
                     meterTestResult.TestType = "PF";
-                    meterTestResult.AsFound = (float)100.14;
-                    meterTestResult.AsLeft = (float)100.15;
+                    meterTestResult.AsFound = 100.14M;
+                    meterTestResult.AsLeft = 100.15M;
                     break;
 
                 case 4:
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'A';
                     meterTestResult.TestType = "FL";
-                    meterTestResult.AsFound = (float)100.20;
-                    meterTestResult.AsLeft = (float)100.21;
+                    meterTestResult.AsFound = 100.20M;
+                    meterTestResult.AsLeft = 100.21M;
                     break;
                 case 5:
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'A';
                     meterTestResult.TestType = "PF";
-                    meterTestResult.AsFound = (float)100.24;
-                    meterTestResult.AsLeft = (float)100.25;
+                    meterTestResult.AsFound = 100.24M;
+                    meterTestResult.AsLeft = 100.25M;
                     break;
 
                 case 6:
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'B';
                     meterTestResult.TestType = "FL";
-                    meterTestResult.AsFound = (float)100.30;
-                    meterTestResult.AsLeft = (float)100.31;
+                    meterTestResult.AsFound = 100.30M;
+                    meterTestResult.AsLeft = 100.31M;
                     break;
                 case 7:
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'B';
                     meterTestResult.TestType = "PF";
-                    meterTestResult.AsFound = (float)100.34;
-                    meterTestResult.AsLeft = (float)100.35;
+                    meterTestResult.AsFound = 100.34M;
+                    meterTestResult.AsLeft = 100.35M;
                     break;
 
                 case 8:
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'C';
                     meterTestResult.TestType = "FL";
-                    meterTestResult.AsFound = (float)100.40;
-                    meterTestResult.AsLeft = (float)100.41;
+                    meterTestResult.AsFound = 100.40M;
+                    meterTestResult.AsLeft = 100.41M;
                     break;
                 case 9:
                     meterTestResult.Id = id;
                     meterTestResult.Element = 'C';
                     meterTestResult.TestType = "PF";
-                    meterTestResult.AsFound = (float)100.44;
-                    meterTestResult.AsLeft = (float)100.45;
+                    meterTestResult.AsFound = 100.44M;
+                    meterTestResult.AsLeft = 100.45M;
                     break;
             }
 

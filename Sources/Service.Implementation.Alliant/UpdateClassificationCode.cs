@@ -327,7 +327,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (classificationCode.ElectricDevice.TestAmpsSpecified)
             {
-                result.Amp = (float)classificationCode.ElectricDevice.TestAmps;
+                result.Amp = classificationCode.ElectricDevice.TestAmps;
             }
 
             char tmpChar;
@@ -364,7 +364,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (classificationCode.ElectricDevice.TestVoltageSpecified)
             {
-                result.Volt = (float)classificationCode.ElectricDevice.TestVoltage;
+                result.Volt = classificationCode.ElectricDevice.TestVoltage;
             }
 
             if (classificationCode.ElectricDevice.WireSpecified)
@@ -431,21 +431,21 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 Owner = owner,
             };
 
-            float tempFloat;
+            decimal tempFloat;
             int tempInt;
-            if (float.TryParse(classificationCode.TransformerAttribute.CurrentTransformer.OhmsBurden1, NumberStyles.Float, CultureInfo.InvariantCulture, out tempFloat))
+            if (decimal.TryParse(classificationCode.TransformerAttribute.CurrentTransformer.OhmsBurden1, NumberStyles.Float, CultureInfo.InvariantCulture, out tempFloat))
             {
                 result.Burden1 = tempFloat;
             }
 
-            if (float.TryParse(classificationCode.TransformerAttribute.CurrentTransformer.OhmsBurden2, NumberStyles.Float, CultureInfo.InvariantCulture, out tempFloat))
+            if (decimal.TryParse(classificationCode.TransformerAttribute.CurrentTransformer.OhmsBurden2, NumberStyles.Float, CultureInfo.InvariantCulture, out tempFloat))
             {
                 result.Burden2 = tempFloat;
             }
 
             if (classificationCode.TransformerAttribute.AccuracyClassSpecified)
             {
-                result.AccuracyClass1 = (float)classificationCode.TransformerAttribute.AccuracyClass;
+                result.AccuracyClass1 = classificationCode.TransformerAttribute.AccuracyClass;
             }
 
             if (classificationCode.TransformerAttribute.BasicLightingImpulseLevelSpecified)
@@ -538,7 +538,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (classificationCode.TransformerAttribute.AccuracyClassSpecified)
             {
-                result.AccuracyClass1 = (float)classificationCode.TransformerAttribute.AccuracyClass;
+                result.AccuracyClass1 = classificationCode.TransformerAttribute.AccuracyClass;
             }
 
             if (classificationCode.TransformerAttribute.BasicLightingImpulseLevelSpecified)

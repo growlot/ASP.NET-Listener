@@ -128,15 +128,15 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <returns>
         /// Returns the AsLeft if specific element and testType exists in test result set. Returns specified defaultNotFound value otherwise.
         /// </returns>
-        public static float GetAsLeft(IList<MeterTestResult> meterTestResults, char element, string testType, float defaultNotFound)
+        public static decimal GetAsLeft(IList<MeterTestResult> meterTestResults, char element, string testType, decimal defaultNotFound)
         {
-            float result;
+            decimal result;
 
             try
             {
                 MeterTestResult meterTestResult = meterTestResults.Single<MeterTestResult>(e => e.Element == element && e.TestType == testType);
                 result = meterTestResult.AsLeft;
-                result = (float)Math.Round((decimal)result, 2, MidpointRounding.AwayFromZero);
+                result = Math.Round((decimal)result, 2, MidpointRounding.AwayFromZero);
             }
             catch (InvalidOperationException)
             {
@@ -153,7 +153,7 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <param name="element">The element.</param>
         /// <param name="testType">Type of the test.</param>
         /// <returns>Returns the AsLeft if specific element and testType exists in test result set. Returns 0 otherwise.</returns>
-        public static float GetAsLeft(IList<MeterTestResult> meterTestResults, char element, string testType)
+        public static decimal GetAsLeft(IList<MeterTestResult> meterTestResults, char element, string testType)
         {
             return GetAsLeft(meterTestResults, element, testType, 0);
         }
@@ -166,15 +166,15 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <param name="testType">Type of the test.</param>
         /// <param name="defaultNotFound">The default value used if test results not found.</param>
         /// <returns>Returns the AsLeft if specific element and testType exists in test result set. Returns specified defaultNotFound value otherwise.</returns>
-        public static float GetAsFound(IList<MeterTestResult> meterTestResults, char element, string testType, float defaultNotFound)
+        public static decimal GetAsFound(IList<MeterTestResult> meterTestResults, char element, string testType, decimal defaultNotFound)
         {
-            float result;
+            decimal result;
 
             try
             {
                 MeterTestResult meterTestResult = meterTestResults.Single<MeterTestResult>(e => e.Element == element && e.TestType == testType);
                 result = meterTestResult.AsFound;
-                result = (float)Math.Round((decimal)result, 2, MidpointRounding.AwayFromZero);
+                result = Math.Round((decimal)result, 2, MidpointRounding.AwayFromZero);
             }
             catch (InvalidOperationException)
             {
@@ -191,7 +191,7 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <param name="element">The element.</param>
         /// <param name="testType">Type of the test.</param>
         /// <returns>Returns the AsLeft if specific element and testType exists in test result set. Returns 0 otherwise.</returns>
-        public static float GetAsFound(IList<MeterTestResult> meterTestResults, char element, string testType)
+        public static decimal GetAsFound(IList<MeterTestResult> meterTestResults, char element, string testType)
         {            
             return GetAsFound(meterTestResults, element, testType, 0);
         }

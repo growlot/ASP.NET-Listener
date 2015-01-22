@@ -35,6 +35,6 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test voltage.
         /// </value>
-        public float TestVoltage { get; set; }
+        public decimal TestVoltage { get; set; }
     }
 }
