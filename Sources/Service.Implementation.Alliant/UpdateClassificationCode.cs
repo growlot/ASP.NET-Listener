@@ -591,41 +591,189 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 valid = false;
             }
 
-            if (classificationCode.ElectricDevice != null && classificationCode.ElectricDevice.Base.Length > 1)
+            if (classificationCode.ElectricDevice != null && !this.ElectricMeterClassificationCodeValid(classificationCode))
             {
-                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a Base value longer than 1 symbol: {1}", classificationCode.ClassificationCode, classificationCode.ElectricDevice.Base);
+                valid = false;
+            }
+
+            if (classificationCode.TransformerAttribute != null && !this.TransformerClassificationCodeValid(classificationCode))
+            {
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        /// <summary>
+        /// Checks if electric meter classification code is valid.
+        /// </summary>
+        /// <param name="classificationCode">The classification code.</param>
+        /// <returns>True if classification code is valid and should be included in WNP database. False otherwise.</returns>
+        private bool ElectricMeterClassificationCodeValid(DeviceClassificationCodeType classificationCode)
+        {
+            bool valid = true;
+
+            DeviceClassificationCodeTypeElectricDevice meter = classificationCode.ElectricDevice;
+            if (meter.Base.Length > 1)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a Base value longer than 1 symbol: {1}", classificationCode.ClassificationCode, meter.Base);
                 Log.Error(message);
                 this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
                 valid = false;
             }
 
-            if (classificationCode.ElectricDevice != null && classificationCode.ElectricDevice.RegisterRatio.Length > 11)
+            if (meter.RegisterRatio.Length > 11)
             {
-                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a RegisterRatio value longer than 11 symbol: {1}", classificationCode.ClassificationCode, classificationCode.ElectricDevice.RegisterRatio);
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a RegisterRatio value longer than 11 symbol: {1}", classificationCode.ClassificationCode, meter.RegisterRatio);
                 Log.Error(message);
                 this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
                 valid = false;
             }
 
-            if (classificationCode.ElectricDevice != null && classificationCode.ElectricDevice.TestSequence.Length > 50)
+            if (meter.TestSequence.Length > 50)
             {
-                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a TestSequence value longer than 50 symbol: {1}", classificationCode.ClassificationCode, classificationCode.ElectricDevice.TestSequence);
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a TestSequence value longer than 50 symbol: {1}", classificationCode.ClassificationCode, meter.TestSequence);
                 Log.Error(message);
                 this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
                 valid = false;
             }
 
-            if (classificationCode.TransformerAttribute != null && classificationCode.TransformerAttribute.PotentialTransformer != null && classificationCode.TransformerAttribute.PotentialTransformer.VoltAmpsBurden1.Length > 2)
+            return valid;
+        }
+
+        /// <summary>
+        /// Checks if transformer classification code is valid.
+        /// </summary>
+        /// <param name="classificationCode">The classification code.</param>
+        /// <returns>True if classification code is valid and should be included in WNP database. False otherwise.</returns>
+        private bool TransformerClassificationCodeValid(DeviceClassificationCodeType classificationCode)
+        {
+            bool valid = true;
+            DeviceClassificationCodeTypeTransformerAttribute transformer = classificationCode.TransformerAttribute;
+
+            if (transformer.NumberOfRatios != "1" && transformer.NumberOfRatios != "2")
             {
-                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a VoltAmpsBurden1 value longer than 2 symbols: {1}", classificationCode.ClassificationCode, classificationCode.TransformerAttribute.PotentialTransformer.VoltAmpsBurden1);
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has incorrect NumberOfRatios value set to {1}, allowed values are 1 or 2.", classificationCode.ClassificationCode, transformer.NumberOfRatios);
                 Log.Error(message);
                 this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
                 valid = false;
             }
 
-            if (classificationCode.TransformerAttribute != null && classificationCode.TransformerAttribute.PotentialTransformer != null && classificationCode.TransformerAttribute.PotentialTransformer.VoltAmpsBurden2.Length > 2)
+            if (transformer.PotentialTransformer != null && !this.PotentialTransformerClassificationCodeValid(classificationCode))
             {
-                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a VoltAmpsBurden2 value longer than 2 symbols: {1}", classificationCode.ClassificationCode, classificationCode.TransformerAttribute.PotentialTransformer.VoltAmpsBurden2);
+                valid = false;
+            }                
+
+            if (transformer.CurrentTransformer != null && !this.CurrentTransformerClassificationCodeValid(classificationCode))
+            {
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        /// <summary>
+        /// Checks if potential transformer classification code is valid.
+        /// </summary>
+        /// <param name="classificationCode">The classification code.</param>
+        /// <returns>True if classification code is valid and should be included in WNP database. False otherwise.</returns>
+        private bool PotentialTransformerClassificationCodeValid(DeviceClassificationCodeType classificationCode)
+        {
+            bool valid = true;
+
+            DeviceClassificationCodeTypeTransformerAttribute transformer = classificationCode.TransformerAttribute;
+            DeviceClassificationCodeTypeTransformerAttributePotentialTransformer potentialTransformer = transformer.PotentialTransformer;
+
+            if (potentialTransformer.VoltAmpsBurden1.Length > 2)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a VoltAmpsBurden1 value longer than 2 symbols: {1}", classificationCode.ClassificationCode, potentialTransformer.VoltAmpsBurden1);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            if (potentialTransformer.VoltAmpsBurden2.Length > 2)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a VoltAmpsBurden2 value longer than 2 symbols: {1}", classificationCode.ClassificationCode, potentialTransformer.VoltAmpsBurden2);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            if (transformer.NumberOfRatios == "1" && (string.IsNullOrWhiteSpace(potentialTransformer.PrimaryVoltageRatio1) || potentialTransformer.PrimaryVoltageRatio1 == "0"))
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a NumberOfRatios value set to 1, but PrimaryVoltageRatio1 is not specified.", classificationCode.ClassificationCode);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            if (transformer.NumberOfRatios == "1" && !(string.IsNullOrWhiteSpace(potentialTransformer.PrimaryVoltageRatio2) || potentialTransformer.PrimaryVoltageRatio2 == "0"))
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a NumberOfRatios value set to 1, but PrimaryVoltageRatio2 has value {1}.", classificationCode.ClassificationCode, potentialTransformer.PrimaryVoltageRatio2);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            if (transformer.NumberOfRatios == "2" && (string.IsNullOrWhiteSpace(potentialTransformer.PrimaryVoltageRatio1) || potentialTransformer.PrimaryVoltageRatio1 == "0"))
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a NumberOfRatios value set to 2, but PrimaryVoltageRatio1 is not specified.", classificationCode.ClassificationCode);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            if (transformer.NumberOfRatios == "2" && (string.IsNullOrWhiteSpace(potentialTransformer.PrimaryVoltageRatio2) || potentialTransformer.PrimaryVoltageRatio2 == "0"))
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a NumberOfRatios value set to 2, but PrimaryVoltageRatio2 is not specified.", classificationCode.ClassificationCode);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        /// <summary>
+        /// Checks if current transformer classification code is valid.
+        /// </summary>
+        /// <param name="classificationCode">The classification code.</param>
+        /// <returns>True if classification code is valid and should be included in WNP database. False otherwise.</returns>
+        private bool CurrentTransformerClassificationCodeValid(DeviceClassificationCodeType classificationCode)
+        {
+            bool valid = true;
+
+            DeviceClassificationCodeTypeTransformerAttribute transformer = classificationCode.TransformerAttribute;
+            DeviceClassificationCodeTypeTransformerAttributeCurrentTransformer currentTransformer = transformer.CurrentTransformer;
+
+            if (transformer.NumberOfRatios == "1" && (string.IsNullOrWhiteSpace(currentTransformer.PrimaryCurrentRatio1) || currentTransformer.PrimaryCurrentRatio1 == "0"))
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a NumberOfRatios value set to 1, but PrimaryCurrentRatio1 is not specified.", classificationCode.ClassificationCode);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            if (transformer.NumberOfRatios == "1" && !(string.IsNullOrWhiteSpace(currentTransformer.PrimaryCurrentRatio2) || currentTransformer.PrimaryCurrentRatio2 == "0"))
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a NumberOfRatios value set to 1, but PrimaryCurrentRatio2 has value {1}.", classificationCode.ClassificationCode, currentTransformer.PrimaryCurrentRatio2);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            if (transformer.NumberOfRatios == "2" && (string.IsNullOrWhiteSpace(currentTransformer.PrimaryCurrentRatio1) || currentTransformer.PrimaryCurrentRatio1 == "0"))
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a NumberOfRatios value set to 2, but PrimaryCurrentRatio1 is not specified.", classificationCode.ClassificationCode);
+                Log.Error(message);
+                this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
+                valid = false;
+            }
+
+            if (transformer.NumberOfRatios == "2" && (string.IsNullOrWhiteSpace(currentTransformer.PrimaryCurrentRatio2) || currentTransformer.PrimaryCurrentRatio2 == "0"))
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, has a NumberOfRatios value set to 2, but PrimaryCurrentRatio2 is not specified.", classificationCode.ClassificationCode);
                 Log.Error(message);
                 this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
                 valid = false;
