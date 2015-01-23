@@ -30,6 +30,7 @@ namespace AMSLLC.Listener.Service.Contract
         /// The equipment number.
         /// </value>
         [DataMember]
+        [Obsolete("Device can be extracted from DeviceTestId.")]
         public int DeviceId { get; set; }
 
         /// <summary>

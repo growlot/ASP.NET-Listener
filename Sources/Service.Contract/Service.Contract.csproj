@@ -67,7 +67,6 @@
     <Compile Include="ServiceFaultDetails.cs" />
     <Compile Include="GetDeviceServiceRequest.cs" />
     <Compile Include="SendTestDataServiceRequest.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IService1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

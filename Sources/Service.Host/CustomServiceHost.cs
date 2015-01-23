@@ -145,6 +145,7 @@ namespace AMSLLC.Listener.Service.Host
         private void LoadKCPL()
         {
             this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.CustomService>();
+            this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.TransactionResponseService>();
         }
     }
 }
