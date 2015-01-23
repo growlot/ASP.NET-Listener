@@ -107,7 +107,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test amps.
         /// </value>
-        public float TestAmps { get; set; }
+        public decimal TestAmps { get; set; }
 
         /// <summary>
         /// Gets or sets the test volts.
@@ -115,7 +115,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test volts.
         /// </value>
-        public float TestVolts { get; set; }
+        public decimal TestVolts { get; set; }
 
         /// <summary>
         /// Gets or sets the ami id1.
@@ -132,6 +132,15 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The program identifier.
         /// </value>
         public string ProgramId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the aep code.
+        /// </summary>
+        /// <value>
+        /// The aep code.
+        /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Acronym for American Electric Power.")]
+        public string AepCode { get; set; }
 
         /// <summary>
         /// Gets or sets the meter custom field 11.

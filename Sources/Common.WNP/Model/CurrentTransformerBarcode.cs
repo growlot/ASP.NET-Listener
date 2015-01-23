@@ -26,7 +26,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The burden1.
         /// </value>
-        public float Burden1 { get; set; }
+        public decimal Burden1 { get; set; }
 
         /// <summary>
         /// Gets or sets the burden2.
@@ -34,6 +34,6 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The burden2.
         /// </value>
-        public float Burden2 { get; set; }
+        public decimal Burden2 { get; set; }
     }
 }

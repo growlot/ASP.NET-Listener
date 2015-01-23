@@ -36,7 +36,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The amp.
         /// </value>
-        public float Amp { get; set; }
+        public decimal Amp { get; set; }
 
         /// <summary>
         /// Gets or sets the volt.
@@ -44,7 +44,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The volt.
         /// </value>
-        public float Volt { get; set; }
+        public decimal Volt { get; set; }
 
         /// <summary>
         /// Gets or sets the KH.

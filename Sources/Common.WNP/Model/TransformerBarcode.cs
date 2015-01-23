@@ -32,7 +32,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The accuracy class1.
         /// </value>
-        public float AccuracyClass1 { get; set; }
+        public decimal AccuracyClass1 { get; set; }
 
         /// <summary>
         /// Gets or sets the accuracy class2.
@@ -40,6 +40,6 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The accuracy class2.
         /// </value>
-        public float AccuracyClass2 { get; set; }
+        public decimal AccuracyClass2 { get; set; }
     }
 }

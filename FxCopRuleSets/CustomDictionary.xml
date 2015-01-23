@@ -10,6 +10,7 @@
       <Word>amr</Word> <!-- from WNP database -->
       <Word>weco</Word>
       <Word>odm</Word>
+      <Word>aep</Word>
     </Recognized>
     <!--		<Compound>
 		  <Term CompoundAlternate="ManifestFix">manifestfix</Term>
@@ -24,6 +25,7 @@
       <Acronym>SOR</Acronym> <!-- System of record -->
       <Acronym>WECO</Acronym> <!-- WECO company -->
       <Acronym>ODM</Acronym> <!-- Oracle Device Management-->
+      <Acronym>AEP</Acronym> <!-- American Electric Power-->
     </CasingExceptions>
   </Acronyms>
 </Dictionary>

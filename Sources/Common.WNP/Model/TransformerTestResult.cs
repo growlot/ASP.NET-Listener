@@ -32,7 +32,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The ratio correction factor.
         /// </value>
-        public float RatioCorrection { get; set; }
+        public decimal RatioCorrection { get; set; }
 
         /// <summary>
         /// Gets or sets phase error.
@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The phase error.
         /// </value>
-        public float PhaseError { get; set; }
+        public decimal PhaseError { get; set; }
 
         /// <summary>
         /// Gets or sets the burden.
@@ -48,7 +48,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The burden.
         /// </value>
-        public float Burden { get; set; }
+        public decimal Burden { get; set; }
 
         /// <summary>
         /// Gets or sets the accuracy class.
@@ -56,7 +56,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The accuracy class.
         /// </value>
-        public float AccuracyClass { get; set; }
+        public decimal AccuracyClass { get; set; }
 
         /// <summary>
         /// Gets or sets the load label.
