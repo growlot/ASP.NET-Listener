@@ -42,12 +42,6 @@
                     <Button Content="Execute Request" HorizontalAlignment="Left" Height="28" Margin="176,265,0,0" VerticalAlignment="Top" Width="130" IsDefault="True" Click="DeviceReceive"/>
                 </Grid>
             </TabItem>
-            <TabItem Name="BarcodeTab" Header="Classification Code">
-                <Grid Margin="0,0,0,0">
-                    <Button Content="ExportBarcodes" HorizontalAlignment="Left" Height="28" Margin="90,265,0,0" VerticalAlignment="Top" Width="130" IsDefault="True" Click="ExportBarcodes"/>
-                    <Button Content="SendBarcodes" HorizontalAlignment="Left" Height="28" Margin="288,265,0,0" VerticalAlignment="Top" Width="130" IsDefault="True" Click="SendBarcodes"/>
-                </Grid>
-            </TabItem>
         </TabControl>
         <Separator HorizontalAlignment="Left" Height="7" Margin="29,414,0,0" VerticalAlignment="Top" Width="472"/>
         <Label Content="Request Duration" HorizontalAlignment="Left" Height="28" Margin="17,487,0,0" VerticalAlignment="Top" Width="130"/>

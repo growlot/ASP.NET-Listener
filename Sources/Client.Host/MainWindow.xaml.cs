@@ -78,7 +78,7 @@ namespace AMSLLC.Listener.Client.Host
                 TesterId = "Vladas",
                 TestStandard = "TS"
             };
-            response = this.webService.GetDevice(request);
+            response = this.webService.GetDeviceData(request);
 
             if (response != null && response.ReturnCode == 0)
             {
@@ -114,7 +114,7 @@ namespace AMSLLC.Listener.Client.Host
                 TestDate = DateTime.Parse(enteredTestDateDST.Text, CultureInfo.InvariantCulture)
             };
 
-            ClientResponse response = this.webService.SendDeviceTest(request);
+            ClientResponse response = this.webService.SendDeviceTestData(request);
 
             if (response.ReturnCode == 0)
             {
@@ -138,36 +138,6 @@ namespace AMSLLC.Listener.Client.Host
         private void Exit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
-        }
-
-        /// <summary>
-        /// Sends the barcodes to web service.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void SendBarcodes(object sender, RoutedEventArgs e)
-        {
-            ClientResponse response = ((ListenerWebServiceClientLocal)this.webService).SendBarcodes();
-
-            if (response.ReturnCode == 0)
-            {
-                // service call succeeded
-                this.serviceCallStatus.Text = this.stringManager.GetString("ServiceCallOk", CultureInfo.CurrentCulture);
-            }
-            else
-            {
-                this.serviceCallStatus.Text = this.stringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
-            }
-        }
-
-        /// <summary>
-        /// Exports the barcodes.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void ExportBarcodes(object sender, RoutedEventArgs e)
-        {
-            ((ListenerWebServiceClientLocal)this.webService).ExportBarcodes();
         }
     }
 }
