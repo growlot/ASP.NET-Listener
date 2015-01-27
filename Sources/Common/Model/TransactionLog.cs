@@ -120,5 +120,13 @@ namespace AMSLLC.Listener.Common.Model
         /// The debug information.
         /// </value>
         public string DebugInfo { get; set; }
+
+        /// <summary>
+        /// Gets or sets the data hash.
+        /// </summary>
+        /// <value>
+        /// The data hash. Used to track if integration data has changed.
+        /// </value>
+        public string DataHash { get; set; }
     }
 }

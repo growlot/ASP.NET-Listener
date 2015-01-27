@@ -14,6 +14,7 @@ namespace AMSLLC.Listener.Common
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Xml.Serialization;
     using log4net;
@@ -265,6 +266,25 @@ namespace AMSLLC.Listener.Common
             }
 
             return instance;
-        }   
+        }
+
+        /// <summary>
+        /// Gets the SHA-1 hash.
+        /// </summary>
+        /// <param name="data">The data that needs to be hashed.</param>
+        /// <returns>The has of the data</returns>
+        public static string GetHash(string data)
+        {
+            string result;
+            byte[] hash;
+
+            using (SHA1 sha = new SHA1CryptoServiceProvider())
+            {
+                hash = sha.ComputeHash(Encoding.UTF8.GetBytes(data));
+            }
+
+            result = BitConverter.ToString(hash).Replace("-", string.Empty);
+            return result;
+        }
     }
 }

@@ -142,6 +142,7 @@
     <Compile Include="v2.0.1\Migration_200001011_TransactionCompletion_Populate.cs" />
     <Compile Include="v2.0.1\Migration_200001012_TransactionType_Update.cs" />
     <Compile Include="v2.0.1\Migration_200001013_PopulateCustomerData.cs" />
+    <Compile Include="v2.0.1\Migration_200001014_TransactionLog_UpdateSchema.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">

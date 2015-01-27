@@ -54,6 +54,7 @@
     <property name="TransactionEnd" column="TransactionEnd" />
     <property name="Message" column="Message" />
     <property name="DebugInfo" column="DebugInfo" type="StringClob" />
+    <property name="DataHash" column="DataHash" type="AnsiString" length="40" />
 
   </class>
 
