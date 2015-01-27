@@ -93,6 +93,14 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public string ModelNumber { get; set; }
 
         /// <summary>
+        /// Gets or sets the modified date.
+        /// </summary>
+        /// <value>
+        /// The modified date.
+        /// </value>
+        public DateTime? ModifiedDate { get; set; }
+
+        /// <summary>
         /// Gets or sets the meter custom field 1.
         /// </summary>
         /// <value>

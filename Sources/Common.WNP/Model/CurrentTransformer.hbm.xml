@@ -25,7 +25,8 @@
     <property name="Manufacturer" column="MFR" type="AnsiString" length="3" />
     <property name="SerialNumber" column="SERIAL_NO" type="AnsiString" length="20" />
     <property name="ModelNumber" column="MODEL_NO" type="AnsiString" length="30" />
-    
+    <property name="ModifiedDate" column="MOD_DATE" />
+
     <property name="CustomField1" column="CT_USER01" type="AnsiString" length="50" />
     <property name="CustomField2" column="CT_USER02" type="AnsiString" length="50" />
     <property name="CustomField3" column="CT_USER03" type="AnsiString" length="50" />

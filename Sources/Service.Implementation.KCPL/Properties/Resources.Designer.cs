@@ -61,6 +61,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Meter status value is {0}. It is not supported for ODM integration..
+        /// </summary>
+        internal static string MeterStatusNotSupported {
+            get {
+                return ResourceManager.GetString("MeterStatusNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Skipping ODM integration, because meter doesn&apos;t belong to KCPL company..
         /// </summary>
         internal static string SkipGMODevice {

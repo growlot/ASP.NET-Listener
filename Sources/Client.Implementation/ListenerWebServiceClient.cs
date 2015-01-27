@@ -247,7 +247,8 @@ namespace AMSLLC.Listener.Client.Implementation
         public virtual ClientResponse SendBatchData(DeviceRequest request)
         {
             this.DataType = TransactionDataLookup.NewBatch;
-            //this.CreateDevice(request);
+            
+            // this.CreateDevice(request);
             return this.ProcessRequest(request);
         }
         
