@@ -52,6 +52,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// </exception>
         /// <exception cref="System.ArgumentException">
         /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "AMSLLC.Listener.Service.Contract.ServiceFaultDetails.set_Message(System.String)", Justification = "It's just a space. No need to have it localized")]
         protected override void OnGetDevice(GetDeviceServiceRequest request, Device device)
         {
             if (request == null)
@@ -187,7 +188,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <exception cref="System.ArgumentException">
         /// </exception>
         /// <exception cref="System.IO.FileNotFoundException"></exception>
-        protected override void OnSendTestData(SendTestDataServiceRequest request, DeviceTest deviceTest)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "AMSLLC.Listener.Service.Contract.ServiceFaultDetails.set_Message(System.String)", Justification = "It's just a space. No need to have it localized")]
+        protected override void OnSendTestData(SendDataServiceRequest request, DeviceTest deviceTest)
         {
             if (request == null)
             {

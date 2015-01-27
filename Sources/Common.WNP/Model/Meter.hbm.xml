@@ -42,6 +42,7 @@
     <property name="MeterCode" column="METER_CODE" type="AnsiString" length="20" />
     <property name="FirmwareRevision1" column="FIRMWARE_REV01" type="AnsiString" length="20" />
     <property name="FirmwareRevision2" column="FIRMWARE_REV02" type="AnsiString" length="20" />
+    <property name="FirmwareRevision3" column="FIRMWARE_REV03" type="AnsiString" length="20" />
     <property name="Phase" column="PHASE" />
     <property name="Wire" column="WIRE" />
     <property name="RegisterRatio" column="REGISTER_RATIO" type="AnsiString" length="20" />
@@ -52,6 +53,9 @@
     <property name="TestVolts" column="TEST_VOLTS" />
     <property name="AmiId1" column="AMI_ID1" type="AnsiString" length="30" />
     <property name="ProgramId" column="program_id" type="AnsiString" length="20" />
+    <property name="KwhDials" column="KWH_DIALS" />
+    <property name="PurchaseDate" column="PURCHASE_DATE" />
+    <property name="PurchaseOrderReference" column="PO_REF" type="AnsiString" length="20" />
 
     <property name="CustomField11" column="METER_USER11" type="AnsiString" length="50" />
     <property name="CustomField12" column="METER_USER12" type="AnsiString" length="50" />

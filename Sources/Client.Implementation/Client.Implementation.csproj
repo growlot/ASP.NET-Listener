@@ -98,17 +98,15 @@
     <Compile Include="ListenerDataProvider.cs" />
     <Compile Include="ListenerWebServiceClientLocal.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Messages\NewBatchRequest.cs" />
     <Compile Include="Messages\ClientResponse.cs" />
     <Compile Include="Messages\GetDeviceRequest.cs" />
-    <Compile Include="Messages\SendDeviceTestRequest.cs" />
+    <Compile Include="Messages\DeviceRequest.cs" />
+    <Compile Include="Messages\DeviceTestRequest.cs" />
+    <Compile Include="Messages\IListenerFields.cs" />
     <Compile Include="Messages\TransactionLogRequest.cs" />
     <Compile Include="Messages\TransactionLogResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\AlliantExternalService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Service References\ListenerService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -132,11 +130,6 @@
     <None Include="Properties\DataSources\Service.Contract.TestEquipmentSetupData.datasource">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\AlliantExternalService\item.wsdl" />
-    <None Include="Service References\AlliantExternalService\item.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\AlliantExternalService\UpdateClassificationCode.wsdl" />
     <None Include="Service References\ListenerService\item.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -168,23 +161,7 @@
     </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\AlliantExternalService\" />
     <WCFMetadataStorage Include="Service References\ListenerService\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AlliantExternalService\item.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AlliantExternalService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AlliantExternalService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AlliantExternalService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ListenerService\item.disco" />

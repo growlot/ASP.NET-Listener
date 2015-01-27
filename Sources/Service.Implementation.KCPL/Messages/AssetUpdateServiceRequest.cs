@@ -23,30 +23,18 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Messages
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class TransactionResponseServiceRequest
+    public partial class AssetUpdateServiceRequest
     {
-
-        private string debugInfoField;
 
         private int listenerTransactionIdField;
 
-        private string messageField;
+        private string badgeNoField;
 
-        private System.Nullable<int> statusField;
+        private System.DateTime statusDateTimeField;
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
-        public string debugInfo
-        {
-            get
-            {
-                return this.debugInfoField;
-            }
-            set
-            {
-                this.debugInfoField = value;
-            }
-        }
+        private AssetUpdateServiceRequestStatus statusField;
+
+        private string retirementReasonCodeField;
 
         /// <remarks/>
         public int listenerTransactionId
@@ -62,22 +50,33 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Messages
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
-        public string message
+        public string badgeNo
         {
             get
             {
-                return this.messageField;
+                return this.badgeNoField;
             }
             set
             {
-                this.messageField = value;
+                this.badgeNoField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
-        public System.Nullable<int> status
+        public System.DateTime statusDateTime
+        {
+            get
+            {
+                return this.statusDateTimeField;
+            }
+            set
+            {
+                this.statusDateTimeField = value;
+            }
+        }
+
+        /// <remarks/>
+        public AssetUpdateServiceRequestStatus status
         {
             get
             {
@@ -88,5 +87,35 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Messages
                 this.statusField = value;
             }
         }
+
+        /// <remarks/>
+        public string retirementReasonCode
+        {
+            get
+            {
+                return this.retirementReasonCodeField;
+            }
+            set
+            {
+                this.retirementReasonCodeField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.18020")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public enum AssetUpdateServiceRequestStatus
+    {
+
+        /// <remarks/>
+        RETIRED,
+
+        /// <remarks/>
+        ACTIVE,
+
+        /// <remarks/>
+        REPAIR,
     }
 }

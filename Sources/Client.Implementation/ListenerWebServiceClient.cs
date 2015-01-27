@@ -75,6 +75,30 @@ namespace AMSLLC.Listener.Client.Implementation
         protected ResourceManager StringManager { get; set; }
 
         /// <summary>
+        /// Gets or sets the type of the data.
+        /// </summary>
+        /// <value>
+        /// The type of the data.
+        /// </value>
+        protected TransactionDataLookup DataType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the device.
+        /// </summary>
+        /// <value>
+        /// The device.
+        /// </value>
+        protected Device Device { get; set; }
+
+        /// <summary>
+        /// Gets or sets the device test.
+        /// </summary>
+        /// <value>
+        /// The device test.
+        /// </value>
+        protected DeviceTest DeviceTest { get; set; }
+
+        /// <summary>
         /// Calls web service to retrieve device information.
         /// </summary>
         /// <param name="request">The device retrieve request message.</param>
@@ -82,7 +106,7 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Response detailing if call succeeded.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">request;Can not retrieve device information when request is not specified.</exception>
-        public virtual ClientResponse GetDevice(GetDeviceRequest request) // string equipmentType, string equipmentNumber, int owner, Uri listenerUrl)
+        public virtual ClientResponse GetDeviceData(GetDeviceRequest request) // string equipmentType, string equipmentNumber, int owner, Uri listenerUrl)
         {
             if (request == null)
             {
@@ -102,12 +126,11 @@ namespace AMSLLC.Listener.Client.Implementation
                 return response;
             }
 
-            Device device = this.CreateDevice(request);
-            int deviceId = this.DeviceManager.GetOrCreateDevice(device).Id;
-
+            this.CreateDevice(request);
+            
             foreach (TransactionType transactionType in transactionTypes)
             {
-                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, null, null);
+                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, this.Device.Id, null, null);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
 
                 int returnCode = 0;
@@ -124,7 +147,7 @@ namespace AMSLLC.Listener.Client.Implementation
                         serviceRequest = new GetDeviceServiceRequest()
                         {
                             TransactionId = transactionId,
-                            DeviceId = deviceId,
+                            DeviceId = this.Device.Id,
                             Location = request.Location,
                             TesterId = request.TesterId,
                             TestStandard = request.TestStandard
@@ -173,10 +196,11 @@ namespace AMSLLC.Listener.Client.Implementation
                 if (returnCode != 0)
                 {
                     response.ReturnCode = returnCode;
-                }
+                    response.Message += message;
+                    response.DebugInfo += debugInfo;
 
-                response.Message += message;
-                response.DebugInfo += debugInfo; 
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
+                }
             }
 
             return response;
@@ -190,11 +214,117 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Response detailing if call succeeded.
         /// </returns>
         /// <exception cref="ArgumentNullException">request;Can not send device test information when request is not specified.</exception>
-        public virtual ClientResponse SendDeviceTest(SendDeviceTestRequest request)
+        public virtual ClientResponse SendDeviceTestData(DeviceTestRequest request)
+        {
+            this.DataType = TransactionDataLookup.DeviceTest;
+            this.CreateDeviceTest(request);
+            return this.ProcessRequest(request);
+        }
+
+        /// <summary>
+        /// Call web service to publish device information
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>
+        /// Response detailing if call succeeded.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">request;Can not send device test information when request is not specified.</exception>
+        public virtual ClientResponse SendDeviceData(DeviceRequest request)
+        {
+            this.DataType = TransactionDataLookup.Device;
+            this.CreateDevice(request);
+            return this.ProcessRequest(request);
+        }
+
+        /// <summary>
+        /// Call web service to publish batch information
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>
+        /// Response detailing if call succeeded.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">request;Can not send device test information when request is not specified.</exception>
+        public virtual ClientResponse SendBatchData(DeviceRequest request)
+        {
+            this.DataType = TransactionDataLookup.NewBatch;
+            //this.CreateDevice(request);
+            return this.ProcessRequest(request);
+        }
+        
+        /// <summary>
+        /// Creates the device object.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <exception cref="System.ArgumentNullException">request;Can not create device record if request is not specified.</exception>
+        protected void CreateDevice(DeviceRequest request)
         {
             if (request == null)
             {
-                throw new ArgumentNullException("request", "Can not send device test information when request is not specified.");
+                throw new ArgumentNullException("request", "Can not create device record if request is not specified.");
+            } 
+
+            EquipmentType equipmentType = this.DeviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
+            Company company = this.DeviceManager.GetCompanyByInternalCode(request.CompanyId.ToString(CultureInfo.InvariantCulture));
+            this.Device = new Device
+            {
+                Company = company,
+                EquipmentNumber = request.EquipmentNumber,
+                EquipmentType = equipmentType
+            };
+
+            this.Device = this.DeviceManager.GetOrCreateDevice(this.Device);
+        }
+
+        /// <summary>
+        /// Creates the device test.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <exception cref="System.ArgumentNullException">request;Can not create device test record if request is not specified.</exception>
+        protected void CreateDeviceTest(DeviceTestRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not create device test record if request is not specified.");
+            }
+
+            this.CreateDevice(request);
+
+            DeviceTest deviceTest = new DeviceTest
+            {
+                Device = this.Device,
+                TestDate = request.TestDate
+            };
+            this.DeviceTest = this.DeviceManager.GetOrCreateDeviceTest(deviceTest);
+        }
+
+        /// <summary>
+        /// Initializes the <see cref="ListenerWebServiceClient" /> class.
+        /// </summary>
+        /// <param name="persistenceManager">The persistence manager.</param>
+        private void Initialize(IPersistenceManager persistenceManager)
+        {
+            IPersistenceController persistenceController = new PersistenceController();
+            persistenceController.InitializeListenerSystems(persistenceManager);
+            this.TransactionLogManager = new TransactionManager(persistenceController);
+            this.DeviceManager = new DeviceManager(persistenceController);
+            this.StringManager = Init.StringManager;
+        }
+        
+        /// <summary>
+        /// Call web service to publish device test results
+        /// </summary>
+        /// <typeparam name="T">The type of request.</typeparam>
+        /// <param name="request">The request.</param>
+        /// <returns>
+        /// Response detailing if call succeeded.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">request;Can not process request if it is not specified.</exception>
+        /// <exception cref="System.InvalidOperationException">Transaction data type is unclear</exception>
+        private ClientResponse ProcessRequest<T>(T request) where T : IListenerFields
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not process request if it is not specified.");
             }
 
             ClientResponse response = new ClientResponse()
@@ -202,7 +332,7 @@ namespace AMSLLC.Listener.Client.Implementation
                 ReturnCode = 0,
             };
 
-            IList<TransactionType> transactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.DeviceTest, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
+            IList<TransactionType> transactionTypes = this.TransactionLogManager.GetTransactionTypes(this.DataType, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
 
             // do nothing if no transactions are configured for this action.
             if (transactionTypes.Count == 0)
@@ -210,19 +340,25 @@ namespace AMSLLC.Listener.Client.Implementation
                 return response;
             }
 
-            Device device = this.CreateDevice(request);
-            device = this.DeviceManager.GetOrCreateDevice(device);
-
-            DeviceTest deviceTest = new DeviceTest
-            {
-                Device = device,
-                TestDate = request.TestDate
-            };
-            int deviceTestId = this.DeviceManager.GetOrCreateDeviceTest(deviceTest).Id;
-            
             foreach (TransactionType transactionType in transactionTypes)
             {
-                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, deviceTestId, null);
+                int transactionId;
+
+                switch (this.DataType)
+                {
+                    case TransactionDataLookup.Device:
+                        transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, this.Device.Id, null, null);
+                        break;
+                    case TransactionDataLookup.DeviceTest:
+                        transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, this.Device.Id, this.DeviceTest.Id, null);
+                        break;
+                    case TransactionDataLookup.NewBatch:
+                        transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, null, null, null);
+                        break;
+                    default:
+                        throw new InvalidOperationException("Transaction data type is unclear");
+                }
+
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
 
                 int returnCode = 0;
@@ -235,13 +371,35 @@ namespace AMSLLC.Listener.Client.Implementation
                     {
                         this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientSendMessage);
 
-                        SendTestDataServiceRequest serviceRequest = new SendTestDataServiceRequest()
+                        switch (this.DataType)
                         {
-                            TransactionId = transactionId,
-                            DeviceId = device.Id,
-                            DeviceTestId = deviceTestId
-                        };
-                        client.SendTestData(serviceRequest);
+                            case TransactionDataLookup.Device:
+                                SendDataServiceRequest deviceRequest = new SendDataServiceRequest()
+                                {
+                                    TransactionId = transactionId,
+                                    ObjectId = this.Device.Id,
+                                };
+                                client.SendDevice(deviceRequest);
+                                break;
+                            case TransactionDataLookup.DeviceTest:
+                                SendDataServiceRequest deviceTestRequest = new SendDataServiceRequest()
+                                {
+                                    TransactionId = transactionId,
+                                    ObjectId = this.DeviceTest.Id
+                                };
+                                client.SendTestData(deviceTestRequest);
+                                break;
+                            case TransactionDataLookup.NewBatch:
+                                SendDataServiceRequest newBatchRequest = new SendDataServiceRequest()
+                                {
+                                    TransactionId = transactionId,
+                                    ObjectId = 1
+                                };
+                                client.SendBatch(newBatchRequest);
+                                break;
+                            default:
+                                throw new InvalidOperationException("Transaction data type is unclear");
+                        }
                     }
                     catch (FaultException<ServiceFaultDetails> ex)
                     {
@@ -285,78 +443,14 @@ namespace AMSLLC.Listener.Client.Implementation
                 if (returnCode != 0)
                 {
                     response.ReturnCode = returnCode;
-                }
+                    response.Message += message;
+                    response.DebugInfo += debugInfo;
 
-                response.Message += message;
-                response.DebugInfo += debugInfo;
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
+                }
             }
 
             return response;
-        }
-
-        /// <summary>
-        /// Creates the device object from device retrieve request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>
-        /// The device object
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">request;Can not create device record if request is not specified.</exception>
-        protected Device CreateDevice(GetDeviceRequest request)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request", "Can not create device record if request is not specified.");
-            } 
-
-            EquipmentType equipmentType = this.DeviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
-            Company company = this.DeviceManager.GetCompanyByInternalCode(request.CompanyId.ToString(CultureInfo.InvariantCulture));
-            Device device = new Device
-            {
-                Company = company,
-                EquipmentNumber = request.EquipmentNumber,
-                EquipmentType = equipmentType
-            };
-            return device;
-        }
-
-        /// <summary>
-        /// Creates the device object from device shop test request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>
-        /// The device object
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">request;Can not create device record if request is not specified.</exception>
-        protected Device CreateDevice(SendDeviceTestRequest request)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request", "Can not create device record if request is not specified.");
-            } 
-
-            EquipmentType equipmentType = this.DeviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
-            Company company = this.DeviceManager.GetCompanyByInternalCode(request.CompanyId.ToString(CultureInfo.InvariantCulture));
-            Device device = new Device
-            {
-                Company = company,
-                EquipmentNumber = request.EquipmentNumber,
-                EquipmentType = equipmentType
-            };
-            return device;
-        }
-
-        /// <summary>
-        /// Initializes the <see cref="ListenerWebServiceClient" /> class.
-        /// </summary>
-        /// <param name="persistenceManager">The persistence manager.</param>
-        private void Initialize(IPersistenceManager persistenceManager)
-        {
-            IPersistenceController persistenceController = new PersistenceController();
-            persistenceController.InitializeListenerSystems(persistenceManager);
-            this.TransactionLogManager = new TransactionManager(persistenceController);
-            this.DeviceManager = new DeviceManager(persistenceController);
-            this.StringManager = Init.StringManager;
         }
     }
 }

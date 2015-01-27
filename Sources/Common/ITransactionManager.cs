@@ -62,6 +62,13 @@ namespace AMSLLC.Listener.Common
         void UpdateTransactionStatus(int transactionId, int returnCode, string message, string debugInfo);
 
         /// <summary>
+        /// Updates the transaction data hash.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="dataHash">The data hash.</param>
+        void UpdateTransactionDataHash(int transactionId, string dataHash);
+
+        /// <summary>
         /// Gets all the transactions for specified search criteria.
         /// </summary>
         /// <param name="searchCriteria">The search criteria.</param>

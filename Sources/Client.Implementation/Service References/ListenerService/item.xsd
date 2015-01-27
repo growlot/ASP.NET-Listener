@@ -17,12 +17,11 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ServiceFaultDetails" nillable="true" type="tns:ServiceFaultDetails" />
-  <xs:complexType name="SendTestDataServiceRequest">
+  <xs:complexType name="SendDataServiceRequest">
     <xs:sequence>
-      <xs:element minOccurs="0" name="DeviceId" type="xs:int" />
-      <xs:element minOccurs="0" name="DeviceTestId" type="xs:int" />
+      <xs:element minOccurs="0" name="ObjectId" type="xs:int" />
       <xs:element minOccurs="0" name="TransactionId" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="SendTestDataServiceRequest" nillable="true" type="tns:SendTestDataServiceRequest" />
+  <xs:element name="SendDataServiceRequest" nillable="true" type="tns:SendDataServiceRequest" />
 </xs:schema>

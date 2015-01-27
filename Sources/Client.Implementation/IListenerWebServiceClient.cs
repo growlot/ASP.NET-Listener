@@ -21,7 +21,17 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Response detailing if call succeeded.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">request;Can not retrieve device information when request is not specified.</exception>
-        ClientResponse GetDevice(GetDeviceRequest request);
+        ClientResponse GetDeviceData(GetDeviceRequest request);
+
+        /// <summary>
+        /// Calls web service to publish device information.
+        /// </summary>
+        /// <param name="request">The device information needed to retrieve it from database.</param>
+        /// <returns>
+        /// Response detailing if call succeeded.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">request;Can not send device information when request is not specified.</exception>
+        ClientResponse SendDeviceData(DeviceRequest request);
 
         /// <summary>
         /// Call web service to publish device test results
@@ -31,6 +41,6 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Response detailing if call succeeded.
         /// </returns>
         /// <exception cref="ArgumentNullException">request;Can not send device test information when request is not specified.</exception>
-        ClientResponse SendDeviceTest(SendDeviceTestRequest request);
+        ClientResponse SendDeviceTestData(DeviceTestRequest request);
     }
 }

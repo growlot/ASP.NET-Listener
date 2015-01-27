@@ -69,22 +69,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 var serializer = new XmlSerializer(typeof(TransactionResponseServiceRequest));
                 TransactionResponseServiceRequest transactionResponse = (TransactionResponseServiceRequest)serializer.Deserialize(reader);
 
-                int transactionId;
-                
-                if (!int.TryParse(transactionResponse.listenerTransactionId, out transactionId))
-                {
-                    throw new InvalidOperationException("Can not parse listener transaction identifier to integer.");
-                }
-
-                if (transactionResponse.status == "OK")
-                {
-                    this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Succeeded, transactionResponse.message, transactionResponse.debugInfo);
-                }
-                else 
-                {
-                    // Log.Error("Transaction failed in ODM with message.")
-                    this.transactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, transactionResponse.message, transactionResponse.debugInfo);
-                }
+                this.transactionLogManager.UpdateTransactionStatus(transactionResponse.listenerTransactionId, (int)transactionResponse.status, transactionResponse.message, transactionResponse.debugInfo);
             }
 
             return;

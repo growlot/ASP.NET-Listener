@@ -16,6 +16,15 @@
   <wsdl:message name="IService1_GetDevice_ServiceFaultDetailsFault_FaultMessage">
     <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" name="detail" element="q1:ServiceFaultDetails" />
   </wsdl:message>
+  <wsdl:message name="IService1_SendDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendDevice" />
+  </wsdl:message>
+  <wsdl:message name="IService1_SendDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IService1_SendDevice_ServiceFaultDetailsFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" name="detail" element="q2:ServiceFaultDetails" />
+  </wsdl:message>
   <wsdl:message name="IService1_SendTestData_InputMessage">
     <wsdl:part name="parameters" element="tns:SendTestData" />
   </wsdl:message>
@@ -23,7 +32,16 @@
     <wsdl:part name="parameters" element="tns:SendTestDataResponse" />
   </wsdl:message>
   <wsdl:message name="IService1_SendTestData_ServiceFaultDetailsFault_FaultMessage">
-    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" name="detail" element="q2:ServiceFaultDetails" />
+    <wsdl:part xmlns:q3="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" name="detail" element="q3:ServiceFaultDetails" />
+  </wsdl:message>
+  <wsdl:message name="IService1_SendBatch_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendBatch" />
+  </wsdl:message>
+  <wsdl:message name="IService1_SendBatch_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendBatchResponse" />
+  </wsdl:message>
+  <wsdl:message name="IService1_SendBatch_ServiceFaultDetailsFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" name="detail" element="q4:ServiceFaultDetails" />
   </wsdl:message>
   <wsdl:portType name="IService1">
     <wsdl:operation name="GetDevice">
@@ -31,10 +49,20 @@
       <wsdl:output wsaw:Action="http://tempuri.org/IService1/GetDeviceResponse" message="tns:IService1_GetDevice_OutputMessage" />
       <wsdl:fault wsaw:Action="http://tempuri.org/IService1/GetDeviceServiceFaultDetailsFault" name="ServiceFaultDetailsFault" message="tns:IService1_GetDevice_ServiceFaultDetailsFault_FaultMessage" />
     </wsdl:operation>
+    <wsdl:operation name="SendDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService1/SendDevice" message="tns:IService1_SendDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IService1/SendDeviceResponse" message="tns:IService1_SendDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IService1/SendDeviceServiceFaultDetailsFault" name="ServiceFaultDetailsFault" message="tns:IService1_SendDevice_ServiceFaultDetailsFault_FaultMessage" />
+    </wsdl:operation>
     <wsdl:operation name="SendTestData">
       <wsdl:input wsaw:Action="http://tempuri.org/IService1/SendTestData" message="tns:IService1_SendTestData_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IService1/SendTestDataResponse" message="tns:IService1_SendTestData_OutputMessage" />
       <wsdl:fault wsaw:Action="http://tempuri.org/IService1/SendTestDataServiceFaultDetailsFault" name="ServiceFaultDetailsFault" message="tns:IService1_SendTestData_ServiceFaultDetailsFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendBatch">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService1/SendBatch" message="tns:IService1_SendBatch_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IService1/SendBatchResponse" message="tns:IService1_SendBatch_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IService1/SendBatchServiceFaultDetailsFault" name="ServiceFaultDetailsFault" message="tns:IService1_SendBatch_ServiceFaultDetailsFault_FaultMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IService1" type="tns:IService1">
@@ -51,8 +79,32 @@
         <soap:fault use="literal" name="ServiceFaultDetailsFault" namespace="" />
       </wsdl:fault>
     </wsdl:operation>
+    <wsdl:operation name="SendDevice">
+      <soap:operation soapAction="http://tempuri.org/IService1/SendDevice" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDetailsFault">
+        <soap:fault use="literal" name="ServiceFaultDetailsFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
     <wsdl:operation name="SendTestData">
       <soap:operation soapAction="http://tempuri.org/IService1/SendTestData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDetailsFault">
+        <soap:fault use="literal" name="ServiceFaultDetailsFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SendBatch">
+      <soap:operation soapAction="http://tempuri.org/IService1/SendBatch" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

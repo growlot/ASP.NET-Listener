@@ -75,6 +75,20 @@ namespace AMSLLC.Listener.Common
         }
 
         /// <summary>
+        /// Updates the transaction data hash.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="dataHash">The data hash.</param>
+        public void UpdateTransactionDataHash(int transactionId, string dataHash)
+        {
+            TransactionLog transaction = this.persistenceManager.RetrieveFirstEqual<TransactionLog>("Id", transactionId);
+
+            transaction.DataHash = dataHash;
+
+            this.persistenceManager.Save<TransactionLog>(transaction);
+        }
+
+        /// <summary>
         /// Logs the new transaction.
         /// </summary>
         /// <param name="transactionTypeId">The transaction type identifier.</param>
@@ -135,6 +149,11 @@ namespace AMSLLC.Listener.Common
             if (searchCriteria.TransactionStatus != null)
             {
                 criteria.Add(Restrictions.Eq("TransactionStatus", searchCriteria.TransactionStatus));
+            }
+
+            if (searchCriteria.TransactionType != null)
+            {
+                criteria.Add(Restrictions.Eq("TransactionType", searchCriteria.TransactionType));
             }
 
             if (searchCriteria.TransactionStart.HasValue)

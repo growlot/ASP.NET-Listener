@@ -12,7 +12,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Messages
     /// <summary>
     /// Customization of auto-generated <see cref="TestResultServiceRequest"/> class
     /// </summary>
-    public partial class TestResultServiceRequest : IXmlNamespaceExtension
+    public partial class TestResultServiceRequest : IXmlNamespaceExtension, IOdmRequest
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TestResultServiceRequest"/> class.

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SendDeviceTestRequest.cs" company="Advanced Metering Services LLC">
+// <copyright file="DeviceRequest.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -9,9 +9,9 @@ namespace AMSLLC.Listener.Client.Implementation.Messages
     using AMSLLC.Listener.Common.Lookup;
 
     /// <summary>
-    /// Request message type for device shop test
+    /// Request message type for device
     /// </summary>
-    public class SendDeviceTestRequest
+    public class DeviceRequest : IListenerFields
     {
         /// <summary>
         /// Gets or sets the equipment number.
@@ -44,14 +44,6 @@ namespace AMSLLC.Listener.Client.Implementation.Messages
         /// The type of the equipment.
         /// </value>
         public string EquipmentType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the test date.
-        /// </summary>
-        /// <value>
-        /// The test date.
-        /// </value>
-        public DateTime TestDate { get; set; }
 
         /// <summary>
         /// Gets or sets the listener URL.

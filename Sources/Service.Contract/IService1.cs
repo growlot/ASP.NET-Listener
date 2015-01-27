@@ -30,11 +30,27 @@ namespace AMSLLC.Listener.Service.Contract
         void GetDevice(GetDeviceServiceRequest request);
 
         /// <summary>
+        /// Web service contract for sending device information.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        [OperationContract]
+        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        void SendDevice(SendDataServiceRequest request);
+
+        /// <summary>
         /// Web service contract for sending device test results.
         /// </summary>
         /// <param name="request">The request.</param>
         [OperationContract]
         [FaultContractAttribute(typeof(ServiceFaultDetails))]
-        void SendTestData(SendTestDataServiceRequest request);
+        void SendTestData(SendDataServiceRequest request);
+
+        /// <summary>
+        /// Web service contract for sending batch results.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        [OperationContract]
+        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        void SendBatch(SendDataServiceRequest request);
     }
 }

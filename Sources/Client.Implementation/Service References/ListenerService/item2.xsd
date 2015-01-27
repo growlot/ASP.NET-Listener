@@ -13,14 +13,38 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
+  <xs:element name="SendDevice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" minOccurs="0" name="request" nillable="true" type="q2:SendDataServiceRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendDeviceResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="SendTestData">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" minOccurs="0" name="request" nillable="true" type="q2:SendTestDataServiceRequest" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" minOccurs="0" name="request" nillable="true" type="q3:SendDataServiceRequest" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="SendTestDataResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendBatch">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" minOccurs="0" name="request" nillable="true" type="q4:SendDataServiceRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendBatchResponse">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>

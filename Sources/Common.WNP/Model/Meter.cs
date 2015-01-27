@@ -54,6 +54,14 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public string FirmwareRevision2 { get; set; }
 
         /// <summary>
+        /// Gets or sets the firmware revision 3.
+        /// </summary>
+        /// <value>
+        /// The firmware revision 3.
+        /// </value>
+        public string FirmwareRevision3 { get; set; }
+
+        /// <summary>
         /// Gets or sets the phase.
         /// </summary>
         /// <value>
@@ -107,7 +115,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test amps.
         /// </value>
-        public decimal TestAmps { get; set; }
+        public decimal? TestAmps { get; set; }
 
         /// <summary>
         /// Gets or sets the test volts.
@@ -115,7 +123,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The test volts.
         /// </value>
-        public decimal TestVolts { get; set; }
+        public decimal? TestVolts { get; set; }
 
         /// <summary>
         /// Gets or sets the ami id1.
@@ -141,6 +149,30 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Acronym for American Electric Power.")]
         public string AepCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the KWH (meter) dials.
+        /// </summary>
+        /// <value>
+        /// The KWH dials.
+        /// </value>
+        public int? KwhDials { get; set; }
+
+        /// <summary>
+        /// Gets or sets the purchase date.
+        /// </summary>
+        /// <value>
+        /// The purchase date.
+        /// </value>
+        public DateTime? PurchaseDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the purchase order reference.
+        /// </summary>
+        /// <value>
+        /// The purchase order reference.
+        /// </value>
+        public string PurchaseOrderReference { get; set; }
 
         /// <summary>
         /// Gets or sets the meter custom field 11.

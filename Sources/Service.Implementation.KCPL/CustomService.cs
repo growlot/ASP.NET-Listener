@@ -47,6 +47,53 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         private static readonly ResourceManager CustomStringManager = new ResourceManager("AMSLLC.Listener.Service.Implementation.KCPL.Properties.Resources", Assembly.GetExecutingAssembly());
 
         /// <summary>
+        /// Called when [send device data]. Must override with client specific implementation.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="device">The device.</param>
+        /// <exception cref="System.ArgumentNullException">device;Can not send device data if device is not specified.</exception>
+        /// <exception cref="System.InvalidOperationException">Meter can not be found in WNP.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// </exception>
+        protected override void OnSendDeviceData(int transactionId, Device device)
+        {
+            if (device == null)
+            {
+                throw new ArgumentNullException("device", "Can not send device data if device is not specified.");
+            }
+
+            Log.Info("KCPL Send Device Data");
+
+            Meter meter = this.WnpSystem.GetEquipment<Meter>(device.EquipmentNumber, device.Company.Id);
+            if (meter == null)
+            {
+                throw new InvalidOperationException("Meter can not be found in WNP.");
+            }
+
+            string message;
+            switch (device.EquipmentType.ServiceType.ExternalCode)
+            {
+                case "E":
+                    switch (device.EquipmentType.ExternalCode)
+                    {
+                        case "EM":
+                            this.ProcessMeter(device, meter, transactionId);
+                            break;
+                        default:
+                            message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.Description, device.EquipmentType.ServiceType.Description);
+                            Log.Error(message);
+                            throw new ArgumentException(message);
+                    }
+
+                    break;
+                default:
+                    string message1 = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("ServiceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.ServiceType.Description);
+                    Log.Error(message1);
+                    throw new ArgumentException(message1);
+            }
+        }
+        
+        /// <summary>
         /// Called when [send test data].
         /// </summary>
         /// <param name="request">The request.</param>
@@ -58,7 +105,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// or
         /// deviceTest;Can not send device test data if device test is not specified.
         /// </exception>
-        protected override void OnSendTestData(SendTestDataServiceRequest request, DeviceTest deviceTest)
+        protected override void OnSendTestData(SendDataServiceRequest request, DeviceTest deviceTest)
         {
             if (request == null)
             {
@@ -119,92 +166,276 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         }
 
         /// <summary>
+        /// Prepares the electric meter asset load request for ODM.
+        /// </summary>
+        /// <param name="meter">The meter.</param>
+        /// <returns>The asset load request for ODM</returns>
+        private static AssetLoadServiceRequest PrepareElectricMeterAssetLoadForODM(Meter meter)
+        {
+            AssetLoadServiceRequest serviceRequest = new AssetLoadServiceRequest()
+            {
+                assetDetails = new AssetLoadServiceRequestAssetDetails()
+                {
+                    badgeNo = GetMeterBadgeNumber(meter),
+                    commModuleFirmware = meter.FirmwareRevision1,
+                    configurationGroup = null,
+                    dcw = meter.CustomField4,
+                    endPointId = meter.CustomField2,
+                    externalId = null,
+                    hhfId = meter.SerialNumber,
+                    itronId = GetMeterItronId(meter),
+                    kH = meter.KH,
+                    manufacturer = meter.Manufacturer,
+                    meterBase = meter.Base.ToString(CultureInfo.InvariantCulture),
+                    meterClass = meter.CustomField3,
+                    meterCode = meter.MeterCode,
+                    meterForm = meter.Form,
+                    meterReceiptDate = meter.PurchaseDate,
+                    metrologyFirmware = meter.FirmwareRevision2,
+                    model = meter.ModelNumber,
+                    ownershipTerritory = meter.CustomField1,
+                    phase = meter.Phase.ToString(CultureInfo.InvariantCulture),
+                    programId = meter.ProgramId,
+                    purchaseOrderNo = meter.PurchaseOrderReference,
+                    serialNo = GetMeterSerialNumber(meter),
+                    vendor = meter.CustomField5,
+                    vendorPartNo = meter.CustomField6,
+                    warrantyDetail = null,
+                    wires = meter.Wire.ToString(CultureInfo.InvariantCulture),
+                    zigbeeFirmware = meter.FirmwareRevision3
+                }
+            };
+
+            DateTime tempDate;
+            if (DateTime.TryParse(meter.CustomField15, out tempDate))
+            {
+                serviceRequest.assetDetails.warrantyExpirationDate = tempDate;
+            }
+
+            if (meter.KwhDials.HasValue)
+            {
+                serviceRequest.assetDetails.numberOfDials = meter.KwhDials.Value.ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (meter.TestAmps.HasValue)
+            {
+                serviceRequest.assetDetails.testAmps = meter.TestAmps.Value.ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (meter.TestVolts.HasValue)
+            {
+                serviceRequest.assetDetails.voltage = meter.TestVolts.Value.ToString(CultureInfo.InvariantCulture);
+            }
+
+            return serviceRequest;
+        }
+
+        /// <summary>
+        /// Gets the hash for the meter.
+        /// </summary>
+        /// <param name="meter">The meter.</param>
+        /// <returns>The hash calculated from meter record.</returns>
+        private static string GetMeterHash(Meter meter)
+        {
+            return Utilities.GetHash(meter.CustomField13);
+        }
+
+        /// <summary>
+        /// Gets the meter badge number.
+        /// </summary>
+        /// <param name="meter">The meter.</param>
+        /// <returns>The badge number.</returns>
+        private static string GetMeterBadgeNumber(Meter meter)
+        {
+            return meter.Manufacturer + meter.MeterCode + meter.EquipmentNumber;
+        }
+
+        /// <summary>
+        /// Gets the meter serial number as it is defined in ODM.
+        /// </summary>
+        /// <param name="meter">The meter.</param>
+        /// <returns>The meter serial number as it is defined in ODM.</returns>
+        /// <exception cref="System.ArgumentException">Throws exception if device company is not supported.</exception>
+        private static string GetMeterSerialNumber(Meter meter)
+        {
+            string result;
+
+            switch (meter.CustomField1)
+            {
+                case "KCPL":
+                    result = meter.SerialNumber;
+                    break;
+                case "MPS":
+                case "SJLP":
+                    result = meter.CustomField16 + meter.SerialNumber;
+                    break;
+                default:
+                    string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), meter.CustomField1);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the meter Itron identifier.
+        /// </summary>
+        /// <param name="meter">The meter.</param>
+        /// <returns>The Itron identifier.</returns>
+        /// <exception cref="System.ArgumentException">Throws exception if device company is not supported.</exception>
+        private static string GetMeterItronId(Meter meter)
+        {
+            string result;
+
+            switch (meter.CustomField1)
+            {
+                case "KCPL":
+                    result = GetMeterBadgeNumber(meter);
+                    break;
+                case "MPS":
+                case "SJLP":
+                    result = GetMeterSerialNumber(meter);
+                    break;
+                default:
+                    string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), meter.CustomField1);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Processes the electric meter.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="meter">The meter.</param>
+        /// <param name="transactionId">The transaction identifier.</param>
+        private void ProcessMeter(Device device, Meter meter, int transactionId)
+        {
+            TransactionLog currentTransaction = this.TransactionLogManager.GetTransaction(transactionId);
+
+            TransactionLog searchCriteria = new TransactionLog()
+            {
+                TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Succeeded),
+                TransactionType = currentTransaction.TransactionType,
+                Device = device,
+            };
+
+            IList<TransactionLog> previousTransactions = this.TransactionLogManager.GetTransactions(searchCriteria);
+
+            // check if there is a successfull transaction that loaded initial data
+            if (previousTransactions.Count > 0)
+            {
+                TransactionLog latestSuccessfullTransaction = previousTransactions.OrderByDescending<TransactionLog, DateTime>(x => (DateTime)x.TransactionStart).First();
+
+                // check if latest successfull transaction had same data
+                if (latestSuccessfullTransaction.DataHash != GetMeterHash(meter))
+                {
+                    this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
+
+                    // AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(device, meter);
+                    // this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
+                }
+                else 
+                {
+                    string message = CustomStringManager.GetString("SkipMeterStatusNotChanged", CultureInfo.CurrentCulture);
+                    Log.Info(message);
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                }
+            }
+            else
+            {
+                meter.CustomField13 = "A";
+                this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
+
+                AssetLoadServiceRequest kcplServiceRequest = PrepareElectricMeterAssetLoadForODM(meter);
+                this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetLoad.Url"], transactionId);
+            }
+        }
+
+        /// <summary>
         /// Processes the test results of electric meter.
         /// </summary>
         /// <param name="device">The device.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <param name="meter">The meter.</param>
         /// <param name="transactionId">The transaction identifier.</param>
-        /// <exception cref="System.ArgumentException">Throws exception if device company is not supported.</exception>
+        /// <exception cref="System.ArgumentException">Throws exception if external system is not supported.</exception>
         private void ProcessMeterTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId)
         {
-            switch (meter.CustomField1)
+            TransactionLog transactionLog = this.TransactionLogManager.GetTransaction(transactionId);
+            
+            switch (transactionLog.TransactionType.ExternalSystem.Name)
             {
-                case "KCPL":
-                    this.ProcessKcplTestResults(device, deviceTest, meter, transactionId);
+                case "CIS":
+                    this.ProcessCisTestResults(device, deviceTest, meter);
                     break;
-                case "MPS":
-                case "SJLP":
-                    this.ProcessGmoTestResults(device, deviceTest, meter, transactionId);
+                case "ODM":
+                    TestResultServiceRequest serviceRequest = this.PrepareElectricMeterTestResultsForODM(device, deviceTest, meter);
+                    this.CallOdm(serviceRequest, ConfigurationManager.AppSettings["Kcpl.AssetTestResult.Url"], transactionId);
                     break;
                 default:
-                    string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), device.Company.Name);
+                    string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("ExternalSystemNotSupported", CultureInfo.CurrentCulture), transactionLog.TransactionType.ExternalSystem.Name);
                     Log.Error(message);
                     throw new ArgumentException(message);
             }
         }
         
         /// <summary>
-        /// Processes the KCPL test results.
+        /// Processes meter test results export to CIS flat files.
         /// </summary>
         /// <param name="device">The device.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <param name="meter">The meter.</param>
-        /// <param name="transactionId">The transaction identifier.</param>
-        private void ProcessKcplTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId)
+        /// <exception cref="System.ArgumentException">Throws exception if device company is not supported.</exception>
+        private void ProcessCisTestResults(Device device, DeviceTest deviceTest, Meter meter)
         {
-            TransactionLog transactionLog = this.TransactionLogManager.GetTransaction(transactionId);
-            
-            if (transactionLog.TransactionType.ExternalSystem.Name == "CIS")
+            switch (meter.CustomField1)
             {
-                string kcplCisEntry = this.PrepareElectricMeterTestResultsForKcplCisFile(device, deviceTest, meter);
-                SaveResultsToFile(kcplCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.KcplCis"]);
-            }
-            else
-            {
-                TestResultServiceRequest serviceRequest = this.PrepareElectricMeterTestResultsForODM(device, deviceTest, meter);
-                serviceRequest.listenerTransactionId = transactionId.ToString(CultureInfo.InvariantCulture);
-                Uri address = new Uri(ConfigurationManager.AppSettings["Kcpl.AssetTestResult.Url"]);
-
-                try
-                {
-                    this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceSendMessage);
-                    MessageBasedSoapWebService.CallWebService<TestResultServiceRequest>(address, serviceRequest);
-                }
-                catch (Exception ex)
-                {
-                    string message = StringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
-                    Log.Error(message, ex);
-                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, message, ex.ToString());
-                    throw;
-                }
+                case "KCPL":
+                    string kcplCisEntry = this.PrepareElectricMeterTestResultsForKcplCisFile(device, deviceTest, meter);
+                    SaveResultsToFile(kcplCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.KcplCis"]);
+                    break;
+                case "MPS":
+                case "SJLP":
+                    string gmoCisEntry = this.PrepareElectricMeterTestResultsForGmoCisFile(device, deviceTest, meter);
+                    SaveResultsToFile(gmoCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.GmoCis"]);
+                    break;
+                default:
+                    string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), meter.CustomField1);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
             }
         }
 
         /// <summary>
-        /// Processes the GMO test results.
+        /// Sends specified request to ODM.
         /// </summary>
-        /// <param name="device">The device.</param>
-        /// <param name="deviceTest">The device test.</param>
-        /// <param name="meter">The meter.</param>
+        /// <typeparam name="T">The request type.</typeparam>
+        /// <param name="request">The request.</param>
+        /// <param name="serviceAddress">The service address.</param>
         /// <param name="transactionId">The transaction identifier.</param>
-        private void ProcessGmoTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId)
+        private void CallOdm<T>(T request, string serviceAddress, int transactionId) where T : IXmlNamespaceExtension, IOdmRequest
         {
-            TransactionLog transactionLog = this.TransactionLogManager.GetTransaction(transactionId);
+            request.listenerTransactionId = transactionId;
+            Uri address = new Uri(serviceAddress);
 
-            if (transactionLog.TransactionType.ExternalSystem.Name == "CIS")
+            try
             {
-                string gmoCisEntry = this.PrepareElectricMeterTestResultsForGmoCisFile(device, deviceTest, meter);
-                SaveResultsToFile(gmoCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.GmoCis"]);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceSendMessage);
+                MessageBasedSoapWebService.CallWebService<T>(address, request);
             }
-            else
+            catch (Exception ex)
             {
-                string message = CustomStringManager.GetString("SkipGMODevice", CultureInfo.CurrentCulture);
-                Log.Info(message);
-                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                string message = StringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
+                Log.Error(message, ex);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Failed, message, ex.ToString());
+                throw;
             }
         }
-        
+         
         /// <summary>
         /// Prepares the electric meter test results for GMO cis file.
         /// </summary>
@@ -243,7 +474,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 Wires2 = "W",
                 Class = meter.CustomField3,
                 RegisterType = meter.CustomField7,
-                DemandInterval2 = "M",
+                DemandInterval = " M",
                 MeterConstant = 1,
                 BoardId = meterTest.WecoSerialNumber,
                 CommentsPrefix = meter.CustomField1 == "MPS" ? "MPS" : "SJ ",
@@ -383,7 +614,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 MeterNumber = meter.SerialNumber,
                 Form = meter.Form.PadLeft(2, '0'),
                 Base = meter.Base.ToString(),
-                Volts = (int)Math.Ceiling(meter.TestVolts),
                 AsFoundFullLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "FL"),
                 AsFoundLightLoad = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "LL"),
                 AsFoundPowerFactor = (decimal)Transformations.GetAsFound(meterTestResults, 'S', "PF"),
@@ -403,6 +633,11 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 KYZPresent = meter.CustomField8,
                 Company = "KCP&L",
             };
+
+            if (meter.TestVolts.HasValue)
+            {
+                kcplCisFile.Volts = (int)Math.Ceiling(meter.TestVolts.Value);
+            }
 
             decimal tempDecimal;
             if (decimal.TryParse(meter.KH, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDecimal))
@@ -435,11 +670,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <returns>
         /// The electric meter test results as a string.
         /// </returns>
-        /// <exception cref="System.InvalidOperationException">Meter can not be found in WNP.
-        /// or
-        /// Can not prepare GMO CIS file export entry, because there is more than one comment related to this test.
-        /// or
-        /// Can not prepare GMO CIS file export entry, because there is more than one reading related to this test.</exception>
         private TestResultServiceRequest PrepareElectricMeterTestResultsForODM(Device device, DeviceTest deviceTest, Meter meter)
         {
             int owner = int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture);
@@ -453,7 +683,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
             TestResultServiceRequest serviceRequest = new TestResultServiceRequest()
             {
-                badgeNo = meter.EquipmentNumber,
+                badgeNo = GetMeterBadgeNumber(meter),
                 testDateTime = meterTest.TestDate,
                 testerId = meterTest.TesterId,
                 testResults = new TestResultServiceRequestTestResults()

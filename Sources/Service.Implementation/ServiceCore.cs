@@ -132,11 +132,40 @@ namespace AMSLLC.Listener.Service.Implementation
         }
 
         /// <summary>
+        /// Sends the device information.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <exception cref="System.ArgumentNullException">request;Can not send device data if request is not specified</exception>
+        public void SendDevice(SendDataServiceRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    throw new ArgumentNullException("request", "Can not send device data if request is not specified");
+                }
+
+                this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceStart);
+
+                Device device = this.DeviceManager.GetDevice(request.ObjectId);
+
+                this.OnSendDeviceData(request.TransactionId, device);
+
+                this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceEnd);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("Send test data operation failed.", exception);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Send device test results.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <exception cref="System.InvalidOperationException">Meter can not be found</exception>
-        public void SendTestData(SendTestDataServiceRequest request)
+        public void SendTestData(SendDataServiceRequest request)
         {
             try
             {
@@ -147,9 +176,37 @@ namespace AMSLLC.Listener.Service.Implementation
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceStart);
 
-                DeviceTest deviceTest = this.DeviceManager.GetDeviceTest(request.DeviceTestId);
+                DeviceTest deviceTest = this.DeviceManager.GetDeviceTest(request.ObjectId);
 
                 this.OnSendTestData(request, deviceTest);
+
+                this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceEnd);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("Send test data operation failed.", exception);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Sends the batch information.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <exception cref="System.ArgumentNullException">request;Can not send batch data if request is not specified</exception>
+        public void SendBatch(SendDataServiceRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    throw new ArgumentNullException("request", "Can not send batch data if request is not specified");
+                }
+
+                this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceStart);
+
+                // device = this.DeviceManager.GetDevice(request.ObjectId);
+                this.OnSendBatchData(request.TransactionId);
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceEnd);
             }
@@ -177,7 +234,28 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <param name="request">The request.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <exception cref="System.NotImplementedException">This transaction type is not available for your company.</exception>
-        protected virtual void OnSendTestData(SendTestDataServiceRequest request, DeviceTest deviceTest)
+        protected virtual void OnSendTestData(SendDataServiceRequest request, DeviceTest deviceTest)
+        {
+            throw new NotImplementedException("This transaction type is not available for your company.");
+        }
+
+        /// <summary>
+        /// Called when [send device data]. Must override with client specific implementation.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="device">The device.</param>
+        /// <exception cref="System.NotImplementedException">This transaction type is not available for your company.</exception>
+        protected virtual void OnSendDeviceData(int transactionId, Device device)
+        {
+            throw new NotImplementedException("This transaction type is not available for your company.");
+        }
+
+        /// <summary>
+        /// Called when [send batch data]. Must override with client specific implementation.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <exception cref="System.NotImplementedException">This transaction type is not available for your company.</exception>
+        protected virtual void OnSendBatchData(int transactionId)
         {
             throw new NotImplementedException("This transaction type is not available for your company.");
         }

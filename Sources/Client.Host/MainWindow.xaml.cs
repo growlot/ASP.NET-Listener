@@ -104,7 +104,7 @@ namespace AMSLLC.Listener.Client.Host
             Stopwatch watch = new Stopwatch();
             watch.Start();
             
-            SendDeviceTestRequest request = new SendDeviceTestRequest()
+            DeviceTestRequest request = new DeviceTestRequest()
             {
                 ListenerUrl = new Uri(ServiceAddress.Text),
                 CompanyId = 1,

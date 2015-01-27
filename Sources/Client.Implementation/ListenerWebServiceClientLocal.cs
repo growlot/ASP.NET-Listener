@@ -16,7 +16,6 @@ namespace AMSLLC.Listener.Client.Implementation
     using System.ServiceModel;
     using System.Text;
     using System.Threading.Tasks;
-    using AMSLLC.Listener.Client.Implementation.AlliantExternalService;
     using AMSLLC.Listener.Client.Implementation.Messages;
     using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Common.Lookup;
@@ -84,7 +83,7 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Response detailing if call succeeded.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">request;Can not retrieve device information when request is not specified.</exception>
-        public override ClientResponse GetDevice(GetDeviceRequest request)
+        public override ClientResponse GetDeviceData(GetDeviceRequest request)
         {
             if (request == null)
             {
@@ -105,12 +104,11 @@ namespace AMSLLC.Listener.Client.Implementation
                 return response;
             }
 
-            Device device = this.CreateDevice(request);
-            int deviceId = this.DeviceManager.GetOrCreateDevice(device).Id;
-
+            this.CreateDevice(request);
+            
             foreach (TransactionType transactionType in transactionTypes)
             {
-                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, deviceId, null, null);
+                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, this.Device.Id, null, null);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
                 
                 switch (request.EquipmentType)
@@ -147,7 +145,7 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Response detailing if call succeeded.
         /// </returns>
         /// <exception cref="ArgumentNullException">request;Can not send device test information when request is not specified.</exception>
-        public override ClientResponse SendDeviceTest(SendDeviceTestRequest request)
+        public override ClientResponse SendDeviceTestData(DeviceTestRequest request)
         {
             if (request == null)
             {
@@ -168,19 +166,18 @@ namespace AMSLLC.Listener.Client.Implementation
                 return response;
             }
 
-            Device device = this.CreateDevice(request);
-            device = this.DeviceManager.GetOrCreateDevice(device);
-
+            this.CreateDevice(request);
+            
             DeviceTest deviceTest = new DeviceTest
             {
-                Device = device,
+                Device = this.Device,
                 TestDate = request.TestDate
             };
             int deviceTestId = this.DeviceManager.GetOrCreateDeviceTest(deviceTest).Id;
 
             foreach (TransactionType transactionType in transactionTypes)
             {
-                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, deviceTestId, null);
+                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, Device.Id, deviceTestId, null);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
                 this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
@@ -190,166 +187,42 @@ namespace AMSLLC.Listener.Client.Implementation
         }
 
         /// <summary>
-        /// Sends the barcodes to web service.
+        /// Call web service to publish device results
         /// </summary>
-        /// <returns>Response detailing if call succeeded.</returns>
-        public ClientResponse SendBarcodes()
+        /// <param name="request">The request.</param>
+        /// <returns>
+        /// Response detailing if call succeeded.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">request;Can not send device information when request is not specified.</exception>
+        public override ClientResponse SendDeviceData(DeviceRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not send device test information when request is not specified.");
+            }
+
+            Log.Info("Creating dummy DevicePush transaction.");
             ClientResponse response = new ClientResponse()
             {
                 ReturnCode = 0,
-                Message = this.StringManager.GetString("DeviceShopTestSuccess", CultureInfo.CurrentCulture)
             };
 
-            UpdateDeviceClassificationCodeABMType updateDeviceCode = new UpdateDeviceClassificationCodeABMType()
-            {
-                BatchesTotal = 1,
-                BatchNumber = 1,
-                BatchesTotalSpecified = true,
-                BatchNumberSpecified = true,
-                UpdateDeviceClassificationCode = new DeviceClassificationCodeType[] { }
-            };
+            IList<TransactionType> transactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.Device, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
 
-            List<DeviceClassificationCodeType> classificationCodes = new List<DeviceClassificationCodeType>();
-
-            List<MeterBarcode> meterBarcodes = Utilities.ReadFromXmlFile<List<MeterBarcode>>(@".\meterBarcodes.xml");
-            foreach (MeterBarcode meterBarcode in meterBarcodes)
+            // do nothing if no transactions are configured for this action.
+            if (transactionTypes.Count == 0)
             {
-                DeviceClassificationCodeType classificationCode = CreateClassificationCode(meterBarcode);
-                classificationCodes.Add(classificationCode);
+                return response;
             }
 
-            updateDeviceCode.UpdateDeviceClassificationCode = classificationCodes.ToArray<DeviceClassificationCodeType>();
+            this.CreateDevice(request);
 
-            using (AlliantExternalService.DeviceClassificationCodeClient client = new AlliantExternalService.DeviceClassificationCodeClient("BasicHttpBinding_DeviceClassificationCode"))
+            foreach (TransactionType transactionType in transactionTypes)
             {
-                try
-                {
-                    client.Update(updateDeviceCode);
-                }
-                catch (FaultException ex)
-                {
-                    Log.Error("Service call returned error.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Message;
-                    response.DebugInfo = ex.ToString();
-                }
-                catch (CommunicationException ex)
-                {
-                    Log.Error("Service call failed.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceCallFailed", CultureInfo.CurrentCulture);
-                    response.DebugInfo = ex.ToString();
-                }
-                catch (TimeoutException ex)
-                {
-                    Log.Error("Service call timed out.", ex);
-                    response.ReturnCode = -1;
-                    response.Message = this.StringManager.GetString("ServiceCallTimeout", CultureInfo.CurrentCulture);
-                    response.DebugInfo = ex.ToString();
-                }
-            }
-
-            return response;
-        }
-
-        /// <summary>
-        /// Exports the barcodes from database to file.
-        /// </summary>
-        public void ExportBarcodes()
-        {
-            List<MeterBarcode> meterBarcodes = this.wnpSystem.GetBarcodes<MeterBarcode>() as List<MeterBarcode>;
-            Utilities.WriteToXmlFile<List<MeterBarcode>>(@".\meterBarcodes.xml", meterBarcodes);
-        }
-
-        /// <summary>
-        /// Creates the classification code.
-        /// </summary>
-        /// <param name="meterBarcode">The meter barcode.</param>
-        /// <returns>The classification code.</returns>
-        private static DeviceClassificationCodeType CreateClassificationCode(MeterBarcode meterBarcode)
-        {
-            DeviceClassificationCodeType response = new DeviceClassificationCodeType()
-            {
-                AssetProfileID = meterBarcode.CustomField6,
-                ClassificationCode = meterBarcode.LookupCode,
-                DeviceDescription = meterBarcode.Description,
-                DeviceTestType = meterBarcode.CustomField7,
-                DeviceType = "MR",
-                ElectricDevice = new DeviceClassificationCodeTypeElectricDevice()
-                {
-                    AMIIndicator = meterBarcode.CustomField13,
-                    Base = meterBarcode.Base.ToString(),
-                    ERTIndicator = meterBarcode.CustomField14,
-                    Form = meterBarcode.Form,
-                    LossCompensationCapableIndicator = meterBarcode.CustomField22,
-                    NetworkIndicator = meterBarcode.CustomField17,
-                    Phase = meterBarcode.Phase.ToString(CultureInfo.InvariantCulture),
-                    RecorderExists = meterBarcode.CustomField21,
-                    RegisterRatio = meterBarcode.RegisterRatio,
-                    RemoteConnectDisconnectIndicator = meterBarcode.CustomField20,
-                    TestAmps = (decimal)meterBarcode.Amp,
-                    TestAmpsSpecified = true,
-                    TestSequence = meterBarcode.CustomField15,
-                    TestVoltage = (int)meterBarcode.Volt,
-                    TestVoltageSpecified = true,
-                    TransformerRatedIndicator = meterBarcode.CustomField16,
-                    VoltageClass = meterBarcode.CustomField12,
-                    Wire = meterBarcode.Wire,
-                    WireSpecified = true
-                },
-                ForceRetirementSwitch = meterBarcode.CustomField4,
-                Manufacturer = meterBarcode.CustomField2,
-                MaterialID = meterBarcode.CustomField5,
-                Model = meterBarcode.CustomField3,
-                Status = meterBarcode.CustomField1,
-                TemplateDevice = meterBarcode.CustomField8,
-            };
-
-            int temp;
-            decimal tempDecimal;
-            if (int.TryParse(meterBarcode.CustomField11, out temp))
-            {
-                response.ElectricDevice.Ampacity = temp;
-                response.ElectricDevice.AmpacitySpecified = true;
-            }
-
-            if (int.TryParse(meterBarcode.CustomField9, out temp))
-            {
-                response.ElectricDevice.BatteryLife = temp;
-                response.ElectricDevice.BatteryLifeSpecified = true;
-            }
-
-            if (decimal.TryParse(meterBarcode.KH, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDecimal))
-            {
-                response.ElectricDevice.Constant = tempDecimal;
-                response.ElectricDevice.ConstantSpecified = true;
-            }
-
-            if (meterBarcode.Owner.Id == 0)
-            {
-                response.ElectricDevice.IPLSelectionType = meterBarcode.CustomField18;
-                if (int.TryParse(meterBarcode.CustomField19, out temp))
-                {
-                    response.ElectricDevice.IPLTestInterval = temp;
-                    response.ElectricDevice.IPLTestIntervalSpecified = true;
-                }
-            }
-
-            if (meterBarcode.Owner.Id == 1)
-            {
-                response.ElectricDevice.WPLSelectionType = meterBarcode.CustomField18;
-                if (int.TryParse(meterBarcode.CustomField19, out temp))
-                {
-                    response.ElectricDevice.WPLTestInterval = temp;
-                    response.ElectricDevice.WPLTestIntervalSpecified = true;
-                }
-            }
-
-            if (int.TryParse(meterBarcode.CustomField10, out temp))
-            {
-                response.ElectricDevice.Stator = temp;
-                response.ElectricDevice.StatorSpecified = true;
+                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, Device.Id, this.DeviceTest.Id, null);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
+                this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
             }
 
             return response;

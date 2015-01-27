@@ -11,6 +11,7 @@
       <Word>weco</Word>
       <Word>odm</Word>
       <Word>aep</Word>
+      <Word>itron</Word> <!-- company name used in ODM integration -->
     </Recognized>
     <!--		<Compound>
 		  <Term CompoundAlternate="ManifestFix">manifestfix</Term>

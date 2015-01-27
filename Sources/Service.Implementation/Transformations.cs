@@ -66,7 +66,7 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <exception cref="ArgumentNullException">device;Can not transform data when initial data is not specified
         /// or
         /// meter;Can not transform data when initial data is not specified</exception>
-        public static SendTestDataServiceRequest CreateDeviceShopTestServiceRequest(Device device, int transactionId, Meter meter)
+        public static SendDataServiceRequest CreateDeviceShopTestServiceRequest(Device device, int transactionId, Meter meter)
         {
             if (device == null)
             {
@@ -80,7 +80,7 @@ namespace AMSLLC.Listener.Service.Implementation
 
             //// MeterTestResult meterTest = meterTestResults.First<MeterTestResult>();
 
-            SendTestDataServiceRequest serviceRequest = new SendTestDataServiceRequest()
+            SendDataServiceRequest serviceRequest = new SendDataServiceRequest()
             {
                 TransactionId = transactionId,
                 ////EquipmentNumber = meter.EquipmentNumber,

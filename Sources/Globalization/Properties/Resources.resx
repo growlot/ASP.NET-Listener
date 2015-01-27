@@ -132,6 +132,9 @@
   <data name="DeviceTypeNotSupported" xml:space="preserve">
     <value>Device type {0} and service type {1} not supported.</value>
   </data>
+  <data name="ExternalSystemNotSupported" xml:space="preserve">
+    <value>External system with name {0} not supported.</value>
+  </data>
   <data name="GetDeviceMockupFileNotFound" xml:space="preserve">
     <value>Neither device specific {0}, nor default {1} mockup file was found.</value>
   </data>

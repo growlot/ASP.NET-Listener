@@ -68,5 +68,14 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Properties {
                 return ResourceManager.GetString("SkipGMODevice", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipping ODM integration, because meter status haven&apos;t changed..
+        /// </summary>
+        internal static string SkipMeterStatusNotChanged {
+            get {
+                return ResourceManager.GetString("SkipMeterStatusNotChanged", resourceCulture);
+            }
+        }
     }
 }

@@ -120,4 +120,7 @@
   <data name="SkipGMODevice" xml:space="preserve">
     <value>Skipping ODM integration, because meter doesn't belong to KCPL company.</value>
   </data>
+  <data name="SkipMeterStatusNotChanged" xml:space="preserve">
+    <value>Skipping ODM integration, because meter status haven't changed.</value>
+  </data>
 </root>
