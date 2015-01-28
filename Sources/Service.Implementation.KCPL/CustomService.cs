@@ -288,7 +288,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <returns>The badge number.</returns>
         private static string GetMeterBadgeNumber(Meter meter)
         {
-            return meter.Manufacturer + meter.MeterCode + meter.EquipmentNumber;
+            return meter.Manufacturer + meter.MeterCode + meter.SerialNumber;
         }
 
         /// <summary>
