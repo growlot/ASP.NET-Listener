@@ -26,27 +26,13 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Messages
     public partial class TransactionResponseServiceRequest
     {
 
-        private string debugInfoField;
-
         private int listenerTransactionIdField;
+
+        private int statusField;
 
         private string messageField;
 
-        private System.Nullable<int> statusField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
-        public string debugInfo
-        {
-            get
-            {
-                return this.debugInfoField;
-            }
-            set
-            {
-                this.debugInfoField = value;
-            }
-        }
+        private string debugInfoField;
 
         /// <remarks/>
         public int listenerTransactionId
@@ -62,7 +48,19 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Messages
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
+        public int status
+        {
+            get
+            {
+                return this.statusField;
+            }
+            set
+            {
+                this.statusField = value;
+            }
+        }
+
+        /// <remarks/>
         public string message
         {
             get
@@ -76,16 +74,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Messages
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
-        public System.Nullable<int> status
+        public string debugInfo
         {
             get
             {
-                return this.statusField;
+                return this.debugInfoField;
             }
             set
             {
-                this.statusField = value;
+                this.debugInfoField = value;
             }
         }
     }
