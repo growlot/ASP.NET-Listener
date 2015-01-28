@@ -395,7 +395,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             ////    this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetLoad.Url"], transactionId);
             ////}
 
-            meter.CustomField13 = "A";
             this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
 
             AssetLoadServiceRequest odmAssetLoadRequest = PrepareElectricMeterAssetLoadForODM(meter);
