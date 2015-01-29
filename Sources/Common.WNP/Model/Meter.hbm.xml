@@ -16,6 +16,11 @@
                   column="OWNER"
                   cascade="none" />
 
+    <many-to-one  name="NewBatch"
+                  class="NewBatch"
+                  column="NEW_BATCH_NO"
+                  cascade="none" />
+    
     <property name="EquipmentNumber" column="EQP_NO" type="AnsiString" length="20" />
     
     <property name="TestProgram" column="TEST_PROGRAM" type="AnsiString" length="20" />

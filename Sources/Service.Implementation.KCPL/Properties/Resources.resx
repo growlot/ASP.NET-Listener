@@ -123,6 +123,9 @@
   <data name="SkipGMODevice" xml:space="preserve">
     <value>Skipping ODM integration, because meter doesn't belong to KCPL company.</value>
   </data>
+  <data name="SkipMeterBelongsToNewBatch" xml:space="preserve">
+    <value>Skipping ODM integration, because meter belongs to new batch {0}.</value>
+  </data>
   <data name="SkipMeterStatusNotChanged" xml:space="preserve">
     <value>Skipping ODM integration, because meter status haven't changed.</value>
   </data>

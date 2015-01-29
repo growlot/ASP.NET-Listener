@@ -44,41 +44,4 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Messages
         [XmlNamespaceDeclarations]
         public XmlSerializerNamespaces Namespaces { get; private set; }
     }
-
-    /// <summary>
-    /// Customization of auto-generated <see cref="AssetLoadServiceRequestAssetDetails"/> class
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Extends auto-generated file that contains multiple classes in it.")]
-    public partial class AssetLoadServiceRequestAssetDetails
-    {
-        /// <summary>
-        /// Gets a value indicating whether meterReceiptDate field is specified.
-        /// Needed for <see cref="XmlSerializer"/> to omit field instead of using nil="true"
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if meterReceiptDate is specified; otherwise, <c>false</c>.
-        /// </value>
-        public bool meterReceiptDateSpecified
-        {
-            get
-            {
-                return this.meterReceiptDate != null;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether warrantyExpirationDate field is specified.
-        /// Needed for <see cref="XmlSerializer"/> to omit field instead of using nil="true"
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if warrantyExpirationDate is specified; otherwise, <c>false</c>.
-        /// </value>
-        public bool warrantyExpirationDateSpecified
-        {
-            get
-            {
-                return this.warrantyExpirationDate != null;
-            }
-        }
-    }
 }
