@@ -185,5 +185,14 @@ namespace AMSLLC.Listener.Globalization.Properties {
                 return ResourceManager.GetString("ServiceTypeNotSupported", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipping integration, because there is already a successful transaction for this data..
+        /// </summary>
+        internal static string SkipDuplicate {
+            get {
+                return ResourceManager.GetString("SkipDuplicate", resourceCulture);
+            }
+        }
     }
 }

@@ -378,8 +378,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <param name="meter">The meter.</param>
         /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="batchAcceptance">If set to <c>true</c> then it is triggered by batch acceptance process.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "device", Justification = "Temporary solution for testing")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "batchAcceptance", Justification = "Temporary solution for testing")]
         private void ProcessMeter(Device device, Meter meter, int transactionId, bool batchAcceptance)
         {
             if (meter.NewBatch != null &&
@@ -455,21 +453,66 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <exception cref="System.ArgumentException">Throws exception if external system is not supported.</exception>
         private void ProcessMeterTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId)
         {
-            TransactionLog transactionLog = this.TransactionLogManager.GetTransaction(transactionId);
-            
-            switch (transactionLog.TransactionType.ExternalSystem.Name)
+            this.ProcessMeterTestResults(device, deviceTest, meter, transactionId, false);
+        }
+
+        /// <summary>
+        /// Processes the test results of electric meter.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="deviceTest">The device test.</param>
+        /// <param name="meter">The meter.</param>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="batchAcceptance">If set to <c>true</c> then it is triggered by batch acceptance process..</param>
+        /// <exception cref="System.ArgumentException">Throws exception if external system is not supported.</exception>
+        private void ProcessMeterTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId, bool batchAcceptance)
+        {
+            TransactionLog currentTransaction = this.TransactionLogManager.GetTransaction(transactionId);
+
+            if (meter.NewBatch != null &&
+                (meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.New)) ||
+                meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.Pending))))
             {
-                case "CIS":
-                    this.ProcessCisTestResults(device, deviceTest, meter);
-                    break;
-                case "ODM":
-                    TestResultServiceRequest serviceRequest = this.PrepareElectricMeterTestResultsForODM(device, deviceTest, meter);
-                    this.CallOdm(serviceRequest, ConfigurationManager.AppSettings["Kcpl.AssetTestResult.Url"], transactionId);
-                    break;
-                default:
-                    string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("ExternalSystemNotSupported", CultureInfo.CurrentCulture), transactionLog.TransactionType.ExternalSystem.Name);
-                    Log.Error(message);
-                    throw new ArgumentException(message);
+                if (!batchAcceptance)
+                {
+                    string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
+                    Log.Info(message);
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                }
+            }             
+
+            TransactionLog searchCriteria = new TransactionLog()
+            {
+                TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Succeeded),
+                TransactionType = currentTransaction.TransactionType,
+                Device = device,
+            };
+
+            IList<TransactionLog> previousTransactions = this.TransactionLogManager.GetTransactions(searchCriteria);
+
+            // check if there is a successfull previous transaction for this meter
+            if (previousTransactions.Count > 0)
+            {
+                string message = StringManager.GetString("SkipDuplicate", CultureInfo.CurrentCulture);
+                Log.Info(message);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+            }
+            else
+            {
+                switch (currentTransaction.TransactionType.ExternalSystem.Name)
+                {
+                    case "CIS":
+                        this.ProcessCisTestResults(device, deviceTest, meter);
+                        break;
+                    case "ODM":
+                        TestResultServiceRequest serviceRequest = this.PrepareElectricMeterTestResultsForODM(device, deviceTest, meter);
+                        this.CallOdm(serviceRequest, ConfigurationManager.AppSettings["Kcpl.AssetTestResult.Url"], transactionId);
+                        break;
+                    default:
+                        string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("ExternalSystemNotSupported", CultureInfo.CurrentCulture), currentTransaction.TransactionType.ExternalSystem.Name);
+                        Log.Error(message);
+                        throw new ArgumentException(message);
+                }
             }
         }
         

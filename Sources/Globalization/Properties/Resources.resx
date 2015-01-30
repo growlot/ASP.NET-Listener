@@ -159,4 +159,7 @@
   <data name="ServiceTypeNotSupported" xml:space="preserve">
     <value>Service type {0}  not supported.</value>
   </data>
+  <data name="SkipDuplicate" xml:space="preserve">
+    <value>Skipping integration, because there is already a successful transaction for this data.</value>
+  </data>
 </root>
