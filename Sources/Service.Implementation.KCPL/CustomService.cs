@@ -207,18 +207,22 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             };
 
             DateTime tempDate;
-            if (DateTime.TryParse(meter.CustomField15, out tempDate))
+            if (DateTime.TryParseExact(meter.CustomField15, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempDate))
             {
                 serviceRequest.assetDetails.warrantyExpirationDate = tempDate;
             }
             else
             {
-                serviceRequest.assetDetails.warrantyExpirationDate = DateTime.Now.AddMonths(24);
+                serviceRequest.assetDetails.warrantyExpirationDate = new DateTime(2020, 1, 1);
             }
 
             if (meter.PurchaseDate.HasValue)
             {
                 serviceRequest.assetDetails.meterReceiptDate = meter.PurchaseDate.Value;
+            }
+            else
+            {
+                serviceRequest.assetDetails.meterReceiptDate = new DateTime(2000, 1, 1);
             }
 
             if (meter.KwhDials.HasValue)
@@ -378,77 +382,67 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "batchAcceptance", Justification = "Temporary solution for testing")]
         private void ProcessMeter(Device device, Meter meter, int transactionId, bool batchAcceptance)
         {
-            ////if (meter.NewBatch != null && 
-            ////    (meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.New)) ||
-            ////    meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.Pending))))
-            ////{
-            ////    if (!batchAcceptance)
-            ////    {
-            ////        string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
-            ////        Log.Info(message);
-            ////        this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
-            ////    }
-            ////}
+            if (meter.NewBatch != null &&
+                (meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.New)) ||
+                meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.Pending))))
+            {
+                if (!batchAcceptance)
+                {
+                    string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
+                    Log.Info(message);
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                }
+            }
 
-            ////TransactionLog currentTransaction = this.TransactionLogManager.GetTransaction(transactionId);
+            TransactionLog currentTransaction = this.TransactionLogManager.GetTransaction(transactionId);
 
-            ////TransactionLog searchCriteria = new TransactionLog()
-            ////{
-            ////    TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Succeeded),
-            ////    TransactionType = currentTransaction.TransactionType,
-            ////    Device = device,
-            ////};
+            TransactionLog searchCriteria = new TransactionLog()
+            {
+                TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Succeeded),
+                TransactionType = currentTransaction.TransactionType,
+                Device = device,
+            };
 
-            ////IList<TransactionLog> previousTransactions = this.TransactionLogManager.GetTransactions(searchCriteria);
+            IList<TransactionLog> previousTransactions = this.TransactionLogManager.GetTransactions(searchCriteria);
 
-            ////// check if there is a successfull transaction that loaded initial data
-            ////if (previousTransactions.Count > 0)
-            ////{
-            ////    TransactionLog latestSuccessfullTransaction = previousTransactions.OrderByDescending<TransactionLog, DateTime>(x => (DateTime)x.TransactionStart).First();
+            // check if there is a successfull previous transaction for this meter
+            if (previousTransactions.Count > 0)
+            {
+                TransactionLog latestSuccessfullTransaction = previousTransactions.OrderByDescending<TransactionLog, DateTime>(x => (DateTime)x.TransactionStart).First();
 
-            ////    // check if latest successfull transaction had same data
-            ////    if (latestSuccessfullTransaction.DataHash != GetMeterHash(meter))
-            ////    {
-            ////        this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
+                // check if latest successfull transaction had same DataHash
+                if (latestSuccessfullTransaction.DataHash != GetMeterHash(meter))
+                {
+                    this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
 
-            ////        AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
-            ////        this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
-            ////    }
-            ////    else 
-            ////    {
-            ////        string message = CustomStringManager.GetString("SkipMeterStatusNotChanged", CultureInfo.CurrentCulture);
-            ////        Log.Info(message);
-            ////        this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
-            ////    }
-            ////}
-            ////else
-            ////{
-            ////    if (batchAcceptance)
-            ////    {
-            ////        meter.CustomField13 = "A";
-            ////        this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
+                    AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
+                    this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
+                }
+                else
+                {
+                    string message = CustomStringManager.GetString("SkipMeterStatusNotChanged", CultureInfo.CurrentCulture);
+                    Log.Info(message);
+                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                }
+            }
+            else
+            {
+                if (batchAcceptance)
+                {
+                    meter.CustomField13 = "A";
+                    this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
 
-            ////        AssetLoadServiceRequest kcplServiceRequest = PrepareElectricMeterAssetLoadForODM(meter);
-            ////        this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetLoad.Url"], transactionId);
-            ////    }
-            ////    else
-            ////    {
-            ////        this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
+                    AssetLoadServiceRequest kcplServiceRequest = PrepareElectricMeterAssetLoadForODM(meter);
+                    this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetLoad.Url"], transactionId);
+                }
+                else
+                {
+                    this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
 
-            ////        AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
-            ////        this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
-            ////    }
-            ////}
-
-            this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
-
-            AssetLoadServiceRequest odmAssetLoadRequest = PrepareElectricMeterAssetLoadForODM(meter);
-            this.CallOdm(odmAssetLoadRequest, ConfigurationManager.AppSettings["Kcpl.AssetLoad.Url"], transactionId);
-
-            this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
-
-            AssetUpdateServiceRequest odmAssetUpdateRequest = PrepareElectricMeterAssetUpdateForODM(meter);
-            this.CallOdm(odmAssetUpdateRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
+                    AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
+                    this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
+                }
+            }
         }
 
         /// <summary>
