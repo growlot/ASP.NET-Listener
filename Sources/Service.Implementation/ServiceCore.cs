@@ -178,7 +178,7 @@ namespace AMSLLC.Listener.Service.Implementation
 
                 DeviceTest deviceTest = this.DeviceManager.GetDeviceTest(request.ObjectId);
 
-                this.OnSendTestData(request, deviceTest);
+                this.OnSendTestData(request.TransactionId, deviceTest);
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceEnd);
             }
@@ -194,7 +194,7 @@ namespace AMSLLC.Listener.Service.Implementation
         /// </summary>
         /// <param name="request">The request.</param>
         /// <exception cref="System.ArgumentNullException">request;Can not send batch data if request is not specified</exception>
-        public void SendBatch(SendDataServiceRequest request)
+        public void SendBatch(SendBatchServiceRequest request)
         {
             try
             {
@@ -205,8 +205,7 @@ namespace AMSLLC.Listener.Service.Implementation
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceStart);
 
-                // device = this.DeviceManager.GetDevice(request.ObjectId);
-                this.OnSendBatchData(request.TransactionId);
+                this.OnSendBatchData(request.TransactionId, request.BatchNumber);
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceEnd);
             }
@@ -231,10 +230,10 @@ namespace AMSLLC.Listener.Service.Implementation
         /// <summary>
         /// Called when [send test data]. Must override with client specific implementation.
         /// </summary>
-        /// <param name="request">The request.</param>
+        /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <exception cref="System.NotImplementedException">This transaction type is not available for your company.</exception>
-        protected virtual void OnSendTestData(SendDataServiceRequest request, DeviceTest deviceTest)
+        protected virtual void OnSendTestData(int transactionId, DeviceTest deviceTest)
         {
             throw new NotImplementedException("This transaction type is not available for your company.");
         }
@@ -254,8 +253,9 @@ namespace AMSLLC.Listener.Service.Implementation
         /// Called when [send batch data]. Must override with client specific implementation.
         /// </summary>
         /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="batchNumber">The batch number.</param>
         /// <exception cref="System.NotImplementedException">This transaction type is not available for your company.</exception>
-        protected virtual void OnSendBatchData(int transactionId)
+        protected virtual void OnSendBatchData(int transactionId, string batchNumber)
         {
             throw new NotImplementedException("This transaction type is not available for your company.");
         }

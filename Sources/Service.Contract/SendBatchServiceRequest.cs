@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SendDataServiceRequest.cs" company="Advanced Metering Services LLC">
+// <copyright file="SendBatchServiceRequest.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -9,10 +9,10 @@ namespace AMSLLC.Listener.Service.Contract
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Data contract for data sending service request. 
+    /// Data contract for batch sending service request. 
     /// </summary>
     [DataContract]
-    public class SendDataServiceRequest
+    public class SendBatchServiceRequest
     {
         /// <summary>
         /// Gets or sets the transaction identifier.
@@ -24,12 +24,12 @@ namespace AMSLLC.Listener.Service.Contract
         public int TransactionId { get; set; }
 
         /// <summary>
-        /// Gets or sets the device test identifier.
+        /// Gets or sets the batch number.
         /// </summary>
         /// <value>
-        /// The device test identifier.
+        /// The batch number.
         /// </value>
         [DataMember]
-        public int ObjectId { get; set; }
+        public string BatchNumber { get; set; }
     }
 }

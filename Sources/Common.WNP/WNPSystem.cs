@@ -106,6 +106,46 @@ namespace AMSLLC.Listener.Common.WNP
         }
 
         /// <summary>
+        /// Gets the equipment by batch.
+        /// </summary>
+        /// <typeparam name="T">The equipment type.</typeparam>
+        /// <param name="newBatch">The new batch.</param>
+        /// <returns>The list of equipment that belongs to batch.</returns>
+        public IList<T> GetEquipmentByBatch<T>(NewBatch newBatch) where T : IEquipment
+        {
+            return this.GetEquipmentByBatch<T>(newBatch, false);
+        }
+
+        /// <summary>
+        /// Gets the equipment by batch.
+        /// </summary>
+        /// <typeparam name="T">The equipment type.</typeparam>
+        /// <param name="newBatch">The new batch.</param>
+        /// <param name="sanitized">If set to <c>true</c> trim spaces from strings and set to null if string is empty.</param>
+        /// <returns>The list of equipment that belongs to batch.</returns>
+        public IList<T> GetEquipmentByBatch<T>(NewBatch newBatch, bool sanitized) where T : IEquipment
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<T>();
+            criteria.Add(Restrictions.Eq("NewBatch", newBatch));
+
+            IList<T> equipmentList = this.persistenceManager.RetrieveAllEqual<T>(criteria);
+
+            if (sanitized)
+            {
+                IList<T> sanitizedEquipmentList = new List<T>();
+
+                foreach (T equipment in equipmentList)
+                {
+                    sanitizedEquipmentList.Add(Utilities.Sanitize(equipment));
+                }
+
+                equipmentList = sanitizedEquipmentList;
+            }
+
+            return equipmentList;
+        }
+        
+        /// <summary>
         /// Gets equipment test result.
         /// </summary>
         /// <typeparam name="T">The equipment test result type.</typeparam>
@@ -150,6 +190,51 @@ namespace AMSLLC.Listener.Common.WNP
                 testResults = sanitizedTestResults;
             } 
             
+            return testResults;
+        }
+
+        /// <summary>
+        /// Gets all test results for specified equipment.
+        /// </summary>
+        /// <typeparam name="T">The equipment test result type.</typeparam>
+        /// <param name="equipmentNumber">The equipment number.</param>
+        /// <param name="ownerId">The owner identifier.</param>
+        /// <returns>
+        /// The test results for specified equipment.
+        /// </returns>
+        public IList<T> GetEquipmentAllTestResult<T>(string equipmentNumber, int ownerId) where T : IEquipmentTestResult
+        {
+            return this.GetEquipmentAllTestResult<T>(equipmentNumber, ownerId, false);
+        }
+
+        /// <summary>
+        /// Gets all test results for specified equipment.
+        /// </summary>
+        /// <typeparam name="T">The equipment test result type.</typeparam>
+        /// <param name="equipmentNumber">The equipment number.</param>
+        /// <param name="ownerId">The owner identifier.</param>
+        /// <param name="sanitized">If set to <c>true</c> trim spaces from strings and set to null if string is empty.</param>
+        /// <returns>
+        /// The test results for specified equipment.
+        /// </returns>
+        public IList<T> GetEquipmentAllTestResult<T>(string equipmentNumber, int ownerId, bool sanitized) where T : IEquipmentTestResult
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<T>();
+            criteria.Add(Restrictions.Eq("EquipmentNumber", equipmentNumber));
+            criteria.Add(Restrictions.Eq("Owner", new Owner(ownerId)));
+
+            IList<T> testResults = this.persistenceManager.RetrieveAllEqual<T>(criteria);
+            if (sanitized)
+            {
+                IList<T> sanitizedTestResults = new List<T>();
+                foreach (T testResult in testResults)
+                {
+                    sanitizedTestResults.Add(Utilities.Sanitize(testResult));
+                }
+
+                testResults = sanitizedTestResults;
+            }
+
             return testResults;
         }
 
@@ -291,6 +376,19 @@ namespace AMSLLC.Listener.Common.WNP
             criteria.Add(Restrictions.Eq("ReadDate", testDate));
 
             return this.persistenceManager.RetrieveAllEqual<Reading>(criteria);
+        }
+
+        /// <summary>
+        /// Gets the new batch.
+        /// </summary>
+        /// <param name="batchNumber">The batch number.</param>
+        /// <returns>The new batch.</returns>
+        public NewBatch GetNewBatch(string batchNumber)
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<NewBatch>();
+            criteria.Add(Restrictions.Eq("Number", batchNumber));
+
+            return this.persistenceManager.GetByKey<NewBatch>(batchNumber);
         }
     }
 }

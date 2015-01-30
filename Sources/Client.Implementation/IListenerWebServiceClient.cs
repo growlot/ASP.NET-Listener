@@ -42,5 +42,15 @@ namespace AMSLLC.Listener.Client.Implementation
         /// </returns>
         /// <exception cref="ArgumentNullException">request;Can not send device test information when request is not specified.</exception>
         ClientResponse SendDeviceTestData(DeviceTestRequest request);
-    }
+
+        /// <summary>
+        /// Call web service to publish batch information
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>
+        /// Response detailing if call succeeded.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">request;Can not send device test information when request is not specified.</exception>
+        ClientResponse SendBatchData(BatchRequest request);
+     }
 }

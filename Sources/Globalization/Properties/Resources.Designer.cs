@@ -61,6 +61,15 @@ namespace AMSLLC.Listener.Globalization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Batch containing {0} devices not supported..
+        /// </summary>
+        internal static string BatchDeviceTypeNotSupported {
+            get {
+                return ResourceManager.GetString("BatchDeviceTypeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please see Listener Log report for full error..
         /// </summary>
         internal static string CheckListenerLogReport {

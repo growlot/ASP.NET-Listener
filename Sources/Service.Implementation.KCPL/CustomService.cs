@@ -97,22 +97,13 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <summary>
         /// Called when [send test data].
         /// </summary>
-        /// <param name="request">The request.</param>
+        /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <exception cref="System.ArgumentNullException">
-        /// request;Can not send device test data if request is not specified.
-        /// or
-        /// device;Can not send device test data if device is not specified.
-        /// or
         /// deviceTest;Can not send device test data if device test is not specified.
         /// </exception>
-        protected override void OnSendTestData(SendDataServiceRequest request, DeviceTest deviceTest)
+        protected override void OnSendTestData(int transactionId, DeviceTest deviceTest)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request", "Can not send device test data if request is not specified.");
-            }
-
             if (deviceTest == null)
             {
                 throw new ArgumentNullException("deviceTest", "Can not send device test data if device test is not specified.");
@@ -134,7 +125,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     switch (device.EquipmentType.ExternalCode)
                     {
                         case "EM":
-                            this.ProcessMeterTestResults(device, deviceTest, meter, request.TransactionId);
+                            this.ProcessMeterTestResults(device, deviceTest, meter, transactionId);
                             break;
                         default:
                             message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.Description, device.EquipmentType.ServiceType.Description);
@@ -148,6 +139,33 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     Log.Error(message1);
                     throw new ArgumentException(message1);
             } 
+        }
+
+        /// <summary>
+        /// Called when [send batch data]. Must override with client specific implementation.
+        /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="batchNumber">The batch number.</param>
+        /// <exception cref="System.NotImplementedException">This transaction type is not available for your company.</exception>
+        protected override void OnSendBatchData(int transactionId, string batchNumber)
+        {
+            NewBatch batch = this.WnpSystem.GetNewBatch(batchNumber);
+            if (batch == null)
+            {
+                throw new InvalidOperationException("Batch can not be found in WNP.");
+            }
+
+            string message;
+            switch (batch.EquipmentType)
+            {
+                case "EM":
+                    this.ProcessMetersBatch(batch);
+                    break;
+                default:
+                    message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("BatchDeviceTypeNotSupported", CultureInfo.CurrentCulture), batch.EquipmentType);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
+            }
         }
 
         /// <summary>
@@ -358,6 +376,87 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             }
 
             return result;
+        }
+        
+        /// <summary>
+        /// Processes the meters batch.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <exception cref="System.AggregateException">All errors from sub transactions.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "All exceptions are collected and new agregate exception is rethrown.")]
+        private void ProcessMetersBatch(NewBatch batch)
+        {
+            string errorMessage = string.Empty;
+            IList<Exception> innerExceptions = new List<Exception>();
+            IList<Meter> batchMeters = this.WnpSystem.GetEquipmentByBatch<Meter>(batch);
+
+            foreach (Meter meter in batchMeters)
+            {
+                Device device = this.CreateDevice(meter);
+                IList<TransactionType> deviceTransactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.Device, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
+
+                if (deviceTransactionTypes.Count > 0)
+                {
+                    foreach (TransactionType transactionType in deviceTransactionTypes)
+                    {
+                        int deviceTransactionId;
+                        try
+                        {
+                            deviceTransactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, null, null);
+                            this.TransactionLogManager.UpdateTransactionState(deviceTransactionId, TransactionStateLookup.ServiceStart);
+
+                            this.ProcessMeter(device, meter, deviceTransactionId, true);
+
+                            this.TransactionLogManager.UpdateTransactionState(deviceTransactionId, TransactionStateLookup.ServiceEnd);
+                        }
+                        catch (Exception ex)
+                        {
+                            string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber);
+                            Log.Error(message, ex);
+                            errorMessage += message;
+                            innerExceptions.Add(ex.InnerException);
+                        }
+                    }
+                }
+
+                IList<MeterTestResult> meterTests = this.WnpSystem.GetEquipmentAllTestResult<MeterTestResult>(meter.EquipmentNumber, meter.Owner.Id);
+                IList<DateTime> uniqueTestStarts = meterTests.Select(x => x.TestDate).Distinct().ToList();
+
+                foreach (DateTime testDate in uniqueTestStarts)
+                {
+                    DeviceTest deviceTest = this.CreateDeviceTest(device, testDate);
+                    IList<TransactionType> deviceTestTransactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.DeviceTest, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
+
+                    if (deviceTestTransactionTypes.Count > 0)
+                    {
+                        foreach (TransactionType transactionType in deviceTestTransactionTypes)
+                        {
+                            int testTransactionId;
+                            try
+                            {
+                                testTransactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, deviceTest.Id, null);
+                                this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
+
+                                this.ProcessMeterTestResults(device, deviceTest, meter, testTransactionId, true);
+
+                                this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
+                            }
+                            catch (Exception ex)
+                            {
+                                string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
+                                Log.Error(message, ex);
+                                errorMessage += message;
+                                innerExceptions.Add(ex.InnerException);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                throw new AggregateException(errorMessage, innerExceptions);
+            }
         }
 
         /// <summary>
@@ -891,6 +990,43 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             }
 
             return serviceRequest;
+        }
+
+        /// <summary>
+        /// Creates the device test.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="testDate">The test date.</param>
+        /// <returns>The device test.</returns>
+        private DeviceTest CreateDeviceTest(Device device, DateTime testDate)
+        {
+            DeviceTest test = new DeviceTest()
+            {
+                Device = device,
+                TestDate = testDate
+            };
+
+            return this.DeviceManager.GetOrCreateDeviceTest(test);
+        }
+
+        /// <summary>
+        /// Creates the device object.
+        /// </summary>
+        /// <param name="meter">The meter.</param>
+        /// <returns>The device</returns>
+        private Device CreateDevice(Meter meter)
+        {
+            EquipmentType equipmentType = this.DeviceManager.GetEquipmentTypeByInternalCode("E", "EM");
+            Company company = this.DeviceManager.GetCompanyByInternalCode(meter.Owner.Id.ToString(CultureInfo.InvariantCulture));
+
+            Device device = new Device
+            {
+                Company = company,
+                EquipmentNumber = meter.EquipmentNumber,
+                EquipmentType = equipmentType
+            };
+
+            return this.DeviceManager.GetOrCreateDevice(device);
         }
     }
 }

@@ -99,6 +99,14 @@ namespace AMSLLC.Listener.Client.Implementation
         protected DeviceTest DeviceTest { get; set; }
 
         /// <summary>
+        /// Gets or sets the batch number.
+        /// </summary>
+        /// <value>
+        /// The batch number.
+        /// </value>
+        protected string BatchNumber { get; set; }
+
+        /// <summary>
         /// Calls web service to retrieve device information.
         /// </summary>
         /// <param name="request">The device retrieve request message.</param>
@@ -244,11 +252,16 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Response detailing if call succeeded.
         /// </returns>
         /// <exception cref="ArgumentNullException">request;Can not send device test information when request is not specified.</exception>
-        public virtual ClientResponse SendBatchData(DeviceRequest request)
+        public virtual ClientResponse SendBatchData(BatchRequest request)
         {
             this.DataType = TransactionDataLookup.NewBatch;
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not process request if it is not specified.");
+            } 
             
-            // this.CreateDevice(request);
+            this.BatchNumber = request.BatchNumber;
+
             return this.ProcessRequest(request);
         }
         
@@ -391,10 +404,10 @@ namespace AMSLLC.Listener.Client.Implementation
                                 client.SendTestData(deviceTestRequest);
                                 break;
                             case TransactionDataLookup.NewBatch:
-                                SendDataServiceRequest newBatchRequest = new SendDataServiceRequest()
+                                SendBatchServiceRequest newBatchRequest = new SendBatchServiceRequest()
                                 {
                                     TransactionId = transactionId,
-                                    ObjectId = 1
+                                    BatchNumber = this.BatchNumber
                                 };
                                 client.SendBatch(newBatchRequest);
                                 break;

@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="MeterProcessingFailed" xml:space="preserve">
+    <value>Meter {0} processing failed.</value>
+  </data>
   <data name="MeterStatusNotSupported" xml:space="preserve">
     <value>Meter status value is {0}. It is not supported for ODM integration.</value>
+  </data>
+  <data name="MeterTestProcessingFailed" xml:space="preserve">
+    <value>Meter {0} test {1} processing failed.</value>
   </data>
   <data name="SkipGMODevice" xml:space="preserve">
     <value>Skipping ODM integration, because meter doesn't belong to KCPL company.</value>

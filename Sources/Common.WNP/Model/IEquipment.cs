@@ -33,5 +33,13 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The equipment number.
         /// </value>
         string EquipmentNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the new batch.
+        /// </summary>
+        /// <value>
+        /// The new batch.
+        /// </value>
+        NewBatch NewBatch { get; set; }
     }
 }

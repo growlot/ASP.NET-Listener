@@ -98,6 +98,7 @@
     <Compile Include="ListenerDataProvider.cs" />
     <Compile Include="ListenerWebServiceClientLocal.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Messages\BatchRequest.cs" />
     <Compile Include="Messages\NewBatchRequest.cs" />
     <Compile Include="Messages\ClientResponse.cs" />
     <Compile Include="Messages\GetDeviceRequest.cs" />

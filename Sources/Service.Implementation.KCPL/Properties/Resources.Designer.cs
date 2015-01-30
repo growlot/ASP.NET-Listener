@@ -61,11 +61,29 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Meter {0} processing failed..
+        /// </summary>
+        internal static string MeterProcessingFailed {
+            get {
+                return ResourceManager.GetString("MeterProcessingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meter status value is {0}. It is not supported for ODM integration..
         /// </summary>
         internal static string MeterStatusNotSupported {
             get {
                 return ResourceManager.GetString("MeterStatusNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meter {0} test {1} processing failed..
+        /// </summary>
+        internal static string MeterTestProcessingFailed {
+            get {
+                return ResourceManager.GetString("MeterTestProcessingFailed", resourceCulture);
             }
         }
         

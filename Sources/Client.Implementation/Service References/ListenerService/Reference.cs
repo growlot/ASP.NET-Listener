@@ -244,6 +244,67 @@ namespace AMSLLC.Listener.Client.Implementation.ListenerService {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="SendBatchServiceRequest", Namespace="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract")]
+    [System.SerializableAttribute()]
+    public partial class SendBatchServiceRequest : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string BatchNumberField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int TransactionIdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string BatchNumber {
+            get {
+                return this.BatchNumberField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.BatchNumberField, value) != true)) {
+                    this.BatchNumberField = value;
+                    this.RaisePropertyChanged("BatchNumber");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TransactionId {
+            get {
+                return this.TransactionIdField;
+            }
+            set {
+                if ((this.TransactionIdField.Equals(value) != true)) {
+                    this.TransactionIdField = value;
+                    this.RaisePropertyChanged("TransactionId");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ListenerService.IService1")]
     public interface IService1 {
@@ -262,7 +323,7 @@ namespace AMSLLC.Listener.Client.Implementation.ListenerService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService1/SendBatch", ReplyAction="http://tempuri.org/IService1/SendBatchResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(AMSLLC.Listener.Client.Implementation.ListenerService.ServiceFaultDetails), Action="http://tempuri.org/IService1/SendBatchServiceFaultDetailsFault", Name="ServiceFaultDetails", Namespace="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract")]
-        void SendBatch(AMSLLC.Listener.Client.Implementation.ListenerService.SendDataServiceRequest request);
+        void SendBatch(AMSLLC.Listener.Client.Implementation.ListenerService.SendBatchServiceRequest request);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -304,7 +365,7 @@ namespace AMSLLC.Listener.Client.Implementation.ListenerService {
             base.Channel.SendTestData(request);
         }
         
-        public void SendBatch(AMSLLC.Listener.Client.Implementation.ListenerService.SendDataServiceRequest request) {
+        public void SendBatch(AMSLLC.Listener.Client.Implementation.ListenerService.SendBatchServiceRequest request) {
             base.Channel.SendBatch(request);
         }
     }

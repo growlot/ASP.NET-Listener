@@ -175,13 +175,9 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <summary>
         /// Called when [send test data].
         /// </summary>
-        /// <param name="request">The request.</param>
+        /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="deviceTest">The device test.</param>
         /// <exception cref="System.ArgumentNullException">
-        /// request;Can not send device test data if request is not specified.
-        /// or
-        /// device;Can not send device test data if device is not specified.
-        /// or
         /// deviceTest;Can not send device test data if device test is not specified.
         /// </exception>
         /// <exception cref="System.InvalidOperationException">Meter can not be found in WNP.</exception>
@@ -189,13 +185,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// </exception>
         /// <exception cref="System.IO.FileNotFoundException"></exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "AMSLLC.Listener.Service.Contract.ServiceFaultDetails.set_Message(System.String)", Justification = "It's just a space. No need to have it localized")]
-        protected override void OnSendTestData(SendDataServiceRequest request, DeviceTest deviceTest)
+        protected override void OnSendTestData(int transactionId, DeviceTest deviceTest)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request", "Can not send device test data if request is not specified.");
-            }
-
             if (deviceTest == null)
             {
                 throw new ArgumentNullException("deviceTest", "Can not send device test data if device test is not specified.");
@@ -249,7 +240,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 }
                 else
                 {
-                    alliantResponse = this.SendDeviceTestResponseFromWebService(request.TransactionId, alliantRequest);
+                    alliantResponse = this.SendDeviceTestResponseFromWebService(transactionId, alliantRequest);
                 }
             }
             catch (FaultException<Alliant.SendTestResult.FaultNotification> ex)
