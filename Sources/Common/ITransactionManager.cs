@@ -94,5 +94,25 @@ namespace AMSLLC.Listener.Common
         /// <param name="transactionSource">The transaction source.</param>
         /// <returns>The list of transactions that need to be run.</returns>
         IList<TransactionType> GetTransactionTypes(TransactionDataLookup transactionData, TransactionDirectionLookup transactionDirection, TransactionSourceLookup transactionSource);
+        
+        /// <summary>
+        /// Gets the latest successful transaction hash for specified device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="transactionType">Type of the transaction.</param>
+        /// <returns>
+        /// Returns the data hash.
+        /// </returns>
+        string GetLastSuccessfulDeviceTransactionDataHash(Device device, TransactionType transactionType);
+
+        /// <summary>
+        /// Gets the latest successful transaction hash for specified device test.
+        /// </summary>
+        /// <param name="deviceTest">The device test.</param>
+        /// <param name="transactionType">Type of the transaction.</param>
+        /// <returns>
+        /// Returns the data hash.
+        /// </returns>
+        string GetLastSuccessfulDeviceTestTransactionDataHash(DeviceTest deviceTest, TransactionType transactionType);
     }
 }

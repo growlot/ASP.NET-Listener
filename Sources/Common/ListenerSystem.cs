@@ -166,7 +166,75 @@ namespace AMSLLC.Listener.Common
 
             return this.persistenceManager.RetrieveAllEqual<TransactionLog>(criteria);
         }
-        
+
+        /// <summary>
+        /// Gets the latest successful transaction hash for specified device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="transactionType">Type of the transaction.</param>
+        /// <returns>
+        /// Returns the data hash.
+        /// </returns>
+        public string GetLastSuccessfulDeviceTransactionDataHash(Device device, TransactionType transactionType)
+        {
+            string result = GlobalConstants.PreviousSuccessfulTransactionNotFound;
+
+            DetachedCriteria criteria = DetachedCriteria.For<TransactionLog>();
+            criteria.Add(Restrictions.Eq("Device", device));
+            criteria.Add(Restrictions.Eq("TransactionStatus", new TransactionStatus((int)TransactionStatusLookup.Succeeded)));
+            criteria.Add(Restrictions.Eq("TransactionType", transactionType));
+
+            ProjectionList projectionList = Projections.ProjectionList();
+            projectionList.Add(Projections.Property("TransactionStart"), "TransactionStart");
+            projectionList.Add(Projections.Property("DataHash"), "DataHash");
+
+            criteria.SetResultTransformer(Transformers.DistinctRootEntity);
+            criteria.SetProjection(projectionList).SetResultTransformer(Transformers.AliasToBean<TransactionLog>());
+
+            IList<TransactionLog> transactions = this.persistenceManager.RetrieveAllEqual<TransactionLog>(criteria);
+            
+            if (transactions.Count > 0)
+            {
+                result = transactions.OrderByDescending<TransactionLog, DateTime>(x => (DateTime)x.TransactionStart).First().DataHash;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the latest successful transaction hash for specified device test.
+        /// </summary>
+        /// <param name="deviceTest">The device test.</param>
+        /// <param name="transactionType">Type of the transaction.</param>
+        /// <returns>
+        /// Returns the data hash.
+        /// </returns>
+        public string GetLastSuccessfulDeviceTestTransactionDataHash(DeviceTest deviceTest, TransactionType transactionType)
+        {
+            string result = GlobalConstants.PreviousSuccessfulTransactionNotFound;
+
+            DetachedCriteria criteria = DetachedCriteria.For<TransactionLog>();
+            criteria.Add(Restrictions.Eq("DeviceTest", deviceTest));
+            criteria.Add(Restrictions.Eq("TransactionStatus", new TransactionStatus((int)TransactionStatusLookup.Succeeded)));
+            criteria.Add(Restrictions.Eq("TransactionType", transactionType));
+
+            ProjectionList projectionList = Projections.ProjectionList();
+            projectionList.Add(Projections.Property("TransactionStart"), "TransactionStart");
+            projectionList.Add(Projections.Property("DataHash"), "DataHash");
+
+            criteria.SetResultTransformer(Transformers.DistinctRootEntity);
+            criteria.SetProjection(projectionList).SetResultTransformer(Transformers.AliasToBean<TransactionLog>());
+
+            IList<TransactionLog> transactions = this.persistenceManager.RetrieveAllEqual<TransactionLog>(criteria);
+
+            if (transactions.Count > 0)
+            {
+                result = transactions.OrderByDescending<TransactionLog, DateTime>(x => (DateTime)x.TransactionStart).First().DataHash;
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Gets the transaction information.
         /// </summary>

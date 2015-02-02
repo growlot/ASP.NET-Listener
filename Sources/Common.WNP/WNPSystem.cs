@@ -11,6 +11,7 @@ namespace AMSLLC.Listener.Common.WNP
     using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Common.WNP.Model;
     using NHibernate.Criterion;
+    using NHibernate.Transform;
 
     /// <summary>
     /// Manages all business objects related to Watt Net Plus application.
@@ -103,6 +104,23 @@ namespace AMSLLC.Listener.Common.WNP
             }
 
             return equipment;
+        }
+
+        /// <summary>
+        /// Gets the equipment.
+        /// </summary>
+        /// <typeparam name="T">The type of equipment.</typeparam>
+        /// <returns>Returns all equipment.</returns>
+        public IList<T> GetEquipmentIdOnly<T>()
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<T>();
+            ProjectionList projectionList = Projections.ProjectionList();
+            projectionList.Add(Projections.Property("EquipmentNumber"), "EquipmentNumber");
+            projectionList.Add(Projections.Property("Owner"), "Owner");
+
+            criteria.SetProjection(projectionList).SetResultTransformer(Transformers.AliasToBean<T>());
+
+            return this.persistenceManager.RetrieveAllEqual<T>(criteria);
         }
 
         /// <summary>

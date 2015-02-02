@@ -101,6 +101,14 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public DateTime? ModifiedDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the create date.
+        /// </summary>
+        /// <value>
+        /// The create date.
+        /// </value>
+        public DateTime CreateDate { get; set; }
+
+        /// <summary>
         /// Gets or sets the new batch.
         /// </summary>
         /// <value>

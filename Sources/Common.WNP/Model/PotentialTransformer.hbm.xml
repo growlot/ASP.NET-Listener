@@ -31,6 +31,7 @@
     <property name="SerialNumber" column="SERIAL_NO" type="AnsiString" length="20" />
     <property name="ModelNumber" column="MODEL_NO" type="AnsiString" length="30" />
     <property name="ModifiedDate" column="MOD_DATE" />
+    <property name="CreateDate" column="CREATE_DATE" />
 
     <property name="CustomField1" column="PT_USER01" type="AnsiString" length="50" />
     <property name="CustomField2" column="PT_USER02" type="AnsiString" length="50" />

@@ -164,5 +164,31 @@ namespace AMSLLC.Listener.Common
         {
             return this.listenerSystem.GetTransactionTypes((int)transactionData, (int)transactionDirection, (int)transactionSource);
         }
+
+        /// <summary>
+        /// Gets the latest successful transaction hash for specified device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="transactionType">Type of the transaction.</param>
+        /// <returns>
+        /// Returns the data hash.
+        /// </returns>
+        public string GetLastSuccessfulDeviceTransactionDataHash(Device device, TransactionType transactionType)
+        {
+            return this.listenerSystem.GetLastSuccessfulDeviceTransactionDataHash(device, transactionType);
+        }
+
+        /// <summary>
+        /// Gets the latest successful transaction hash for specified device test.
+        /// </summary>
+        /// <param name="deviceTest">The device test.</param>
+        /// <param name="transactionType">Type of the transaction.</param>
+        /// <returns>
+        /// Returns the data hash.
+        /// </returns>
+        public string GetLastSuccessfulDeviceTestTransactionDataHash(DeviceTest deviceTest, TransactionType transactionType)
+        {
+            return this.listenerSystem.GetLastSuccessfulDeviceTestTransactionDataHash(deviceTest, transactionType);
+        }
     }
 }

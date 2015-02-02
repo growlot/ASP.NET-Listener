@@ -37,17 +37,16 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
             // do something usefull here like update your UI.
             asyncResult.AsyncWaitHandle.WaitOne();
 
-            // get the response from the completed web request.
-            string soapResult;
-            using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
-            {
-                using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
-                {
-                    soapResult = rd.ReadToEnd();
-                }
+            ////// get the response from the completed web request.
+            ////string soapResult;
+            ////using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
+            ////{
+            ////    using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
+            ////    {
+            ////        soapResult = rd.ReadToEnd();
 
-                Console.Write(soapResult);
-            }
+            ////    }
+            ////}
         }
 
         /// <summary>

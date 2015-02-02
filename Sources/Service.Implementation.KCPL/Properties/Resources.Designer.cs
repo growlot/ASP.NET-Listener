@@ -61,6 +61,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dummy transaction for device status change detection..
+        /// </summary>
+        internal static string InitialLoadTransactionMessage {
+            get {
+                return ResourceManager.GetString("InitialLoadTransactionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meter {0} processing failed..
         /// </summary>
         internal static string MeterProcessingFailed {

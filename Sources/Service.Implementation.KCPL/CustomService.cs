@@ -48,6 +48,121 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         private static readonly ResourceManager CustomStringManager = new ResourceManager("AMSLLC.Listener.Service.Implementation.KCPL.Properties.Resources", Assembly.GetExecutingAssembly());
 
         /// <summary>
+        /// The meter equipment type
+        /// </summary>
+        private static EquipmentType meterEquipmentType;
+
+        /// <summary>
+        /// The company
+        /// </summary>
+        private static Company company;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomService"/> class.
+        /// </summary>
+        public CustomService()
+            : base()
+        {
+            meterEquipmentType = this.DeviceManager.GetEquipmentTypeByInternalCode("E", "EM");
+            company = this.DeviceManager.GetCompanyByInternalCode("0".ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// Processes initial load to ODM.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This is expected behaviour. Exception will be logged and processing must continue")]
+        public void ProcessInitialLoad()
+        {
+            string errorMessage = string.Empty;
+            IList<Meter> meters = this.WnpSystem.GetEquipmentIdOnly<Meter>();
+
+            IList<TransactionType> deviceTransactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.Device, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
+            TransactionType deviceOdmTransaction = null;
+            foreach (TransactionType transactionType in deviceTransactionTypes)
+            {
+                if (transactionType.ExternalSystem.Name == "ODM")
+                {
+                    deviceOdmTransaction = transactionType;
+                }
+            }
+
+            IList<TransactionType> deviceTestTransactionTypes = this.TransactionLogManager.GetTransactionTypes(TransactionDataLookup.DeviceTest, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WNP);
+            TransactionType deviceTestOdmTransaction = null;
+            foreach (TransactionType transactionType in deviceTestTransactionTypes)
+            {
+                if (transactionType.ExternalSystem.Name == "ODM")
+                {
+                    deviceTestOdmTransaction = transactionType;
+                }
+            }
+
+            int totalMeters = meters.Count;
+            int currentMeter = 0;
+
+            foreach (Meter meter in meters)
+            {
+                currentMeter++;
+                Log.Fatal(string.Format(CultureInfo.InvariantCulture, "Processing {0} of {1}", currentMeter, totalMeters));
+
+                Meter fullMeter = this.WnpSystem.GetEquipment<Meter>(meter.EquipmentNumber, meter.Owner.Id);
+
+                if (string.IsNullOrWhiteSpace(fullMeter.CustomField13))
+                {
+                    continue;
+                }
+
+                Device device = this.CreateDevice(fullMeter);
+
+                string currentHash = this.TransactionLogManager.GetLastSuccessfulDeviceTransactionDataHash(device, deviceOdmTransaction);
+                string newHash = GetMeterHash(fullMeter);
+                
+                if (currentHash != newHash)
+                {
+                    int deviceTransactionId = this.TransactionLogManager.NewTransaction(deviceOdmTransaction.Id, device.Id, null, null);
+                    this.TransactionLogManager.UpdateTransactionDataHash(deviceTransactionId, newHash);
+
+                    this.TransactionLogManager.UpdateTransactionStatus(deviceTransactionId, TransactionStatusLookup.Succeeded, CustomStringManager.GetString("InitialLoadTransactionMessage", CultureInfo.CurrentCulture), null);
+                }
+
+                if (fullMeter.CreateDate < new DateTime(2008, 1, 1) || fullMeter.CustomField13 != "A")
+                {
+                    continue;
+                }
+
+                IList<MeterTestResult> meterTests = this.WnpSystem.GetEquipmentAllTestResult<MeterTestResult>(meter.EquipmentNumber, meter.Owner.Id);
+                IList<DateTime> uniqueTestStarts = meterTests.Select(x => x.TestDate).Distinct().ToList();
+
+                foreach (DateTime testDate in uniqueTestStarts)
+                {
+                    DeviceTest deviceTest = this.CreateDeviceTest(device, testDate);
+
+                    currentHash = this.TransactionLogManager.GetLastSuccessfulDeviceTransactionDataHash(device, deviceOdmTransaction);
+
+                    if (currentHash == GlobalConstants.PreviousSuccessfulTransactionNotFound)
+                    {
+                        int testTransactionId = this.TransactionLogManager.NewTransaction(deviceTestOdmTransaction.Id, device.Id, deviceTest.Id, null);
+
+                        try
+                        {
+                            this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
+                            this.ProcessMeterTestResults(device, deviceTest, meter, testTransactionId, true);
+                            this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
+                        }
+                        catch (Exception ex)
+                        {
+                            string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
+                            Log.Error(message, ex);
+                            errorMessage += message;
+                            this.TransactionLogManager.UpdateTransactionStatus(testTransactionId, (int)TransactionStatusLookup.Failed, message, ex.ToString());
+                        }
+                    }
+                }
+            }
+
+            Log.Error(errorMessage);
+        }
+
+        /// <summary>
         /// Called when [send device data]. Must override with client specific implementation.
         /// </summary>
         /// <param name="transactionId">The transaction identifier.</param>
@@ -383,11 +498,10 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         /// <param name="batch">The batch.</param>
         /// <exception cref="System.AggregateException">All errors from sub transactions.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "All exceptions are collected and new agregate exception is rethrown.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "All exceptions are logged and processing is continued.")]
         private void ProcessMetersBatch(NewBatch batch)
         {
             string errorMessage = string.Empty;
-            IList<Exception> innerExceptions = new List<Exception>();
             IList<Meter> batchMeters = this.WnpSystem.GetEquipmentByBatch<Meter>(batch);
 
             foreach (Meter meter in batchMeters)
@@ -399,10 +513,9 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 {
                     foreach (TransactionType transactionType in deviceTransactionTypes)
                     {
-                        int deviceTransactionId;
+                        int deviceTransactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, null, null);
                         try
                         {
-                            deviceTransactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, null, null);
                             this.TransactionLogManager.UpdateTransactionState(deviceTransactionId, TransactionStateLookup.ServiceStart);
 
                             this.ProcessMeter(device, meter, deviceTransactionId, true);
@@ -414,7 +527,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                             string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber);
                             Log.Error(message, ex);
                             errorMessage += message;
-                            innerExceptions.Add(ex.InnerException);
+                            this.TransactionLogManager.UpdateTransactionStatus(deviceTransactionId, (int)TransactionStatusLookup.Failed, ex.Message, ex.ToString());
                         }
                     }
                 }
@@ -431,22 +544,27 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     {
                         foreach (TransactionType transactionType in deviceTestTransactionTypes)
                         {
-                            int testTransactionId;
+                            int testTransactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, deviceTest.Id, null);
                             try
                             {
-                                testTransactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, deviceTest.Id, null);
                                 this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
 
                                 this.ProcessMeterTestResults(device, deviceTest, meter, testTransactionId, true);
 
                                 this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
+
+                                TransactionLog transaction = this.TransactionLogManager.GetTransaction(testTransactionId);
+                                if (transactionType.ExternalSystem.Name == "CIS" && transaction.TransactionStatus.Id == (int)TransactionStatusLookup.InProgress)
+                                {
+                                    this.TransactionLogManager.UpdateTransactionStatus(testTransactionId, (int)TransactionStatusLookup.Succeeded);
+                                }
                             }
                             catch (Exception ex)
                             {
                                 string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
                                 Log.Error(message, ex);
                                 errorMessage += message;
-                                innerExceptions.Add(ex.InnerException);
+                                this.TransactionLogManager.UpdateTransactionStatus(testTransactionId, (int)TransactionStatusLookup.Failed, ex.Message, ex.ToString());
                             }
                         }
                     }
@@ -455,7 +573,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
             if (!string.IsNullOrEmpty(errorMessage))
             {
-                throw new AggregateException(errorMessage, innerExceptions);
+                throw new AggregateException(errorMessage);
             }
         }
 
@@ -493,36 +611,10 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
             TransactionLog currentTransaction = this.TransactionLogManager.GetTransaction(transactionId);
 
-            TransactionLog searchCriteria = new TransactionLog()
-            {
-                TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Succeeded),
-                TransactionType = currentTransaction.TransactionType,
-                Device = device,
-            };
+            string previousHash = this.TransactionLogManager.GetLastSuccessfulDeviceTransactionDataHash(device, currentTransaction.TransactionType);
+            string currentHash = GetMeterHash(meter);
 
-            IList<TransactionLog> previousTransactions = this.TransactionLogManager.GetTransactions(searchCriteria);
-
-            // check if there is a successfull previous transaction for this meter
-            if (previousTransactions.Count > 0)
-            {
-                TransactionLog latestSuccessfullTransaction = previousTransactions.OrderByDescending<TransactionLog, DateTime>(x => (DateTime)x.TransactionStart).First();
-
-                // check if latest successfull transaction had same DataHash
-                if (latestSuccessfullTransaction.DataHash != GetMeterHash(meter))
-                {
-                    this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
-
-                    AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
-                    this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
-                }
-                else
-                {
-                    string message = CustomStringManager.GetString("SkipMeterStatusNotChanged", CultureInfo.CurrentCulture);
-                    Log.Info(message);
-                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
-                }
-            }
-            else
+            if (previousHash != currentHash)
             {
                 if (batchAcceptance)
                 {
@@ -538,7 +630,13 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
                     AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
                     this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
-                }
+                } 
+            }
+            else
+            {
+                string message = CustomStringManager.GetString("SkipMeterStatusNotChanged", CultureInfo.CurrentCulture);
+                Log.Info(message);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
             }
         }
 
@@ -578,19 +676,11 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     Log.Info(message);
                     this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
                 }
-            }             
+            }
 
-            TransactionLog searchCriteria = new TransactionLog()
-            {
-                TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Succeeded),
-                TransactionType = currentTransaction.TransactionType,
-                Device = device,
-            };
+            string previousHash = this.TransactionLogManager.GetLastSuccessfulDeviceTestTransactionDataHash(deviceTest, currentTransaction.TransactionType);
 
-            IList<TransactionLog> previousTransactions = this.TransactionLogManager.GetTransactions(searchCriteria);
-
-            // check if there is a successfull previous transaction for this meter
-            if (previousTransactions.Count > 0)
+            if (previousHash != GlobalConstants.PreviousSuccessfulTransactionNotFound)
             {
                 string message = StringManager.GetString("SkipDuplicate", CultureInfo.CurrentCulture);
                 Log.Info(message);
@@ -1016,14 +1106,11 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <returns>The device</returns>
         private Device CreateDevice(Meter meter)
         {
-            EquipmentType equipmentType = this.DeviceManager.GetEquipmentTypeByInternalCode("E", "EM");
-            Company company = this.DeviceManager.GetCompanyByInternalCode(meter.Owner.Id.ToString(CultureInfo.InvariantCulture));
-
             Device device = new Device
             {
                 Company = company,
                 EquipmentNumber = meter.EquipmentNumber,
-                EquipmentType = equipmentType
+                EquipmentType = meterEquipmentType
             };
 
             return this.DeviceManager.GetOrCreateDevice(device);
