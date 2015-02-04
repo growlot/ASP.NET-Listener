@@ -145,9 +145,6 @@ namespace AMSLLC.Listener.Service.Host
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "System.Boolean.TryParse(System.String,System.Boolean@)", Justification = "In case TryParse fails, initialProcessing will be set to false. This is desired value")]
         private void LoadKCPL()
         {
-            this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.CustomService>();
-            this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.TransactionResponseService>();
-
             bool initialProcessing;
             bool.TryParse(ConfigurationManager.AppSettings["Kcpl.InitialProcessingOn"], out initialProcessing);
 
@@ -156,6 +153,11 @@ namespace AMSLLC.Listener.Service.Host
                 AMSLLC.Listener.Service.Implementation.KCPL.CustomService service = new Implementation.KCPL.CustomService();
                 service.ProcessInitialLoad();
             } 
+            else
+            {
+                this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.CustomService>();
+                this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.TransactionResponseService>();
+            }
         }
     }
 }

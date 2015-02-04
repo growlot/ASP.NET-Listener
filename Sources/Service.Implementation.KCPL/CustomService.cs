@@ -136,7 +136,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 {
                     DeviceTest deviceTest = this.CreateDeviceTest(device, testDate);
 
-                    currentHash = this.TransactionLogManager.GetLastSuccessfulDeviceTransactionDataHash(device, deviceOdmTransaction);
+                    currentHash = this.TransactionLogManager.GetLastSuccessfulDeviceTestTransactionDataHash(deviceTest, deviceTestOdmTransaction);
 
                     if (currentHash == GlobalConstants.PreviousSuccessfulTransactionNotFound)
                     {
@@ -145,7 +145,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                         try
                         {
                             this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
-                            this.ProcessMeterTestResults(device, deviceTest, meter, testTransactionId, true);
+                            this.ProcessMeterTestResults(device, deviceTest, fullMeter, testTransactionId, true);
                             this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
                         }
                         catch (Exception ex)
@@ -606,6 +606,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
                     Log.Info(message);
                     this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                    return;
                 }
             }
 
@@ -675,6 +676,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
                     Log.Info(message);
                     this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                    return;
                 }
             }
 

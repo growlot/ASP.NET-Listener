@@ -122,9 +122,7 @@
     <Compile Include="v2.0.0\Migration_3_TransactionStatus_Populate.cs" />
     <Compile Include="v2.0.0\Migration_5_TransactionState_Populate.cs" />
     <Compile Include="v2.0.0\Migration_7_TransactionSource_Populate.cs" />
-    <Compile Include="v2.0.0\Migration_17_TransactionLog_Create.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
+    <Compile Include="v2.0.0\Migration_17_TransactionLog_Create.cs" />
     <Compile Include="v2.0.0\Migration_8_TransactionType_Populate.cs" />
     <Compile Include="v2.0.0\Migration_14_Device_Create.cs" />
     <Compile Include="v2.0.0\Migration_19_PopulateCustomerData.cs" />
@@ -144,6 +142,7 @@
     <Compile Include="v2.0.1\Migration_200001012_TransactionType_Update.cs" />
     <Compile Include="v2.0.1\Migration_200001013_PopulateCustomerData.cs" />
     <Compile Include="v2.0.1\Migration_200001014_TransactionLog_UpdateSchema.cs" />
+    <Compile Include="v2.0.1\Migration_200001016_PopulateCustomerData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">

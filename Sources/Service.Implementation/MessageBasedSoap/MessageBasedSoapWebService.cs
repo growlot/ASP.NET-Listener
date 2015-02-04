@@ -28,25 +28,9 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
             HttpWebRequest webRequest = CreateWebRequest(url);
 
             string body = PrepareSoapRequest(soapMessage);
-            InsertSoapEnvelopeIntoWebRequest(body, webRequest);
-
-            // begin async call to web request.
-            IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
-
-            // suspend this thread until call is complete. You might want to
-            // do something usefull here like update your UI.
-            asyncResult.AsyncWaitHandle.WaitOne();
-
-            ////// get the response from the completed web request.
-            ////string soapResult;
-            ////using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
-            ////{
-            ////    using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
-            ////    {
-            ////        soapResult = rd.ReadToEnd();
-
-            ////    }
-            ////}
+            InsertSoapEnvelopeIntoWebRequest(body, webRequest);            
+            
+            webRequest.GetResponse();
         }
 
         /// <summary>
