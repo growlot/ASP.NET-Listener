@@ -93,7 +93,7 @@ namespace AMSLLC.Listener.Client.Implementation
 
             searchCriteria.TransactionStart = request.LogDate;
 
-            IList<TransactionLog> log = this.transactionLogManager.GetTransactions(searchCriteria);
+            IList<TransactionLog> log = this.transactionLogManager.GetTransactions(searchCriteria, request.IncludeSkipped);
 
             logResponse = ((List<TransactionLog>)log).ConvertAll<TransactionLogResponse>(x => new TransactionLogResponse
             {

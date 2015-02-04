@@ -128,17 +128,18 @@ namespace AMSLLC.Listener.Common
         {
             this.listenerSystem.UpdateTransactionDataHash(transactionId, dataHash);
         }
-        
+
         /// <summary>
         /// Gets all the transactions for specified search criteria.
         /// </summary>
         /// <param name="searchCriteria">The search criteria.</param>
+        /// <param name="includeSkipped">If set to <c>true</c> includes skipped transactions in the search results.</param>
         /// <returns>
         /// List of transactions for specified search criteria
         /// </returns>
-        public IList<TransactionLog> GetTransactions(TransactionLog searchCriteria)
+        public IList<TransactionLog> GetTransactions(TransactionLog searchCriteria, bool includeSkipped)
         {
-            return this.listenerSystem.GetTransactions(searchCriteria);
+            return this.listenerSystem.GetTransactions(searchCriteria, includeSkipped);
         }
 
         /// <summary>

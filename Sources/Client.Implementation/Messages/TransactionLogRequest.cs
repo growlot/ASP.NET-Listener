@@ -67,5 +67,13 @@ namespace AMSLLC.Listener.Client.Implementation.Messages
         ///   <c>true</c> if only failed logs should be queried; otherwise, <c>false</c>.
         /// </value>
         public bool FailedOnly { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether skipped transactions should be included in the log output.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if skipped transactions are included in the log output; otherwise, <c>false</c>.
+        /// </value>
+        public bool IncludeSkipped { get; set; }
     }
 }

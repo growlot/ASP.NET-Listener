@@ -129,11 +129,12 @@ namespace AMSLLC.Listener.Common
         /// Gets the transaction list for specified search criteria.
         /// </summary>
         /// <param name="searchCriteria">The search criteria.</param>
+        /// <param name="includeSkipped">If set to <c>true</c> includes skipped transactions in the search results.</param>
         /// <returns>
         /// Returns list of transactions.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">searchCriteria;Can not get transaction log if no search criteria is specified</exception>
-        public IList<TransactionLog> GetTransactions(TransactionLog searchCriteria)
+        public IList<TransactionLog> GetTransactions(TransactionLog searchCriteria, bool includeSkipped)
         {
             if (searchCriteria == null)
             {
@@ -149,6 +150,12 @@ namespace AMSLLC.Listener.Common
             if (searchCriteria.TransactionStatus != null)
             {
                 criteria.Add(Restrictions.Eq("TransactionStatus", searchCriteria.TransactionStatus));
+            }
+
+            if (!includeSkipped)
+            {
+                TransactionStatus skippedStatus = new TransactionStatus((int)TransactionStatusLookup.Skipped);
+                criteria.Add(Restrictions.Not(Restrictions.Eq("TransactionStatus", skippedStatus)));
             }
 
             if (searchCriteria.TransactionType != null)

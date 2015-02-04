@@ -72,10 +72,11 @@ namespace AMSLLC.Listener.Common
         /// Gets all the transactions for specified search criteria.
         /// </summary>
         /// <param name="searchCriteria">The search criteria.</param>
+        /// <param name="includeSkipped">If set to <c>true</c> includes skipped transactions in the search results.</param>
         /// <returns>
         /// List of transactions for specified search criteria
         /// </returns>
-        IList<TransactionLog> GetTransactions(TransactionLog searchCriteria);
+        IList<TransactionLog> GetTransactions(TransactionLog searchCriteria, bool includeSkipped);
 
         /// <summary>
         /// Gets the transaction information.
