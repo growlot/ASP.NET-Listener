@@ -21,8 +21,6 @@ namespace AMSLLC.Listener.Common.Model
         public Config()
         {
             this.Id = -1;
-            this.Name = string.Empty;
-            this.Value = string.Empty;
         }
 
         /// <summary>
@@ -31,8 +29,8 @@ namespace AMSLLC.Listener.Common.Model
         /// <param name="name">The name of configuration setting.</param>
         /// <param name="value">The value of configuration setting.</param>
         public Config(string name, string value)
+            : this()
         {
-            this.Id = -1;
             this.Name = name;
             this.Value = value;
         }

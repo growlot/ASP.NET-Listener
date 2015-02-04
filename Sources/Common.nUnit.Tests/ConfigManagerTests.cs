@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ConfigSettingsTests.cs" company="Advanced Metering Services LLC">
+// <copyright file="ConfigManagerTests.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -32,7 +32,7 @@ namespace Common.Unit.Tests
         }
 
         /// <summary>
-        /// Tests if config manager can be initialized if no methods are overrided
+        /// Tests if config manager can be initialized if no methods are overridden
         /// </summary>
         [TestMethod]
         public void ForTestingPurposesConfigManagerShouldInitializeWithoutAnyOverrides()
@@ -294,7 +294,7 @@ namespace Common.Unit.Tests
         }
         
         /// <summary>
-        /// Tests if excpetion is thrown if config value is not specified (null).
+        /// Tests if exception is thrown if config value is not specified (null).
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentNullException))]

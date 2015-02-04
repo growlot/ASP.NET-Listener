@@ -17,6 +17,7 @@ namespace AMSLLC.Listener.Common
     using NHibernate.Criterion;
     using NHibernate.Dialect;
     using NHibernate.Engine;
+    using NHibernate.Mapping.ByCode;
     using Conf = System.Configuration;
 
     /// <summary>
@@ -403,6 +404,11 @@ namespace AMSLLC.Listener.Common
             Assembly thisAssembly = typeof(Config).Assembly;
             configuration.AddAssembly(thisAssembly);
 
+            // Add mappings by code
+            ModelMapper mapper = new ModelMapper();
+            mapper.AddMappings(thisAssembly.GetExportedTypes());
+            configuration.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
+            
             // Create session factory from configuration object
             this.sessionFactory = configuration.BuildSessionFactory();
             this.connectionString = configuration.Properties["connection.connection_string"];

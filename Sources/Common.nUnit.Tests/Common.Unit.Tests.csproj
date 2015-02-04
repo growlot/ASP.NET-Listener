@@ -84,9 +84,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ConfigManagerTests.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
+    <Compile Include="ConfigManagerTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionLogManagerTests.cs" />
