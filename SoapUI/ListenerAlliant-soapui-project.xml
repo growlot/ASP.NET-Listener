@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="ListenerAlliant" resourceRoot="" soapui-version="5.0.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="BasicHttpBinding_IService1" type="wsdl" bindingName="{http://tempuri.org/}BasicHttpBinding_IService1" soapVersion="1_1" anonymous="optional" definition="http://localhost:8733/AlliantService/?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8733/AlliantService/?wsdl"><con:part><con:url>http://localhost:8733/AlliantService/?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="CustomService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://tempuri.org/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:8733/AlliantService/?xsd=xsd0" namespace="http://tempuri.org/"/>
+      <xsd:import schemaLocation="http://localhost:8733/AlliantService/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract"/>
+      <xsd:import schemaLocation="http://localhost:8733/AlliantService/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IService1_GetDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDevice"/>
+  </wsdl:message>
+  <wsdl:message name="IService1_GetDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IService1_GetDevice_ServiceFaultDetailsFault_FaultMessage">
+    <wsdl:part name="detail" element="q1:ServiceFaultDetails" xmlns:q1="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract"/>
+  </wsdl:message>
+  <wsdl:message name="IService1_SendTestData_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendTestData"/>
+  </wsdl:message>
+  <wsdl:message name="IService1_SendTestData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendTestDataResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IService1_SendTestData_ServiceFaultDetailsFault_FaultMessage">
+    <wsdl:part name="detail" element="q2:ServiceFaultDetails" xmlns:q2="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract"/>
+  </wsdl:message>
+  <wsdl:portType name="IService1">
+    <wsdl:operation name="GetDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService1/GetDevice" message="tns:IService1_GetDevice_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IService1/GetDeviceResponse" message="tns:IService1_GetDevice_OutputMessage"/>
+      <wsdl:fault wsaw:Action="http://tempuri.org/IService1/GetDeviceServiceFaultDetailsFault" name="ServiceFaultDetailsFault" message="tns:IService1_GetDevice_ServiceFaultDetailsFault_FaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="SendTestData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService1/SendTestData" message="tns:IService1_SendTestData_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IService1/SendTestDataResponse" message="tns:IService1_SendTestData_OutputMessage"/>
+      <wsdl:fault wsaw:Action="http://tempuri.org/IService1/SendTestDataServiceFaultDetailsFault" name="ServiceFaultDetailsFault" message="tns:IService1_SendTestData_ServiceFaultDetailsFault_FaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IService1" type="tns:IService1">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetDevice">
+      <soap:operation soapAction="http://tempuri.org/IService1/GetDevice" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDetailsFault">
+        <soap:fault name="ServiceFaultDetailsFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SendTestData">
+      <soap:operation soapAction="http://tempuri.org/IService1/SendTestData" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDetailsFault">
+        <soap:fault name="ServiceFaultDetailsFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CustomService">
+    <wsdl:port name="BasicHttpBinding_IService1" binding="tns:BasicHttpBinding_IService1">
+      <soap:address location="http://localhost:8733/AlliantService/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8733/AlliantService/?xsd=xsd0</con:url><con:content><![CDATA[<xs:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://tempuri.org/">
+  <xs:import schemaLocation="http://localhost:8733/AlliantService/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract"/>
+  <xs:element name="GetDevice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="request" nillable="true" type="q1:GetDeviceServiceRequest" xmlns:q1="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDeviceResponse">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendTestData">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="request" nillable="true" type="q2:SendTestDataServiceRequest" xmlns:q2="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendTestDataResponse">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part><con:part><con:url>http://localhost:8733/AlliantService/?xsd=xsd2</con:url><con:content><![CDATA[<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract">
+  <xs:complexType name="GetDeviceServiceRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DeviceId" type="xs:int"/>
+      <xs:element minOccurs="0" name="Location" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TestStandard" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TesterId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TransactionId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetDeviceServiceRequest" nillable="true" type="tns:GetDeviceServiceRequest"/>
+  <xs:complexType name="ServiceFaultDetails">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DebugInfo" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ServiceFaultDetails" nillable="true" type="tns:ServiceFaultDetails"/>
+  <xs:complexType name="SendTestDataServiceRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DeviceId" type="xs:int"/>
+      <xs:element minOccurs="0" name="DeviceTestId" type="xs:int"/>
+      <xs:element minOccurs="0" name="TransactionId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SendTestDataServiceRequest" nillable="true" type="tns:SendTestDataServiceRequest"/>
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part><con:part><con:url>http://localhost:8733/AlliantService/?xsd=xsd1</con:url><con:content><![CDATA[<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
+  <xs:element name="anyType" nillable="true" type="xs:anyType"/>
+  <xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
+  <xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
+  <xs:element name="boolean" nillable="true" type="xs:boolean"/>
+  <xs:element name="byte" nillable="true" type="xs:byte"/>
+  <xs:element name="dateTime" nillable="true" type="xs:dateTime"/>
+  <xs:element name="decimal" nillable="true" type="xs:decimal"/>
+  <xs:element name="double" nillable="true" type="xs:double"/>
+  <xs:element name="float" nillable="true" type="xs:float"/>
+  <xs:element name="int" nillable="true" type="xs:int"/>
+  <xs:element name="long" nillable="true" type="xs:long"/>
+  <xs:element name="QName" nillable="true" type="xs:QName"/>
+  <xs:element name="short" nillable="true" type="xs:short"/>
+  <xs:element name="string" nillable="true" type="xs:string"/>
+  <xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte"/>
+  <xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt"/>
+  <xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong"/>
+  <xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort"/>
+  <xs:element name="char" nillable="true" type="tns:char"/>
+  <xs:simpleType name="char">
+    <xs:restriction base="xs:int"/>
+  </xs:simpleType>
+  <xs:element name="duration" nillable="true" type="tns:duration"/>
+  <xs:simpleType name="duration">
+    <xs:restriction base="xs:duration">
+      <xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?"/>
+      <xs:minInclusive value="-P10675199DT2H48M5.4775808S"/>
+      <xs:maxInclusive value="P10675199DT2H48M5.4775807S"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="guid" nillable="true" type="tns:guid"/>
+  <xs:simpleType name="guid">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:attribute name="FactoryType" type="xs:QName"/>
+  <xs:attribute name="Id" type="xs:ID"/>
+  <xs:attribute name="Ref" type="xs:IDREF"/>
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8733/AlliantService/</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://tempuri.org/IService1/GetDevice" name="GetDevice" bindingOperationName="GetDevice" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8733/AlliantService/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:ams="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tem:GetDevice>
+         <!--Optional:-->
+         <tem:request>
+            <!--Optional:-->
+            <ams:DeviceId>123456788</ams:DeviceId>
+            <!--Optional:-->
+            <ams:Location>VR7</ams:Location>
+            <!--Optional:-->
+            <ams:TestStandard>123456</ams:TestStandard>
+            <!--Optional:-->
+            <ams:TesterId>1</ams:TesterId>
+            <!--Optional:-->
+            <ams:TransactionId>1</ams:TransactionId>
+         </tem:request>
+      </tem:GetDevice>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://tempuri.org/IService1/GetDevice"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://tempuri.org/IService1/SendTestData" name="SendTestData" bindingOperationName="SendTestData" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8733/AlliantService/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:ams="http://schemas.datacontract.org/2004/07/AMSLLC.Listener.Service.Contract">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tem:SendTestData>
+         <!--Optional:-->
+         <tem:request>
+            <!--Optional:-->
+            <ams:DeviceId>13</ams:DeviceId>
+            <!--Optional:-->
+            <ams:DeviceTestId>63</ams:DeviceTestId>
+            <!--Optional:-->
+            <ams:TransactionId>353</ams:TransactionId>
+         </tem:request>
+      </tem:SendTestData>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://tempuri.org/IService1/SendTestData"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="BasicHttpBinding_DeviceClassificationCode" type="wsdl" bindingName="{http://tempuri.org/}BasicHttpBinding_DeviceClassificationCode" soapVersion="1_1" anonymous="optional" definition="http://localhost:8733/AlliantExternalService/?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8733/AlliantExternalService/?wsdl"><con:part><con:url>http://localhost:8733/AlliantExternalService/?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="UpdateClassificationCode" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://tempuri.org/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:i0="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+  <wsp:Policy wsu:Id="BasicHttpBinding_DeviceClassificationCode_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <http:BasicAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http"/>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:import namespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1" location="http://localhost:8733/AlliantExternalService/?wsdl=wsdl0"/>
+  <wsdl:types/>
+  <wsdl:binding name="BasicHttpBinding_DeviceClassificationCode" type="i0:DeviceClassificationCode">
+    <wsp:PolicyReference URI="#BasicHttpBinding_DeviceClassificationCode_policy"/>
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Update">
+      <soap:operation soapAction="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1/Update" style="document"/>
+      <wsdl:input name="Update">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="UpdateClassificationCode">
+    <wsdl:port name="BasicHttpBinding_DeviceClassificationCode" binding="tns:BasicHttpBinding_DeviceClassificationCode">
+      <soap:address location="http://localhost:8733/AlliantExternalService/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8733/AlliantExternalService/?wsdl=wsdl0</con:url><con:content><![CDATA[<wsdl:definitions targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1/Imports">
+      <xsd:import schemaLocation="http://localhost:8733/AlliantExternalService/?xsd=xsd0" namespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="Update">
+    <wsdl:part name="UpdateDeviceClassificationCodeABM" element="tns:UpdateDeviceClassificationCodeABM"/>
+  </wsdl:message>
+  <wsdl:portType name="DeviceClassificationCode">
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1/Update" name="Update" message="tns:Update"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8733/AlliantExternalService/?xsd=xsd0</con:url><con:content><![CDATA[<xs:schema elementFormDefault="qualified" targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1">
+  <xs:element name="UpdateDeviceClassificationCodeABM" type="tns:UpdateDeviceClassificationCodeABMType"/>
+  <xs:complexType name="UpdateDeviceClassificationCodeABMType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="BatchNumber" type="xs:int"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="BatchesTotal" type="xs:int"/>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="UpdateDeviceClassificationCode" type="tns:DeviceClassificationCodeType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DeviceClassificationCodeType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="ClassificationCode" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="DeviceDescription" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="DeviceType" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="Status" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="Manufacturer" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="Model" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="ForceRetirementSwitch" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="MaterialID" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="AssetProfileID" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="DeviceTestType" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="TemplateDevice" type="xs:string"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="ElectricDevice">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="IPLSelectionType" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="IPLTestInterval" type="xs:int"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="WPLSelectionType" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="WPLTestInterval" type="xs:int"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="BatteryLife" type="xs:int"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Wire" type="xs:int"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Stator" type="xs:decimal"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Ampacity" type="xs:int"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="TestAmps" type="xs:decimal"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="VoltageClass" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="TestVoltage" type="xs:int"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Constant" type="xs:decimal"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Phase" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Form" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Base" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="RegisterRatio" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="AMIIndicator" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="ERTIndicator" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="TransformerRatedIndicator" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="NetworkIndicator" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="RemoteConnectDisconnectIndicator" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="RecorderExists" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="LossCompensationCapableIndicator" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="TestSequence" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" maxOccurs="1" name="TransformerAttribute">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="AccuracyClass" type="xs:decimal"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="ConstructionType" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="BasicLightingImpulseLevel" type="xs:decimal"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="InsulationVoltageClass" type="xs:decimal"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="InsulatingMedium" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="DeviceApplicationEnvironment" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="NumberOfRatios" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="CurrentTransformer">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" maxOccurs="1" name="LightLoadPercentage" type="xs:decimal"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="PrimaryCurrentRatio1" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="PrimaryCurrentRatio2" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="OhmsBurden1" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="OhmsBurden2" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="Ratio1RatingFactor" type="xs:decimal"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="Ratio2RatingFactor" type="xs:decimal"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="1" name="PotentialTransformer">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" maxOccurs="1" name="PrimaryVoltageRatio1" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="PrimaryVoltageRatio2" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="VoltAmpsBurden1" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="VoltAmpsBurden2" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="DualSecondary" type="xs:string"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="Fused" type="xs:string"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8733/AlliantExternalService/</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1/Update" name="Update" bindingOperationName="Update" type="One-Way" inputName="Update" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1" useWsReliableMessaging="false" wssPasswordType="" outgoingWss="ClassificationCode" useWsAddressing="true"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8733/AlliantExternalService/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <v1:UpdateDeviceClassificationCodeABM>
+         <!--Optional:-->
+         <v1:BatchNumber>1</v1:BatchNumber>
+         <!--Optional:-->
+         <v1:BatchesTotal>1</v1:BatchesTotal>
+         <!--Zero or more repetitions:-->
+						<v1:UpdateDeviceClassificationCode>
+				<v1:ClassificationCode>EZ1891</v1:ClassificationCode>
+				<v1:DeviceDescription>GE I50 FM3 1PH 2.5TA 240V 2W</v1:DeviceDescription>
+				<v1:DeviceType>MR</v1:DeviceType>
+				<v1:Status>A</v1:Status>
+				<v1:Manufacturer>GE</v1:Manufacturer>
+				<v1:Model>I50</v1:Model>
+				<v1:ForceRetirementSwitch>000000</v1:ForceRetirementSwitch>
+				<v1:MaterialID>N</v1:MaterialID>
+				<v1:AssetProfileID>E370MET001</v1:AssetProfileID>
+				<v1:DeviceTestType>EMTRSECR</v1:DeviceTestType>
+				<v1:TemplateDevice/>
+				<v1:ElectricDevice>
+					<v1:IPLSelectionType>F</v1:IPLSelectionType>
+					<v1:IPLTestInterval>144</v1:IPLTestInterval>
+					<v1:BatteryLife>0</v1:BatteryLife>
+					<v1:Wire>2</v1:Wire>
+					<v1:Stator>1.0</v1:Stator>
+					<v1:Ampacity>10</v1:Ampacity>
+					<v1:TestAmps>2.5</v1:TestAmps>
+					<v1:VoltageClass>240</v1:VoltageClass>
+					<v1:TestVoltage>240</v1:TestVoltage>
+					<v1:Constant>0</v1:Constant>
+					<v1:Phase>1</v1:Phase>
+					<v1:Form>3</v1:Form>
+					<v1:Base>S</v1:Base>
+					<v1:RegisterRatio>166</v1:RegisterRatio>
+					<v1:AMIIndicator>N</v1:AMIIndicator>
+					<v1:ERTIndicator>N</v1:ERTIndicator>
+					<v1:TransformerRatedIndicator>Y</v1:TransformerRatedIndicator>
+					<v1:NetworkIndicator>N</v1:NetworkIndicator>
+					<v1:RemoteConnectDisconnectIndicator>N</v1:RemoteConnectDisconnectIndicator>
+					<v1:RecorderExists>N</v1:RecorderExists>
+					<v1:LossCompensationCapableIndicator>N</v1:LossCompensationCapableIndicator>
+					<v1:TestSequence>1</v1:TestSequence>
+				</v1:ElectricDevice>
+			</v1:UpdateDeviceClassificationCode>
+      </v1:UpdateDeviceClassificationCodeABM>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:preemptive>true</con:preemptive><con:authType>Preemptive</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1/Update"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Request 2" outgoingWss="ClassificationCode"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8733/AlliantExternalService/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <v1:UpdateDeviceClassificationCodeABM>
+         <!--Optional:-->
+         <v1:BatchNumber>?</v1:BatchNumber>
+         <!--Optional:-->
+         <v1:BatchesTotal>?</v1:BatchesTotal>
+         <!--Zero or more repetitions:-->
+         <v1:UpdateDeviceClassificationCode>
+            <!--Optional:-->
+            <v1:ClassificationCode>?</v1:ClassificationCode>
+            <!--Optional:-->
+            <v1:DeviceDescription>?</v1:DeviceDescription>
+            <!--Optional:-->
+            <v1:DeviceType>?</v1:DeviceType>
+            <!--Optional:-->
+            <v1:Status>?</v1:Status>
+            <!--Optional:-->
+            <v1:Manufacturer>?</v1:Manufacturer>
+            <!--Optional:-->
+            <v1:Model>?</v1:Model>
+            <!--Optional:-->
+            <v1:ForceRetirementSwitch>?</v1:ForceRetirementSwitch>
+            <!--Optional:-->
+            <v1:MaterialID>?</v1:MaterialID>
+            <!--Optional:-->
+            <v1:AssetProfileID>?</v1:AssetProfileID>
+            <!--Optional:-->
+            <v1:DeviceTestType>?</v1:DeviceTestType>
+            <!--Optional:-->
+            <v1:TemplateDevice>?</v1:TemplateDevice>
+            <!--Optional:-->
+            <v1:ElectricDevice>
+               <!--Optional:-->
+               <v1:IPLSelectionType>?</v1:IPLSelectionType>
+               <!--Optional:-->
+               <v1:IPLTestInterval>?</v1:IPLTestInterval>
+               <!--Optional:-->
+               <v1:WPLSelectionType>?</v1:WPLSelectionType>
+               <!--Optional:-->
+               <v1:WPLTestInterval>?</v1:WPLTestInterval>
+               <!--Optional:-->
+               <v1:BatteryLife>?</v1:BatteryLife>
+               <!--Optional:-->
+               <v1:Wire>?</v1:Wire>
+               <!--Optional:-->
+               <v1:Stator>?</v1:Stator>
+               <!--Optional:-->
+               <v1:Ampacity>?</v1:Ampacity>
+               <!--Optional:-->
+               <v1:TestAmps>?</v1:TestAmps>
+               <!--Optional:-->
+               <v1:VoltageClass>?</v1:VoltageClass>
+               <!--Optional:-->
+               <v1:TestVoltage>?</v1:TestVoltage>
+               <!--Optional:-->
+               <v1:Constant>?</v1:Constant>
+               <!--Optional:-->
+               <v1:Phase>?</v1:Phase>
+               <!--Optional:-->
+               <v1:Form>?</v1:Form>
+               <!--Optional:-->
+               <v1:Base>?</v1:Base>
+               <!--Optional:-->
+               <v1:RegisterRatio>?</v1:RegisterRatio>
+               <!--Optional:-->
+               <v1:AMIIndicator>?</v1:AMIIndicator>
+               <!--Optional:-->
+               <v1:ERTIndicator>?</v1:ERTIndicator>
+               <!--Optional:-->
+               <v1:TransformerRatedIndicator>?</v1:TransformerRatedIndicator>
+               <!--Optional:-->
+               <v1:NetworkIndicator>?</v1:NetworkIndicator>
+               <!--Optional:-->
+               <v1:RemoteConnectDisconnectIndicator>?</v1:RemoteConnectDisconnectIndicator>
+               <!--Optional:-->
+               <v1:RecorderExists>?</v1:RecorderExists>
+               <!--Optional:-->
+               <v1:LossCompensationCapableIndicator>?</v1:LossCompensationCapableIndicator>
+               <!--Optional:-->
+               <v1:TestSequence>?</v1:TestSequence>
+            </v1:ElectricDevice>
+            <!--Optional:-->
+            <v1:TransformerAttribute>
+               <!--Optional:-->
+               <v1:AccuracyClass>?</v1:AccuracyClass>
+               <!--Optional:-->
+               <v1:ConstructionType>?</v1:ConstructionType>
+               <!--Optional:-->
+               <v1:BasicLightingImpulseLevel>?</v1:BasicLightingImpulseLevel>
+               <!--Optional:-->
+               <v1:InsulationVoltageClass>?</v1:InsulationVoltageClass>
+               <!--Optional:-->
+               <v1:InsulatingMedium>?</v1:InsulatingMedium>
+               <!--Optional:-->
+               <v1:DeviceApplicationEnvironment>?</v1:DeviceApplicationEnvironment>
+               <!--Optional:-->
+               <v1:NumberOfRatios>?</v1:NumberOfRatios>
+               <!--Optional:-->
+               <v1:CurrentTransformer>
+                  <!--Optional:-->
+                  <v1:LightLoadPercentage>?</v1:LightLoadPercentage>
+                  <!--Optional:-->
+                  <v1:PrimaryCurrentRatio1>?</v1:PrimaryCurrentRatio1>
+                  <!--Optional:-->
+                  <v1:PrimaryCurrentRatio2>?</v1:PrimaryCurrentRatio2>
+                  <!--Optional:-->
+                  <v1:OhmsBurden1>?</v1:OhmsBurden1>
+                  <!--Optional:-->
+                  <v1:OhmsBurden2>?</v1:OhmsBurden2>
+                  <!--Optional:-->
+                  <v1:Ratio1RatingFactor>?</v1:Ratio1RatingFactor>
+                  <!--Optional:-->
+                  <v1:Ratio2RatingFactor>?</v1:Ratio2RatingFactor>
+               </v1:CurrentTransformer>
+               <!--Optional:-->
+               <v1:PotentialTransformer>
+                  <!--Optional:-->
+                  <v1:PrimaryVoltageRatio1>?</v1:PrimaryVoltageRatio1>
+                  <!--Optional:-->
+                  <v1:PrimaryVoltageRatio2>?</v1:PrimaryVoltageRatio2>
+                  <!--Optional:-->
+                  <v1:VoltAmpsBurden1>?</v1:VoltAmpsBurden1>
+                  <!--Optional:-->
+                  <v1:VoltAmpsBurden2>?</v1:VoltAmpsBurden2>
+                  <!--Optional:-->
+                  <v1:DualSecondary>?</v1:DualSecondary>
+                  <!--Optional:-->
+                  <v1:Fused>?</v1:Fused>
+               </v1:PotentialTransformer>
+            </v1:TransformerAttribute>
+         </v1:UpdateDeviceClassificationCode>
+      </v1:UpdateDeviceClassificationCodeABM>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://xmlns.alliantenergy.com/AssetManagement/DeviceClassificationCode/V1/Update"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer><con:outgoing mustUnderstand="true" actor=""><con:name>ClassificationCode</con:name><con:username/><con:password/><con:entry type="SAML (Form)" username="soapui"><con:configuration><samlVersion>1.1</samlVersion><signed>false</signed><assertionType>Authentication</assertionType><confirmationMethod>Sender vouches</confirmationMethod><crypto/><issuer>http://www.oracle.com</issuer><subjectName>1235467</subjectName><subjectQualifier>123456</subjectQualifier><digestAlgorithm>http://www.w3.org/2000/09/xmldsig#sha1</digestAlgorithm><signatureAlgorithm>http://www.w3.org/2000/09/xmldsig#rsa-sha1</signatureAlgorithm><attributeName/></con:configuration></con:entry></con:outgoing></con:wssContainer><con:oAuth2ProfileContainer/><con:sensitiveInformation/></con:soapui-project>

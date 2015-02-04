@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="CC&amp;B" resourceRoot="" soapui-version="5.0.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="DeviceTestInfoABCSSOAP11Binding" type="wsdl" bindingName="{http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1}DeviceTestInfoABCSSOAP11Binding" soapVersion="1_1" anonymous="optional" definition="file:/E:/ODesk/Eddie/Radian_TFS/AMSLLC/WSDL/Alliant/QueryDeviceTestInfoWECOReqABCSImpl.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:/E:/ODesk/Eddie/Radian_TFS/AMSLLC/WSDL/Alliant/QueryDeviceTestInfoWECOReqABCSImpl.wsdl"><con:part><con:url>file:/E:/ODesk/Eddie/Radian_TFS/AMSLLC/WSDL/Alliant/QueryDeviceTestInfoWECOReqABCSImpl.wsdl</con:url><con:content><![CDATA[<definitions name="QueryDeviceTestInfoWECOReqABCSImpl" targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:svcdoc="http://xmlns.oracle.com/Services/Documentation/V1" xmlns:tns="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1" xmlns:ns="http://schemas.xmlsoap.org/ws/2003/03/addressing">
+  <documentation>
+    <svcdoc:Service>
+      <svcdoc:Description>WECO DeviceTestInfo Service</svcdoc:Description>
+      <svcdoc:DisplayName>QueryDeviceTestInfoWECOReqABCSImpl</svcdoc:DisplayName>
+      <svcdoc:Version>1.00</svcdoc:Version>
+      <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+      <svcdoc:Industry>Utilities</svcdoc:Industry>
+    </svcdoc:Service>
+  </documentation>
+  <types>
+    <xsd:schema targetNamespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema">
+      <!--<xsd:import namespace="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1" schemaLocation="../../../../../../../AssetManagement/DeviceTestInfo/V1/WECODeviceTestInfoABM.xsd"/>
+		</xsd:schema>-->
+      <xsd:element name="QueryDeviceTestInfoABM" type="tns:QueryDeviceTestInfoABMType">
+        <xsd:annotation>
+          <xsd:documentation>WECO Device Test Info ABM</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="QueryDeviceTestInfoResponseABM" type="tns:QueryDeviceTestInfoResponseABMType">
+        <xsd:annotation>
+          <xsd:documentation>WECO Device Test Info Response ABM</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="QueryDeviceTestInfoFault" type="tns:QueryDeviceTestInfoFaultType"/>
+      <xsd:complexType name="QueryDeviceTestInfoABMType">
+        <xsd:sequence>
+          <xsd:element name="DeviceType" type="xsd:string" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>Device type describes whether the device is Electric (MR), CT or a PT</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="ServiceType" type="xsd:string" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>This contains Service Type Code , 'E'</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="DeviceNumber" type="xsd:string" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>Device Number is the Meter Number</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="Company" type="xsd:string" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>Company Indicates the company Code , IPL (I) and WPL (W)</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="Tester" type="xsd:string" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>This will contain the valid Tester ID</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="TestStandard" type="xsd:string" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>This contains the valid Test board/prover</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="TestLocation" type="xsd:string" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>This contains the valid Device Testing location code or its corresponding disribution center</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--======================================================================-->
+      <!--=====          Response                                          =====-->
+      <!--======================================================================-->
+      <xsd:complexType name="QueryDeviceTestInfoResponseABMType">
+        <xsd:sequence>
+          <xsd:element name="ClassificationCode" type="xsd:string" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>This contains Classification Code</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="TestReason" type="xsd:string" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>This contains the reason for Test</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="NewDeviceIndicator" type="xsd:string" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>This field indicates whether the device is new</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="LastTestDate" type="xsd:dateTime" minOccurs="0" nillable="true">
+            <xsd:annotation>
+              <xsd:documentation>This field will contain the last test date in YYYY-MM-DD format.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="LossCompensationCodeFlag" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="CommunicationBoardVersion" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="CommunicationModuleFirmwareVersion" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--======================================================================-->
+      <!--=====          Fault Element                                     =====-->
+      <!--======================================================================-->
+      <xsd:complexType name="QueryDeviceTestInfoFaultType">
+        <xsd:sequence>
+          <xsd:element ref="tns:FaultNotification" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="FaultNotificationType">
+        <xsd:sequence>
+          <xsd:element name="BusinessComponentID" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="ReportingDateTime" type="xsd:dateTime" minOccurs="0"/>
+          <xsd:element name="CorrectiveAction" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="tns:FaultMessage" minOccurs="0"/>
+          <xsd:element ref="tns:FaultingService" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="FaultMessageType">
+        <xsd:sequence>
+          <xsd:element name="Code" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="Text" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="Severity" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="Stack" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="ApplicationFaultData" type="xsd:anyType" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="FaultingServiceType">
+        <xsd:sequence>
+          <xsd:element name="ID" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="ImplementationCode" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="InstanceID" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="ExecutionContextID" type="xsd:string" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Also known as ECID in SOA Suite. This is an ID generated for a group of service invocations/executions</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="FaultNotification" type="tns:FaultNotificationType"/>
+      <xsd:element name="FaultMessage" type="tns:FaultMessageType"/>
+      <xsd:element name="FaultingService" type="tns:FaultingServiceType"/>
+    </xsd:schema>
+  </types>
+  <message name="QueryDeviceTestInfoReqMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used as the request payload to the Query Device Test Information</svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="QueryDeviceTestInfoABM" element="tns:QueryDeviceTestInfoABM"/>
+  </message>
+  <message name="QueryDeviceTestInfoRespMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used as the response payload to the Query Device Test Information</svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="QueryDeviceTestInfoResponseABM" element="tns:QueryDeviceTestInfoResponseABM"/>
+  </message>
+  <message name="QueryDeviceTestInfoFaultMsg">
+    <documentation>
+      <svcdoc:Message>
+        <svcdoc:Description>This message is used for propagating Error Context and Error Message</svcdoc:Description>
+      </svcdoc:Message>
+    </documentation>
+    <part name="QueryDeviceTestInfoFault" element="tns:QueryDeviceTestInfoFault"/>
+  </message>
+  <portType name="DeviceTestInfoABCS">
+    <documentation>
+      <svcdoc:Interface>
+        <svcdoc:Description>This interface contains operations for the Request-Response patterns</svcdoc:Description>
+        <svcdoc:DisplayName>WECO Query Device Test Info Interface</svcdoc:DisplayName>
+        <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+      </svcdoc:Interface>
+    </documentation>
+    <operation name="Query">
+      <documentation>
+        <svcdoc:Operation>
+          <svcdoc:Description>This operation is used to Query DeviceTestInfo.</svcdoc:Description>
+          <svcdoc:MEP>SYNC_REQ_RESPONSE</svcdoc:MEP>
+          <svcdoc:DisplayName>QueryDeviceTestInfo</svcdoc:DisplayName>
+          <svcdoc:LifecycleStatus>Active</svcdoc:LifecycleStatus>
+          <svcdoc:Scope>Public</svcdoc:Scope>
+        </svcdoc:Operation>
+      </documentation>
+      <input message="tns:QueryDeviceTestInfoReqMsg"/>
+      <output message="tns:QueryDeviceTestInfoRespMsg"/>
+      <fault name="QueryDeviceTestInfoFault" message="tns:QueryDeviceTestInfoFaultMsg"/>
+    </operation>
+  </portType>
+  <binding name="DeviceTestInfoABCSSOAP11Binding" type="tns:DeviceTestInfoABCS">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="Query">
+      <soap:operation soapAction="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query" style="document"/>
+      <input>
+        <soap:body parts="QueryDeviceTestInfoABM" use="literal"/>
+      </input>
+      <output>
+        <soap:body parts="QueryDeviceTestInfoResponseABM" use="literal"/>
+      </output>
+      <fault name="QueryDeviceTestInfoFault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="DeviceTestInfoABCS">
+    <port name="DeviceTestInfoABCSPort" binding="tns:DeviceTestInfoABCSSOAP11Binding">
+      <soap:address location="ENDPOINT_LOCATION"/>
+    </port>
+  </service>
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>ENDPOINT_LOCATION</con:endpoint><con:endpoint>http://VR9:8088/mockDeviceTestInfoABCSSOAP11Binding</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query" name="Query" bindingOperationName="Query" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://VR9:8088/mockDeviceTestInfoABCSSOAP11Binding</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <v1:QueryDeviceTestInfoABM>
+         <v1:DeviceType>MR</v1:DeviceType>
+         <v1:ServiceType>E</v1:ServiceType>
+         <v1:DeviceNumber>123456788</v1:DeviceNumber>
+         <v1:Company>W</v1:Company>
+         <v1:Tester>1</v1:Tester>
+         <v1:TestStandard>123456</v1:TestStandard>
+         <v1:TestLocation>VR7</v1:TestLocation>
+      </v1:QueryDeviceTestInfoABM>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:mockService port="8088" path="/mockDeviceTestInfoABCSSOAP11Binding" host="VR9" name="DeviceTestInfoABCSSOAP11Binding MockService" dispatchResponseMessages="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.mock.WsdlMockService@require-soap-action">false</con:setting></con:settings><con:properties/><con:mockOperation name="Query" interface="DeviceTestInfoABCSSOAP11Binding" operation="Query"><con:settings/><con:defaultResponse>Response 1</con:defaultResponse><con:dispatchStyle>QUERY_MATCH</con:dispatchStyle><con:response name="Response 1" httpResponseStatus="500" encoding="UTF-8"><con:settings/><con:responseContent><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <soapenv:Fault xmlns:ns0="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1">
+      <faultcode>ns0:QueryDeviceTestInfoFault</faultcode>
+      <faultstring>faultstring</faultstring>
+      <!--Optional:-->
+      <faultactor>faultfactor</faultactor>
+      <!--Optional:-->
+      <detail>
+			<QueryDeviceTestInfoFault xmlns="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1">
+				<FaultNotification>
+					<FaultMessage>
+						 <Code>ns0:assertFailure</Code>
+						 <Text>Reason for Test should indicate repair was performed when Repair information is provided</Text>
+						 <Stack>ns0:assertFailurefaultName: {{http://schemas.oracle.com/bpel/extension}assertFailure}
+							messageType: {{http://xmlns.oracle.com/ABCSImpl/DeviceTestResult/Industry//CreateDeviceTestResultOUCCBProvABCSImpl/V1}CreateDeviceTestResultFaultMsg}
+							parts: {{
+							CreateDeviceTestResultFault=&lt;Fault xmlns="http://xmlns.oracle.com/EnterpriseObjects/Core/Common/V2"&gt;
+							   &lt;EBMReference&gt;
+								  &lt;EBMID&gt;55dd37d6e9bb6390:-4acd2602:149be60b732:-69d8&lt;/EBMID&gt;
+								  &lt;EBMName&gt;DeviceTestResultEBM&lt;/EBMName&gt;
+								  &lt;EBOName&gt;DeviceTestResultEBO&lt;/EBOName&gt;
+								  &lt;VerbCode&gt;Create&lt;/VerbCode&gt;
+							   &lt;/EBMReference&gt;
+							   &lt;FaultNotification&gt;
+								  &lt;ReportingDateTime&gt;2014-11-19T13:08:32.555-06:00&lt;/ReportingDateTime&gt;
+								  &lt;FaultMessage&gt;
+									 &lt;Code&gt;1016&lt;/Code&gt;
+									 &lt;Text&gt;Unexpected error during request processing. (Server Message)
+								Category: 90003
+								Number: 14017
+								Call Sequence: 
+								Program Name: ServiceBeanSessionHelper$1$1
+								Text: Reason for Test should indicate repair was performed when Repair information is provided
+								Description:  
+								Table: null
+								Field: null&lt;/Text&gt;
+									 &lt;Stack&gt;&lt;ouaf:Fault xmlns:ouaf="http://ouaf.oracle.com/"&gt;
+							&lt;ResponseStatus&gt;F&lt;/ResponseStatus&gt;
+							&lt;ResponseCode&gt;1016&lt;/ResponseCode&gt;
+							&lt;ResponseText&gt;Unexpected error during request processing. (Server Message)
+								Category: 90003
+								Number: 14017
+								Call Sequence: 
+								Program Name: ServiceBeanSessionHelper$1$1
+								Text: Reason for Test should indicate repair was performed when Repair information is provided
+								Description:  
+								Table: null
+								Field: null&lt;/ResponseText&gt;
+							&lt;ResponseData numParm="1" text="Unexpected error during request processing. (Server Message)  Category: 90003  Number: 14017  Call Sequence:   Program Name: ServiceBeanSessionHelper$1$1  Text: Reason for Test should indicate repair was performed when Repair information is provided  Description:    Table: null  Field: null" category="11011" number="1016" parm1="(Server Message)  Category: 90003  Number: 14017  Call Sequence:   Program Name: ServiceBeanSessionHelper$1$1  Text: Reason for Test should indicate repair was performed when Repair information is provided  Description:    Table: null  Field: null"/&gt;
+							&lt;ServerMessage&gt;
+								&lt;Category&gt;90003&lt;/Category&gt;
+								&lt;Number&gt;14017&lt;/Number&gt;
+								&lt;CallSequence/&gt;
+								&lt;ProgramName&gt;ServiceBeanSessionHelper$1$1&lt;/ProgramName&gt;
+								&lt;Text&gt;Reason for Test should indicate repair was performed when Repair information is provided&lt;/Text&gt;
+								&lt;Description&gt; &lt;/Description&gt;
+								&lt;Table&gt;null&lt;/Table&gt;
+								&lt;Field&gt;null&lt;/Field&gt;
+							&lt;/ServerMessage&gt;
+							&lt;/ouaf:Fault&gt;&lt;/Stack&gt;
+								  &lt;/FaultMessage&gt;
+								  &lt;FaultingService&gt;
+									 &lt;ID&gt;CreateDeviceTestResultOUCCBProvABCSImpl&lt;/ID&gt;
+									 &lt;ImplementationCode&gt;CreateDeviceTestResultOUCCBProvABCSImplProcess&lt;/ImplementationCode&gt;
+									 &lt;InstanceID&gt;1002200&lt;/InstanceID&gt;
+									 &lt;ExecutionContextID&gt;0000Kb9T9xzDKeaLxMCCyW1KQXId001KB4&lt;/ExecutionContextID&gt;
+								  &lt;/FaultingService&gt;
+							   &lt;/FaultNotification&gt;
+							&lt;/Fault&gt;}
+						</Stack>
+					</FaultMessage>
+				</FaultNotification>
+			</QueryDeviceTestInfoFault>
+      </detail>
+    </soapenv:Fault>
+  </soapenv:Body>
+</soapenv:Envelope>]]></con:responseContent><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query"/></con:response><con:response name="123456789" httpResponseStatus="200" encoding="UTF-8"><con:settings/><con:responseContent><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <v1:QueryDeviceTestInfoResponseABM>
+         <!--Optional:-->
+         <v1:ClassificationCode>B06</v1:ClassificationCode>
+         <!--Optional:-->
+         <v1:TestReason>01</v1:TestReason>
+         <!--Optional:-->
+         <v1:NewDeviceIndicator>N</v1:NewDeviceIndicator>
+         <!--Optional:-->
+         <v1:LastTestDate>2014-10-03</v1:LastTestDate>
+         <!--Optional:-->
+         <v1:LossCompensationCodeFlag>Y</v1:LossCompensationCodeFlag>
+         <!--Optional:-->
+         <v1:CommunicationBoardVersion>1.0</v1:CommunicationBoardVersion>
+         <!--Optional:-->
+         <v1:CommunicationModuleFirmwareVersion>1.0</v1:CommunicationModuleFirmwareVersion>
+      </v1:QueryDeviceTestInfoResponseABM>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:responseContent><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query"/></con:response><con:response name="Response 3" httpResponseStatus="500" encoding="UTF-8"><con:settings/><con:responseContent><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <soapenv:Fault>
+      <faultcode>?</faultcode>
+      <faultstring xml:lang="?">?</faultstring>
+      <!--Optional:-->
+      <faultactor>?</faultactor>
+      <!--Optional:-->
+      <detail>
+        <!--You may enter ANY elements at this point-->
+      </detail>
+    </soapenv:Fault>
+  </soapenv:Body>
+</soapenv:Envelope>]]></con:responseContent><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://xmlns.alliantenergy.com/DeviceTestInfo/V1/Query"/></con:response><con:dispatchConfig xsi:type="con:MockOperationQueryMatchDispatch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:query><con:name>123456789</con:name><con:query>declare namespace v1='http://xmlns.alliantenergy.com/AssetManagement/DeviceTestInfo/V1';
+//v1:DeviceNumber</con:query><con:match>123456789</con:match><con:response>123456789</con:response></con:query></con:dispatchConfig></con:mockOperation></con:mockService><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
