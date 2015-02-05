@@ -332,7 +332,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     programId = meter.ProgramId,
                     purchaseOrderNo = meter.PurchaseOrderReference,
                     serialNo = GetMeterSerialNumber(meter),
-                    vendor = meter.CustomField5,
+                    vendor = meter.Manufacturer,
                     vendorPartNo = meter.CustomField6,
                     warrantyDetail = null,
                     wires = meter.Wire.ToString(CultureInfo.InvariantCulture),
