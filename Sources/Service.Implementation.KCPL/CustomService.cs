@@ -324,6 +324,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     meterClass = meter.CustomField3,
                     meterCode = meter.MeterCode,
                     meterForm = meter.Form,
+                    meterReceiptDate = meter.CreateDate,
                     metrologyFirmware = meter.FirmwareRevision2,
                     model = meter.ModelNumber,
                     ownershipTerritory = meter.CustomField1,
@@ -343,15 +344,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             if (DateTime.TryParseExact(meter.CustomField15, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempDate))
             {
                 serviceRequest.assetDetails.warrantyExpirationDate = tempDate;
-            }
-
-            if (meter.PurchaseDate.HasValue)
-            {
-                serviceRequest.assetDetails.meterReceiptDate = meter.PurchaseDate.Value;
-            }
-            else
-            {
-                serviceRequest.assetDetails.meterReceiptDate = new DateTime(2000, 1, 1);
             }
 
             if (meter.KwhDials.HasValue)
