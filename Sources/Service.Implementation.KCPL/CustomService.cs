@@ -344,10 +344,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             {
                 serviceRequest.assetDetails.warrantyExpirationDate = tempDate;
             }
-            else
-            {
-                serviceRequest.assetDetails.warrantyExpirationDate = new DateTime(2020, 1, 1);
-            }
 
             if (meter.PurchaseDate.HasValue)
             {
