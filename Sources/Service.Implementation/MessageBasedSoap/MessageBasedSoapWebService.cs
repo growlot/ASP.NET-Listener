@@ -23,14 +23,33 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
         /// <typeparam name="T">The type of the SOAP message</typeparam>
         /// <param name="url">The URL.</param>
         /// <param name="soapMessage">The SOAP message.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "soapResult", Justification = "Not interested in response itself, just a fact that call was successfull")]
         public static void CallWebService<T>(Uri url, T soapMessage) where T : IXmlNamespaceExtension
         {
             HttpWebRequest webRequest = CreateWebRequest(url);
 
             string body = PrepareSoapRequest(soapMessage);
-            InsertSoapEnvelopeIntoWebRequest(body, webRequest);            
+            InsertSoapEnvelopeIntoWebRequest(body, webRequest);
+
+            // begin async call to web request.
+            IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
+
+            // suspend this thread until call is complete. You might want to
+            // do something usefull here like update your UI.
+            asyncResult.AsyncWaitHandle.WaitOne();
+
+            // get the response from the completed web request.
+            string soapResult;
+            using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
+            {
+                using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
+                {
+                    soapResult = rd.ReadToEnd();
+                }
+            }
             
-            webRequest.GetResponse();
+            ////InsertSoapEnvelopeIntoWebRequest(body, webRequest);            
+            ////webRequest.GetResponse();
         }
 
         /// <summary>
