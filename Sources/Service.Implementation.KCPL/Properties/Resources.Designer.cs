@@ -97,6 +97,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can not process meter load to ODM, because purchase date field is not specified..
+        /// </summary>
+        internal static string PurchaseDateNotFilled {
+            get {
+                return ResourceManager.GetString("PurchaseDateNotFilled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Skipping ODM integration, because meter doesn&apos;t belong to KCPL company..
         /// </summary>
         internal static string SkipGMODevice {
@@ -120,6 +129,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL.Properties {
         internal static string SkipMeterStatusNotChanged {
             get {
                 return ResourceManager.GetString("SkipMeterStatusNotChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can not process meter load to ODM, because warranty expiration date field has incorrect format (expected MM/dd/yyyy) or it is not specified. Current value: {0}..
+        /// </summary>
+        internal static string WarrantyExpirationDateNotFilled {
+            get {
+                return ResourceManager.GetString("WarrantyExpirationDateNotFilled", resourceCulture);
             }
         }
     }

@@ -129,6 +129,9 @@
   <data name="MeterTestProcessingFailed" xml:space="preserve">
     <value>Meter {0} test {1} processing failed.</value>
   </data>
+  <data name="PurchaseDateNotFilled" xml:space="preserve">
+    <value>Can not process meter load to ODM, because purchase date field is not specified.</value>
+  </data>
   <data name="SkipGMODevice" xml:space="preserve">
     <value>Skipping ODM integration, because meter doesn't belong to KCPL company.</value>
   </data>
@@ -137,5 +140,8 @@
   </data>
   <data name="SkipMeterStatusNotChanged" xml:space="preserve">
     <value>Skipping ODM integration, because meter status haven't changed.</value>
+  </data>
+  <data name="WarrantyExpirationDateNotFilled" xml:space="preserve">
+    <value>Can not process meter load to ODM, because warranty expiration date field has incorrect format (expected MM/dd/yyyy) or it is not specified. Current value: {0}.</value>
   </data>
 </root>
