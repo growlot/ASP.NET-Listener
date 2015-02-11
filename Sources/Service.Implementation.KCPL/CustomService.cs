@@ -145,7 +145,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                         try
                         {
                             this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
-                            this.ProcessMeterTestResults(device, deviceTest, fullMeter, testTransactionId, true);
+                            this.ProcessMeterTestResults(device, deviceTest, fullMeter, testTransactionId);
                             this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
                         }
                         catch (Exception ex)
@@ -553,7 +553,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                             {
                                 this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
 
-                                this.ProcessMeterTestResults(device, deviceTest, meter, testTransactionId, true);
+                                this.ProcessMeterTestResults(device, deviceTest, meter, testTransactionId);
 
                                 this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
 
@@ -605,13 +605,10 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 (meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.New)) ||
                 meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.Pending))))
             {
-                if (!batchAcceptance)
-                {
-                    string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
-                    Log.Info(message);
-                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
-                    return;
-                }
+                string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
+                Log.Info(message);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                return;
             }
 
             TransactionLog currentTransaction = this.TransactionLogManager.GetTransaction(transactionId);
@@ -623,6 +620,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             {
                 if (batchAcceptance)
                 {
+                    // set meter to active status, because ODM by default sets all new meters as active
                     meter.CustomField13 = "A";
                     this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
 
@@ -631,7 +629,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 }
                 else
                 {
-                    this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
+                    this.TransactionLogManager.UpdateTransactionDataHash(transactionId, currentHash);
 
                     AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
                     this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
@@ -655,44 +653,20 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <exception cref="System.ArgumentException">Throws exception if external system is not supported.</exception>
         private void ProcessMeterTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId)
         {
-            this.ProcessMeterTestResults(device, deviceTest, meter, transactionId, false);
-        }
-
-        /// <summary>
-        /// Processes the test results of electric meter.
-        /// </summary>
-        /// <param name="device">The device.</param>
-        /// <param name="deviceTest">The device test.</param>
-        /// <param name="meter">The meter.</param>
-        /// <param name="transactionId">The transaction identifier.</param>
-        /// <param name="batchAcceptance">If set to <c>true</c> then it is triggered by batch acceptance process..</param>
-        /// <exception cref="System.ArgumentException">Throws exception if external system is not supported.</exception>
-        private void ProcessMeterTestResults(Device device, DeviceTest deviceTest, Meter meter, int transactionId, bool batchAcceptance)
-        {
-            TransactionLog currentTransaction = this.TransactionLogManager.GetTransaction(transactionId);
-
             if (meter.NewBatch != null &&
                 (meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.New)) ||
                 meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.Pending))))
             {
-                if (!batchAcceptance)
-                {
-                    string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
-                    Log.Info(message);
-                    this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
-                    return;
-                }
-            }
-
-            string previousHash = this.TransactionLogManager.GetLastSuccessfulDeviceTestTransactionDataHash(deviceTest, currentTransaction.TransactionType);
-
-            if (previousHash != GlobalConstants.PreviousSuccessfulTransactionNotFound)
-            {
-                string message = StringManager.GetString("SkipDuplicate", CultureInfo.CurrentCulture);
+                string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
                 Log.Info(message);
                 this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
+                return;
             }
-            else
+
+            TransactionLog currentTransaction = this.TransactionLogManager.GetTransaction(transactionId);
+            string previousHash = this.TransactionLogManager.GetLastSuccessfulDeviceTestTransactionDataHash(deviceTest, currentTransaction.TransactionType);
+
+            if (previousHash == GlobalConstants.PreviousSuccessfulTransactionNotFound)
             {
                 switch (currentTransaction.TransactionType.ExternalSystem.Name)
                 {
@@ -708,6 +682,12 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                         Log.Error(message);
                         throw new ArgumentException(message);
                 }
+            }
+            else
+            {
+                string message = StringManager.GetString("SkipDuplicate", CultureInfo.CurrentCulture);
+                Log.Info(message);
+                this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
             }
         }
         
