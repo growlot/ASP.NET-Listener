@@ -876,7 +876,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     throw new InvalidOperationException(message);
             }
 
-            switch (meter.CustomField15)
+            switch (meter.CustomField13)
             {
                 case "A":
                     gmoCisFile.MeterStatus = "01";
@@ -885,7 +885,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     gmoCisFile.MeterStatus = "08";
                     break;
                 default:
-                    string message = string.Format(CultureInfo.InvariantCulture, "Meter status {0} is not supported by CIS.", meter.CustomField15);
+                    string message = string.Format(CultureInfo.InvariantCulture, "Meter status {0} is not supported by CIS.", meter.CustomField13);
                     Log.Error(message);
                     throw new InvalidOperationException(message);
             }
