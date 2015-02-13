@@ -106,6 +106,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
                 Meter fullMeter = this.WnpSystem.GetEquipment<Meter>(meter.EquipmentNumber, meter.Owner.Id);
 
+                // can not process device or it's tests if status is not set.
                 if (string.IsNullOrWhiteSpace(fullMeter.CustomField13))
                 {
                     continue;
@@ -408,9 +409,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 case "R":
                     request.status = AssetUpdateServiceRequestStatus.RETIRED;
                     request.retirementReasonCode = meter.CustomField9;
-                    break;
-                case "P":
-                    request.status = AssetUpdateServiceRequestStatus.REPAIR;
                     break;
                 default:
                     string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterStatusNotSupported", CultureInfo.CurrentCulture), meter.CustomField13);
