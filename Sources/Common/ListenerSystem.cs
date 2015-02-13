@@ -403,5 +403,46 @@ namespace AMSLLC.Listener.Common
 
             return this.persistenceManager.RetrieveAllEqual<TransactionType>(criteria);
         }
+
+        /// <summary>
+        /// Gets the device batch.
+        /// </summary>
+        /// <param name="batchNumber">The batch number.</param>
+        /// <returns>
+        /// The device batch
+        /// </returns>
+        public DeviceBatch GetDeviceBatchByBatchNumber(string batchNumber)
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<DeviceBatch>();
+            criteria.Add(Restrictions.Eq("BatchNumber", batchNumber));
+
+            return this.persistenceManager.RetrieveFirstEqual<DeviceBatch>(criteria);
+        }
+
+        /// <summary>
+        /// Gets the device batch.
+        /// </summary>
+        /// <param name="deviceBatchId">The device batch identifier.</param>
+        /// <returns>
+        /// The device batch
+        /// </returns>
+        public DeviceBatch GetDeviceBatch(int deviceBatchId)
+        {
+            return this.persistenceManager.GetByKey<DeviceBatch>(deviceBatchId);
+        }
+
+        /// <summary>
+        /// Creates or updates the device batch.
+        /// </summary>
+        /// <param name="deviceBatch">The device batch object.</param>
+        /// <returns>
+        /// The device batch entity.
+        /// </returns>
+        public DeviceBatch SaveDeviceBatch(DeviceBatch deviceBatch)
+        {
+            this.persistenceManager.Save<DeviceBatch>(deviceBatch);
+
+            return deviceBatch;
+        }
     }
 }

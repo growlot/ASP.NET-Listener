@@ -194,7 +194,7 @@ namespace AMSLLC.Listener.Service.Implementation
         /// </summary>
         /// <param name="request">The request.</param>
         /// <exception cref="System.ArgumentNullException">request;Can not send batch data if request is not specified</exception>
-        public void SendBatch(SendBatchServiceRequest request)
+        public void SendBatch(SendDataServiceRequest request)
         {
             try
             {
@@ -205,7 +205,9 @@ namespace AMSLLC.Listener.Service.Implementation
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceStart);
 
-                this.OnSendBatchData(request.TransactionId, request.BatchNumber);
+                DeviceBatch deviceBatch = this.DeviceManager.GetDeviceBatch(request.ObjectId);
+
+                this.OnSendBatchData(request.TransactionId, deviceBatch.BatchNumber);
 
                 this.TransactionLogManager.UpdateTransactionState(request.TransactionId, TransactionStateLookup.ServiceEnd);
             }

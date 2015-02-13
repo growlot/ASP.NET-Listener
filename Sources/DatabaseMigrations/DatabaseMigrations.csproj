@@ -143,6 +143,8 @@
     <Compile Include="v2.0.1\Migration_200001013_PopulateCustomerData.cs" />
     <Compile Include="v2.0.1\Migration_200001014_TransactionLog_UpdateSchema.cs" />
     <Compile Include="v2.0.1\Migration_200001016_PopulateCustomerData.cs" />
+    <Compile Include="v2.0.1\Migration_200001017_DeviceBatch_Create.cs" />
+    <Compile Include="v2.0.1\Migration_200001018_TransactionLog_UpdateSchema.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">

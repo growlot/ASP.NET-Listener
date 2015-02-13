@@ -64,7 +64,6 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
-    <Compile Include="SendBatchServiceRequest.cs" />
     <Compile Include="ServiceFaultDetails.cs" />
     <Compile Include="GetDeviceServiceRequest.cs" />
     <Compile Include="SendDataServiceRequest.cs" />

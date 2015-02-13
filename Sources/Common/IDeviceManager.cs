@@ -113,5 +113,32 @@ namespace AMSLLC.Listener.Common
         /// </returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Method is more appropriate in this place, because data is queried from database")]
         IList<Company> GetCompanies();
+
+        /// <summary>
+        /// Gets the device batch.
+        /// </summary>
+        /// <param name="batchNumber">The batch number.</param>
+        /// <returns>
+        /// The device batch
+        /// </returns>
+        DeviceBatch GetDeviceBatchByBatchNumber(string batchNumber);
+
+        /// <summary>
+        /// Gets the device batch.
+        /// </summary>
+        /// <param name="deviceBatchId">The device batch identifier.</param>
+        /// <returns>
+        /// The device batch
+        /// </returns>
+        DeviceBatch GetDeviceBatch(int deviceBatchId);
+
+        /// <summary>
+        /// Creates or updates the device batch.
+        /// </summary>
+        /// <param name="deviceBatch">The device batch object.</param>
+        /// <returns>
+        /// The device batch entity.
+        /// </returns>
+        DeviceBatch SaveDeviceBatch(DeviceBatch deviceBatch);
     }
 }

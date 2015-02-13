@@ -115,10 +115,13 @@
     <Compile Include="Lookup\TransactionDataLookup.cs" />
     <Compile Include="Lookup\TransactionDirectionLookup.cs" />
     <Compile Include="Model\ConfigMap.cs" />
+    <Compile Include="Model\DeviceBatch.cs" />
+    <Compile Include="Model\DeviceBatchMap.cs" />
     <Compile Include="Model\ExternalSystem.cs" />
     <Compile Include="Model\TransactionCompletion.cs" />
     <Compile Include="Model\TransactionData.cs" />
     <Compile Include="Model\TransactionDirection.cs" />
+    <Compile Include="Model\TransactionLogMap.cs" />
     <Compile Include="NHibernateOracleIdentityGenerator.cs" />
     <Compile Include="DeviceManager.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -169,9 +172,6 @@
     </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Model\TransactionLog.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Model\TransactionSource.hbm.xml" />
     <EmbeddedResource Include="Model\TransactionState.hbm.xml" />
     <EmbeddedResource Include="Model\TransactionStatus.hbm.xml" />

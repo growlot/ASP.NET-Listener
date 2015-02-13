@@ -51,6 +51,6 @@ namespace AMSLLC.Listener.Service.Contract
         /// <param name="request">The request.</param>
         [OperationContract]
         [FaultContractAttribute(typeof(ServiceFaultDetails))]
-        void SendBatch(SendBatchServiceRequest request);
+        void SendBatch(SendDataServiceRequest request);
     }
 }

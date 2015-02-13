@@ -23,6 +23,8 @@ namespace AMSLLC.Listener.Client.Implementation
     using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Common.Lookup;
     using AMSLLC.Listener.Common.Model;
+    using AMSLLC.Listener.Common.WNP;
+    using AMSLLC.Listener.Common.WNP.Model;
     using AMSLLC.Listener.Globalization;
     using log4net;
 
@@ -43,7 +45,10 @@ namespace AMSLLC.Listener.Client.Implementation
         {
             using (IPersistenceManager persistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["ListenerDb"].ConnectionString))
             {
-                this.Initialize(persistenceManager);
+                using (IPersistenceManager clientPersistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["WnpDb"].ConnectionString))
+                {
+                    this.Initialize(persistenceManager, clientPersistenceManager);
+                }
             }
         }
 
@@ -51,9 +56,10 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Initializes a new instance of the <see cref="ListenerWebServiceClient" /> class.
         /// </summary>
         /// <param name="persistenceManager">The persistence manager.</param>
-        public ListenerWebServiceClient(IPersistenceManager persistenceManager)
+        /// <param name="clientPersistenceManager">The client persistence manager.</param>
+        public ListenerWebServiceClient(IPersistenceManager persistenceManager, IPersistenceManager clientPersistenceManager)
         {
-            this.Initialize(persistenceManager);
+            this.Initialize(persistenceManager, clientPersistenceManager);
         }
 
         /// <summary>
@@ -65,6 +71,14 @@ namespace AMSLLC.Listener.Client.Implementation
         /// Gets or sets the device manager
         /// </summary>
         protected IDeviceManager DeviceManager { get; set; }
+
+        /// <summary>
+        /// Gets or sets the WNP system.
+        /// </summary>
+        /// <value>
+        /// The WNP system.
+        /// </value>
+        protected WNPSystem WnpSystem { get; set; }
 
         /// <summary>
         /// Gets or sets the string manager.
@@ -104,7 +118,7 @@ namespace AMSLLC.Listener.Client.Implementation
         /// <value>
         /// The batch number.
         /// </value>
-        protected string BatchNumber { get; set; }
+        protected DeviceBatch DeviceBatch { get; set; }
 
         /// <summary>
         /// Calls web service to retrieve device information.
@@ -255,16 +269,11 @@ namespace AMSLLC.Listener.Client.Implementation
         public virtual ClientResponse SendBatchData(BatchRequest request)
         {
             this.DataType = TransactionDataLookup.NewBatch;
-            if (request == null)
-            {
-                throw new ArgumentNullException("request", "Can not process request if it is not specified.");
-            } 
-            
-            this.BatchNumber = request.BatchNumber;
+            this.CreateDeviceBatch(request);
 
             return this.ProcessRequest(request);
         }
-        
+
         /// <summary>
         /// Creates the device object.
         /// </summary>
@@ -312,16 +321,45 @@ namespace AMSLLC.Listener.Client.Implementation
         }
 
         /// <summary>
+        /// Creates the device batch.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <exception cref="System.ArgumentNullException">request;Can not create device batch record if request is not specified.</exception>
+        private void CreateDeviceBatch(BatchRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not create device batch record if request is not specified.");
+            }
+
+            this.DeviceBatch = this.DeviceManager.GetDeviceBatchByBatchNumber(request.BatchNumber);
+
+            if (this.DeviceBatch == null)
+            {
+                DeviceBatch deviceBatch = new DeviceBatch
+                {
+                    BatchNumber = request.BatchNumber
+                };
+
+                this.DeviceBatch = this.DeviceManager.SaveDeviceBatch(deviceBatch);
+            }
+        }        
+
+        /// <summary>
         /// Initializes the <see cref="ListenerWebServiceClient" /> class.
         /// </summary>
         /// <param name="persistenceManager">The persistence manager.</param>
-        private void Initialize(IPersistenceManager persistenceManager)
+        /// <param name="clientPersistenceManager">The client persistence manager.</param>
+        private void Initialize(IPersistenceManager persistenceManager, IPersistenceManager clientPersistenceManager)
         {
             IPersistenceController persistenceController = new PersistenceController();
+            IWNPPersistenceController wnpPersistenceController = new WNPPersistenceController();
             persistenceController.InitializeListenerSystems(persistenceManager);
+            wnpPersistenceController.InitializeListenerClientSystems(clientPersistenceManager);
             this.TransactionLogManager = new TransactionManager(persistenceController);
             this.DeviceManager = new DeviceManager(persistenceController);
             this.StringManager = Init.StringManager;
+            this.WnpSystem = wnpPersistenceController.WNPSystem;
         }
         
         /// <summary>
@@ -404,10 +442,10 @@ namespace AMSLLC.Listener.Client.Implementation
                                 client.SendTestData(deviceTestRequest);
                                 break;
                             case TransactionDataLookup.NewBatch:
-                                SendBatchServiceRequest newBatchRequest = new SendBatchServiceRequest()
+                                SendDataServiceRequest newBatchRequest = new SendDataServiceRequest()
                                 {
                                     TransactionId = transactionId,
-                                    BatchNumber = this.BatchNumber
+                                    ObjectId = this.DeviceBatch.Id
                                 };
                                 client.SendBatch(newBatchRequest);
                                 break;

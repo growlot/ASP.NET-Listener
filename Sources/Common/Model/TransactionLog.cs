@@ -73,6 +73,14 @@ namespace AMSLLC.Listener.Common.Model
         public DeviceTest DeviceTest { get; set; }
 
         /// <summary>
+        /// Gets or sets the device batch.
+        /// </summary>
+        /// <value>
+        /// The device batch.
+        /// </value>
+        public DeviceBatch DeviceBatch { get; set; }
+
+        /// <summary>
         /// Gets or sets the batch.
         /// </summary>
         /// <value>

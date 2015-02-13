@@ -24,11 +24,4 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SendDataServiceRequest" nillable="true" type="tns:SendDataServiceRequest" />
-  <xs:complexType name="SendBatchServiceRequest">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="BatchNumber" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="TransactionId" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="SendBatchServiceRequest" nillable="true" type="tns:SendBatchServiceRequest" />
 </xs:schema>

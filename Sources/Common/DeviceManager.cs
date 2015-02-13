@@ -201,5 +201,41 @@ namespace AMSLLC.Listener.Common
         {
             return this.listenerSystem.GetCompanies();
         }
+
+        /// <summary>
+        /// Gets the device batch.
+        /// </summary>
+        /// <param name="batchNumber">The batch number.</param>
+        /// <returns>
+        /// The device batch
+        /// </returns>
+        public DeviceBatch GetDeviceBatchByBatchNumber(string batchNumber)
+        {
+            return this.listenerSystem.GetDeviceBatchByBatchNumber(batchNumber);
+        }
+
+        /// <summary>
+        /// Gets the device batch.
+        /// </summary>
+        /// <param name="deviceBatchId">The device batch identifier.</param>
+        /// <returns>
+        /// The device batch
+        /// </returns>
+        public DeviceBatch GetDeviceBatch(int deviceBatchId)
+        {
+            return this.listenerSystem.GetDeviceBatch(deviceBatchId);
+        }
+
+        /// <summary>
+        /// Creates or updates the device batch.
+        /// </summary>
+        /// <param name="deviceBatch">The device batch object.</param>
+        /// <returns>
+        /// The device batch entity.
+        /// </returns>
+        public DeviceBatch SaveDeviceBatch(DeviceBatch deviceBatch)
+        {
+            return this.listenerSystem.SaveDeviceBatch(deviceBatch);
+        }
     }
 }

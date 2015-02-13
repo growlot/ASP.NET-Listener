@@ -33,11 +33,6 @@ namespace AMSLLC.Listener.Client.Implementation
         /// The logger
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
-        /// <summary>
-        /// The WNP system
-        /// </summary>
-        private WNPSystem wnpSystem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListenerWebServiceClientLocal"/> class.
@@ -45,23 +40,6 @@ namespace AMSLLC.Listener.Client.Implementation
         public ListenerWebServiceClientLocal()
             : base()
         {
-            using (IPersistenceManager clientPersistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["WnpDb"].ConnectionString))
-            {
-                this.Initialize(clientPersistenceManager);
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ListenerWebServiceClientLocal" /> class.
-        /// </summary>
-        /// <param name="persistenceManager">The persistence manager.</param>
-        public ListenerWebServiceClientLocal(IPersistenceManager persistenceManager)
-            : base(persistenceManager)
-        {
-            using (IPersistenceManager clientPersistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["WnpDb"].ConnectionString))
-            {
-                this.Initialize(clientPersistenceManager);
-            }
         }
 
         /// <summary>
@@ -70,9 +48,8 @@ namespace AMSLLC.Listener.Client.Implementation
         /// <param name="persistenceManager">The persistence manager.</param>
         /// <param name="clientPersistenceManager">The client persistence manager.</param>
         public ListenerWebServiceClientLocal(IPersistenceManager persistenceManager, IPersistenceManager clientPersistenceManager)
-            : base(persistenceManager)
+            : base(persistenceManager, clientPersistenceManager)
         {
-            this.Initialize(clientPersistenceManager);
         }
 
         /// <summary>
@@ -115,17 +92,17 @@ namespace AMSLLC.Listener.Client.Implementation
                 {
                     case "EM":
                         Meter meter = CreateDummyEquipmentMeter(request);
-                        this.wnpSystem.AddOrReplaceEquipment(meter);
+                        this.WnpSystem.AddOrReplaceEquipment(meter);
                         Log.Info("Adding dummy electric meter device.");
                         break;
                     case "CT":
                         CurrentTransformer ct = CreateDummyEquipmentCurrentTransformer(request);
-                        this.wnpSystem.AddOrReplaceEquipment(ct);
+                        this.WnpSystem.AddOrReplaceEquipment(ct);
                         Log.Info("Adding dummy current transformer device.");
                         break;
                     case "PT":
                         PotentialTransformer pt = CreateDummyEquipmentPotentialTransformer(request);
-                        this.wnpSystem.AddOrReplaceEquipment(pt);
+                        this.WnpSystem.AddOrReplaceEquipment(pt);
                         Log.Info("Adding dummy potential transformer device.");
                         break;
                 }
@@ -316,17 +293,6 @@ namespace AMSLLC.Listener.Client.Implementation
                 CustomField5 = "00" // reason for test
             };
             return result;
-        }
-
-        /// <summary>
-        /// Initializes the <see cref="ListenerWebServiceClientLocal" /> class.
-        /// </summary>
-        /// <param name="clientPersistenceManager">The client persistence manager.</param>
-        private void Initialize(IPersistenceManager clientPersistenceManager)
-        {
-            IWNPPersistenceController persistenceController = new WNPPersistenceController();
-            persistenceController.InitializeListenerClientSystems(clientPersistenceManager);
-            this.wnpSystem = persistenceController.WNPSystem;
         }
     }
 }
