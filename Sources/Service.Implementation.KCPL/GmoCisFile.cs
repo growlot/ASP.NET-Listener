@@ -233,13 +233,39 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         public DateTime CommentDate;
 
         /// <summary>
-        /// The codes hardcoded to "RSN TEST 09 REPR CODE 08"
+        /// The test code prefix hardcoded to "RSN TEST "
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(40)]
+        [FieldFixedLength(10)]
         [FieldTrim(TrimMode.Right)]
         [FieldAlign(AlignMode.Left)]
-        public string Codes;
+        public string TestCodePrefix;
+
+        /// <summary>
+        /// The transformed test code
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        [FieldFixedLength(2)]
+        [FieldTrim(TrimMode.Right)]
+        [FieldAlign(AlignMode.Left)]
+        public string TestCode;
+
+        /// <summary>
+        /// The meter status prefix hardcoded to " REPR CODE "
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        [FieldFixedLength(11)]
+        [FieldAlign(AlignMode.Left)]
+        public string MeterStatusPrefix;
+
+        /// <summary>
+        /// The transformed meter status
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        [FieldFixedLength(17)]
+        [FieldTrim(TrimMode.Right)]
+        [FieldAlign(AlignMode.Left)]
+        public string MeterStatus;
 
         /// <summary>
         /// The retire reason
