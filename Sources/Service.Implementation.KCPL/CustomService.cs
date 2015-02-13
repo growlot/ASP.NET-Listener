@@ -346,7 +346,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             }
             else
             {
-                string message = string.Format(CultureInfo.InvariantCulture, CustomService.CustomStringManager.GetString("WarrantyExparationDateNotFilled", CultureInfo.CurrentCulture), meter.CustomField15);
+                string message = string.Format(CultureInfo.InvariantCulture, CustomService.CustomStringManager.GetString("WarrantyExpirationDateNotFilled", CultureInfo.CurrentCulture), meter.CustomField15);
                 Log.Error(message);
                 throw new ArgumentException(message);
             }
@@ -1064,7 +1064,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     serviceRequest.testType = TestResultServiceRequestTestType.SS;
                     break;
                 default:
-                    string message = string.Format(CultureInfo.InvariantCulture, "Test Type {0} is not supported by ODM.", meterTest.Location);
+                    string message = string.Format(CultureInfo.InvariantCulture, "Test Type {0} is not supported by ODM.", meterTest.TestReason);
                     Log.Error(message);
                     throw new InvalidOperationException(message);
             }
