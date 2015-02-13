@@ -802,7 +802,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 Wires2 = "W",
                 Class = meter.CustomField3,
                 RegisterType = meter.CustomField7,
-                DemandInterval = " M",
+                DemandInterval = "  M",
                 MeterConstant = 1,
                 BoardId = meterTest.WecoSerialNumber,
                 CommentsPrefix = meter.CustomField1 == "MPS" ? "MPS" : "SJ ",
