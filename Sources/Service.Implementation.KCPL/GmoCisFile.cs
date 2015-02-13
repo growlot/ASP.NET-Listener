@@ -236,7 +236,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// The test code prefix hardcoded to "RSN TEST "
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(10)]
+        [FieldFixedLength(9)]
         [FieldTrim(TrimMode.Right)]
         [FieldAlign(AlignMode.Left)]
         public string TestCodePrefix;
@@ -262,7 +262,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// The transformed meter status
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldFixedLength(17)]
+        [FieldFixedLength(18)]
         [FieldTrim(TrimMode.Right)]
         [FieldAlign(AlignMode.Left)]
         public string MeterStatus;
