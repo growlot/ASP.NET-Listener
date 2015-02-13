@@ -172,7 +172,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 CommentsPrefix = meter.CustomField1 == "MPS" ? "MPS" : "SJ ",
                 Comments = this.WnpSystem.GetTestCommentsConcatenated(device.EquipmentNumber, owner, device.EquipmentType.InternalCode, deviceTest.TestDate),
                 CommentDate = meterTest.TestDate,
-                Codes = "RSN TEST 09 REPR CODE 08",
+                TestCodePrefix = "RSN TEST ",
+                MeterStatusPrefix = " REPR CODE ",
                 AepTestSetup = meter.AepCode,
                 Form = meter.Form,
                 Base = meter.Base.ToString(),
@@ -220,7 +221,39 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                         break;
                 }
             }
-            
+
+            switch (meterTest.TestReason)
+            {
+                case "MT":
+                    gmoCisFile.TestCode = "02";
+                    break;
+                case "NS":
+                case "NT":
+                    gmoCisFile.TestCode = "03";
+                    break;
+                case "SS":
+                    gmoCisFile.TestCode = "04";
+                    break;
+                default:
+                    string message = string.Format(CultureInfo.InvariantCulture, "Test Code {0} is not supported by CIS.", meterTest.TestReason);
+                    Log.Error(message);
+                    throw new InvalidOperationException(message);
+            }
+
+            switch (meter.CustomField15)
+            {
+                case "A":
+                    gmoCisFile.MeterStatus = "01";
+                    break;
+                case "R":
+                    gmoCisFile.MeterStatus = "08";
+                    break;
+                default:
+                    string message = string.Format(CultureInfo.InvariantCulture, "Meter status {0} is not supported by CIS.", meter.CustomField15);
+                    Log.Error(message);
+                    throw new InvalidOperationException(message);
+            }
+
             int tempInt;
             if (int.TryParse(meter.Phase.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
             {
