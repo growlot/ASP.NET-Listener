@@ -53,6 +53,14 @@ namespace AMSLLC.Listener.Client.Implementation.Messages
         public DateTime? TestDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the batch number.
+        /// </summary>
+        /// <value>
+        /// The batch number.
+        /// </value>
+        public string BatchNumber { get; set; }
+
+        /// <summary>
         /// Gets or sets the error message.
         /// </summary>
         /// <value>

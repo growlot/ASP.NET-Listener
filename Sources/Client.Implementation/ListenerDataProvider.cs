@@ -102,6 +102,7 @@ namespace AMSLLC.Listener.Client.Implementation
                 TransactionType = x.TransactionType.Name,
                 TransactionStart = (DateTime)x.TransactionStart,
                 TestDate = x.DeviceTest != null ? (DateTime?)x.DeviceTest.TestDate : null,
+                BatchNumber = x.DeviceBatch != null ? x.DeviceBatch.BatchNumber : null,
                 ErrorMessage = request.IncludeDetails ? x.Message : null,
                 DebugInfo = request.IncludeDetails ? x.DebugInfo : null,
                 EquipmentNumber = x.Device != null ? x.Device.EquipmentNumber : null,
