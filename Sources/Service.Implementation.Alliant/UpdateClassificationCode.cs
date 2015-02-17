@@ -506,7 +506,9 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <param name="transactionType">The transaction type.</param>
         private void ProcessTransaction(Update request, TransactionType transactionType)
         {
-            int transactionId = this.transactionLogManager.NewTransaction(transactionType.Id, null, null, null);
+            TransactionLog transaction = new TransactionLog();
+            transaction.TransactionType = transactionType;
+            int transactionId = this.transactionLogManager.NewTransaction(transaction);
             this.transactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ServiceStart);
 
             this.transactionLogDebugMessage = string.Empty;

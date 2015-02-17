@@ -152,7 +152,13 @@ namespace AMSLLC.Listener.Client.Implementation
             
             foreach (TransactionType transactionType in transactionTypes)
             {
-                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, this.Device.Id, null, null);
+                TransactionLog transaction = new TransactionLog()
+                {
+                    TransactionType = transactionType,
+                    Device = this.Device
+                };
+
+                int transactionId = this.TransactionLogManager.NewTransaction(transaction);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
 
                 int returnCode = 0;
@@ -209,7 +215,9 @@ namespace AMSLLC.Listener.Client.Implementation
 
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
                 
-                TransactionLog transaction = this.TransactionLogManager.GetTransaction(transactionId);
+                // reload transaction info from db
+                transaction = this.TransactionLogManager.GetTransaction(transactionId);
+
                 if (transaction.TransactionStatus.Id == (int)TransactionStatusLookup.InProgress && transaction.TransactionType.TransactionCompletion.Id == (int)TransactionCompletionLookup.Default)
                 {
                     this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);
@@ -396,16 +404,23 @@ namespace AMSLLC.Listener.Client.Implementation
             {
                 int transactionId;
 
+                TransactionLog transaction = new TransactionLog();
+                transaction.TransactionType = transactionType;
+
                 switch (this.DataType)
                 {
                     case TransactionDataLookup.Device:
-                        transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, this.Device.Id, null, null);
+                        transaction.Device = this.Device;
+                        transactionId = this.TransactionLogManager.NewTransaction(transaction);
                         break;
                     case TransactionDataLookup.DeviceTest:
-                        transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, this.Device.Id, this.DeviceTest.Id, null);
+                        transaction.Device = this.Device;
+                        transaction.DeviceTest = this.DeviceTest;
+                        transactionId = this.TransactionLogManager.NewTransaction(transaction);
                         break;
                     case TransactionDataLookup.NewBatch:
-                        transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, null, null, null);
+                        transaction.DeviceBatch = this.DeviceBatch;
+                        transactionId = this.TransactionLogManager.NewTransaction(transaction);
                         break;
                     default:
                         throw new InvalidOperationException("Transaction data type is unclear");
@@ -486,7 +501,9 @@ namespace AMSLLC.Listener.Client.Implementation
 
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
 
-                TransactionLog transaction = this.TransactionLogManager.GetTransaction(transactionId);
+                // reload transaction info from db
+                transaction = this.TransactionLogManager.GetTransaction(transactionId);
+
                 if (transaction.TransactionStatus.Id == (int)TransactionStatusLookup.InProgress && transaction.TransactionType.TransactionCompletion.Id == (int)TransactionCompletionLookup.Default)
                 {
                     this.TransactionLogManager.UpdateTransactionStatus(transactionId, returnCode, message, debugInfo);

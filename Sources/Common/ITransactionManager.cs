@@ -20,14 +20,11 @@ namespace AMSLLC.Listener.Common
         /// <summary>
         /// Starts new transaction.
         /// </summary>
-        /// <param name="transactionTypeId">The transaction type identifier.</param>
-        /// <param name="deviceId">The device identifier.</param>
-        /// <param name="deviceTestId">The device test identifier.</param>
-        /// <param name="batchId">The batch identifier.</param>
+        /// <param name="transactionLog">The transaction log.</param>
         /// <returns>
         /// The transaction identifier for this new transaction.
         /// </returns>
-        int NewTransaction(int transactionTypeId, int? deviceId, int? deviceTestId, int? batchId);
+        int NewTransaction(TransactionLog transactionLog);
 
         /// <summary>
         /// Updates the state of the transaction.

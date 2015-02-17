@@ -84,7 +84,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ListenerDataProviderTests.cs" />
-    <Compile Include="ListenerWebServiceClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

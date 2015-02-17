@@ -119,7 +119,12 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 
                 if (currentHash != newHash)
                 {
-                    int deviceTransactionId = this.TransactionLogManager.NewTransaction(deviceOdmTransaction.Id, device.Id, null, null);
+                    TransactionLog transaction = new TransactionLog()
+                    {
+                        TransactionType = deviceOdmTransaction,
+                        Device = device
+                    };
+                    int deviceTransactionId = this.TransactionLogManager.NewTransaction(transaction);
                     this.TransactionLogManager.UpdateTransactionDataHash(deviceTransactionId, newHash);
 
                     this.TransactionLogManager.UpdateTransactionStatus(deviceTransactionId, TransactionStatusLookup.Succeeded, CustomStringManager.GetString("InitialLoadTransactionMessage", CultureInfo.CurrentCulture), null);
@@ -141,7 +146,13 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
                     if (currentHash == GlobalConstants.PreviousSuccessfulTransactionNotFound)
                     {
-                        int testTransactionId = this.TransactionLogManager.NewTransaction(deviceTestOdmTransaction.Id, device.Id, deviceTest.Id, null);
+                        TransactionLog transaction = new TransactionLog()
+                        {
+                            TransactionType = deviceTestOdmTransaction,
+                            Device = device,
+                            DeviceTest = deviceTest
+                        };
+                        int testTransactionId = this.TransactionLogManager.NewTransaction(transaction);
 
                         try
                         {
@@ -271,11 +282,13 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 throw new InvalidOperationException("Batch can not be found in WNP.");
             }
 
+            TransactionLog transaction = this.TransactionLogManager.GetTransaction(transactionId);
+
             string message;
             switch (batch.EquipmentType)
             {
                 case "EM":
-                    this.ProcessMetersBatch(batch);
+                    this.ProcessMetersBatch(batch, transaction.DeviceBatch);
                     break;
                 default:
                     message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("BatchDeviceTypeNotSupported", CultureInfo.CurrentCulture), batch.EquipmentType);
@@ -494,14 +507,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
             return result;
         }
-        
+
         /// <summary>
         /// Processes the meters batch.
         /// </summary>
         /// <param name="batch">The batch.</param>
+        /// <param name="deviceBatch">The device batch.</param>
         /// <exception cref="System.AggregateException">All errors from sub transactions.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "All exceptions are logged and processing is continued.")]
-        private void ProcessMetersBatch(NewBatch batch)
+        private void ProcessMetersBatch(NewBatch batch, DeviceBatch deviceBatch)
         {
             string errorMessage = string.Empty;
             IList<Meter> batchMeters = this.WnpSystem.GetEquipmentByBatch<Meter>(batch);
@@ -515,7 +529,14 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 {
                     foreach (TransactionType transactionType in deviceTransactionTypes)
                     {
-                        int deviceTransactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, null, null);
+                        TransactionLog transaction = new TransactionLog()
+                        {
+                            TransactionType = transactionType,
+                            Device = device,
+                            DeviceBatch = deviceBatch
+                        };
+                        int deviceTransactionId = this.TransactionLogManager.NewTransaction(transaction);
+
                         try
                         {
                             this.TransactionLogManager.UpdateTransactionState(deviceTransactionId, TransactionStateLookup.ServiceStart);
@@ -546,7 +567,15 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     {
                         foreach (TransactionType transactionType in deviceTestTransactionTypes)
                         {
-                            int testTransactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, device.Id, deviceTest.Id, null);
+                            TransactionLog transaction = new TransactionLog()
+                            {
+                                TransactionType = transactionType,
+                                Device = device,
+                                DeviceTest = deviceTest,
+                                DeviceBatch = deviceBatch
+                            };
+                            int testTransactionId = this.TransactionLogManager.NewTransaction(transaction);
+
                             try
                             {
                                 this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
@@ -555,7 +584,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
                                 this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
 
-                                TransactionLog transaction = this.TransactionLogManager.GetTransaction(testTransactionId);
+                                transaction = this.TransactionLogManager.GetTransaction(testTransactionId);
                                 if (transactionType.ExternalSystem.Name == "CIS" && transaction.TransactionStatus.Id == (int)TransactionStatusLookup.InProgress)
                                 {
                                     this.TransactionLogManager.UpdateTransactionStatus(testTransactionId, (int)TransactionStatusLookup.Succeeded);

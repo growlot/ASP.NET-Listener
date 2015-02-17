@@ -85,7 +85,13 @@ namespace AMSLLC.Listener.Client.Implementation
             
             foreach (TransactionType transactionType in transactionTypes)
             {
-                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, this.Device.Id, null, null);
+                TransactionLog transaction = new TransactionLog()
+                {
+                    TransactionType = transactionType,
+                    Device = this.Device
+                };
+
+                int transactionId = this.TransactionLogManager.NewTransaction(transaction);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
                 
                 switch (request.EquipmentType)
@@ -143,18 +149,17 @@ namespace AMSLLC.Listener.Client.Implementation
                 return response;
             }
 
-            this.CreateDevice(request);
-            
-            DeviceTest deviceTest = new DeviceTest
-            {
-                Device = this.Device,
-                TestDate = request.TestDate
-            };
-            int deviceTestId = this.DeviceManager.GetOrCreateDeviceTest(deviceTest).Id;
+            this.CreateDeviceTest(request);
 
             foreach (TransactionType transactionType in transactionTypes)
             {
-                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, Device.Id, deviceTestId, null);
+                TransactionLog transaction = new TransactionLog()
+                {
+                    TransactionType = transactionType,
+                    Device = this.Device,
+                    DeviceTest = this.DeviceTest
+                };
+                int transactionId = this.TransactionLogManager.NewTransaction(transaction);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
                 this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);
@@ -196,7 +201,13 @@ namespace AMSLLC.Listener.Client.Implementation
 
             foreach (TransactionType transactionType in transactionTypes)
             {
-                int transactionId = this.TransactionLogManager.NewTransaction(transactionType.Id, Device.Id, this.DeviceTest.Id, null);
+                TransactionLog transaction = new TransactionLog()
+                {
+                    TransactionType = transactionType,
+                    Device = this.Device,
+                    DeviceTest = this.DeviceTest
+                };
+                int transactionId = this.TransactionLogManager.NewTransaction(transaction);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
                 this.TransactionLogManager.UpdateTransactionStatus(transactionId, response.ReturnCode, response.Message, response.DebugInfo);

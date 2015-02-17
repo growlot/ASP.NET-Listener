@@ -89,40 +89,26 @@ namespace AMSLLC.Listener.Common
         }
 
         /// <summary>
-        /// Logs the new transaction.
+        /// Starts new transaction.
         /// </summary>
-        /// <param name="transactionTypeId">The transaction type identifier.</param>
-        /// <param name="transactionStatusId">The transaction status identifier.</param>
-        /// <param name="deviceId">The device identifier.</param>
-        /// <param name="deviceTestId">The device test identifier.</param>
-        /// <param name="batchId">The batch identifier.</param>
+        /// <param name="transactionLog">The transaction log.</param>
         /// <returns>
-        /// Id of new transaction.
+        /// The transaction identifier for this new transaction.
         /// </returns>
-        public int AddTransactionLog(int transactionTypeId, int transactionStatusId, int? deviceId, int? deviceTestId, int? batchId)
+        /// <exception cref="System.ArgumentNullException">transactionLog;Can not start transaction log if no transaction is specified</exception>
+        public int NewTransaction(TransactionLog transactionLog)
         {
-            TransactionLog transaction = new TransactionLog();
-            transaction.TransactionType = new TransactionType(transactionTypeId);
-            transaction.TransactionStatus = new TransactionStatus(transactionStatusId);
-            transaction.TransactionStart = DateTime.Now;
-            if (deviceId != null)
+            if (transactionLog == null)
             {
-                transaction.Device = new Device((int)deviceId);
+                throw new ArgumentNullException("transactionLog", "Can not start transaction log if no transaction is specified");
             }
 
-            if (deviceTestId != null)
-            {
-                transaction.DeviceTest = new DeviceTest((int)deviceTestId);
-            }
+            transactionLog.TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.InProgress);
+            transactionLog.TransactionStart = DateTime.Now;
 
-            if (batchId != null)
-            {
-                transaction.Batch = new Batch((int)batchId);
-            }
+            this.persistenceManager.Save<TransactionLog>(transactionLog);
 
-            this.persistenceManager.Save<TransactionLog>(transaction);
-
-            return transaction.Id;
+            return transactionLog.Id;
         }
 
         /// <summary>
