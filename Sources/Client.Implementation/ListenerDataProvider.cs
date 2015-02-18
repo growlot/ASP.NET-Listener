@@ -69,6 +69,8 @@ namespace AMSLLC.Listener.Client.Implementation
                 throw new ArgumentNullException("request", "Can not retrieve transaction log when request is not specified.");
             }
 
+            bool searchSpecified = false;
+
             IList<TransactionLogResponse> logResponse = new List<TransactionLogResponse>();
             TransactionLog searchCriteria = new TransactionLog();
             if (!string.IsNullOrWhiteSpace(request.EquipmentNumber) && !string.IsNullOrWhiteSpace(request.EquipmentType))
@@ -84,19 +86,33 @@ namespace AMSLLC.Listener.Client.Implementation
                 {
                     return logResponse;
                 }
+
+                searchSpecified = true;
             }
 
             if (!string.IsNullOrWhiteSpace(request.BatchNumber))
             {
                 searchCriteria.DeviceBatch = this.deviceManager.GetDeviceBatchByBatchNumber(request.BatchNumber);
+                searchSpecified = true;
             }
 
             if (request.FailedOnly)
             {
                 searchCriteria.TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Failed);
+                searchSpecified = true;
             }
 
-            searchCriteria.TransactionStart = request.LogDate;
+            if (request.LogDate.HasValue)
+            {
+                searchCriteria.TransactionStart = request.LogDate;
+                searchSpecified = true;
+            }
+
+            // if none search criteria options are specified, then return empty transaction list.
+            if (!searchSpecified)
+            {
+                return logResponse;
+            }
 
             IList<TransactionLog> log = this.transactionLogManager.GetTransactions(searchCriteria, request.IncludeSkipped);
 
