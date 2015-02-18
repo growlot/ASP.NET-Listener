@@ -123,11 +123,11 @@ namespace AMSLLC.Listener.Client.Implementation
                 TransactionType = x.TransactionType.Name,
                 TransactionStart = (DateTime)x.TransactionStart,
                 TestDate = x.DeviceTest != null ? (DateTime?)x.DeviceTest.TestDate : null,
-                BatchNumber = x.DeviceBatch != null ? x.DeviceBatch.BatchNumber : null,
-                ErrorMessage = request.IncludeDetails ? x.Message : null,
-                DebugInfo = request.IncludeDetails ? x.DebugInfo : null,
-                EquipmentNumber = x.Device != null ? x.Device.EquipmentNumber : null,
-                EquipmentType = x.Device != null ? x.Device.EquipmentType.Description : null
+                BatchNumber = x.DeviceBatch != null ? x.DeviceBatch.BatchNumber : string.Empty,
+                ErrorMessage = request.IncludeDetails ? x.Message : string.Empty,
+                DebugInfo = request.IncludeDetails ? x.DebugInfo : string.Empty,
+                EquipmentNumber = x.Device != null ? x.Device.EquipmentNumber : string.Empty,
+                EquipmentType = x.Device != null ? x.Device.EquipmentType.Description : string.Empty
             });
 
             return logResponse;
