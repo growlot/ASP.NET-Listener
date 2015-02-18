@@ -37,6 +37,14 @@ namespace AMSLLC.Listener.Client.Implementation.Messages
         public string EquipmentType { get; set; }
 
         /// <summary>
+        /// Gets or sets the batch number.
+        /// </summary>
+        /// <value>
+        /// The batch number.
+        /// </value>
+        public string BatchNumber { get; set; }
+
+        /// <summary>
         /// Gets or sets the type of the service.
         /// </summary>
         /// <value>

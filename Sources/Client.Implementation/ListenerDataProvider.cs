@@ -86,6 +86,11 @@ namespace AMSLLC.Listener.Client.Implementation
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(request.BatchNumber))
+            {
+                searchCriteria.DeviceBatch = this.deviceManager.GetDeviceBatchByBatchNumber(request.BatchNumber);
+            }
+
             if (request.FailedOnly)
             {
                 searchCriteria.TransactionStatus = new TransactionStatus((int)TransactionStatusLookup.Failed);

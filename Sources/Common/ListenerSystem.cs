@@ -133,6 +133,11 @@ namespace AMSLLC.Listener.Common
                 criteria.Add(Restrictions.Eq("Device", searchCriteria.Device));
             }
 
+            if (searchCriteria.DeviceBatch != null)
+            {
+                criteria.Add(Restrictions.Eq("DeviceBatch", searchCriteria.DeviceBatch));
+            }
+
             if (searchCriteria.TransactionStatus != null)
             {
                 criteria.Add(Restrictions.Eq("TransactionStatus", searchCriteria.TransactionStatus));
