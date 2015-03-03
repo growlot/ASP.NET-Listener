@@ -115,22 +115,28 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 Device device = this.CreateDevice(fullMeter);
 
                 string currentHash = this.TransactionLogManager.GetLastSuccessfulDeviceTransactionDataHash(device, deviceOdmTransaction);
-                string newHash = GetMeterHash(fullMeter);
-                
-                if (currentHash != newHash)
+
+                // only process device if there are ODM transactions defined.
+                if (deviceOdmTransaction != null)
                 {
-                    TransactionLog transaction = new TransactionLog()
+                    string newHash = GetMeterHash(fullMeter);
+                
+                    if (currentHash != newHash)
                     {
-                        TransactionType = deviceOdmTransaction,
-                        Device = device
-                    };
-                    int deviceTransactionId = this.TransactionLogManager.NewTransaction(transaction);
-                    this.TransactionLogManager.UpdateTransactionDataHash(deviceTransactionId, newHash);
+                        TransactionLog transaction = new TransactionLog()
+                        {
+                            TransactionType = deviceOdmTransaction,
+                            Device = device
+                        };
+                        int deviceTransactionId = this.TransactionLogManager.NewTransaction(transaction);
+                        this.TransactionLogManager.UpdateTransactionDataHash(deviceTransactionId, newHash);
 
-                    this.TransactionLogManager.UpdateTransactionStatus(deviceTransactionId, TransactionStatusLookup.Succeeded, CustomStringManager.GetString("InitialLoadTransactionMessage", CultureInfo.CurrentCulture), null);
-                }
+                        this.TransactionLogManager.UpdateTransactionStatus(deviceTransactionId, TransactionStatusLookup.Succeeded, CustomStringManager.GetString("InitialLoadTransactionMessage", CultureInfo.CurrentCulture), null);
+                    }
+                } 
 
-                if (fullMeter.CreateDate < new DateTime(2008, 1, 1) || fullMeter.CustomField13 != "A")
+                // skip processing of tests if device status is not Active
+                if (fullMeter.CustomField13 != "A")
                 {
                     continue;
                 }
@@ -138,7 +144,10 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 IList<MeterTestResult> meterTests = this.WnpSystem.GetEquipmentAllTestResult<MeterTestResult>(meter.EquipmentNumber, meter.Owner.Id);
                 IList<DateTime> uniqueTestStarts = meterTests.Select(x => x.TestDate).Distinct().ToList();
 
-                foreach (DateTime testDate in uniqueTestStarts)
+                // filter test if it was performed before 2008 January 1st
+                IList<DateTime> filteredTestDates = uniqueTestStarts.Where(x => x >= new DateTime(2008, 1, 1)).ToList();
+
+                foreach (DateTime testDate in filteredTestDates)
                 {
                     DeviceTest deviceTest = this.CreateDeviceTest(device, testDate);
 
@@ -146,26 +155,31 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
                     if (currentHash == GlobalConstants.PreviousSuccessfulTransactionNotFound)
                     {
-                        TransactionLog transaction = new TransactionLog()
+                        // only process device test if there are ODM transactions defined.
+                        if (deviceTestOdmTransaction != null)
                         {
-                            TransactionType = deviceTestOdmTransaction,
-                            Device = device,
-                            DeviceTest = deviceTest
-                        };
-                        int testTransactionId = this.TransactionLogManager.NewTransaction(transaction);
+                            TransactionLog transaction = new TransactionLog()
+                            {
+                                TransactionType = deviceTestOdmTransaction,
+                                Device = device,
+                                DeviceTest = deviceTest
+                            };
 
-                        try
-                        {
-                            this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
-                            this.ProcessMeterTestResults(device, deviceTest, fullMeter, testTransactionId);
-                            this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
-                        }
-                        catch (Exception ex)
-                        {
-                            string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
-                            Log.Error(message, ex);
-                            errorMessage += message;
-                            this.TransactionLogManager.UpdateTransactionStatus(testTransactionId, (int)TransactionStatusLookup.Failed, message, ex.ToString());
+                            int testTransactionId = this.TransactionLogManager.NewTransaction(transaction);
+
+                            try
+                            {
+                                this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceStart);
+                                this.ProcessMeterTestResults(device, deviceTest, fullMeter, testTransactionId);
+                                this.TransactionLogManager.UpdateTransactionState(testTransactionId, TransactionStateLookup.ServiceEnd);
+                            }
+                            catch (Exception ex)
+                            {
+                                string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
+                                Log.Error(message, ex);
+                                errorMessage += message;
+                                this.TransactionLogManager.UpdateTransactionStatus(testTransactionId, (int)TransactionStatusLookup.Failed, message, ex.ToString());
+                            }
                         }
                     }
                 }
