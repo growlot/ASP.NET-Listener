@@ -803,7 +803,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 NWH = "NWH",
                 TestStartTime = meterTest.TestDate,
                 TestEndTime = meterTest.TestDateStop,
-                TesterId = meterTest.TesterId,
+                TesterId = "CWILL",
                 IndependentBusinessUnit = meter.CustomField1 == "MPS" ? "MOWAC" : "MOWAF",
                 MeterType = meter.CustomField10,
                 Wires2 = "W",
