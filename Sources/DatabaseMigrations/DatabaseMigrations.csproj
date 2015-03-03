@@ -102,8 +102,8 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="DatabaseUpdater.cs" />
-    <Compile Include="v2.0.1\Migration_200001015_TransactionLog_Indexes.cs" />
-    <Compile Include="v2.0.1\Migration_200001006_TransactionType_Recreate.cs" />
+    <Compile Include="v2.0.1\Migration_200001013_TransactionLog_Indexes.cs" />
+    <Compile Include="v2.0.1\Migration_200001010_TransactionType_Recreate.cs" />
     <Compile Include="v2.0.1\Migration_200001001_TransactionData_Create.cs" />
     <Compile Include="v2.0.0\Migration_10_ServiceType_Populate.cs" />
     <Compile Include="v2.0.0\Migration_11_Company_Create.cs" />
@@ -134,17 +134,12 @@
     <Compile Include="v2.0.1\Migration_200001002_TransactionData_Populate.cs" />
     <Compile Include="v2.0.1\Migration_200001004_TransactionDirection_Populate.cs" />
     <Compile Include="v2.0.1\Migration_200001005_ExternalSystem_Create.cs" />
-    <Compile Include="v2.0.1\Migration_200001007_PopulateCustomerData.cs" />
-    <Compile Include="v2.0.1\Migration_200001008_TransactionLog_UpdateSchema.cs" />
+    <Compile Include="v2.0.1\Migration_200001011_PopulateCustomerData.cs" />
+    <Compile Include="v2.0.1\Migration_200001012_TransactionLog_UpdateSchema.cs" />
     <Compile Include="v2.0.1\Migration_200001009_TransactionStatus_Populate.cs" />
-    <Compile Include="v2.0.1\Migration_200001010_TransactionCompletion_Create.cs" />
-    <Compile Include="v2.0.1\Migration_200001011_TransactionCompletion_Populate.cs" />
-    <Compile Include="v2.0.1\Migration_200001012_TransactionType_Update.cs" />
-    <Compile Include="v2.0.1\Migration_200001013_PopulateCustomerData.cs" />
-    <Compile Include="v2.0.1\Migration_200001014_TransactionLog_UpdateSchema.cs" />
-    <Compile Include="v2.0.1\Migration_200001016_PopulateCustomerData.cs" />
-    <Compile Include="v2.0.1\Migration_200001017_DeviceBatch_Create.cs" />
-    <Compile Include="v2.0.1\Migration_200001018_TransactionLog_UpdateSchema.cs" />
+    <Compile Include="v2.0.1\Migration_200001006_TransactionCompletion_Create.cs" />
+    <Compile Include="v2.0.1\Migration_200001007_TransactionCompletion_Populate.cs" />
+    <Compile Include="v2.0.1\Migration_200001008_DeviceBatch_Create.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">

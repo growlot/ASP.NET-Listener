@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Migration_200001007_PopulateCustomerData.cs" company="Advanced Metering Services LLC">
+// <copyright file="Migration_200001011_PopulateCustomerData.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -16,8 +16,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// <summary>
     /// Performs a database migration
     /// </summary>
-    [Migration(200001007)]
-    public class Migration_200001007_PopulateCustomerData : Migration
+    [Migration(200001011)]
+    public class Migration_200001011_PopulateCustomerData : Migration
     {
         /// <summary>
         /// Performs the database migration
@@ -144,64 +144,62 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                ,'Device Shop Test (CIS)'
                                ,'')");
 
-                Execute.Sql(@"
-                    INSERT INTO TransactionType
-                               (TransactionDataId
-                               ,TransactionSourceId
-                               ,TransactionDirectionId
-                               ,ExternalSystemId
-                               ,Name
-                               ,Description)
-                         VALUES
-                               (1
-                               ,0
-                               ,2
-                               ,(
-                                    SELECT ExternalSystemId 
-                                    FROM ExternalSystem 
-                                    WHERE Name = 'ODM'
-                               )
-                               ,'Device Update (ODM)'
-                               ,'')");
+////                Execute.Sql(@"
+////                    INSERT INTO TransactionType
+////                               (TransactionDataId
+////                               ,TransactionSourceId
+////                               ,TransactionDirectionId
+////                               ,TransactionCompletionId
+////                               ,ExternalSystemId
+////                               ,Name
+////                               ,Description)
+////                         VALUES
+////                               (1
+////                               ,0
+////                               ,2
+////                               ,2
+////                               ,(
+////                                    SELECT ExternalSystemId 
+////                                    FROM ExternalSystem 
+////                                    WHERE Name = 'ODM'
+////                               )
+////                               ,'Device Update (ODM)'
+////                               ,'')");
+
+////                Execute.Sql(@"
+////                    INSERT INTO TransactionType
+////                               (TransactionDataId
+////                               ,TransactionSourceId
+////                               ,TransactionDirectionId
+////                               ,TransactionCompletionId
+////                               ,ExternalSystemId
+////                               ,Name
+////                               ,Description)
+////                         VALUES
+////                               (2
+////                               ,0
+////                               ,2
+////                               ,2
+////                               ,(
+////                                    SELECT ExternalSystemId 
+////                                    FROM ExternalSystem 
+////                                    WHERE Name = 'ODM'
+////                               )
+////                               ,'Device Shop Test (ODM)'
+////                               ,'')");
 
                 Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId
                                ,TransactionDirectionId
-                               ,ExternalSystemId
-                               ,Name
-                               ,Description)
-                         VALUES
-                               (2
-                               ,0
-                               ,2
-                               ,(
-                                    SELECT ExternalSystemId 
-                                    FROM ExternalSystem 
-                                    WHERE Name = 'ODM'
-                               )
-                               ,'Device Shop Test (ODM)'
-                               ,'')");
-
-                Execute.Sql(@"
-                    INSERT INTO TransactionType
-                               (TransactionDataId
-                               ,TransactionSourceId
-                               ,TransactionDirectionId
-                               ,ExternalSystemId
                                ,Name
                                ,Description)
                          VALUES
                                (4
                                ,0
                                ,2
-                               ,(
-                                    SELECT ExternalSystemId 
-                                    FROM ExternalSystem 
-                                    WHERE Name = 'ODM'
-                               )
-                               ,'New Batch Acceptance (ODM)'
+                               ,'New Batch Acceptance'
                                ,'')");
 
                 // TransactionLog update TransactionTypeId

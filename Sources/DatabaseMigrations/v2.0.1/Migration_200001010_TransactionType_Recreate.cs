@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Migration_200001006_TransactionType_Recreate.cs" company="Advanced Metering Services LLC">
+// <copyright file="Migration_200001010_TransactionType_Recreate.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -15,8 +15,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// <summary>
     /// Performs a database migration
     /// </summary>
-    [Migration(200001006)]
-    public class Migration_200001006_TransactionType_Recreate : Migration
+    [Migration(200001010)]
+    public class Migration_200001010_TransactionType_Recreate : Migration
     {
         /// <summary>
         /// Performs the database migration
@@ -32,7 +32,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("TransactionDataId").AsInt32().NotNullable()
                 .WithColumn("TransactionSourceId").AsInt32().NotNullable()
                 .WithColumn("TransactionDirectionId").AsInt32().NotNullable()
-                .WithColumn("ExternalSystemId").AsInt32().NotNullable()
+                .WithColumn("TransactionCompletionId").AsInt32().NotNullable().WithDefaultValue(1)
+                .WithColumn("ExternalSystemId").AsInt32().Nullable()
                 .WithColumn("Description").AsString(500).Nullable();
 
             Create.ForeignKey("FK_TranType_TranData")
@@ -46,6 +47,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
             Create.ForeignKey("FK_TranType_TranDire")
                 .FromTable("TransactionType").ForeignColumn("TransactionDirectionId")
                 .ToTable("TransactionDirection").PrimaryColumn("TransactionDirectionId");
+
+            Create.ForeignKey("FK_TranType_TranComp")
+                .FromTable("TransactionType").ForeignColumn("TransactionCompletionId")
+                .ToTable("TransactionCompletion").PrimaryColumn("TransactionCompletionId");
 
             Create.ForeignKey("FK_TranType_ExteSyst")
                 .FromTable("TransactionType").ForeignColumn("ExternalSystemId")

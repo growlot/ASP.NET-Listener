@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Migration_200001008_TransactionLog_UpdateSchema.cs" company="Advanced Metering Services LLC">
+// <copyright file="Migration_200001007_TransactionCompletion_Populate.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -15,20 +15,17 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// <summary>
     /// Performs a database migration
     /// </summary>
-    [Migration(200001008)]
-    public class Migration_200001008_TransactionLog_UpdateSchema : Migration
+    [Migration(200001007)]
+    public class Migration_200001007_TransactionCompletion_Populate : Migration
     {
         /// <summary>
         /// Performs the database migration
         /// </summary>
         public override void Up()
         {
-            Delete.ForeignKey("FK_TranLog_TranSource").OnTable("TransactionLog");
-            Delete.Column("TransactionSourceId").FromTable("TransactionLog");
-
-            Create.ForeignKey("FK_TranLog_TranType")
-                .FromTable("TransactionLog").ForeignColumn("TransactionTypeId")
-                .ToTable("TransactionType").PrimaryColumn("TransactionTypeId");
+            Insert.IntoTable("TransactionCompletion").Row(new { TransactionCompletionId = "1", Description = "Complete after call" });
+            Insert.IntoTable("TransactionCompletion").Row(new { TransactionCompletionId = "2", Description = "Wait for callback" });
+            Insert.IntoTable("TransactionCompletion").Row(new { TransactionCompletionId = "3", Description = "Call to check" });
         }
 
         /// <summary>
@@ -36,7 +33,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            // not available
+            Delete.FromTable("TransactionCompletion").AllRows();
         }
     }
 }

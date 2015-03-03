@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Migration_200001017_DeviceBatch_Create.cs" company="Advanced Metering Services LLC">
+// <copyright file="Migration_200001008_DeviceBatch_Create.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -15,8 +15,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// <summary>
     /// Performs a database migration
     /// </summary>
-    [Migration(200001017)]
-    public class Migration_200001017_DeviceBatch_Create : AutoReversingMigration
+    [Migration(200001008)]
+    public class Migration_200001008_DeviceBatch_Create : AutoReversingMigration
     {
         /// <summary>
         /// Performs the database migration

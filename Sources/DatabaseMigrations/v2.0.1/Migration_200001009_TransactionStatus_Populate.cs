@@ -16,7 +16,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// Performs a database migration
     /// </summary>
     [Migration(200001009)]
-    public class Migration_200001009_TransactionStatus_Populate : Migration
+    public class Migration_200001009_TransactionStatus_Populate : AutoReversingMigration
     {
         /// <summary>
         /// Performs the database migration
@@ -24,14 +24,6 @@ namespace AMSLLC.Listener.DatabaseMigrations
         public override void Up()
         {
             Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "3", Description = "Skipped" });
-        }
-
-        /// <summary>
-        /// Rolls back the database migration
-        /// </summary>
-        public override void Down()
-        {
-            Delete.FromTable("TransactionStatus").AllRows(); 
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Migration_200001015_TransactionLog_Indexes.cs" company="Advanced Metering Services LLC">
+// <copyright file="Migration_200001013_TransactionLog_Indexes.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -15,8 +15,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// <summary>
     /// Performs a database migration
     /// </summary>
-    [Migration(200001015)]
-    public class Migration_200001015_TransactionLog_Indexes : AutoReversingMigration
+    [Migration(200001013)]
+    public class Migration_200001013_TransactionLog_Indexes : AutoReversingMigration
     {
         /// <summary>
         /// Performs the database migration
