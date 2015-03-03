@@ -352,6 +352,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     meterClass = meter.CustomField3,
                     meterCode = meter.MeterCode,
                     meterForm = meter.Form,
+                    meterReceiptDate = meter.CreateDate,
                     metrologyFirmware = meter.FirmwareRevision2,
                     model = meter.ModelNumber,
                     ownershipTerritory = meter.CustomField1,
@@ -375,17 +376,6 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             else
             {
                 string message = string.Format(CultureInfo.InvariantCulture, CustomService.CustomStringManager.GetString("WarrantyExpirationDateNotFilled", CultureInfo.CurrentCulture), meter.CustomField15);
-                Log.Error(message);
-                throw new ArgumentException(message);
-            }
-
-            if (meter.PurchaseDate.HasValue)
-            {
-                serviceRequest.assetDetails.meterReceiptDate = meter.PurchaseDate;
-            }
-            else
-            {
-                string message = CustomStringManager.GetString("PurchaseDateNotFilled", CultureInfo.CurrentCulture);
                 Log.Error(message);
                 throw new ArgumentException(message);
             }
