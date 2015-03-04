@@ -41,6 +41,7 @@
 
     <!-- Fields from current transformer test results -->
     <property name="TestVoltage" column="TEST_VOLTAGE" />
+    <property name="SecondaryVoltage" column="SECONDARY_VOLTAGE" />
 
   </class>
 

@@ -36,5 +36,13 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The test voltage.
         /// </value>
         public decimal TestVoltage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the secondary voltage.
+        /// </summary>
+        /// <value>
+        /// The secondary voltage.
+        /// </value>
+        public decimal SecondaryVoltage { get; set; }
     }
 }

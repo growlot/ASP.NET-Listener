@@ -36,5 +36,13 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The test current (Amps).
         /// </value>
         public decimal TestCurrent { get; set; }
+
+        /// <summary>
+        /// Gets or sets the secondary current.
+        /// </summary>
+        /// <value>
+        /// The secondary current.
+        /// </value>
+        public decimal SecondaryCurrent { get; set; }
     }
 }

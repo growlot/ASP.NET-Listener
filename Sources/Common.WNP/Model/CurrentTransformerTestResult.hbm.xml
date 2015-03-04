@@ -41,6 +41,7 @@
 
     <!-- Fields from current transformer test results -->
     <property name="TestCurrent" column="TEST_CURRENT" />
+    <property name="SecondaryCurrent" column="SECONDARY_CURRENT" />
 
   </class>
 
