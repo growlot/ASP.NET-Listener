@@ -526,6 +526,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 CustomField9 = classificationCode.TransformerAttribute.ConstructionType,
                 CustomField12 = classificationCode.TransformerAttribute.InsulatingMedium,
                 CustomField13 = classificationCode.TransformerAttribute.DeviceApplicationEnvironment,
+                CustomField14 = classificationCode.TransformerAttribute.PotentialTransformer.Fused,
+                CustomField15 = classificationCode.TransformerAttribute.PotentialTransformer.DualSecondary,
                 Description = classificationCode.DeviceDescription,
                 LookupCode = classificationCode.ClassificationCode,
                 Owner = owner,
