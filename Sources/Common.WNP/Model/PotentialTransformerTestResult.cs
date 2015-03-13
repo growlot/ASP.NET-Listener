@@ -44,5 +44,13 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The secondary voltage.
         /// </value>
         public decimal SecondaryVoltage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the burden.
+        /// </summary>
+        /// <value>
+        /// The burden.
+        /// </value>
+        public string Burden { get; set; }
     }
 }
