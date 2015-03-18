@@ -102,6 +102,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="DatabaseUpdater.cs" />
+    <Compile Include="v2.0.1\Migration_200001014_PopulateCustomerData.cs" />
     <Compile Include="v2.0.1\Migration_200001013_TransactionLog_Indexes.cs" />
     <Compile Include="v2.0.1\Migration_200001010_TransactionType_Recreate.cs" />
     <Compile Include="v2.0.1\Migration_200001001_TransactionData_Create.cs" />

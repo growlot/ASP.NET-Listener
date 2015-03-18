@@ -1,0 +1,83 @@
+﻿//-----------------------------------------------------------------------
+// <copyright file="Migration_200001014_PopulateCustomerData.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace AMSLLC.Listener.DatabaseMigrations
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using FluentMigrator;
+
+    /// <summary>
+    /// Performs a database migration
+    /// </summary>
+    [Migration(200001014)]
+    public class Migration_200001014_PopulateCustomerData : Migration
+    {
+        /// <summary>
+        /// Performs the database migration
+        /// </summary>
+        public override void Up()
+        {           
+            if (((string)this.ApplicationContext).Contains("KCP&L"))
+            {
+                Execute.Sql(@"
+                                    INSERT INTO TransactionType
+                                               (TransactionDataId
+                                               ,TransactionSourceId
+                                               ,TransactionDirectionId
+                                               ,TransactionCompletionId
+                                               ,ExternalSystemId
+                                               ,Name
+                                               ,Description)
+                                         VALUES
+                                               (1
+                                               ,0
+                                               ,2
+                                               ,2
+                                               ,(
+                                                    SELECT ExternalSystemId 
+                                                    FROM ExternalSystem 
+                                                    WHERE Name = 'ODM'
+                                               )
+                                               ,'Device Update (ODM)'
+                                               ,'')");
+
+                Execute.Sql(@"
+                                    INSERT INTO TransactionType
+                                               (TransactionDataId
+                                               ,TransactionSourceId
+                                               ,TransactionDirectionId
+                                               ,TransactionCompletionId
+                                               ,ExternalSystemId
+                                               ,Name
+                                               ,Description)
+                                         VALUES
+                                               (2
+                                               ,0
+                                               ,2
+                                               ,2
+                                               ,(
+                                                    SELECT ExternalSystemId 
+                                                    FROM ExternalSystem 
+                                                    WHERE Name = 'ODM'
+                                               )
+                                               ,'Device Shop Test (ODM)'
+                                               ,'')");
+            }
+        }
+
+        /// <summary>
+        /// Rolls back the database migration
+        /// </summary>
+        public override void Down()
+        {
+            // Not available.
+        }
+    }
+}
