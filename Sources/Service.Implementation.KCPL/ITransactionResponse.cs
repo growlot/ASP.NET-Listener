@@ -21,7 +21,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// Web service contract for receiving transaction responses from ODM.
         /// </summary>
         /// <param name="request">The request.</param>
-        [OperationContract(Action = "")]
+        [OperationContract(Action = "", IsOneWay = true)]
         [DispatchBodyElement("TransactionResponseServiceRequest", "")]
         void TransactionResponse(Message request);
 
