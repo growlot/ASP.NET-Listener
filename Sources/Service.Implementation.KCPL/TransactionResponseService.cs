@@ -45,12 +45,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         public TransactionResponseService()
         {
-            using (IPersistenceManager persistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["ListenerDb"].ConnectionString))
-            {
-                IPersistenceController persistenceController = new PersistenceController();
-                persistenceController.InitializeListenerSystems(persistenceManager);
-                this.transactionLogManager = new TransactionManager(persistenceController);
-            }
+            this.transactionLogManager = StaticPersistence.TransactionLogManager;
         }  
         
         /// <summary>

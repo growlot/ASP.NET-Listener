@@ -84,18 +84,9 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// </summary>
         public UpdateClassificationCode()
         {
-            using (IPersistenceManager persistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["ListenerDb"].ConnectionString))
-            {
-                using (IPersistenceManager clientPersistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["WnpDb"].ConnectionString))
-                {
-                    IWNPPersistenceController persistenceController = new WNPPersistenceController();
-                    persistenceController.InitializeListenerSystems(persistenceManager);
-                    persistenceController.InitializeListenerClientSystems(clientPersistenceManager);
-                    this.transactionLogManager = new TransactionManager(persistenceController);
-                    this.deviceManager = new DeviceManager(persistenceController);
-                    this.wnpSystem = persistenceController.WNPSystem;
-                }
-            }
+            this.transactionLogManager = StaticPersistence.TransactionLogManager;
+            this.deviceManager = StaticPersistence.DeviceManager;
+            this.wnpSystem = StaticPersistence.WnpSystem;
         }
         
         /// <summary>

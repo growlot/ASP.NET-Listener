@@ -41,41 +41,10 @@ namespace AMSLLC.Listener.Service.Implementation
         /// Initializes a new instance of the <see cref="ServiceCore"/> class.
         /// </summary>
         public ServiceCore()
-            : this(false)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceCore" /> class.
-        /// </summary>
-        /// <param name="listenerOnly">if set to <c>true</c> [listener only].</param>
-        public ServiceCore(bool listenerOnly)
-        {
-            if (listenerOnly)
-            {
-                using (IPersistenceManager persistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["ListenerDb"].ConnectionString))
-                {
-                    IPersistenceController persistenceController = new PersistenceController();
-                    persistenceController.InitializeListenerSystems(persistenceManager);
-                    this.TransactionLogManager = new TransactionManager(persistenceController);
-                    this.DeviceManager = new DeviceManager(persistenceController);
-                }
-            }
-            else
-            {
-                using (IPersistenceManager persistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["ListenerDb"].ConnectionString))
-                {
-                    using (IPersistenceManager clientPersistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["WnpDb"].ConnectionString))
-                    {
-                        IWNPPersistenceController persistenceController = new WNPPersistenceController();
-                        persistenceController.InitializeListenerSystems(persistenceManager);
-                        persistenceController.InitializeListenerClientSystems(clientPersistenceManager);
-                        this.TransactionLogManager = new TransactionManager(persistenceController);
-                        this.DeviceManager = new DeviceManager(persistenceController);
-                        this.WnpSystem = persistenceController.WNPSystem;
-                    }
-                }
-            }
+            this.TransactionLogManager = StaticPersistence.TransactionLogManager;
+            this.DeviceManager = StaticPersistence.DeviceManager;
+            this.WnpSystem = StaticPersistence.WnpSystem;
         }
 
         /// <summary>
