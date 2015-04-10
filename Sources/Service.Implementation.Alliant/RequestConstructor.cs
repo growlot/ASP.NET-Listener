@@ -195,12 +195,11 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     HighBurdenLLRatioSpecified = true,
                     RatioTested = ctTestFullLoad.SelectedRatio,
                     InsulationTestPassOrFail = ctTestFullLoad.CustomField7,
-                    TestAmpsFL = (decimal)ctTestFullLoad.TestCurrent,
+                    TestAmpsFL = (decimal)ctTestFullLoad.SecondaryCurrent,
                     TestAmpsFLSpecified = true,
-                    TestAmpsLL = (decimal)ctTestLightLoad.TestCurrent,
+                    TestAmpsLL = (decimal)ctTestLightLoad.SecondaryCurrent,
                     TestAmpsLLSpecified = true,
-                    TestBurden = (decimal)ctTestFullLoad.Burden,
-                    TestBurdenSpecified = true,
+                    TestBurden = ctTestFullLoad.Burden.ToString(CultureInfo.InvariantCulture),
                     TestVoltsFLSpecified = false,
                     VoltageForInsulationTest = ctTestFullLoad.CustomField6
                 }
@@ -279,9 +278,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     InsulationTestPassOrFail = ptTestFullLoad.CustomField7,
                     TestAmpsFLSpecified = false,
                     TestAmpsLLSpecified = false,
-                    TestBurden = (decimal)ptTestFullLoad.Burden,
-                    TestBurdenSpecified = true,
-                    TestVoltsFL = (decimal)ptTestFullLoad.TestVoltage,
+                    TestBurden = ptTestFullLoad.Burden,
+                    TestVoltsFL = (decimal)ptTestFullLoad.SecondaryVoltage,
                     TestVoltsFLSpecified = true,
                     VoltageForInsulationTest = ptTestFullLoad.CustomField6
                 }

@@ -164,7 +164,7 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element minOccurs="0" name="RatioTested" type="xs:string" />
-                <xs:element minOccurs="0" name="TestBurden" type="xs:decimal" />
+                <xs:element minOccurs="0" name="TestBurden" type="xs:string" />
                 <xs:element minOccurs="0" name="VoltageForInsulationTest" type="xs:string" />
                 <xs:element minOccurs="0" name="InsulationTestPassOrFail" type="xs:string" />
                 <xs:element minOccurs="0" name="HighBurdenLLRatio" type="xs:decimal">
@@ -361,7 +361,7 @@
       </documentation>
       <input message="tns:CreateDeviceTestResultReqMsg" />
       <output message="tns:CreateDeviceTestResultRespMsg" />
-      <fault name="Fault" message="tns:CreateDeviceTestResultFaultMsg" />
+      <fault name="CreateDeviceTestResultFault" message="tns:CreateDeviceTestResultFaultMsg" />
     </operation>
   </portType>
   <binding name="DeviceTestResultABCSSOAP11Binding" type="tns:DeviceTestResultABCS">
@@ -374,7 +374,7 @@
       <output>
         <soap:body use="literal" parts="CreateDeviceTestResultResponseABM" />
       </output>
-      <fault name="fault">
+      <fault name="CreateDeviceTestResultFault">
         <soap:fault use="literal" name="fault" namespace="" />
       </fault>
     </operation>

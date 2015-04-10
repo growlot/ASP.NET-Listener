@@ -35,12 +35,13 @@
     <property name="SelectedRatio" column="SELECTED_RATIO" length="10" />
     <property name="RatioCorrection" column="RCF" />
     <property name="PhaseError" column="PHASE_ERROR" />
-    <property name="Burden" column="BURDEN_VALUE" />
     <property name="AccuracyClass" column="ACCURACY" />
     <property name="LoadLabel" column="LOAD_LABEL" length="2" />
 
     <!-- Fields from current transformer test results -->
     <property name="TestCurrent" column="TEST_CURRENT" />
+    <property name="SecondaryCurrent" column="SECONDARY_CURRENT" />
+    <property name="Burden" column="BURDEN_VALUE" />
 
   </class>
 

@@ -101,7 +101,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = string.Join(" ", ex.Detail.FaultMessage.Text),
+                        Message = GetErrorMessage(string.Join(string.Empty, ex.Detail.FaultMessage.Stack)),
                         DebugInfo = writer.ToString()
                     };
 
@@ -118,7 +118,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = string.Join(" ", ex.Detail[0].FaultMessage.Text),
+                        Message = GetErrorMessage(string.Join(string.Empty, ex.Detail[0].FaultMessage.Stack)),
                         DebugInfo = writer.ToString()
                     };
 
@@ -253,7 +253,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = string.Join(" ", ex.Detail.FaultMessage.Text),
+                        Message = GetErrorMessage(string.Join(string.Empty, ex.Detail.FaultMessage.Stack)),
                         DebugInfo = writer.ToString()
                     };
 
@@ -270,7 +270,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = string.Join(" ", ex.Detail[0].FaultMessage.Text),
+                        Message = GetErrorMessage(string.Join(string.Empty, ex.Detail[0].FaultMessage.Stack)),
                         DebugInfo = writer.ToString()
                     };
 
@@ -315,6 +315,33 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                         throw new FaultException(message);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the error message from error stack.
+        /// </summary>
+        /// <param name="errorStack">The error stack.</param>
+        /// <returns>The readable error message</returns>
+        private static string GetErrorMessage(string errorStack)
+        {
+            string result = "Failed to find readable error text in failure message. Please see full failure message in the log.";
+            string from = "Text:";
+            string until = "Description:";
+
+            int fromLength = from.Length;
+            int startIndex = errorStack.IndexOf(from, StringComparison.Ordinal) + fromLength;
+
+            if (startIndex >= fromLength) 
+            {
+                int endIndex = errorStack.IndexOf(until, startIndex, StringComparison.Ordinal);
+
+                if (endIndex >= 0) 
+                {
+                    result = errorStack.Substring(startIndex, endIndex - startIndex).Trim();
+                }
+            }
+
+            return result;
         }
 
         /// <summary>

@@ -122,6 +122,7 @@
     <Compile Include="v2.0.0\Migration_2_TransactionStatus_Create.cs" />
     <Compile Include="v2.0.0\Migration_3_TransactionStatus_Populate.cs" />
     <Compile Include="v2.0.0\Migration_5_TransactionState_Populate.cs" />
+    <Compile Include="v2.0.0\Migration_23_TransactionSource_Populate.cs" />
     <Compile Include="v2.0.0\Migration_7_TransactionSource_Populate.cs" />
     <Compile Include="v2.0.0\Migration_17_TransactionLog_Create.cs" />
     <Compile Include="v2.0.0\Migration_8_TransactionType_Populate.cs" />
