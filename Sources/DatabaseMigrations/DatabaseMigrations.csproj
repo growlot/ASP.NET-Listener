@@ -142,6 +142,9 @@
     <Compile Include="v2.0.1\Migration_200001006_TransactionCompletion_Create.cs" />
     <Compile Include="v2.0.1\Migration_200001007_TransactionCompletion_Populate.cs" />
     <Compile Include="v2.0.1\Migration_200001008_DeviceBatch_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000001_TransactionData_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000002_ExternalSystem_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000003_TransactionType_Populate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">

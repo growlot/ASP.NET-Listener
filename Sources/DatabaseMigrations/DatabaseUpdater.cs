@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
     using System.Globalization;
     using System.Reflection;
     using AMSLLC.Listener.Common;
+    using AMSLLC.Listener.Common.WNP;
     using FluentMigrator;
     using FluentMigrator.Runner;
     using FluentMigrator.Runner.Announcers;
@@ -71,7 +72,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
 
             if (persistenceManager == null)
             {
-                using (IPersistenceManager persistenceManagerTemp = new PersistenceManager())
+                using (IPersistenceManager persistenceManagerTemp = new WNPPersistenceManager())
                 {
                     connectionString = persistenceManagerTemp.ConnectionString;
                     database = persistenceManagerTemp.Database;

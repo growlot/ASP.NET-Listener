@@ -17,11 +17,14 @@
                   cascade="none" />
 
     <property name="EquipmentNumber" column="EQP_NO" type="AnsiString" length="20" />
+    <property name="StepNumber" column="STEP_NO" />
     <property name="Location" column="TEST_LOCATION" type="AnsiString" length="20" />
     <property name="TesterId" column="TESTER_ID" type="AnsiString" length="30" />
-    <property name="TestStandard" column="STANDARD_SN" type="AnsiString" length="20" />
     <property name="TestDate" column="TEST_DATE_START" />
     <property name="TestDateStop" column="TEST_DATE_STOP" />
+    <property name="PrimaryTestReason" column="TEST_REASON" type="AnsiString" length="3" />
+    <property name="UpperLimit" column="UPPER_LIMIT" />
+    <property name="LowerLimit" column="LOWER_LIMIT" />
 
     <property name="CustomField1" column="RESULTS_USER01" type="AnsiString" length="50" />
     <property name="CustomField2" column="RESULTS_USER02" type="AnsiString" length="50" />
@@ -36,11 +39,20 @@
     <property name="TestType" column="TEST_TYPE" type="AnsiString" length="10" />
     <property name="AsFound" column="AF" />
     <property name="AsLeft" column="AL" />
+    <property name="TestStandard" column="STANDARD_SN" type="AnsiString" length="20" />
     <property name="TestAmps" column="TEST_AMPS" />
     <property name="TestVolts" column="TEST_VOLTS" />
-    <property name="TestReason" column="TEST_REASON" type="AnsiString" length="3" />
     <property name="StationId" column="STATION_ID" type="AnsiString" length="10" />
     <property name="WecoSerialNumber" column="WECO_SN" type="AnsiString" length="20" />
+    <property name="ReversePower" column="REVERSE_POWER" />
+    <property name="TestRevisions" column="TEST_REVS" />
+    <property name="ServiceType" column="SERVICE_TYPE" type="AnsiString" length="30" />
+    <property name="StandardMode" column="STANDARD_MODE" type="AnsiString" length="30" />
+    <property name="PhaseAngle" column="PHASE_ANGLE" />
+    <property name="Frequency" column="FREQUENCY" />
+    <property name="Optics" column="OPTICS" type="AnsiString" length="30" />
+    <property name="DesiredAccuracy" column="DESIRED_ACCURACY" />
+    <property name="KH" column="kh" type="AnsiString" length="10" />
 
   </class>
 

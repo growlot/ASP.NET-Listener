@@ -11,12 +11,12 @@ namespace AMSLLC.Listener.Common.WNP.Model
     public class TransformerTestResult : EquipmentTestResult
     {
         /// <summary>
-        /// Gets or sets the primary test reason.
+        /// Gets or sets the secondary test reason.
         /// </summary>
         /// <value>
-        /// The primary test reason.
+        /// The secondary test reason.
         /// </value>
-        public string PrimaryTestReason { get; set; }
+        public string SecondaryTestReason { get; set; }
 
         /// <summary>
         /// Gets or sets selected ratio.
@@ -33,6 +33,14 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The ratio correction factor.
         /// </value>
         public decimal RatioCorrection { get; set; }
+
+        /// <summary>
+        /// Gets or sets the phase.
+        /// </summary>
+        /// <value>
+        /// The phase.
+        /// </value>
+        public char Phase { get; set; }
 
         /// <summary>
         /// Gets or sets phase error.

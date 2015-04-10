@@ -79,11 +79,38 @@ namespace AMSLLC.Listener.Globalization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Circuit with index {0} could not be found in site {1}..
+        /// </summary>
+        internal static string CircuitNotFound {
+            get {
+                return ResourceManager.GetString("CircuitNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comment type {0} is not recognized..
+        /// </summary>
+        internal static string CommentTypeUnrecognized {
+            get {
+                return ResourceManager.GetString("CommentTypeUnrecognized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Company with name {0} not supported..
         /// </summary>
         internal static string CompanyNotSupported {
             get {
                 return ResourceManager.GetString("CompanyNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Transformer with equipment number {0} is not found..
+        /// </summary>
+        internal static string CTNotFound {
+            get {
+                return ResourceManager.GetString("CTNotFound", resourceCulture);
             }
         }
         
@@ -115,6 +142,15 @@ namespace AMSLLC.Listener.Globalization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unrecognized combination of device type {0} and service type {1}.
+        /// </summary>
+        internal static string DeviceTypeUnknown {
+            get {
+                return ResourceManager.GetString("DeviceTypeUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to External system with name {0} not supported..
         /// </summary>
         internal static string ExternalSystemNotSupported {
@@ -138,6 +174,24 @@ namespace AMSLLC.Listener.Globalization.Properties {
         internal static string ImportFailedForSomeRecords {
             get {
                 return ResourceManager.GetString("ImportFailedForSomeRecords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meter with equipment number {0} is not found..
+        /// </summary>
+        internal static string MeterNotFound {
+            get {
+                return ResourceManager.GetString("MeterNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Potential Transformer with equipment number {0} is not found..
+        /// </summary>
+        internal static string PTNotFound {
+            get {
+                return ResourceManager.GetString("PTNotFound", resourceCulture);
             }
         }
         

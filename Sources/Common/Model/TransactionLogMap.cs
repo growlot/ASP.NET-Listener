@@ -93,7 +93,7 @@ namespace AMSLLC.Listener.Common.Model
                 });
 
             this.Bag(
-                x => x.TransactionLogState,
+                x => x.TransactionLogStates,
                 m => 
                 {
                     m.Cascade(Cascade.DeleteOrphans);

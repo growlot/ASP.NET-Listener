@@ -86,14 +86,6 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public decimal TestVolts { get; set; }
 
         /// <summary>
-        /// Gets or sets the test reason.
-        /// </summary>
-        /// <value>
-        /// The test reason.
-        /// </value>
-        public string TestReason { get; set; }
-
-        /// <summary>
         /// Gets or sets the station identifier.
         /// </summary>
         /// <value>
@@ -108,5 +100,77 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The WECO serial number.
         /// </value>
         public string WecoSerialNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reverse power.
+        /// </summary>
+        /// <value>
+        /// The reverse power.
+        /// </value>
+        public char ReversePower { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test revisions.
+        /// </summary>
+        /// <value>
+        /// The test revisions.
+        /// </value>
+        public int TestRevisions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the service.
+        /// </summary>
+        /// <value>
+        /// The type of the service.
+        /// </value>
+        public string ServiceType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the standard mode.
+        /// </summary>
+        /// <value>
+        /// The standard mode.
+        /// </value>
+        public string StandardMode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the phase angle.
+        /// </summary>
+        /// <value>
+        /// The phase angle.
+        /// </value>
+        public decimal PhaseAngle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the frequency.
+        /// </summary>
+        /// <value>
+        /// The frequency.
+        /// </value>
+        public decimal Frequency { get; set; }
+
+        /// <summary>
+        /// Gets or sets the optics.
+        /// </summary>
+        /// <value>
+        /// The optics.
+        /// </value>
+        public string Optics { get; set; }
+
+        /// <summary>
+        /// Gets or sets the desired accuracy.
+        /// </summary>
+        /// <value>
+        /// The desired accuracy.
+        /// </value>
+        public decimal DesiredAccuracy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the KH.
+        /// </summary>
+        /// <value>
+        /// The KH.
+        /// </value>
+        public string KH { get; set; }
     }
 }

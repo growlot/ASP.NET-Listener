@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.Common
     using AMSLLC.Listener.Common.Lookup;
     using AMSLLC.Listener.Common.Model;
     using NHibernate.Criterion;
+    using NHibernate.SqlCommand;
     using NHibernate.Transform;
 
     /// <summary>
@@ -391,6 +392,28 @@ namespace AMSLLC.Listener.Common
             criteria.Add(Restrictions.Eq("TransactionData", new TransactionData(transactionDataId)));
             criteria.Add(Restrictions.Eq("TransactionDirection", new TransactionDirection(transactionDirectionId)));
             criteria.Add(Restrictions.Eq("TransactionSource", new TransactionSource(transactionSourceId)));
+
+            return this.persistenceManager.RetrieveAllEqual<TransactionType>(criteria);
+        }
+
+        /// <summary>
+        /// Gets the transaction type list.
+        /// </summary>
+        /// <param name="transactionDataId">The transaction data identifier.</param>
+        /// <param name="transactionDirectionId">The transaction direction identifier.</param>
+        /// <param name="transactionSourceId">The transaction source identifier.</param>
+        /// <param name="externalSystemName">Name of the external system.</param>
+        /// <returns>
+        /// The list of transactions that need to be run.
+        /// </returns>
+        public IList<TransactionType> GetTransactionTypes(int transactionDataId, int transactionDirectionId, int transactionSourceId, string externalSystemName)
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<TransactionType>();
+            criteria.Add(Restrictions.Eq("TransactionData", new TransactionData(transactionDataId)));
+            criteria.Add(Restrictions.Eq("TransactionDirection", new TransactionDirection(transactionDirectionId)));
+            criteria.Add(Restrictions.Eq("TransactionSource", new TransactionSource(transactionSourceId)));
+            criteria.CreateCriteria("ExternalSystem", JoinType.FullJoin)
+                .Add(Restrictions.Eq("Name", externalSystemName));
 
             return this.persistenceManager.RetrieveAllEqual<TransactionType>(criteria);
         }

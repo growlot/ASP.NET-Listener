@@ -123,8 +123,14 @@
   <data name="CheckListenerLogReport" xml:space="preserve">
     <value>Please see Listener Log report for full error.</value>
   </data>
+  <data name="CommentTypeUnrecognized" xml:space="preserve">
+    <value>Comment type {0} is not recognized.</value>
+  </data>
   <data name="CompanyNotSupported" xml:space="preserve">
     <value>Company with name {0} not supported.</value>
+  </data>
+  <data name="CTNotFound" xml:space="preserve">
+    <value>Current Transformer with equipment number {0} is not found.</value>
   </data>
   <data name="DeviceReceivedSuccess" xml:space="preserve">
     <value>Device information received successfully.</value>
@@ -135,6 +141,9 @@
   <data name="DeviceTypeNotSupported" xml:space="preserve">
     <value>Device type {0} and service type {1} not supported.</value>
   </data>
+  <data name="DeviceTypeUnknown" xml:space="preserve">
+    <value>Unrecognized combination of device type {0} and service type {1}</value>
+  </data>
   <data name="ExternalSystemNotSupported" xml:space="preserve">
     <value>External system with name {0} not supported.</value>
   </data>
@@ -143,6 +152,12 @@
   </data>
   <data name="ImportFailedForSomeRecords" xml:space="preserve">
     <value>Import failed for some records</value>
+  </data>
+  <data name="MeterNotFound" xml:space="preserve">
+    <value>Meter with equipment number {0} is not found.</value>
+  </data>
+  <data name="PTNotFound" xml:space="preserve">
+    <value>Potential Transformer with equipment number {0} is not found.</value>
   </data>
   <data name="SendDeviceTestMockupFileNotFound" xml:space="preserve">
     <value>Neither device test specific {0}, nor default {1} mockup file was found.</value>
@@ -164,5 +179,8 @@
   </data>
   <data name="SkipDuplicate" xml:space="preserve">
     <value>Skipping integration, because there is already a successful transaction for this data.</value>
+  </data>
+  <data name="CircuitNotFound" xml:space="preserve">
+    <value>Circuit with index {0} could not be found in site {1}.</value>
   </data>
 </root>

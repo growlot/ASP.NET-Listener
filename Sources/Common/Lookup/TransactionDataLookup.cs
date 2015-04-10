@@ -38,6 +38,11 @@ namespace AMSLLC.Listener.Common.Lookup
         /// <summary>
         /// The transaction processes new batch data
         /// </summary>
-        NewBatch = 4
+        NewBatch = 4,
+
+        /// <summary>
+        /// The transaction processes site data
+        /// </summary>
+        Site = 5
     }
 }

@@ -94,6 +94,16 @@ namespace AMSLLC.Listener.Common
         IList<TransactionType> GetTransactionTypes(TransactionDataLookup transactionData, TransactionDirectionLookup transactionDirection, TransactionSourceLookup transactionSource);
         
         /// <summary>
+        /// Gets the transaction type list.
+        /// </summary>
+        /// <param name="transactionData">The transaction data.</param>
+        /// <param name="transactionDirection">The transaction direction.</param>
+        /// <param name="transactionSource">The transaction source.</param>
+        /// <param name="externalSystemName">Name of the external system.</param>
+        /// <returns>The list of transactions that need to be run.</returns>
+        IList<TransactionType> GetTransactionTypes(TransactionDataLookup transactionData, TransactionDirectionLookup transactionDirection, TransactionSourceLookup transactionSource, string externalSystemName);
+
+        /// <summary>
         /// Gets the latest successful transaction hash for specified device.
         /// </summary>
         /// <param name="device">The device.</param>

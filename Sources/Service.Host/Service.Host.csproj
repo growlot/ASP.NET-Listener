@@ -113,6 +113,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\packages\NHibernate.4.0.1.4000\nhibernate-configuration.xsd">
+      <Link>nhibernate-configuration.xsd</Link>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="..\..\packages\NHibernate.4.0.1.4000\nhibernate-mapping.xsd">
+      <Link>nhibernate-mapping.xsd</Link>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -143,6 +151,10 @@
     <ProjectReference Include="..\Service.Implementation.KCPL\Service.Implementation.KCPL.csproj">
       <Project>{020e077c-8ce4-4250-8a4e-b80a0df1e993}</Project>
       <Name>Service.Implementation.KCPL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Service.Implementation.WecoMobile\Service.Implementation.WecoMobile.csproj">
+      <Project>{0b826983-db0f-4c6f-84e2-66c219cd33d1}</Project>
+      <Name>Service.Implementation.WecoMobile</Name>
     </ProjectReference>
     <ProjectReference Include="..\Service.Implementation\Service.Implementation.csproj">
       <Project>{15b3e0d2-6217-493a-a690-158c497f5318}</Project>

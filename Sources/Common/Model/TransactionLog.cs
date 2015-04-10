@@ -30,6 +30,7 @@ namespace AMSLLC.Listener.Common.Model
         public TransactionLog(int id)
         {
             this.Id = id;
+            this.TransactionLogStates = new List<TransactionLogState>();
         }
 
         /// <summary>
@@ -110,8 +111,7 @@ namespace AMSLLC.Listener.Common.Model
         /// <value>
         /// The list of states that transaction has passed.
         /// </value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "False positive. Private setter is used by NHibernate")]
-        public IList<TransactionLogState> TransactionLogState { get; private set; }
+        public IList<TransactionLogState> TransactionLogStates { get; private set; }
 
         /// <summary>
         /// Gets or sets the message related to this transaction.

@@ -43,5 +43,13 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The test date.
         /// </value>
         DateTime TestDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test result step number.
+        /// </summary>
+        /// <value>
+        /// The test result step number.
+        /// </value>
+        int StepNumber { get; set; }
     }
 }

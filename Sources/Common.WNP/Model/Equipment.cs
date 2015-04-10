@@ -117,6 +117,22 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public NewBatch NewBatch { get; set; }
 
         /// <summary>
+        /// Gets or sets the site.
+        /// </summary>
+        /// <value>
+        /// The site.
+        /// </value>
+        public Site Site { get; set; }
+
+        /// <summary>
+        /// Gets or sets the circuit.
+        /// </summary>
+        /// <value>
+        /// The circuit.
+        /// </value>
+        public int Circuit { get; set; }
+
+        /// <summary>
         /// Gets or sets the meter custom field 1.
         /// </summary>
         /// <value>

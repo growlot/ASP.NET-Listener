@@ -8,13 +8,13 @@ namespace Service.Implementation.Alliant.Unit.Test
     using System;
     using System.Collections.Generic;
     using AMSLLC.Listener.Common;
-    using AMSLLC.Listener.Common.Model;
     using AMSLLC.Listener.Common.WNP;
-    using AMSLLC.Listener.Common.WNP.Model;
     using AMSLLC.Listener.Service.Implementation.Alliant;
     using AMSLLC.Listener.Service.Implementation.Alliant.GetDevice;
     using AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using ListenerModel = AMSLLC.Listener.Common.Model;
+    using WnpModel = AMSLLC.Listener.Common.WNP.Model;
 
     /// <summary>
     /// Tests request constructor class methods.
@@ -43,14 +43,14 @@ namespace Service.Implementation.Alliant.Unit.Test
             // Create the fake persistenceManager
             using (var persistenceManager = new AMSLLC.Listener.Common.Fakes.StubIPersistenceManager())
             {
-                persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<Meter>((criteria) =>
+                persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<WnpModel.Meter>((criteria) =>
                 {
-                    Meter meter = DefaultMeter();
+                    WnpModel.Meter meter = DefaultMeter();
                     return meter;
                 });
-                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<MeterTestResult>((criteria) =>
+                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<WnpModel.MeterTestResult>((criteria) =>
                 {
-                    IList<MeterTestResult> meterTestResults = new List<MeterTestResult>();
+                    IList<WnpModel.MeterTestResult> meterTestResults = new List<WnpModel.MeterTestResult>();
                     for (int id = 0; id < 10; id++)
                     {
                         meterTestResults.Add(this.DefaultMeterTestResult(id));
@@ -58,11 +58,11 @@ namespace Service.Implementation.Alliant.Unit.Test
 
                     return meterTestResults;
                 });
-                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<Comment>((criteria) =>
+                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<WnpModel.Comment>((criteria) =>
                 {
-                    IList<Comment> comments = new List<Comment>();
-                    comments.Add(new Comment() { CommentText = "Comment 1." });
-                    comments.Add(new Comment() { CommentText = "Comment 2." });
+                    IList<WnpModel.Comment> comments = new List<WnpModel.Comment>();
+                    comments.Add(new WnpModel.Comment() { CommentText = "Comment 1." });
+                    comments.Add(new WnpModel.Comment() { CommentText = "Comment 2." });
 
                     return comments;
                 });
@@ -75,7 +75,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 requestConstructor = new RequestConstructor(wnpSystem);
             }
 
-            DeviceTest deviceTest = this.DefaultDeviceTest();
+            ListenerModel.DeviceTest deviceTest = this.DefaultDeviceTest();
 
             CreateDeviceTestResultABMType actualRequest = requestConstructor.PrepareElectricMeterTestResultsRequest(deviceTest);
             CreateDeviceTestResultABMType expectedRequest = this.DefaultMeterTestResultsRequest();
@@ -95,17 +95,17 @@ namespace Service.Implementation.Alliant.Unit.Test
             // Create the fake persistenceManager
             using (var persistenceManager = new AMSLLC.Listener.Common.Fakes.StubIPersistenceManager())
             {
-                persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<Meter>((criteria) =>
+                persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<WnpModel.Meter>((criteria) =>
                 {
-                    Meter meter = DefaultMeter();
+                    WnpModel.Meter meter = DefaultMeter();
                     return meter;
                 });
-                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<MeterTestResult>((criteria) =>
+                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<WnpModel.MeterTestResult>((criteria) =>
                 {
-                    IList<MeterTestResult> meterTestResults = new List<MeterTestResult>();
+                    IList<WnpModel.MeterTestResult> meterTestResults = new List<WnpModel.MeterTestResult>();
                     for (int id = 0; id < 10; id++)
                     {
-                        MeterTestResult meterTestResult = this.DefaultMeterTestResult(id);
+                        WnpModel.MeterTestResult meterTestResult = this.DefaultMeterTestResult(id);
                         meterTestResult.CustomField4 = " ";
                         meterTestResult.CustomField5 = " ";
                         meterTestResults.Add(meterTestResult);
@@ -113,11 +113,11 @@ namespace Service.Implementation.Alliant.Unit.Test
 
                     return meterTestResults;
                 });
-                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<Comment>((criteria) =>
+                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<WnpModel.Comment>((criteria) =>
                 {
-                    IList<Comment> comments = new List<Comment>();
-                    comments.Add(new Comment() { CommentText = "Comment 1." });
-                    comments.Add(new Comment() { CommentText = "Comment 2." });
+                    IList<WnpModel.Comment> comments = new List<WnpModel.Comment>();
+                    comments.Add(new WnpModel.Comment() { CommentText = "Comment 1." });
+                    comments.Add(new WnpModel.Comment() { CommentText = "Comment 2." });
 
                     return comments;
                 });
@@ -130,7 +130,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 requestConstructor = new RequestConstructor(wnpSystem);
             }
 
-            DeviceTest deviceTest = this.DefaultDeviceTest();
+            ListenerModel.DeviceTest deviceTest = this.DefaultDeviceTest();
 
             CreateDeviceTestResultABMType actualRequest = requestConstructor.PrepareElectricMeterTestResultsRequest(deviceTest);
 
@@ -142,9 +142,9 @@ namespace Service.Implementation.Alliant.Unit.Test
         /// Constructs the default meter object.
         /// </summary>
         /// <returns>The meter.</returns>
-        private static Meter DefaultMeter()
+        private static WnpModel.Meter DefaultMeter()
         {
-            Meter meter = new Meter()
+            WnpModel.Meter meter = new WnpModel.Meter()
             {
                 Id = 1,
                 MeterCode = "AA0",
@@ -159,22 +159,22 @@ namespace Service.Implementation.Alliant.Unit.Test
         /// Constructs the default device test.
         /// </summary>
         /// <returns>The device test.</returns>
-        private DeviceTest DefaultDeviceTest()
+        private ListenerModel.DeviceTest DefaultDeviceTest()
         {
-            Company company = new Company()
+            ListenerModel.Company company = new ListenerModel.Company()
             {
                 Id = 1,
                 ExternalCode = "W",
                 InternalCode = "0"
             };
 
-            ServiceType serviceType = new ServiceType()
+            ListenerModel.ServiceType serviceType = new ListenerModel.ServiceType()
             {
                 Id = 1,
                 ExternalCode = "S"
             };
 
-            EquipmentType equipmentType = new EquipmentType()
+            ListenerModel.EquipmentType equipmentType = new ListenerModel.EquipmentType()
             {
                 Id = 1,
                 ExternalCode = "MR",
@@ -182,7 +182,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 ServiceType = serviceType
             };
 
-            Device device = new Device()
+            ListenerModel.Device device = new ListenerModel.Device()
             {
                 Id = 1,
                 Company = company,
@@ -190,7 +190,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 EquipmentType = equipmentType
             };
 
-            DeviceTest deviceTest = new DeviceTest()
+            ListenerModel.DeviceTest deviceTest = new ListenerModel.DeviceTest()
             {
                 Id = 1,
                 Device = device,
@@ -205,9 +205,9 @@ namespace Service.Implementation.Alliant.Unit.Test
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>The meter test result</returns>
-        private MeterTestResult DefaultMeterTestResult(int id)
+        private WnpModel.MeterTestResult DefaultMeterTestResult(int id)
         {
-            MeterTestResult meterTestResult = new MeterTestResult()
+            WnpModel.MeterTestResult meterTestResult = new WnpModel.MeterTestResult()
             {
                 TesterId = "TesterID",
                 Location = "TestLocation",

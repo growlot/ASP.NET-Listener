@@ -10,7 +10,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     /// <summary>
     /// Data model class representing comment 
     /// </summary>
-    public class Comment
+    public class Comment : BaseComment
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Comment"/> class.
@@ -30,22 +30,6 @@ namespace AMSLLC.Listener.Common.WNP.Model
         }
 
         /// <summary>
-        /// Gets or sets the comment identifier.
-        /// </summary>
-        /// <value>
-        /// The comment identifier.
-        /// </value>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the owner.
-        /// </summary>
-        /// <value>
-        /// The owner.
-        /// </value>
-        public Owner Owner { get; set; }
-
-        /// <summary>
         /// Gets or sets the equipment number.
         /// </summary>
         /// <value>
@@ -62,28 +46,12 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public string EquipmentType { get; set; }
 
         /// <summary>
-        /// Gets or sets the index of the comment.
+        /// Gets or sets the source of comment.
         /// </summary>
         /// <value>
-        /// The index of the comment.
+        /// The source.
         /// </value>
-        public int CommentIndex { get; set; }
-
-        /// <summary>
-        /// Gets or sets the create date.
-        /// </summary>
-        /// <value>
-        /// The create date.
-        /// </value>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the comment.
-        /// </summary>
-        /// <value>
-        /// The comment.
-        /// </value>
-        public string CommentText { get; set; }
+        public string Source { get; set; }
 
         /// <summary>
         /// Gets or sets the trouble 1.
@@ -92,5 +60,37 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The trouble 1.
         /// </value>
         public string Trouble1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the trouble 2.
+        /// </summary>
+        /// <value>
+        /// The trouble 2.
+        /// </value>
+        public string Trouble2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the trouble 3.
+        /// </summary>
+        /// <value>
+        /// The trouble 3.
+        /// </value>
+        public string Trouble3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the trouble 4.
+        /// </summary>
+        /// <value>
+        /// The trouble 4.
+        /// </value>
+        public string Trouble4 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the trouble 5.
+        /// </summary>
+        /// <value>
+        /// The trouble 5.
+        /// </value>
+        public string Trouble5 { get; set; }
     }
 }

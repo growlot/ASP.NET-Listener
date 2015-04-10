@@ -70,6 +70,11 @@ namespace AMSLLC.Listener.Common
         /// The connection string
         /// </summary>
         private string connectionString = null;
+
+        /// <summary>
+        /// The assembly containing additional mappings
+        /// </summary>
+        private Assembly mappingAssembly;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="PersistenceManager"/> class.
@@ -86,6 +91,18 @@ namespace AMSLLC.Listener.Common
         public PersistenceManager(string connectionString)
         {
             this.connectionString = connectionString;
+            this.ConfigureNHibernate();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PersistenceManager" /> class.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="assembly">The assembly with additional mappings.</param>
+        public PersistenceManager(string connectionString, Assembly assembly)
+        {
+            this.connectionString = connectionString;
+            this.mappingAssembly = assembly;
             this.ConfigureNHibernate();
         }
 
@@ -191,6 +208,37 @@ namespace AMSLLC.Listener.Common
 
             // Set return value
             return matchingObjects;
+        }
+
+        /// <summary>
+        /// Retrieves unique object of a specified type meeting specified criteria.
+        /// </summary>
+        /// <typeparam name="T">The type of objects to retrieve.</typeparam>
+        /// <param name="selectCriteria">The selection criteria.</param>
+        /// <returns>
+        /// A unique objects of the specified type meeting specified criteria.
+        /// </returns>
+        public T RetrieveUnique<T>(DetachedCriteria selectCriteria)
+        {
+            if (selectCriteria == null)
+            {
+                string exceptionMessage = "Can not retrieve results because selectCriteria is null.";
+                Logger.Error(exceptionMessage);
+                throw new ArgumentNullException("selectCriteria", exceptionMessage);
+            }
+
+            T result = default(T);
+            using (ISession localSession = this.sessionFactory.OpenSession())
+            {
+                // Create a criteria object with the specified criteria
+                ICriteria criteria = selectCriteria.GetExecutableCriteria(localSession);
+
+                // Get the matching objects
+                result = criteria.UniqueResult<T>();
+            }
+
+            // Set return value
+            return result;
         }
 
         /// <summary>
@@ -353,6 +401,20 @@ namespace AMSLLC.Listener.Common
                 localSession.CreateQuery("delete from " + typeof(T).ToString()).ExecuteUpdate();
             } 
         }
+
+        /// <summary>
+        /// Deletes the specified item.
+        /// </summary>
+        /// <typeparam name="T">The item type.</typeparam>
+        /// <param name="id">The identifier.</param>
+        public void Delete<T>(int id)
+        {
+            using (ISession localSession = this.sessionFactory.OpenSession())
+            {
+                localSession.Delete(localSession.Load(typeof(T), id));
+                localSession.Flush();                                    
+            }
+        }
         
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -376,6 +438,15 @@ namespace AMSLLC.Listener.Common
                     this.sessionFactory.Close();
                 }
             }
+        }
+
+        /// <summary>
+        /// Registers the assembly.
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        protected void RegisterAssembly(Assembly assembly)
+        {
+            this.mappingAssembly = assembly;
         }
 
         /// <summary>
@@ -403,10 +474,15 @@ namespace AMSLLC.Listener.Common
             // Add class mappings to configuration object
             Assembly thisAssembly = typeof(Config).Assembly;
             configuration.AddAssembly(thisAssembly);
-
+                        
             // Add mappings by code
             ModelMapper mapper = new ModelMapper();
             mapper.AddMappings(thisAssembly.GetExportedTypes());
+            if (this.mappingAssembly != null)
+            {
+                mapper.AddMappings(this.mappingAssembly.GetExportedTypes());
+            }
+
             configuration.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
             
             // Create session factory from configuration object

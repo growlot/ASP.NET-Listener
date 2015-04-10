@@ -6,6 +6,7 @@
 namespace AMSLLC.Listener.Common.Model
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Data model class representing device test
@@ -29,6 +30,7 @@ namespace AMSLLC.Listener.Common.Model
             this.Id = id;
             this.Device = null;
             this.TestDate = DateTime.MinValue;
+            this.MeterTestSteps = new List<MeterTestStep>();
         }
 
         /// <summary>
@@ -62,5 +64,62 @@ namespace AMSLLC.Listener.Common.Model
         /// The test date.
         /// </value>
         public DateTime TestDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the end of test date.
+        /// </summary>
+        /// <value>
+        /// The end of test date.
+        /// </value>
+        public DateTime TestDateStop { get; set; }
+
+        /// <summary>
+        /// Gets or sets the primary test reason.
+        /// </summary>
+        /// <value>
+        /// The primary test reason.
+        /// </value>
+        public string PrimaryTestReason { get; set; }
+
+        /// <summary>
+        /// Gets or sets the secondary test reason.
+        /// </summary>
+        /// <value>
+        /// The secondary test reason.
+        /// </value>
+        public string SecondaryTestReason { get; set; }
+
+        /// <summary>
+        /// Gets or sets the location.
+        /// </summary>
+        /// <value>
+        /// The location.
+        /// </value>
+        public string Location { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tester identifier.
+        /// </summary>
+        /// <value>
+        /// The tester identifier.
+        /// </value>
+        public string TesterId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the board number.
+        /// </summary>
+        /// <value>
+        /// The board number.
+        /// </value>
+        public string BoardNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter test steps.
+        /// </summary>
+        /// <value>
+        /// The meter test steps.
+        /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Needed for WCF")]
+        public IList<MeterTestStep> MeterTestSteps { get; set; }
     }
 }

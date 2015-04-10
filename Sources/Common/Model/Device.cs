@@ -30,6 +30,9 @@ namespace AMSLLC.Listener.Common.Model
         public Device(int id)
         {
             this.Id = id;
+            this.Comments = new List<Comment>();
+            this.RelatedFiles = new List<RelatedFile>();
+            this.Tests = new List<DeviceTest>();
         }
 
         /// <summary>
@@ -71,5 +74,66 @@ namespace AMSLLC.Listener.Common.Model
         /// The equipment number.
         /// </value>
         public string EquipmentNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets site comment info
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Public set is needed for WCF")]
+        public IList<Comment> Comments { get; set; }
+
+        /// <summary>
+        /// Gets or sets site multimedia info
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Public set is needed for WCF")]
+        public IList<RelatedFile> RelatedFiles { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test volts.
+        /// </summary>
+        /// <value>
+        /// The test volts.
+        /// </value>
+        public decimal TestVolts { get; set; }
+
+        /// <summary>
+        /// Gets or sets the form.
+        /// </summary>
+        /// <value>
+        /// The form.
+        /// </value>
+        public string Form { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test amps.
+        /// </summary>
+        /// <value>
+        /// The test amps.
+        /// </value>
+        public decimal TestAmps { get; set; }
+
+        /// <summary>
+        /// Gets or sets the KH.
+        /// </summary>
+        /// <value>
+        /// The KH.
+        /// </value>
+        public string KH { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base.
+        /// </summary>
+        /// <value>
+        /// The base.
+        /// </value>
+        public char Base { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tests.
+        /// </summary>
+        /// <value>
+        /// The tests.
+        /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Needed for WCF")]
+        public IList<DeviceTest> Tests { get; set; }
     }
 }

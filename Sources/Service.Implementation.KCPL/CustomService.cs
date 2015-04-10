@@ -869,7 +869,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 }
             }
 
-            switch (meterTest.TestReason)
+            switch (meterTest.PrimaryTestReason)
             {
                 case "MT":
                     gmoCisFile.TestCode = "02";
@@ -882,7 +882,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     gmoCisFile.TestCode = "04";
                     break;
                 default:
-                    string message = string.Format(CultureInfo.InvariantCulture, "Test Code {0} is not supported by CIS.", meterTest.TestReason);
+                    string message = string.Format(CultureInfo.InvariantCulture, "Test Code {0} is not supported by CIS.", meterTest.PrimaryTestReason);
                     Log.Error(message);
                     throw new InvalidOperationException(message);
             }
@@ -980,7 +980,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 StationNumber = meterTest.StationId,
                 TestStandard = meterTest.TestStandard,
                 Location = meterTest.Location,
-                TestCode = meterTest.TestReason,
+                TestCode = meterTest.PrimaryTestReason,
                 Manufacturer = meter.Manufacturer,
                 CompanyCode = meter.MeterCode,
                 MeterNumber = meter.SerialNumber,
@@ -1093,7 +1093,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     throw new InvalidOperationException(message);
             }
 
-            switch (meterTest.TestReason)
+            switch (meterTest.PrimaryTestReason)
             {
                 case "MT":
                     serviceRequest.testType = TestResultServiceRequestTestType.MT;
@@ -1108,7 +1108,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     serviceRequest.testType = TestResultServiceRequestTestType.SS;
                     break;
                 default:
-                    string message = string.Format(CultureInfo.InvariantCulture, "Test Type {0} is not supported by ODM.", meterTest.TestReason);
+                    string message = string.Format(CultureInfo.InvariantCulture, "Test Type {0} is not supported by ODM.", meterTest.PrimaryTestReason);
                     Log.Error(message);
                     throw new InvalidOperationException(message);
             }

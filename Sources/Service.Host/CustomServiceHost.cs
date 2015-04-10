@@ -51,6 +51,11 @@ namespace AMSLLC.Listener.Service.Host
             // Initializes services based on the customer setting in application config file
             // Need to put actuall references to separate methods, because otherwize C# tries 
             // to load the assembly even if it is not called because of conditional logic
+            if (ConfigurationManager.AppSettings["Customer"].Contains("Core"))
+            {
+                this.OpenHost<ServiceCore>();
+            }
+            
             if (ConfigurationManager.AppSettings["Customer"].Contains("Alliant"))
             {
                 this.LoadAlliant();
@@ -61,9 +66,9 @@ namespace AMSLLC.Listener.Service.Host
                 this.LoadKCPL();
             }
 
-            if (ConfigurationManager.AppSettings["Customer"].Contains("Core"))
+            if (ConfigurationManager.AppSettings["Customer"].Contains("WecoMobile"))
             {
-                this.OpenHost<ServiceCore>();
+                this.LoadWecoMobile();
             }
 
             //// this.OpenHost<Service.Implementation.Service1Rest>();
@@ -158,6 +163,14 @@ namespace AMSLLC.Listener.Service.Host
                 this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.CustomService>();
                 this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.TransactionResponseService>();
             }
+        }
+
+        /// <summary>
+        /// Loads the alliant web services.
+        /// </summary>
+        private void LoadWecoMobile()
+        {
+            this.OpenHost<AMSLLC.Listener.Service.Implementation.WecoMobile.SiteInfo>();
         }
     }
 }

@@ -53,6 +53,16 @@ namespace AMSLLC.Listener.Common
         IList<T> RetrieveAllEqual<T>(DetachedCriteria selectCriteria);
 
         /// <summary>
+        /// Retrieves unique object of a specified type meeting specified criteria.
+        /// </summary>
+        /// <typeparam name="T">The type of objects to retrieve.</typeparam>
+        /// <param name="selectCriteria">The selection criteria.</param>
+        /// <returns>
+        /// A unique objects of the specified type meeting specified criteria.
+        /// </returns>
+        T RetrieveUnique<T>(DetachedCriteria selectCriteria);
+
+        /// <summary>
         /// Retrieves first object of a specified type meeting specified criteria.
         /// </summary>
         /// <typeparam name="T">The type of objects to retrieve.</typeparam>
@@ -110,5 +120,13 @@ namespace AMSLLC.Listener.Common
         /// <typeparam name="T">The type of objects to delete.</typeparam>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "False positive")]
         void DeleteAll<T>();
+
+        /// <summary>
+        /// Deletes the specified item.
+        /// </summary>
+        /// <typeparam name="T">The item type.</typeparam>
+        /// <param name="id">The identifier.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "False positive")]
+        void Delete<T>(int id);
     }
 }

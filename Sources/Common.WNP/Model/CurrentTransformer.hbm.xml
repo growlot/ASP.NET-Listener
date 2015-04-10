@@ -21,7 +21,14 @@
                   column="NEW_BATCH_NO"
                   cascade="none" />
 
+    <many-to-one  name="Site"
+                  class="Site"
+                  column="SITE"
+                  cascade="none" />
+
     <property name="EquipmentNumber" column="EQP_NO" type="AnsiString" length="20" />
+
+    <property name="Circuit" column="CIRCUIT" />
 
     <property name="TestProgram" column="TEST_PROGRAM" type="AnsiString" length="20" />
     <property name="Location" column="LOCATION" type="AnsiString" length="20" />
