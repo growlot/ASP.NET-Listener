@@ -7,14 +7,10 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Configuration;
     using System.Globalization;
     using System.Linq;
     using System.Resources;
-    using System.Runtime.Serialization;
-    using System.ServiceModel;
-    using System.Text;
     using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Common.Lookup;
     using AMSLLC.Listener.Common.WNP;
@@ -68,18 +64,9 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </summary>
         public SiteInfo()
         {
-            using (IPersistenceManager persistenceManager = new WNPPersistenceManager(ConfigurationManager.ConnectionStrings["ListenerDb"].ConnectionString))
-            {
-                using (IPersistenceManager clientPersistenceManager = new WNPPersistenceManager(ConfigurationManager.ConnectionStrings["WnpDb"].ConnectionString))
-                {
-                    IWNPPersistenceController persistenceController = new WNPPersistenceController();
-                    persistenceController.InitializeListenerSystems(persistenceManager);
-                    persistenceController.InitializeListenerClientSystems(clientPersistenceManager);
-                    this.transactionLogManager = new TransactionManager(persistenceController);
-                    this.deviceManager = new DeviceManager(persistenceController);
-                    this.wnpSystem = persistenceController.WNPSystem;
-                }
-            }
+            this.transactionLogManager = StaticPersistence.TransactionLogManager;
+            this.deviceManager = StaticPersistence.DeviceManager;
+            this.wnpSystem = StaticPersistence.WnpSystem;
         }
 
         /// <summary>

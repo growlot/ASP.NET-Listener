@@ -20,9 +20,9 @@ namespace AMSLLC.Listener.Service.Implementation
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline", Justification = "The field initialization process is quite complex and has to be extracted as a constructor")]
         static StaticPersistence()
         {
-            using (IPersistenceManager persistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["ListenerDb"].ConnectionString))
+            using (IPersistenceManager persistenceManager = new WNPPersistenceManager(ConfigurationManager.ConnectionStrings["ListenerDb"].ConnectionString))
             {
-                using (IPersistenceManager clientPersistenceManager = new PersistenceManager(ConfigurationManager.ConnectionStrings["WnpDb"].ConnectionString))
+                using (IPersistenceManager clientPersistenceManager = new WNPPersistenceManager(ConfigurationManager.ConnectionStrings["WnpDb"].ConnectionString))
                 {
                     IWNPPersistenceController persistenceController = new WNPPersistenceController();
                     persistenceController.InitializeListenerSystems(persistenceManager);

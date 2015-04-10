@@ -132,6 +132,10 @@
       <Project>{96112d5c-9b11-435d-836a-6b96ead53c7f}</Project>
       <Name>Service.Contract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Service.Implementation\Service.Implementation.csproj">
+      <Project>{15b3e0d2-6217-493a-a690-158c497f5318}</Project>
+      <Name>Service.Implementation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
