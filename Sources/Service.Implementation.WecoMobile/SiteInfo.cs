@@ -750,46 +750,52 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 
             if (tests.Count > 0)
             {
-                WnpModel.MeterTestResult anyTestResult = tests.First<WnpModel.MeterTestResult>();
+                List<DateTime> uniqueTestStarts = tests.Select(x => x.TestDate).Distinct().ToList();
 
-                ListenerModel.DeviceTest deviceTest = new ListenerModel.DeviceTest()
+                foreach (DateTime testStart in uniqueTestStarts)
                 {
-                    Location = anyTestResult.Location,
-                    PrimaryTestReason = anyTestResult.PrimaryTestReason,
-                    TestDate = anyTestResult.TestDate,
-                    TestDateStop = anyTestResult.TestDateStop,
-                    TesterId = anyTestResult.TesterId
-                };
-                listenerDevice.Tests.Add(deviceTest);
+                    List<WnpModel.MeterTestResult> testSteps = tests.Where(x => x.TestDate == testStart).ToList();
+                    WnpModel.MeterTestResult anyTestResult = testSteps.First<WnpModel.MeterTestResult>();
 
-                foreach (WnpModel.MeterTestResult test in tests)
-                {
-                    ListenerModel.MeterTestStep testStep = new ListenerModel.MeterTestStep()
+                    ListenerModel.DeviceTest deviceTest = new ListenerModel.DeviceTest()
                     {
-                        AsFound = test.AsFound,
-                        AsLeft = test.AsLeft,
-                        DesiredAccuracy = test.DesiredAccuracy,
-                        Element = test.Element,
-                        Frequency = test.Frequency,
-                        KH = test.KH,
-                        LowerLimit = test.LowerLimit,
-                        Optics = test.Optics,
-                        PhaseAngle = test.PhaseAngle,
-                        ReversePower = test.ReversePower,
-                        ServiceType = test.ServiceType,
-                        StandardMode = test.StandardMode,
-                        StationId = test.StationId,
-                        TestAmps = test.TestAmps,
-                        TestRevisions = test.TestRevisions,
-                        TestStandard = test.TestStandard,
-                        TestStep = test.StepNumber,
-                        TestType = test.TestType,
-                        TestVolts = test.TestVolts,
-                        UpperLimit = test.UpperLimit,
-                        WecoSerialNumber = test.WecoSerialNumber
+                        Location = anyTestResult.Location,
+                        PrimaryTestReason = anyTestResult.PrimaryTestReason,
+                        TestDate = anyTestResult.TestDate,
+                        TestDateStop = anyTestResult.TestDateStop,
+                        TesterId = anyTestResult.TesterId
                     };
+                    listenerDevice.Tests.Add(deviceTest);
 
-                    deviceTest.MeterTestSteps.Add(testStep);
+                    foreach (WnpModel.MeterTestResult test in testSteps)
+                    {
+                        ListenerModel.MeterTestStep testStep = new ListenerModel.MeterTestStep()
+                        {
+                            AsFound = test.AsFound,
+                            AsLeft = test.AsLeft,
+                            DesiredAccuracy = test.DesiredAccuracy,
+                            Element = test.Element,
+                            Frequency = test.Frequency,
+                            KH = test.KH,
+                            LowerLimit = test.LowerLimit,
+                            Optics = test.Optics,
+                            PhaseAngle = test.PhaseAngle,
+                            ReversePower = test.ReversePower,
+                            ServiceType = test.ServiceType,
+                            StandardMode = test.StandardMode,
+                            StationId = test.StationId,
+                            TestAmps = test.TestAmps,
+                            TestRevisions = test.TestRevisions,
+                            TestStandard = test.TestStandard,
+                            TestStep = test.StepNumber,
+                            TestType = test.TestType,
+                            TestVolts = test.TestVolts,
+                            UpperLimit = test.UpperLimit,
+                            WecoSerialNumber = test.WecoSerialNumber
+                        };
+
+                        deviceTest.MeterTestSteps.Add(testStep);
+                    }
                 }
             }
         }

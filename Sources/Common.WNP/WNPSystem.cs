@@ -871,9 +871,9 @@ namespace AMSLLC.Listener.Common.WNP
             criteria.Add(Restrictions.Eq("CreateDate", comment.CreateDate));
             criteria.Add(Restrictions.Eq("CommentText", comment.CommentText));
 
-            SiteComment currentMultimedia = this.persistenceManager.RetrieveFirstEqual<SiteComment>(criteria);
+            SiteComment currentComment = this.persistenceManager.RetrieveFirstEqual<SiteComment>(criteria);
 
-            if (currentMultimedia == null)
+            if (currentComment == null)
             {
                 criteria = DetachedCriteria.For<SiteComment>();
                 criteria.Add(Restrictions.Eq("Site", comment.Site));
