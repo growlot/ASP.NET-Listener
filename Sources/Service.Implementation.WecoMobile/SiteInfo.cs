@@ -67,6 +67,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             this.transactionLogManager = StaticPersistence.TransactionLogManager;
             this.deviceManager = StaticPersistence.DeviceManager;
             this.wnpSystem = StaticPersistence.WnpSystem;
+            this.ownerId = int.Parse(ConfigurationManager.AppSettings["WecoMobile.Owner"], CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -82,8 +83,6 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             {
                 throw new ArgumentNullException("request", "Can not process request if it is not specified");
             }
-
-            this.ownerId = int.Parse(ConfigurationManager.AppSettings["WecoMobile.Owner"], CultureInfo.InvariantCulture);
 
             Log.Info("GetSiteInfo started.");
 
