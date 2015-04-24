@@ -175,7 +175,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                             }
                             catch (Exception ex)
                             {
-                                string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
+                                string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
                                 Log.Error(message, ex);
                                 errorMessage += message;
                                 this.TransactionLogManager.UpdateTransactionStatus(testTransactionId, (int)TransactionStatusLookup.Failed, message, ex.ToString());
@@ -551,7 +551,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                         }
                         catch (Exception ex)
                         {
-                            string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber);
+                            string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("MeterProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber);
                             Log.Error(message, ex);
                             errorMessage += message;
                             this.TransactionLogManager.UpdateTransactionStatus(deviceTransactionId, (int)TransactionStatusLookup.Failed, ex.Message, ex.ToString());
@@ -596,7 +596,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                             }
                             catch (Exception ex)
                             {
-                                string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
+                                string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("MeterTestProcessingFailed", CultureInfo.CurrentCulture), device.EquipmentNumber, deviceTest.TestDate);
                                 Log.Error(message, ex);
                                 errorMessage += message;
                                 this.TransactionLogManager.UpdateTransactionStatus(testTransactionId, (int)TransactionStatusLookup.Failed, ex.Message, ex.ToString());
@@ -636,7 +636,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 (meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.New)) ||
                 meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.Pending))))
             {
-                string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
+                string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("SkipDeviceBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
                 Log.Info(message);
                 this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
                 return;
@@ -688,7 +688,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 (meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.New)) ||
                 meter.NewBatch.Status == char.Parse(Utilities.GetEnumDescription(NewBatchLookup.Pending))))
             {
-                string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("SkipMeterBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
+                string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("SkipDeviceBelongsToNewBatch", CultureInfo.CurrentCulture), meter.NewBatch.Description);
                 Log.Info(message);
                 this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
                 return;

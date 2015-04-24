@@ -12,11 +12,11 @@
       <Word>odm</Word>
       <Word>aep</Word>
       <Word>itron</Word> <!-- company name used in ODM integration -->
+      <Word>labtrack</Word> <!-- LabTrack is a third party software name -->
     </Recognized>
-    <!--		<Compound>
-		  <Term CompoundAlternate="ManifestFix">manifestfix</Term>
+    <Compound>
+		  <Term CompoundAlternate="LabTrack">labtrack</Term>
 		</Compound>
--->
   </Words>
   <Acronyms>
     <CasingExceptions>

@@ -127,10 +127,6 @@
     <Compile Include="Messages\TestResultServiceRequest.cs" />
     <Compile Include="Messages\TestResultServiceRequest.Customization.cs" />
     <Compile Include="Messages\TransactionResponseServiceRequest.cs" />
-    <Compile Include="NullableFormattedDecimalConverter.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="FormattedDecimalConverter.cs" />
     <Compile Include="GmoCisFile.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>

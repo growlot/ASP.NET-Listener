@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 {
     using System;
     using System.Globalization;
+    using AMSLLC.Listener.Service.Implementation.FlatFile;
     using FileHelpers;
 
     /// <summary>

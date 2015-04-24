@@ -196,6 +196,24 @@ namespace AMSLLC.Listener.Globalization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Meter {0} processing failed..
+        /// </summary>
+        internal static string MeterProcessingFailed {
+            get {
+                return ResourceManager.GetString("MeterProcessingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meter {0} test {1} processing failed..
+        /// </summary>
+        internal static string MeterTestProcessingFailed {
+            get {
+                return ResourceManager.GetString("MeterTestProcessingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Neither device test specific {0}, nor default {1} mockup file was found..
         /// </summary>
         internal static string SendDeviceTestMockupFileNotFound {
@@ -246,6 +264,15 @@ namespace AMSLLC.Listener.Globalization.Properties {
         internal static string ServiceTypeNotSupported {
             get {
                 return ResourceManager.GetString("ServiceTypeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipping integration, because device belongs to new batch {0}..
+        /// </summary>
+        internal static string SkipDeviceBelongsToNewBatch {
+            get {
+                return ResourceManager.GetString("SkipDeviceBelongsToNewBatch", resourceCulture);
             }
         }
         
