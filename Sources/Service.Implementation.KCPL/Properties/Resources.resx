@@ -120,23 +120,14 @@
   <data name="InitialLoadTransactionMessage" xml:space="preserve">
     <value>Dummy transaction for device status change detection.</value>
   </data>
-  <data name="MeterProcessingFailed" xml:space="preserve">
-    <value>Meter {0} processing failed.</value>
-  </data>
   <data name="MeterStatusNotSupported" xml:space="preserve">
     <value>Meter status value is {0}. It is not supported for ODM integration.</value>
-  </data>
-  <data name="MeterTestProcessingFailed" xml:space="preserve">
-    <value>Meter {0} test {1} processing failed.</value>
   </data>
   <data name="PurchaseDateNotFilled" xml:space="preserve">
     <value>Can not process meter load to ODM, because purchase date field is not specified.</value>
   </data>
   <data name="SkipGMODevice" xml:space="preserve">
     <value>Skipping ODM integration, because meter doesn't belong to KCPL company.</value>
-  </data>
-  <data name="SkipMeterBelongsToNewBatch" xml:space="preserve">
-    <value>Skipping ODM integration, because meter belongs to new batch {0}.</value>
   </data>
   <data name="SkipMeterStatusNotChanged" xml:space="preserve">
     <value>Skipping ODM integration, because meter status haven't changed.</value>

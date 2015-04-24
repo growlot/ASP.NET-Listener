@@ -61,6 +61,11 @@ namespace AMSLLC.Listener.Service.Host
                 this.LoadKCPL();
             }
 
+            if (ConfigurationManager.AppSettings["Customer"].Contains("LabTrack"))
+            {
+                this.LoadLabTrack();
+            }
+
             if (ConfigurationManager.AppSettings["Customer"].Contains("Core"))
             {
                 this.OpenHost<ServiceCore>();
@@ -137,6 +142,14 @@ namespace AMSLLC.Listener.Service.Host
         {
             this.OpenHost<AMSLLC.Listener.Service.Implementation.Alliant.CustomService>();
             this.OpenHost<AMSLLC.Listener.Service.Implementation.Alliant.UpdateClassificationCode>();
+        }
+
+        /// <summary>
+        /// Loads the LabTrack web services.
+        /// </summary>
+        private void LoadLabTrack()
+        {
+            this.OpenHost<AMSLLC.Listener.Service.Implementation.LabTrack.CustomService>();
         }
 
         /// <summary>

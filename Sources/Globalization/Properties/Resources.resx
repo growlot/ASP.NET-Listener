@@ -144,6 +144,12 @@
   <data name="ImportFailedForSomeRecords" xml:space="preserve">
     <value>Import failed for some records</value>
   </data>
+  <data name="MeterProcessingFailed" xml:space="preserve">
+    <value>Meter {0} processing failed.</value>
+  </data>
+  <data name="MeterTestProcessingFailed" xml:space="preserve">
+    <value>Meter {0} test {1} processing failed.</value>
+  </data>
   <data name="SendDeviceTestMockupFileNotFound" xml:space="preserve">
     <value>Neither device test specific {0}, nor default {1} mockup file was found.</value>
   </data>
@@ -161,6 +167,9 @@
   </data>
   <data name="ServiceTypeNotSupported" xml:space="preserve">
     <value>Service type {0}  not supported.</value>
+  </data>
+  <data name="SkipDeviceBelongsToNewBatch" xml:space="preserve">
+    <value>Skipping integration, because device belongs to new batch {0}.</value>
   </data>
   <data name="SkipDuplicate" xml:space="preserve">
     <value>Skipping integration, because there is already a successful transaction for this data.</value>

@@ -144,6 +144,10 @@
       <Project>{020e077c-8ce4-4250-8a4e-b80a0df1e993}</Project>
       <Name>Service.Implementation.KCPL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Service.Implementation.LabTrack\Service.Implementation.LabTrack.csproj">
+      <Project>{47468b73-c09a-405c-8a21-67d34050a7c4}</Project>
+      <Name>Service.Implementation.LabTrack</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Service.Implementation\Service.Implementation.csproj">
       <Project>{15b3e0d2-6217-493a-a690-158c497f5318}</Project>
       <Name>Service.Implementation</Name>

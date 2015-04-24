@@ -286,5 +286,21 @@ namespace AMSLLC.Listener.Common
             result = BitConverter.ToString(hash).Replace("-", string.Empty);
             return result;
         }
+
+        /// <summary>
+        /// Appends the line to file.
+        /// </summary>
+        /// <param name="line">The line.</param>
+        /// <param name="file">The file.</param>
+        public static void AppendLineToFile(string line, string file)
+        {
+            string fileLocation = Path.GetDirectoryName(file);
+            Directory.CreateDirectory(fileLocation);
+
+            using (StreamWriter writer = File.AppendText(file))
+            {
+                writer.Write(line);
+            }
+        }
     }
 }
