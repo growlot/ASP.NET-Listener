@@ -337,7 +337,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                         CreateUser = comment.Comment.CreatedBy,
                         EquipmentNumber = comment.EquipmentNumber,
                         EquipmentType = comment.EquipmentType,
-                        Source = "FAS",                        
+                        Source = "EQP",                        
                         Owner = new WnpModel.Owner(this.ownerId)
                     };
                     if (comment.Comment.Popup)
