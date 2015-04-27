@@ -30,7 +30,6 @@
     <property name="Manufacturer" column="MFR" type="AnsiString" length="3" />
     <property name="SerialNumber" column="SERIAL_NO" type="AnsiString" length="20" />
     <property name="ModelNumber" column="MODEL_NO" type="AnsiString" length="30" />
-    <property name="AepCode" column="aep_code" type="AnsiString" length="20" />
     <property name="ModifiedDate" column="MOD_DATE" />
     <property name="CreateDate" column="CREATE_DATE" />
 
@@ -60,9 +59,13 @@
     <property name="TestVolts" column="TEST_VOLTS" />
     <property name="AmiId1" column="AMI_ID1" type="AnsiString" length="30" />
     <property name="ProgramId" column="program_id" type="AnsiString" length="20" />
+    <property name="AepCode" column="aep_code" type="AnsiString" length="20" />
     <property name="KwhDials" column="KWH_DIALS" />
+    <property name="KWDials" column="KW_DIALS" />
     <property name="PurchaseDate" column="PURCHASE_DATE" />
     <property name="PurchaseOrderReference" column="PO_REF" type="AnsiString" length="20" />
+    <property name="EnergyMultiplier" column="ENERGY_MULT" />
+    <property name="DemandMultiplier" column="DEMAND_MULT" />
 
     <property name="CustomField11" column="METER_USER11" type="AnsiString" length="50" />
     <property name="CustomField12" column="METER_USER12" type="AnsiString" length="50" />

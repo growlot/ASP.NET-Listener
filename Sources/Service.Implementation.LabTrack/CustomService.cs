@@ -200,7 +200,6 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 StockHeaderAlternativeDeviceId = meter.SerialNumber,
                 StockHeaderPurchaseOrderGroupNumber = meter.PurchaseOrderReference,
                 StockHeaderCurrentLocationCode = meter.Location,
-                ////StockHeaderStatusCode = meter.EquipmentStatus,
                 StockHeaderHoldDevice = 'N',
                 StockHeaderLimits = 'Y',
                 StockHeaderInventory = 'N',
@@ -211,20 +210,17 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 MeterHeaderTypeCode = meter.ModelNumber,
                 MeterHeaderSetupCode = meter.AepCode,
                 MeterHeaderKwhDials = meter.KwhDials,
-                ////MeterHeaderKWDials = meter.KwDials,
-                ////MeterHeaderKwhMultiplier = meter.EnergyMultiplier,
-                ////MeterHeaderKWMultiplier = meter.DemandMultiplier,
+                MeterHeaderKWDials = meter.KWDials.HasValue ? meter.KWDials.Value.ToString(CultureInfo.InvariantCulture) : string.Empty,
+                MeterHeaderKwhMultiplier = meter.EnergyMultiplier.HasValue ? meter.EnergyMultiplier.Value : 0,
+                MeterHeaderKWMultiplier = meter.DemandMultiplier.HasValue ? meter.DemandMultiplier.Value : 0,
 
-                MeterSetupForm = int.Parse(meter.Form, CultureInfo.InvariantCulture),
                 MeterSetupBase = meter.Base,
                 MeterSetupTestVoltage = meter.TestVolts,
                 MeterSetupTestCurrent = meter.TestAmps,
-                MeterSetupDiskConstant = decimal.Parse(meter.KH, CultureInfo.InvariantCulture),
                 MeterSetupPhase = meter.Phase,
                 MeterSetupWire = meter.Wire,
                 MeterSetupRegisterRatio = meter.RegisterRatio,
 
-                // ShopTestHistoryTestInLimits = meterTest.AccuracyStatus,
                 ShopTestHistoryAsFoundTestDate = meterTest.TestDate,
                 ShopTestHistoryAsFoundTestTime = meterTest.TestDate,
                 ShopTestHistoryAsFoundTesterId = meterTest.TesterId,
@@ -273,6 +269,38 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
 
                 Reading testReading = testReadings.First<Reading>();
                 labTrackEntry.ShopTestHistoryAsFoundDialReading = testReading.ReadingValue;
+            }
+
+            int tempInt;
+            if (int.TryParse(meter.EquipmentStatus, out tempInt))
+            {
+                labTrackEntry.StockHeaderStatusCode = tempInt;
+            }
+
+            if (int.TryParse(meter.Form, out tempInt))
+            {
+                labTrackEntry.MeterSetupForm = tempInt;
+            }
+
+            decimal tempDecimal;
+            if (decimal.TryParse(meter.EquipmentStatus, out tempDecimal))
+            {
+                labTrackEntry.MeterSetupDiskConstant = tempDecimal;
+            }
+            else
+            {
+                labTrackEntry.MeterSetupDiskConstant = 0m;
+            }
+                        
+            // check if there are test steps that didn't pass
+            IList<MeterTestResult> failedTests = meterTestResults.Where(item => item.AccuracyStatus != 'P').ToList();
+            if (failedTests.Count() > 0)
+            {
+                labTrackEntry.ShopTestHistoryTestInLimits = 'N';
+            }
+            else
+            {
+                labTrackEntry.ShopTestHistoryTestInLimits = 'Y';
             }
 
             FileHelperEngine engine = new FileHelperEngine(typeof(LabTrackFileFormat));

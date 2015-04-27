@@ -139,13 +139,15 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// The Meter billing multiplier to be applied to the KWH reading
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        public decimal? MeterHeaderKwhMultiplier;
+        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.0000", "")]
+        public decimal MeterHeaderKwhMultiplier;
 
         /// <summary>
         /// The meter billing multiplier to be applied to the KW reading
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        public decimal? MeterHeaderKWMultiplier;
+        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.0000", "")]
+        public decimal MeterHeaderKWMultiplier;
 
         /// <summary>
         /// The user code 1
@@ -321,8 +323,8 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// The meter's disk constant
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.000", "")]
-        public decimal? MeterSetupDiskConstant;
+        [FieldConverter(typeof(FormattedDecimalConverter), "0.000")]
+        public decimal MeterSetupDiskConstant;
 
         /// <summary>
         /// The meter's phase
@@ -410,7 +412,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// 'N' = Out of limits
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        public char ShopTestHistoryTestInLimits;
+        public char? ShopTestHistoryTestInLimits;
 
         /// <summary>
         /// As found test date

@@ -159,6 +159,14 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public int? KwhDials { get; set; }
 
         /// <summary>
+        /// Gets or sets the KW dials.
+        /// </summary>
+        /// <value>
+        /// The KW dials.
+        /// </value>
+        public int? KWDials { get; set; }
+
+        /// <summary>
         /// Gets or sets the purchase date.
         /// </summary>
         /// <value>
@@ -173,6 +181,22 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The purchase order reference.
         /// </value>
         public string PurchaseOrderReference { get; set; }
+
+        /// <summary>
+        /// Gets or sets the energy multiplier.
+        /// </summary>
+        /// <value>
+        /// The energy multiplier.
+        /// </value>
+        public decimal? EnergyMultiplier { get; set; }
+
+        /// <summary>
+        /// Gets or sets the demand multiplier.
+        /// </summary>
+        /// <value>
+        /// The demand multiplier.
+        /// </value>
+        public decimal? DemandMultiplier { get; set; }
 
         /// <summary>
         /// Gets or sets the meter custom field 11.

@@ -41,6 +41,7 @@
     <property name="TestReason" column="TEST_REASON" type="AnsiString" length="3" />
     <property name="StationId" column="STATION_ID" type="AnsiString" length="10" />
     <property name="WecoSerialNumber" column="WECO_SN" type="AnsiString" length="20" />
+    <property name="AccuracyStatus" column="ACCURACY_STATUS" />
 
   </class>
 
