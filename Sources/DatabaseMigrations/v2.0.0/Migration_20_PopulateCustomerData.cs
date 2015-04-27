@@ -35,6 +35,17 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 Update.Table("Company").Set(new { InternalCode = "0" }).Where(new { CompanyId = "0" });
                 Update.Table("Company").Set(new { InternalCode = "1" }).Where(new { CompanyId = "1" });
             }
+
+            if (((string)this.ApplicationContext).Contains("Concord"))
+            {
+                Insert.IntoTable("Company").Row(new { CompanyId = "0", ExternalCode = "CCD", InternalCode = "0", Name = "Concord" });
+            }
+
+            if (((string)this.ApplicationContext).Contains("LabTrack"))
+            {
+                Update.Table("EquipmentType").Set(new { ExternalCode = "EMT" }).Where(new { EquipmentTypeId = "1" });
+                Update.Table("EquipmentType").Set(new { ExternalCode = "VT" }).Where(new { EquipmentTypeId = "3" });
+            }            
         }
 
         /// <summary>

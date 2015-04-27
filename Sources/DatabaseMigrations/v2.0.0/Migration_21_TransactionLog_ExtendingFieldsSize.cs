@@ -26,7 +26,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
             Delete.Column("DebugInfo").FromTable("TransactionLog");
 
             Alter.Table("TransactionLog")
-                .AlterColumn("Message").AsString(1000)
+                .AlterColumn("Message").AsString(1000).Nullable()
                 .AddColumn("DebugInfo").AsString(int.MaxValue).Nullable();
         }
 

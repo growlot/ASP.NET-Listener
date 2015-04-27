@@ -9,7 +9,6 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
     using AMSLLC.Listener.Service.Implementation.FlatFile;
     using FileHelpers;
     using FileHelpers.Dynamic;
-    using System.Data;
 
     /// <summary>
     /// FileHelpers definition of LabTrack cis export file.
