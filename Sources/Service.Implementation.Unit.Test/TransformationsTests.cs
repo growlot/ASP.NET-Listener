@@ -32,11 +32,11 @@ namespace Service.Implementation.Unit.Test
                 TestType = "LL"
             };
             meterTestResults.Add(meterTestResult);
-            decimal resultAsLeft = Transformations.GetAsLeft(meterTestResults, 'S', "LL");
-            decimal resultAsFound = Transformations.GetAsFound(meterTestResults, 'S', "LL");
+            decimal? resultAsLeft = Transformations.GetAsLeft(meterTestResults, 'S', "LL");
+            decimal? resultAsFound = Transformations.GetAsFound(meterTestResults, 'S', "LL");
 
-            Assert.AreEqual(100.13M, resultAsLeft);
-            Assert.AreEqual(100.14M, resultAsFound);
+            Assert.AreEqual(100.13M, resultAsLeft.Value);
+            Assert.AreEqual(100.14M, resultAsFound.Value);
         }
     }
 }

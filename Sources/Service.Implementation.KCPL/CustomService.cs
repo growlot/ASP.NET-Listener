@@ -827,26 +827,26 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 Volts = (decimal)meter.TestVolts,
                 Amps = (decimal)meter.TestAmps,
                 NotUsed13 = " 99.70100.30 99.00101.00 99.70100.30 99.70100.30 99.00101.00 99.70100.30  2.00  2.00  2.00  1  1  1  1  1  1 0 299999999999999999999999999",
-                AsFoundFullLoad = Transformations.GetAsFound(meterTestResults, 'S', "FL", -999.99M),
-                AsFoundPowerFactor = Transformations.GetAsFound(meterTestResults, 'S', "PF", -999.99M),
-                AsFoundLightLoad = Transformations.GetAsFound(meterTestResults, 'S', "LL", -999.99M),
-                AsFoundAFullLoad = Transformations.GetAsFound(meterTestResults, 'A', "FL", -999.99M),
+                AsFoundFullLoad = Transformations.GetAsFound(meterTestResults, 'S', "FL"),
+                AsFoundPowerFactor = Transformations.GetAsFound(meterTestResults, 'S', "PF"),
+                AsFoundLightLoad = Transformations.GetAsFound(meterTestResults, 'S', "LL"),
+                AsFoundAFullLoad = Transformations.GetAsFound(meterTestResults, 'A', "FL"),
                 NotUsed14 = "-999.99-999.99",
-                AsFoundBFullLoad = Transformations.GetAsFound(meterTestResults, 'B', "FL", -999.99M),
+                AsFoundBFullLoad = Transformations.GetAsFound(meterTestResults, 'B', "FL"),
                 NotUsed15 = "-999.99-999.99",
-                AsFoundCFullLoad = Transformations.GetAsFound(meterTestResults, 'C', "FL", -999.99M),
+                AsFoundCFullLoad = Transformations.GetAsFound(meterTestResults, 'C', "FL"),
                 NotUsed16 = "-999.99-999.99",
-                AsLeftFullLoad = Transformations.GetAsLeft(meterTestResults, 'S', "FL", -999.99M),
-                AsLeftPowerFactor = Transformations.GetAsLeft(meterTestResults, 'S', "PF", -999.99M),
-                AsLeftLightLoad = Transformations.GetAsLeft(meterTestResults, 'S', "LL", -999.99M),
-                AsLeftAFullLoad = Transformations.GetAsLeft(meterTestResults, 'A', "FL", -999.99M),
+                AsLeftFullLoad = Transformations.GetAsLeft(meterTestResults, 'S', "FL"),
+                AsLeftPowerFactor = Transformations.GetAsLeft(meterTestResults, 'S', "PF"),
+                AsLeftLightLoad = Transformations.GetAsLeft(meterTestResults, 'S', "LL"),
+                AsLeftAFullLoad = Transformations.GetAsLeft(meterTestResults, 'A', "FL"),
                 NotUsed17 = "-999.99-999.99",
-                AsLeftBFullLoad = Transformations.GetAsLeft(meterTestResults, 'B', "FL", -999.99M),
+                AsLeftBFullLoad = Transformations.GetAsLeft(meterTestResults, 'B', "FL"),
                 NotUsed18 = "-999.99-999.99",
-                AsLeftCFullLoad = Transformations.GetAsLeft(meterTestResults, 'C', "FL", -999.99M),
+                AsLeftCFullLoad = Transformations.GetAsLeft(meterTestResults, 'C', "FL"),
                 NotUsed19 = "-999.99-999.99",
-                AsFoundWeightedAverage = Transformations.GetAsFound(meterTestResults, 'S', "WA", -999.99M),
-                AsLeftWeightedAverage = Transformations.GetAsLeft(meterTestResults, 'S', "WA", -999.99M),
+                AsFoundWeightedAverage = Transformations.GetAsFound(meterTestResults, 'S', "WA"),
+                AsLeftWeightedAverage = Transformations.GetAsLeft(meterTestResults, 'S', "WA"),
                 LineEnd = "    0    0                    900  900  1-999.99000   0.00000NO      600"
             };
 
@@ -1060,21 +1060,28 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 testerId = meterTest.TesterId,
                 testResults = new TestResultServiceRequestTestResults()
                 {
-                    asFound = new TestResultServiceRequestTestResultsAsFound()
-                    {
-                        fullLoad = Transformations.GetAsFound(meterTestResults, 'S', "FL").ToString(CultureInfo.InvariantCulture),
-                        lightLoad = Transformations.GetAsFound(meterTestResults, 'S', "LL").ToString(CultureInfo.InvariantCulture),
-                        weightedAverage = Transformations.GetAsFound(meterTestResults, 'S', "WA").ToString(CultureInfo.InvariantCulture)
-                    },
+                    asFound = new TestResultServiceRequestTestResultsAsFound(),
                     asLeft = new TestResultServiceRequestTestResultsAsLeft()
-                    {
-                        fullLoad = Transformations.GetAsLeft(meterTestResults, 'S', "FL").ToString(CultureInfo.InvariantCulture),
-                        lightLoad = Transformations.GetAsLeft(meterTestResults, 'S', "LL").ToString(CultureInfo.InvariantCulture),
-                        weightedAverage = Transformations.GetAsLeft(meterTestResults, 'S', "WA").ToString(CultureInfo.InvariantCulture)
-                    },
-                    seriesPowerFactor = Transformations.GetAsLeft(meterTestResults, 'S', "PF").ToString(CultureInfo.InvariantCulture)
                 }
             };
+
+            decimal? testValue;
+            testValue = Transformations.GetAsFound(meterTestResults, 'S', "FL");
+            serviceRequest.testResults.asFound.fullLoad = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
+            testValue = Transformations.GetAsFound(meterTestResults, 'S', "LL");
+            serviceRequest.testResults.asFound.lightLoad = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
+            testValue = Transformations.GetAsFound(meterTestResults, 'S', "WA");
+            serviceRequest.testResults.asFound.weightedAverage = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
+            
+            testValue = Transformations.GetAsLeft(meterTestResults, 'S', "FL");
+            serviceRequest.testResults.asLeft.fullLoad = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
+            testValue = Transformations.GetAsLeft(meterTestResults, 'S', "LL");
+            serviceRequest.testResults.asLeft.lightLoad = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
+            testValue = Transformations.GetAsLeft(meterTestResults, 'S', "WA");
+            serviceRequest.testResults.asLeft.weightedAverage = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
+
+            testValue = Transformations.GetAsLeft(meterTestResults, 'S', "PF");
+            serviceRequest.testResults.seriesPowerFactor = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
             
             switch (meterTest.Location)
             {

@@ -153,7 +153,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "000.00")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "000.00")]
         public decimal AsFoundFullLoad;
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "000.00")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "000.00")]
         public decimal AsFoundLightLoad;
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "000.00")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "000.00")]
         public decimal AsFoundPowerFactor;
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "000.00")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "000.00")]
         public decimal AsLeftFullLoad;
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "000.00")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "000.00")]
         public decimal AsLeftLightLoad;
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "000.00")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "000.00")]
         public decimal AsLeftPowerFactor;
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "000.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "000.00")]
         public decimal AsFoundDemand;
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "000.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "000.00")]
         public decimal AsLeftDemand;
 
         /// <summary>

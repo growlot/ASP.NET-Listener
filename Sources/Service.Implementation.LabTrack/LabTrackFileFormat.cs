@@ -8,7 +8,6 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
     using System;
     using AMSLLC.Listener.Service.Implementation.FlatFile;
     using FileHelpers;
-    using FileHelpers.Dynamic;
 
     /// <summary>
     /// FileHelpers definition of LabTrack cis export file.
@@ -307,21 +306,21 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// The meter's test voltage
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? MeterSetupTestVoltage;
 
         /// <summary>
         /// The meter's test current
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? MeterSetupTestCurrent;
 
         /// <summary>
         /// The meter's disk constant
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.000", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.000")]
         public decimal? MeterSetupDiskConstant;
 
         /// <summary>
@@ -448,35 +447,35 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// As found series full load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundSeriesFull;
 
         /// <summary>
         /// As found series power test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundSeriesPower;
 
         /// <summary>
         /// As found series light load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundSeriesLight;
         
         /// <summary>
         /// As found element A full load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementAFull;
 
         /// <summary>
         /// As found element A power test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementAPower;
 
         /// <summary>
@@ -484,21 +483,21 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ALight", Justification = "False possitive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementALight;
         
         /// <summary>
         /// As found element B full load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementBFull;
 
         /// <summary>
         /// As found element B power test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementBPower;
 
         /// <summary>
@@ -506,28 +505,28 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "BLight", Justification = "False possitive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementBLight;
         
         /// <summary>
         /// As found element C full load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementCFull;
 
         /// <summary>
         /// As found element C power test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementCPower;
 
         /// <summary>
         /// As found element C light load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementCLight;
         
         /// <summary>
@@ -554,35 +553,35 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// As left series full load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftSeriesFull;
 
         /// <summary>
         /// As left series power test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftSeriesPower;
 
         /// <summary>
         /// As left series light load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftSeriesLight;
         
         /// <summary>
         /// As left element A full load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementAFull;
 
         /// <summary>
         /// As left element A power test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementAPower;
 
         /// <summary>
@@ -590,21 +589,21 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ALight", Justification = "False possitive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementALight;
         
         /// <summary>
         /// As left element B full load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementBFull;
 
         /// <summary>
         /// As left element B power test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementBPower;
 
         /// <summary>
@@ -612,28 +611,28 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "BLight", Justification = "False possitive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementBLight;
         
         /// <summary>
         /// As left element C full load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementCFull;
 
         /// <summary>
         /// As left element C power test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementCPower;
 
         /// <summary>
         /// As left element C light load test result
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(NullableFormattedDecimalConverter), "0.00", "")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementCLight;
 
         /// <summary>

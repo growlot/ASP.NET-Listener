@@ -166,7 +166,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(15)]
         [FieldAlign(AlignMode.Left)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00000")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00000")]
         public decimal KH1;
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(9)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00000")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00000")]
         public decimal KH2;
 
         /// <summary>
@@ -327,7 +327,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(5)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.0")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.0")]
         public decimal Volts;
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(6)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal Amps;
 
         /// <summary>
@@ -350,32 +350,32 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsFoundFullLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsFoundFullLoad;
 
         /// <summary>
         /// As found power factor
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsFoundPowerFactor;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsFoundPowerFactor;
 
         /// <summary>
         /// As found light load
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsFoundLightLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsFoundLightLoad;
 
         /// <summary>
         /// As found a full load
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsFoundAFullLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsFoundAFullLoad;
 
         /// <summary>
         /// The not used13
@@ -389,8 +389,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsFoundBFullLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsFoundBFullLoad;
 
         /// <summary>
         /// The not used14
@@ -404,8 +404,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsFoundCFullLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsFoundCFullLoad;
 
         /// <summary>
         /// The not used15
@@ -419,32 +419,32 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsLeftFullLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsLeftFullLoad;
 
         /// <summary>
         /// As left power factor
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsLeftPowerFactor;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsLeftPowerFactor;
 
         /// <summary>
         /// As left light load
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsLeftLightLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsLeftLightLoad;
         
         /// <summary>
         /// As left a full load
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsLeftAFullLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsLeftAFullLoad;
 
         /// <summary>
         /// The not used16
@@ -458,8 +458,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsLeftBFullLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsLeftBFullLoad;
 
         /// <summary>
         /// The not used17
@@ -473,8 +473,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsLeftCFullLoad;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsLeftCFullLoad;
 
         /// <summary>
         /// The not used18
@@ -488,16 +488,16 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsFoundWeightedAverage;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsFoundWeightedAverage;
 
         /// <summary>
         /// As left weighted average
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldFixedLength(7)]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.00")]
-        public decimal AsLeftWeightedAverage;
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
+        public decimal? AsLeftWeightedAverage;
 
         /// <summary>
         /// The not used26
