@@ -283,7 +283,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
             }
 
             decimal tempDecimal;
-            if (decimal.TryParse(meter.EquipmentStatus, out tempDecimal))
+            if (decimal.TryParse(meter.KH, out tempDecimal))
             {
                 labTrackEntry.MeterSetupDiskConstant = tempDecimal;
             }
