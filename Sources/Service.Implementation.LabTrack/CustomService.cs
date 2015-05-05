@@ -211,8 +211,8 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 MeterHeaderSetupCode = meter.AepCode,
                 MeterHeaderKwhDials = meter.KwhDials,
                 MeterHeaderKWDials = meter.KWDials.HasValue ? meter.KWDials.Value.ToString(CultureInfo.InvariantCulture) : string.Empty,
-                MeterHeaderKwhMultiplier = meter.EnergyMultiplier.HasValue ? meter.EnergyMultiplier.Value : 0,
-                MeterHeaderKWMultiplier = meter.DemandMultiplier.HasValue ? meter.DemandMultiplier.Value : 0,
+                MeterHeaderKwhMultiplier = meter.EnergyMultiplier.HasValue ? meter.EnergyMultiplier.Value : 0m,
+                MeterHeaderKWMultiplier = meter.DemandMultiplier.HasValue ? meter.DemandMultiplier.Value : 0m,
 
                 MeterSetupBase = meter.Base,
                 MeterSetupTestVoltage = meter.TestVolts,
