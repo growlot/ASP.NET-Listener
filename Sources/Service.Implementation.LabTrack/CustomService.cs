@@ -272,7 +272,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
             }
 
             int tempInt;
-            if (int.TryParse(meter.EquipmentStatus, out tempInt))
+            if (int.TryParse(meter.ShopStatus, out tempInt))
             {
                 labTrackEntry.StockHeaderStatusCode = tempInt;
             }
