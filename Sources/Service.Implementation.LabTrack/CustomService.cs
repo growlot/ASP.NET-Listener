@@ -203,7 +203,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 StockHeaderHoldDevice = 'N',
                 StockHeaderLimits = 'Y',
                 StockHeaderInventory = 'N',
-                StockHeaderChangeDate = meter.ModifiedDate,
+                StockHeaderChangeDate = meter.EquipmentStatusDate,
                 StockHeaderEventTrigger1 = 0,
                 StockHeaderEventTrigger2 = 0,
                 

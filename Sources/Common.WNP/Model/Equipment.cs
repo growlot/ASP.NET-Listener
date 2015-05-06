@@ -61,6 +61,14 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public string EquipmentStatus { get; set; }
 
         /// <summary>
+        /// Gets or sets the equipment status date.
+        /// </summary>
+        /// <value>
+        /// The equipment status date.
+        /// </value>
+        public DateTime? EquipmentStatusDate { get; set; }
+
+        /// <summary>
         /// Gets or sets  the shop status.
         /// </summary>
         /// <value>
