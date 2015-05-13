@@ -405,6 +405,12 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         public string MeterSetupUserField10;
         #endregion
 
+        /// <summary>
+        /// Unknown field used as a filler to align with data in sample export file
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        public string Unknown1;
+
         #region EMTRSHOPTESTHISTORY
         /// <summary>
         /// The test is in limits flag
@@ -551,7 +557,19 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         public string ShopTestHistoryAsLeftTesterId;
-        
+
+        /// <summary>
+        /// As found board number
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        public int? ShopTestHistoryAsLeftBoardNumber;
+
+        /// <summary>
+        /// As found KWH dial reading
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        public string ShopTestHistoryAsLeftDialReading;
+
         /// <summary>
         /// As left series full load test result
         /// </summary>
@@ -808,6 +826,36 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         public decimal? ShopTransferHistoryUserDouble2;
         #endregion
+
+        /// <summary>
+        /// Unknown field used as a filler to align with data in sample export file
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        public string Unknown2;
+
+        /// <summary>
+        /// Unknown field used as a filler to align with data in sample export file
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        public string Unknown3;
+
+        /// <summary>
+        /// Unknown field used as a filler to align with data in sample export file
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        public string Unknown4;
+
+        /// <summary>
+        /// Unknown field used as a filler to align with data in sample export file
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        public string Unknown5;
+
+        /// <summary>
+        /// Unknown field used as a filler to align with data in sample export file
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
+        public string Unknown6;
 
         /// <summary>
         /// As found weighted average

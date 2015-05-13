@@ -240,6 +240,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 ShopTestHistoryAsLeftTestDate = meterTest.TestDate,
                 ShopTestHistoryAsLeftTestTime = meterTest.TestDate,
                 ShopTestHistoryAsLeftTesterId = meterTest.TesterId,
+                ShopTestHistoryAsLeftBoardNumber = int.Parse(meterTest.WecoSerialNumber, CultureInfo.InvariantCulture),
                 ShopTestHistoryAsLeftSeriesFull = Transformations.GetAsLeft(meterTestResults, 'S', "FL"),
                 ShopTestHistoryAsLeftSeriesPower = Transformations.GetAsLeft(meterTestResults, 'S', "PF"),
                 ShopTestHistoryAsLeftSeriesLight = Transformations.GetAsLeft(meterTestResults, 'S', "LL"),
@@ -259,16 +260,36 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 AsLeftWeightedAverage = Transformations.GetAsLeft(meterTestResults, 'S', "WA")
             };
 
-            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "KWH READING");
+            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "AF KWH");
             if (testReadings.Count > 0)
             {
                 if (testReadings.Count > 1)
                 {
-                    throw new InvalidOperationException("Can not prepare LabTrack file export entry, because there is more than one KWH reading related to this test.");
+                    throw new InvalidOperationException("Can not prepare LabTrack file export entry, because there is more than one AF KWH reading related to this test.");
                 }
 
                 Reading testReading = testReadings.First<Reading>();
                 labTrackEntry.ShopTestHistoryAsFoundDialReading = testReading.ReadingValue;
+            }
+            else
+            {
+                labTrackEntry.ShopTestHistoryAsFoundDialReading = "0";
+            }
+
+            testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "AL KWH");
+            if (testReadings.Count > 0)
+            {
+                if (testReadings.Count > 1)
+                {
+                    throw new InvalidOperationException("Can not prepare LabTrack file export entry, because there is more than one AL KWH reading related to this test.");
+                }
+
+                Reading testReading = testReadings.First<Reading>();
+                labTrackEntry.ShopTestHistoryAsLeftDialReading = testReading.ReadingValue;
+            }
+            else
+            {
+                labTrackEntry.ShopTestHistoryAsLeftDialReading = "0";
             }
 
             int tempInt;
@@ -293,14 +314,26 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
             }
                         
             // check if there are test steps that didn't pass
-            IList<MeterTestResult> failedTests = meterTestResults.Where(item => item.AccuracyStatus != 'P').ToList();
-            if (failedTests.Count() > 0)
+            ////IList<MeterTestResult> failedTests = meterTestResults.Where(item => item.AccuracyStatus != 'P').ToList();
+            ////if (failedTests.Count() > 0)
+            ////{
+            ////    labTrackEntry.ShopTestHistoryTestInLimits = 'N';
+            ////}
+            ////else
+            ////{
+            ////    labTrackEntry.ShopTestHistoryTestInLimits = 'Y';
+            ////}
+
+            switch (meterTest.CustomField1)
             {
-                labTrackEntry.ShopTestHistoryTestInLimits = 'N';
-            }
-            else
-            {
-                labTrackEntry.ShopTestHistoryTestInLimits = 'Y';
+                case "Y":
+                    labTrackEntry.ShopTestHistoryTestInLimits = 'Y';
+                    break;
+                case "N":
+                    labTrackEntry.ShopTestHistoryTestInLimits = 'N';
+                    break;
+                default:
+                    throw new InvalidOperationException("Can not prepare LabTrack file export entry, because of incorrect Accuracy Status value. Supported values are 'Y' or 'N'.");
             }
 
             FileHelperEngine engine = new FileHelperEngine(typeof(LabTrackFileFormat));
