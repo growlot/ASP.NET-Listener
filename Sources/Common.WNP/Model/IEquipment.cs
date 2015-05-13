@@ -5,6 +5,8 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Common.WNP.Model
 {
+    using System;
+
     /// <summary>
     /// Interface representing basic equipment
     /// </summary>
@@ -41,5 +43,21 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The new batch.
         /// </value>
         NewBatch NewBatch { get; set; }
+
+        /// <summary>
+        /// Gets or sets the create date.
+        /// </summary>
+        /// <value>
+        /// The create date.
+        /// </value>
+        DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the modified date.
+        /// </summary>
+        /// <value>
+        /// The modified date.
+        /// </value>
+        DateTime? ModifiedDate { get; set; }
     }
 }

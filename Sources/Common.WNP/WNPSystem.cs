@@ -59,7 +59,14 @@ namespace AMSLLC.Listener.Common.WNP
             if (retrievedEquipment != null)
             {
                 equipment.Id = retrievedEquipment.Id;
+                equipment.CreateDate = retrievedEquipment.CreateDate;
             }
+            else
+            {
+                equipment.CreateDate = DateTime.Now;
+            }
+
+            equipment.ModifiedDate = DateTime.Now;
 
             this.persistenceManager.Save((T)equipment);
 
