@@ -97,7 +97,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                                 from TransactionType 
                                                 where TransactionDataId = 1
                                               )
-                    WHERE TransactionTypeId = 701");
+                    WHERE TransactionTypeId = 400");
 
                 Execute.Sql(@"
                     UPDATE TransactionLog
