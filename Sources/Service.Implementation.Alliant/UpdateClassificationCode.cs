@@ -380,7 +380,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (classificationCode.TransformerAttribute.InsulationVoltageClassSpecified)
             {
-                result.CustomField11 = classificationCode.TransformerAttribute.InsulationVoltageClass.ToString(CultureInfo.InvariantCulture);
+                decimal tmp = classificationCode.TransformerAttribute.InsulationVoltageClass / 10;
+                result.CustomField11 = tmp.ToString("0.0 KV", CultureInfo.InvariantCulture);
             }
 
             if (classificationCode.TransformerAttribute.CurrentTransformer.Ratio1RatingFactorSpecified)
@@ -470,7 +471,8 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             if (classificationCode.TransformerAttribute.InsulationVoltageClassSpecified)
             {
-                result.CustomField11 = classificationCode.TransformerAttribute.InsulationVoltageClass.ToString(CultureInfo.InvariantCulture);
+                decimal tmp = classificationCode.TransformerAttribute.InsulationVoltageClass / 10;
+                result.CustomField11 = tmp.ToString("0.0 KV", CultureInfo.InvariantCulture);
             }
 
             int tempInt;
