@@ -324,10 +324,29 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <param name="alliantResponse">The alliant response.</param>
         private void AddMeter(Device device, QueryDeviceTestInfoResponseABMType alliantResponse)
         {
+            Owner owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture));
+
+            MeterBarcode barcode = new MeterBarcode()
+            {
+                BarcodeId = new BarcodeIdentifier()
+                {
+                    LookupCode = alliantResponse.ClassificationCode,
+                    Owner = owner
+                }
+            };
+
+            MeterBarcode retrievedBarcode = this.WnpSystem.GetBarcode(barcode);
+
+            if (retrievedBarcode == null)
+            {
+                string message = "Meter's classification code " + alliantResponse.ClassificationCode + " received from CC&B is not found in WNP.";
+                throw new FaultException(message);
+            }
+
             Meter meter = new Meter()
             {
                 EquipmentNumber = device.EquipmentNumber,
-                Owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture)),
+                Owner = owner,
                 FirmwareRevision1 = alliantResponse.CommunicationBoardVersion,
                 FirmwareRevision2 = alliantResponse.CommunicationModuleFirmwareVersion,
                 MeterCode = alliantResponse.ClassificationCode,
@@ -352,10 +371,29 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <param name="alliantResponse">The alliant response.</param>
         private void AddCurrentTransformer(Device device, QueryDeviceTestInfoResponseABMType alliantResponse)
         {
+            Owner owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture));
+
+            CurrentTransformerBarcode barcode = new CurrentTransformerBarcode()
+            {
+                BarcodeId = new BarcodeIdentifier()
+                {
+                    LookupCode = alliantResponse.ClassificationCode,
+                    Owner = owner
+                }
+            };
+
+            CurrentTransformerBarcode retrievedBarcode = this.WnpSystem.GetBarcode(barcode);
+
+            if (retrievedBarcode == null)
+            {
+                string message = "CT's classification code " + alliantResponse.ClassificationCode + " received from CC&B is not found in WNP.";
+                throw new FaultException(message);
+            }
+
             CurrentTransformer ct = new CurrentTransformer()
             {
                 EquipmentNumber = device.EquipmentNumber,
-                Owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture)),
+                Owner = owner,
                 TransformerCode = alliantResponse.ClassificationCode,
                 CustomField1 = device.EquipmentType.ServiceType.ExternalCode,
                 CustomField2 = device.EquipmentType.ExternalCode,
@@ -377,10 +415,29 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <param name="alliantResponse">The alliant response.</param>
         private void AddPotentialTransformer(Device device, QueryDeviceTestInfoResponseABMType alliantResponse)
         {
+            Owner owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture));
+
+            PotentialTransformerBarcode barcode = new PotentialTransformerBarcode()
+            {
+                BarcodeId = new BarcodeIdentifier()
+                {
+                    LookupCode = alliantResponse.ClassificationCode,
+                    Owner = owner
+                }
+            };
+
+            PotentialTransformerBarcode retrievedBarcode = this.WnpSystem.GetBarcode(barcode);
+
+            if (retrievedBarcode == null)
+            {
+                string message = "PT's classification code " + alliantResponse.ClassificationCode + " received from CC&B is not found in WNP.";
+                throw new FaultException(message);
+            }
+
             PotentialTransformer pt = new PotentialTransformer()
             {
                 EquipmentNumber = device.EquipmentNumber,
-                Owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture)),
+                Owner = owner,
                 TransformerCode = alliantResponse.ClassificationCode,
                 CustomField1 = device.EquipmentType.ServiceType.ExternalCode,
                 CustomField2 = device.EquipmentType.ExternalCode,
