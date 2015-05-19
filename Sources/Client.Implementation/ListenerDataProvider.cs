@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Client.Implementation
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using AMSLLC.Listener.Client.Implementation.Messages;
     using AMSLLC.Listener.Common;
@@ -81,7 +82,13 @@ namespace AMSLLC.Listener.Client.Implementation
                     return logResponse;
                 }
 
-                searchCriteria.Device = this.deviceManager.GetDevice(request.CompanyId, request.EquipmentNumber, equipmentType.Id);
+                Company company = this.deviceManager.GetCompanyByInternalCode(request.CompanyId.ToString(CultureInfo.InvariantCulture));
+                if (company == null)
+                {
+                    return logResponse;
+                }
+
+                searchCriteria.Device = this.deviceManager.GetDevice(company.Id, request.EquipmentNumber, equipmentType.Id);
                 if (searchCriteria.Device == null)
                 {
                     return logResponse;
