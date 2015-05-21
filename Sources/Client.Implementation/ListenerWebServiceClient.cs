@@ -476,6 +476,14 @@ namespace AMSLLC.Listener.Client.Implementation
                         message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Detail.Message;
                         debugInfo = ex.Detail.DebugInfo;
                     }
+                    catch (FaultException<ExceptionDetail> ex)
+                    {
+                        Log.Error("Service call returned error.", ex);
+                        Log.Error(ex.Detail);
+                        returnCode = -1;
+                        message = this.StringManager.GetString("ServiceSOAPFault", CultureInfo.CurrentCulture) + ex.Detail.Message;
+                        debugInfo = ex.Detail.ToString();
+                    }
                     catch (FaultException ex)
                     {
                         Log.Error("Service call returned error.", ex);

@@ -101,7 +101,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = GetErrorMessage(string.Join(string.Empty, ex.Detail.FaultMessage.Stack)),
+                        Message = string.Join(" ", ex.Detail.FaultMessage.Text),
                         DebugInfo = writer.ToString()
                     };
 
@@ -118,7 +118,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = GetErrorMessage(string.Join(string.Empty, ex.Detail[0].FaultMessage.Stack)),
+                        Message = string.Join(" ", ex.Detail[0].FaultMessage.Text),
                         DebugInfo = writer.ToString()
                     };
 
@@ -253,7 +253,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = GetErrorMessage(string.Join(string.Empty, ex.Detail.FaultMessage.Stack)),
+                        Message = string.Join(" ", ex.Detail.FaultMessage.Text),
                         DebugInfo = writer.ToString()
                     };
 
@@ -270,7 +270,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     Log.Error(writer.ToString());
                     ServiceFaultDetails transformedException = new ServiceFaultDetails()
                     {
-                        Message = GetErrorMessage(string.Join(string.Empty, ex.Detail[0].FaultMessage.Stack)),
+                        Message = string.Join(" ", ex.Detail[0].FaultMessage.Text),
                         DebugInfo = writer.ToString()
                     };
 
@@ -318,43 +318,35 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         }
 
         /// <summary>
-        /// Gets the error message from error stack.
-        /// </summary>
-        /// <param name="errorStack">The error stack.</param>
-        /// <returns>The readable error message</returns>
-        private static string GetErrorMessage(string errorStack)
-        {
-            string result = "Failed to find readable error text in failure message. Please see full failure message in the log.";
-            string from = "Text:";
-            string until = "Description:";
-
-            int fromLength = from.Length;
-            int startIndex = errorStack.IndexOf(from, StringComparison.Ordinal) + fromLength;
-
-            if (startIndex >= fromLength) 
-            {
-                int endIndex = errorStack.IndexOf(until, startIndex, StringComparison.Ordinal);
-
-                if (endIndex >= 0) 
-                {
-                    result = errorStack.Substring(startIndex, endIndex - startIndex).Trim();
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// Adds the meter to WNP.
         /// </summary>
         /// <param name="device">The device.</param>
         /// <param name="alliantResponse">The alliant response.</param>
         private void AddMeter(Device device, QueryDeviceTestInfoResponseABMType alliantResponse)
         {
+            Owner owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture));
+
+            MeterBarcode barcode = new MeterBarcode()
+            {
+                BarcodeId = new BarcodeIdentifier()
+                {
+                    LookupCode = alliantResponse.ClassificationCode,
+                    Owner = owner
+                }
+            };
+
+            MeterBarcode retrievedBarcode = this.WnpSystem.GetBarcode(barcode);
+
+            if (retrievedBarcode == null)
+            {
+                string message = "Meter's classification code " + alliantResponse.ClassificationCode + " received from CC&B is not found in WNP.";
+                throw new FaultException(message);
+            }
+
             Meter meter = new Meter()
             {
                 EquipmentNumber = device.EquipmentNumber,
-                Owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture)),
+                Owner = owner,
                 FirmwareRevision1 = alliantResponse.CommunicationBoardVersion,
                 FirmwareRevision2 = alliantResponse.CommunicationModuleFirmwareVersion,
                 MeterCode = alliantResponse.ClassificationCode,
@@ -379,10 +371,29 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <param name="alliantResponse">The alliant response.</param>
         private void AddCurrentTransformer(Device device, QueryDeviceTestInfoResponseABMType alliantResponse)
         {
+            Owner owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture));
+
+            CurrentTransformerBarcode barcode = new CurrentTransformerBarcode()
+            {
+                BarcodeId = new BarcodeIdentifier()
+                {
+                    LookupCode = alliantResponse.ClassificationCode,
+                    Owner = owner
+                }
+            };
+
+            CurrentTransformerBarcode retrievedBarcode = this.WnpSystem.GetBarcode(barcode);
+
+            if (retrievedBarcode == null)
+            {
+                string message = "CT's classification code " + alliantResponse.ClassificationCode + " received from CC&B is not found in WNP.";
+                throw new FaultException(message);
+            }
+
             CurrentTransformer ct = new CurrentTransformer()
             {
                 EquipmentNumber = device.EquipmentNumber,
-                Owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture)),
+                Owner = owner,
                 TransformerCode = alliantResponse.ClassificationCode,
                 CustomField1 = device.EquipmentType.ServiceType.ExternalCode,
                 CustomField2 = device.EquipmentType.ExternalCode,
@@ -404,10 +415,29 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// <param name="alliantResponse">The alliant response.</param>
         private void AddPotentialTransformer(Device device, QueryDeviceTestInfoResponseABMType alliantResponse)
         {
+            Owner owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture));
+
+            PotentialTransformerBarcode barcode = new PotentialTransformerBarcode()
+            {
+                BarcodeId = new BarcodeIdentifier()
+                {
+                    LookupCode = alliantResponse.ClassificationCode,
+                    Owner = owner
+                }
+            };
+
+            PotentialTransformerBarcode retrievedBarcode = this.WnpSystem.GetBarcode(barcode);
+
+            if (retrievedBarcode == null)
+            {
+                string message = "PT's classification code " + alliantResponse.ClassificationCode + " received from CC&B is not found in WNP.";
+                throw new FaultException(message);
+            }
+
             PotentialTransformer pt = new PotentialTransformer()
             {
                 EquipmentNumber = device.EquipmentNumber,
-                Owner = new Owner(int.Parse(device.Company.InternalCode, CultureInfo.InvariantCulture)),
+                Owner = owner,
                 TransformerCode = alliantResponse.ClassificationCode,
                 CustomField1 = device.EquipmentType.ServiceType.ExternalCode,
                 CustomField2 = device.EquipmentType.ExternalCode,

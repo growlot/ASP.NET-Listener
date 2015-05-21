@@ -44,6 +44,7 @@
     <property name="TestVolts" column="TEST_VOLTS" />
     <property name="StationId" column="STATION_ID" type="AnsiString" length="10" />
     <property name="WecoSerialNumber" column="WECO_SN" type="AnsiString" length="20" />
+    <property name="AccuracyStatus" column="ACCURACY_STATUS" />
     <property name="ReversePower" column="REVERSE_POWER" />
     <property name="TestRevisions" column="TEST_REVS" />
     <property name="ServiceType" column="SERVICE_TYPE" type="AnsiString" length="30" />

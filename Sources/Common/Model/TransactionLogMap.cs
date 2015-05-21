@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Common.Model
 {
+    using NHibernate;
     using NHibernate.Mapping.ByCode;
     using NHibernate.Mapping.ByCode.Conformist;
 
@@ -16,7 +17,8 @@ namespace AMSLLC.Listener.Common.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionLogMap"/> class.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Can't simplify mapping.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Can't simplify mapping."), 
+         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Can't simplify mapping.")]
         public TransactionLogMap()
         {
             this.Table("TransactionLog");
@@ -106,9 +108,9 @@ namespace AMSLLC.Listener.Common.Model
                     map.OneToMany(p => p.Class(typeof(TransactionLogState)));
                 });
 
-            this.Property(x => x.DataHash);
-            this.Property(x => x.DebugInfo);
-            this.Property(x => x.Message);
+            this.Property(x => x.DataHash, x => x.Length(40));
+            this.Property(x => x.DebugInfo, x => x.Type(NHibernateUtil.StringClob));
+            this.Property(x => x.Message, x => x.Length(1000));
             this.Property(x => x.TransactionEnd);
             this.Property(x => x.TransactionStart);
         }

@@ -33,6 +33,7 @@
     <property name="TestProgram" column="TEST_PROGRAM" type="AnsiString" length="20" />
     <property name="Location" column="LOCATION" type="AnsiString" length="20" />
     <property name="EquipmentStatus" column="EQP_STATUS" type="AnsiString" length="20" />
+    <property name="EquipmentStatusDate" column="STATUS_DATE" />
     <property name="ShopStatus" column="SHOP_STATUS" type="AnsiString" length="20" />
     <property name="Manufacturer" column="MFR" type="AnsiString" length="3" />
     <property name="SerialNumber" column="SERIAL_NO" type="AnsiString" length="20" />

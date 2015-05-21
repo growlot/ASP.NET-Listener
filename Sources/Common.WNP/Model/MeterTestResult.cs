@@ -102,6 +102,15 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public string WecoSerialNumber { get; set; }
 
         /// <summary>
+        /// Gets or sets the accuracy status.
+        /// 'P' if accuracy within limits
+        /// 'F' if accuracy outside limits
+        /// </summary>
+        /// <value>
+        /// The accuracy status.
+        /// </value>
+        public char? AccuracyStatus { get; set; }
+        
         /// Gets or sets the reverse power.
         /// </summary>
         /// <value>

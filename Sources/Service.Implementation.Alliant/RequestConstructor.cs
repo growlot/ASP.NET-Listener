@@ -199,7 +199,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     TestAmpsFLSpecified = true,
                     TestAmpsLL = (decimal)ctTestLightLoad.SecondaryCurrent,
                     TestAmpsLLSpecified = true,
-                    TestBurden = ctTestFullLoad.Burden.ToString(CultureInfo.InvariantCulture),
+                    TestBurden = ctTestFullLoad.Burden.ToString("0.0", CultureInfo.InvariantCulture),
                     TestVoltsFLSpecified = false,
                     VoltageForInsulationTest = ctTestFullLoad.CustomField6
                 }

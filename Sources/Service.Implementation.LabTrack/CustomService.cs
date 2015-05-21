@@ -200,31 +200,27 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 StockHeaderAlternativeDeviceId = meter.SerialNumber,
                 StockHeaderPurchaseOrderGroupNumber = meter.PurchaseOrderReference,
                 StockHeaderCurrentLocationCode = meter.Location,
-                ////StockHeaderStatusCode = meter.EquipmentStatus,
                 StockHeaderHoldDevice = 'N',
                 StockHeaderLimits = 'Y',
                 StockHeaderInventory = 'N',
-                StockHeaderChangeDate = meter.ModifiedDate,
+                StockHeaderChangeDate = meter.EquipmentStatusDate,
                 StockHeaderEventTrigger1 = 0,
                 StockHeaderEventTrigger2 = 0,
                 
                 MeterHeaderTypeCode = meter.ModelNumber,
                 MeterHeaderSetupCode = meter.AepCode,
                 MeterHeaderKwhDials = meter.KwhDials,
-                ////MeterHeaderKWDials = meter.KwDials,
-                ////MeterHeaderKwhMultiplier = meter.EnergyMultiplier,
-                ////MeterHeaderKWMultiplier = meter.DemandMultiplier,
+                MeterHeaderKWDials = meter.KWDials.HasValue ? meter.KWDials.Value.ToString(CultureInfo.InvariantCulture) : string.Empty,
+                MeterHeaderKwhMultiplier = meter.EnergyMultiplier.HasValue ? meter.EnergyMultiplier.Value : 0m,
+                MeterHeaderKWMultiplier = meter.DemandMultiplier.HasValue ? meter.DemandMultiplier.Value : 0m,
 
-                MeterSetupForm = int.Parse(meter.Form, CultureInfo.InvariantCulture),
                 MeterSetupBase = meter.Base,
                 MeterSetupTestVoltage = meter.TestVolts,
                 MeterSetupTestCurrent = meter.TestAmps,
-                MeterSetupDiskConstant = decimal.Parse(meter.KH, CultureInfo.InvariantCulture),
                 MeterSetupPhase = meter.Phase,
                 MeterSetupWire = meter.Wire,
                 MeterSetupRegisterRatio = meter.RegisterRatio,
 
-                // ShopTestHistoryTestInLimits = meterTest.AccuracyStatus,
                 ShopTestHistoryAsFoundTestDate = meterTest.TestDate,
                 ShopTestHistoryAsFoundTestTime = meterTest.TestDate,
                 ShopTestHistoryAsFoundTesterId = meterTest.TesterId,
@@ -244,6 +240,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 ShopTestHistoryAsLeftTestDate = meterTest.TestDate,
                 ShopTestHistoryAsLeftTestTime = meterTest.TestDate,
                 ShopTestHistoryAsLeftTesterId = meterTest.TesterId,
+                ShopTestHistoryAsLeftBoardNumber = int.Parse(meterTest.WecoSerialNumber, CultureInfo.InvariantCulture),
                 ShopTestHistoryAsLeftSeriesFull = Transformations.GetAsLeft(meterTestResults, 'S', "FL"),
                 ShopTestHistoryAsLeftSeriesPower = Transformations.GetAsLeft(meterTestResults, 'S', "PF"),
                 ShopTestHistoryAsLeftSeriesLight = Transformations.GetAsLeft(meterTestResults, 'S', "LL"),
@@ -263,16 +260,80 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 AsLeftWeightedAverage = Transformations.GetAsLeft(meterTestResults, 'S', "WA")
             };
 
-            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "KWH READING");
+            IList<Reading> testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "AF KWH");
             if (testReadings.Count > 0)
             {
                 if (testReadings.Count > 1)
                 {
-                    throw new InvalidOperationException("Can not prepare LabTrack file export entry, because there is more than one KWH reading related to this test.");
+                    throw new InvalidOperationException("Can not prepare LabTrack file export entry, because there is more than one AF KWH reading related to this test.");
                 }
 
                 Reading testReading = testReadings.First<Reading>();
                 labTrackEntry.ShopTestHistoryAsFoundDialReading = testReading.ReadingValue;
+            }
+            else
+            {
+                labTrackEntry.ShopTestHistoryAsFoundDialReading = "0";
+            }
+
+            testReadings = this.WnpSystem.GetTestReading(device.EquipmentNumber, owner, deviceTest.TestDate, "AL KWH");
+            if (testReadings.Count > 0)
+            {
+                if (testReadings.Count > 1)
+                {
+                    throw new InvalidOperationException("Can not prepare LabTrack file export entry, because there is more than one AL KWH reading related to this test.");
+                }
+
+                Reading testReading = testReadings.First<Reading>();
+                labTrackEntry.ShopTestHistoryAsLeftDialReading = testReading.ReadingValue;
+            }
+            else
+            {
+                labTrackEntry.ShopTestHistoryAsLeftDialReading = "0";
+            }
+
+            int tempInt;
+            if (int.TryParse(meter.ShopStatus, out tempInt))
+            {
+                labTrackEntry.StockHeaderStatusCode = tempInt;
+            }
+
+            if (int.TryParse(meter.Form, out tempInt))
+            {
+                labTrackEntry.MeterSetupForm = tempInt;
+            }
+
+            decimal tempDecimal;
+            if (decimal.TryParse(meter.KH, out tempDecimal))
+            {
+                labTrackEntry.MeterSetupDiskConstant = tempDecimal;
+            }
+            else
+            {
+                labTrackEntry.MeterSetupDiskConstant = 0m;
+            }
+                        
+            // check if there are test steps that didn't pass
+            ////IList<MeterTestResult> failedTests = meterTestResults.Where(item => item.AccuracyStatus != 'P').ToList();
+            ////if (failedTests.Count() > 0)
+            ////{
+            ////    labTrackEntry.ShopTestHistoryTestInLimits = 'N';
+            ////}
+            ////else
+            ////{
+            ////    labTrackEntry.ShopTestHistoryTestInLimits = 'Y';
+            ////}
+
+            switch (meterTest.CustomField1)
+            {
+                case "Y":
+                    labTrackEntry.ShopTestHistoryTestInLimits = 'Y';
+                    break;
+                case "N":
+                    labTrackEntry.ShopTestHistoryTestInLimits = 'N';
+                    break;
+                default:
+                    throw new InvalidOperationException("Can not prepare LabTrack file export entry, because of incorrect Accuracy Status value. Supported values are 'Y' or 'N'.");
             }
 
             FileHelperEngine engine = new FileHelperEngine(typeof(LabTrackFileFormat));

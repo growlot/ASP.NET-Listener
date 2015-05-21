@@ -70,6 +70,52 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                                ,'Device Shop Test (ODM)'
                                                ,'')");
             }
+
+            if (((string)this.ApplicationContext).Contains("LabTrack"))
+            {
+                Insert.IntoTable("ExternalSystem").Row(new { Name = "LabTrack", Description = "Meter Data Collection and Inventory System" });
+
+                // TransactionType populate
+                Execute.Sql(@"
+                    INSERT INTO TransactionType
+                               (TransactionDataId
+                               ,TransactionSourceId
+                               ,TransactionDirectionId
+                               ,TransactionCompletionId
+                               ,ExternalSystemId
+                               ,Name
+                               ,Description)
+                         VALUES
+                               (2
+                               ,0
+                               ,2
+                               ,1
+                               ,(
+                                    SELECT ExternalSystemId 
+                                    FROM ExternalSystem 
+                                    WHERE Name = 'LabTrack'
+                               )
+                               ,'Device Shop Test (LabTrack)'
+                               ,'')");
+
+                Execute.Sql(@"
+                    INSERT INTO TransactionType
+                               (TransactionDataId
+                               ,TransactionSourceId
+                               ,TransactionDirectionId
+                               ,TransactionCompletionId
+                               ,ExternalSystemId
+                               ,Name
+                               ,Description)
+                         VALUES
+                               (4
+                               ,0
+                               ,2
+                               ,1
+                               ,NULL
+                               ,'New Batch Acceptance'
+                               ,'')");
+            }
         }
 
         /// <summary>

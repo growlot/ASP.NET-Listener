@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Client.Implementation
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using AMSLLC.Listener.Client.Implementation.Messages;
     using AMSLLC.Listener.Common;
@@ -81,7 +82,13 @@ namespace AMSLLC.Listener.Client.Implementation
                     return logResponse;
                 }
 
-                searchCriteria.Device = this.deviceManager.GetDevice(request.CompanyId, request.EquipmentNumber, equipmentType.Id);
+                Company company = this.deviceManager.GetCompanyByInternalCode(request.CompanyId.ToString(CultureInfo.InvariantCulture));
+                if (company == null)
+                {
+                    return logResponse;
+                }
+
+                searchCriteria.Device = this.deviceManager.GetDevice(company.Id, request.EquipmentNumber, equipmentType.Id);
                 if (searchCriteria.Device == null)
                 {
                     return logResponse;
@@ -124,8 +131,8 @@ namespace AMSLLC.Listener.Client.Implementation
                 TransactionStart = (DateTime)x.TransactionStart,
                 TestDate = x.DeviceTest != null ? (DateTime?)x.DeviceTest.TestDate : null,
                 BatchNumber = x.DeviceBatch != null ? x.DeviceBatch.BatchNumber : string.Empty,
-                ErrorMessage = request.IncludeDetails ? x.Message : string.Empty,
-                DebugInfo = request.IncludeDetails ? x.DebugInfo : string.Empty,
+                ErrorMessage = request.IncludeDetails && x.Message != null ? x.Message : string.Empty,
+                DebugInfo = request.IncludeDetails && x.DebugInfo != null ? x.DebugInfo : string.Empty,
                 EquipmentNumber = x.Device != null ? x.Device.EquipmentNumber : string.Empty,
                 EquipmentType = x.Device != null ? x.Device.EquipmentType.Description : string.Empty
             });
