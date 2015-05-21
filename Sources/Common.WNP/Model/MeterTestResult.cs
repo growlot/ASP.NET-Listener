@@ -110,7 +110,8 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The accuracy status.
         /// </value>
         public char? AccuracyStatus { get; set; }
-        
+
+        /// <summary>
         /// Gets or sets the reverse power.
         /// </summary>
         /// <value>

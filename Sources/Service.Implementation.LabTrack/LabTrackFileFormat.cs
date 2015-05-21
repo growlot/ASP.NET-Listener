@@ -138,14 +138,14 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// The Meter billing multiplier to be applied to the KWH reading
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.0000")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.0000")]
         public decimal MeterHeaderKwhMultiplier;
 
         /// <summary>
         /// The meter billing multiplier to be applied to the KW reading
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
-        [FieldConverter(typeof(FormattedDecimalConverter), "0.0000")]
+        [FieldConverter(typeof(CustomDecimalConverter), ".", "0.0000")]
         public decimal MeterHeaderKWMultiplier;
 
         /// <summary>
