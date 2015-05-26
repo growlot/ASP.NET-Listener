@@ -11,6 +11,7 @@ namespace Service.Implementation.Alliant.Unit.Test
     using AMSLLC.Listener.Common.Model;
     using AMSLLC.Listener.Common.WNP;
     using AMSLLC.Listener.Common.WNP.Model;
+    using AMSLLC.Listener.Common.WNP.Unit.Test;
     using AMSLLC.Listener.Service.Implementation.Alliant;
     using AMSLLC.Listener.Service.Implementation.Alliant.GetDevice;
     using AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult;
@@ -26,11 +27,6 @@ namespace Service.Implementation.Alliant.Unit.Test
         /// The default repair date time
         /// </summary>
         private DateTime defaultRepairDateTime = new DateTime(2014, 08, 24, 10, 25, 35);
-        
-        /// <summary>
-        /// The default test start date time
-        /// </summary>
-        private DateTime defaultTestStartDateTime = new DateTime(2014, 08, 24, 10, 25, 35);
 
         /// <summary>
         /// Tests if all the fields for meter test results are filled correctly.
@@ -45,18 +41,12 @@ namespace Service.Implementation.Alliant.Unit.Test
             {
                 persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<Meter>((criteria) =>
                 {
-                    Meter meter = DefaultMeter();
+                    Meter meter = MotherObjects.DefaultMeter();
                     return meter;
                 });
                 persistenceManager.RetrieveAllEqualOf1DetachedCriteria<MeterTestResult>((criteria) =>
-                {
-                    IList<MeterTestResult> meterTestResults = new List<MeterTestResult>();
-                    for (int id = 0; id < 10; id++)
-                    {
-                        meterTestResults.Add(this.DefaultMeterTestResult(id));
-                    }
-
-                    return meterTestResults;
+                {                    
+                    return CustomizedMeterTestResults();
                 });
                 persistenceManager.RetrieveAllEqualOf1DetachedCriteria<Comment>((criteria) =>
                 {
@@ -75,7 +65,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 requestConstructor = new RequestConstructor(wnpSystem);
             }
 
-            DeviceTest deviceTest = this.DefaultDeviceTest();
+            DeviceTest deviceTest = DefaultDeviceTest();
 
             CreateDeviceTestResultABMType actualRequest = requestConstructor.PrepareElectricMeterTestResultsRequest(deviceTest);
             CreateDeviceTestResultABMType expectedRequest = this.DefaultMeterTestResultsRequest();
@@ -97,18 +87,16 @@ namespace Service.Implementation.Alliant.Unit.Test
             {
                 persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<Meter>((criteria) =>
                 {
-                    Meter meter = DefaultMeter();
+                    Meter meter = MotherObjects.DefaultMeter();
                     return meter;
                 });
                 persistenceManager.RetrieveAllEqualOf1DetachedCriteria<MeterTestResult>((criteria) =>
                 {
-                    IList<MeterTestResult> meterTestResults = new List<MeterTestResult>();
-                    for (int id = 0; id < 10; id++)
+                    IList<MeterTestResult> meterTestResults = CustomizedMeterTestResults();
+                    foreach (MeterTestResult testStep in meterTestResults)
                     {
-                        MeterTestResult meterTestResult = this.DefaultMeterTestResult(id);
-                        meterTestResult.CustomField4 = " ";
-                        meterTestResult.CustomField5 = " ";
-                        meterTestResults.Add(meterTestResult);
+                        testStep.CustomField4 = " ";
+                        testStep.CustomField5 = " ";
                     }
 
                     return meterTestResults;
@@ -130,7 +118,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 requestConstructor = new RequestConstructor(wnpSystem);
             }
 
-            DeviceTest deviceTest = this.DefaultDeviceTest();
+            DeviceTest deviceTest = DefaultDeviceTest();
 
             CreateDeviceTestResultABMType actualRequest = requestConstructor.PrepareElectricMeterTestResultsRequest(deviceTest);
 
@@ -139,27 +127,10 @@ namespace Service.Implementation.Alliant.Unit.Test
         }
 
         /// <summary>
-        /// Constructs the default meter object.
-        /// </summary>
-        /// <returns>The meter.</returns>
-        private static Meter DefaultMeter()
-        {
-            Meter meter = new Meter()
-            {
-                Id = 1,
-                MeterCode = "AA0",
-                EquipmentNumber = "23456789",
-                CustomField13 = "Y"
-            };
-
-            return meter;
-        }
-
-        /// <summary>
         /// Constructs the default device test.
         /// </summary>
         /// <returns>The device test.</returns>
-        private DeviceTest DefaultDeviceTest()
+        private static DeviceTest DefaultDeviceTest()
         {
             Company company = new Company()
             {
@@ -194,105 +165,32 @@ namespace Service.Implementation.Alliant.Unit.Test
             {
                 Id = 1,
                 Device = device,
-                TestDate = this.defaultTestStartDateTime
+                TestDate = MotherObjects.DefaultTestStartDateTime
             };
 
             return deviceTest;
         }
 
         /// <summary>
-        /// Construct the default meter test result.
+        /// Construct the meter test results needed for current tests.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>The meter test result</returns>
-        private MeterTestResult DefaultMeterTestResult(int id)
+        /// <returns>The meter test results</returns>
+        private IList<MeterTestResult> CustomizedMeterTestResults()
         {
-            MeterTestResult meterTestResult = new MeterTestResult()
+            IList<MeterTestResult> testResults = MotherObjects.DefaultMeterTestResults();
+
+            foreach (MeterTestResult testStep in testResults)
             {
-                TesterId = "TesterID",
-                Location = "TestLocation",
-                TestStandard = "TestStandard",
-                TestDate = this.defaultTestStartDateTime,
-                CustomField1 = "TestReason",
-                CustomField2 = "RepairedBy",
-                CustomField3 = this.defaultRepairDateTime.ToString(),
-                CustomField4 = "RepaireType",
-                CustomField5 = "1", // retirement reason
-                CustomField6 = "13", // creep code
-                CustomField7 = "2" // condition code
-            };
-
-            switch (id)
-            {
-                case 1:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'S';
-                    meterTestResult.TestType = "FL";
-                    meterTestResult.AsFound = 100.10M;
-                    meterTestResult.AsLeft = 100.11M;
-                    break;
-                case 2:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'S';
-                    meterTestResult.TestType = "LL";
-                    meterTestResult.AsFound = 100.12M;
-                    meterTestResult.AsLeft = 100.13M;
-                    break;
-                case 3:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'S';
-                    meterTestResult.TestType = "PF";
-                    meterTestResult.AsFound = 100.14M;
-                    meterTestResult.AsLeft = 100.15M;
-                    break;
-
-                case 4:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'A';
-                    meterTestResult.TestType = "FL";
-                    meterTestResult.AsFound = 100.20M;
-                    meterTestResult.AsLeft = 100.21M;
-                    break;
-                case 5:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'A';
-                    meterTestResult.TestType = "PF";
-                    meterTestResult.AsFound = 100.24M;
-                    meterTestResult.AsLeft = 100.25M;
-                    break;
-
-                case 6:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'B';
-                    meterTestResult.TestType = "FL";
-                    meterTestResult.AsFound = 100.30M;
-                    meterTestResult.AsLeft = 100.31M;
-                    break;
-                case 7:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'B';
-                    meterTestResult.TestType = "PF";
-                    meterTestResult.AsFound = 100.34M;
-                    meterTestResult.AsLeft = 100.35M;
-                    break;
-
-                case 8:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'C';
-                    meterTestResult.TestType = "FL";
-                    meterTestResult.AsFound = 100.40M;
-                    meterTestResult.AsLeft = 100.41M;
-                    break;
-                case 9:
-                    meterTestResult.Id = id;
-                    meterTestResult.Element = 'C';
-                    meterTestResult.TestType = "PF";
-                    meterTestResult.AsFound = 100.44M;
-                    meterTestResult.AsLeft = 100.45M;
-                    break;
+                testStep.CustomField1 = "TestReason";
+                testStep.CustomField2 = "RepairedBy";
+                testStep.CustomField3 = this.defaultRepairDateTime.ToString();
+                testStep.CustomField4 = "RepaireType";
+                testStep.CustomField5 = "1"; // retirement reason
+                testStep.CustomField6 = "13"; // creep code
+                testStep.CustomField7 = "2"; // condition code
             }
 
-            return meterTestResult;
+            return testResults;
         }
 
         /// <summary>
@@ -346,7 +244,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 TestLocation = "TestLocation",
                 TestReason = "TestReason",
                 TestStandard = "TestStandard",
-                TestStartDateTime = this.defaultTestStartDateTime
+                TestStartDateTime = MotherObjects.DefaultTestStartDateTime
             };
 
             return meterTestResultsRequst;
