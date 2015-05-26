@@ -61,7 +61,8 @@ namespace AMSLLC.Listener.Common.WNP
                 equipment.Id = retrievedEquipment.Id;
                 equipment.CreateDate = retrievedEquipment.CreateDate;
             }
-            else
+
+            if (equipment.CreateDate == default(DateTime))
             {
                 equipment.CreateDate = DateTime.Now;
             }
