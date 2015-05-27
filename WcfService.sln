@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Globalization", "Sources\Gl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Implementation.KCPL", "Sources\Service.Implementation.KCPL\Service.Implementation.KCPL.csproj", "{020E077C-8CE4-4250-8A4E-B80A0DF1E993}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Unit.Tests", "Sources\Common.nUnit.Tests\Common.Unit.Tests.csproj", "{1ED28129-680B-424C-9D39-448DDD21E832}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Unit.Test", "Sources\Common.Unit.Test\Common.Unit.Test.csproj", "{1ED28129-680B-424C-9D39-448DDD21E832}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Implementation.Unit.Test", "Sources\Client.Implementation.Unit.Test\Client.Implementation.Unit.Test.csproj", "{8CFDFC4E-F28F-48CC-86E4-32E281B59215}"
 EndProject
