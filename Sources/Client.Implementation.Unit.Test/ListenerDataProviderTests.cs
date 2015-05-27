@@ -59,6 +59,47 @@ namespace Client.Implementation.Unit.Test
         }
 
         /// <summary>
+        /// Get transaction log results should not perform search if company does not exist.
+        /// It should return empty list.
+        /// </summary>
+        [TestMethod]
+        public void GetTransactionLogResultsShouldNotPerformSearchIfCompanyDoesNotExist()
+        {
+            bool searchPerformed = false;
+            IList<TransactionLogResponse> response;
+            TransactionLogRequest request = new TransactionLogRequest()
+            {
+                CompanyId = 0,
+                ServiceType = "E",
+                EquipmentType = "EM",
+            };
+
+            // Create the fake persistenceManager
+            using (var persistenceManager = new AMSLLC.Listener.Common.Fakes.StubIPersistenceManager())
+            {
+                persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<EquipmentType>((criteria) =>
+                {
+                    return new EquipmentType(1);
+                });
+                persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<Company>((criteria) =>
+                {
+                    return null;
+                });
+                persistenceManager.RetrieveAllEqualOf1DetachedCriteria<TransactionLog>((criteria) =>
+                {
+                    searchPerformed = true;
+                    return new List<TransactionLog>();
+                });
+
+                ListenerDataProvider dataProider = new ListenerDataProvider(persistenceManager);
+                response = dataProider.GetTransactionLog(request);
+            }
+
+            Assert.AreEqual(response.Count, 0, "Response should contain empty list");
+            Assert.AreEqual(false, searchPerformed);
+        }
+
+        /// <summary>
         /// Get transaction log results should not perform search if device does not exist.
         /// It should return empty list.
         /// </summary>
@@ -83,6 +124,10 @@ namespace Client.Implementation.Unit.Test
                 persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<EquipmentType>((criteria) =>
                 {
                     return new EquipmentType(1);
+                });
+                persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<Company>((criteria) =>
+                {
+                    return new Company(1);
                 });
                 persistenceManager.RetrieveFirstEqualOf1DetachedCriteria<Device>((criteria) =>
                 {

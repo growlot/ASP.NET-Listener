@@ -101,6 +101,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common.WNP.Unit.Test\Common.WNP.Unit.Test.csproj">
+      <Project>{dc45c98d-2b9a-4f1d-997c-6c4fedeae2e3}</Project>
+      <Name>Common.WNP.Unit.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common.WNP\Common.WNP.csproj">
       <Project>{0fd7fc3e-e13c-4083-bfc5-fbb21385e593}</Project>
       <Name>Common.WNP</Name>
