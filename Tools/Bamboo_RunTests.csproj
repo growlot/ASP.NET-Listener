@@ -1,33 +1,29 @@
 <Project ToolsVersion="4.0" DefaultTarget="RunTests" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  
   <PropertyGroup>
-    <results_file>./TestResults/results.trx</results_file>
-  </PropertyGroup>
- 
-  <PropertyGroup>
+    <RootDir>..\</RootDir>
+    <TestResultsDir>$(RootDir)TestResults\</TestResultsDir>
+    <TestResultsFileName>results.trx</TestResultsFileName>
+    <TestResultsFile>$(TestResultsDir)$(TestResultsFileName)</TestResultsFile>
     <MsTestExePath Condition="'$(MsTestExePath)'==''">C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe</MsTestExePath>
   </PropertyGroup>
  
   <ItemGroup>
-    <TestAssemblies Include=".\Sources\**\bin\**\*.Unit.Test.dll" />
-  </ItemGroup>
- 
-  <ItemGroup>
-    <ResultsFile Include="$(results_file)" />
+    <TestAssemblies Include="$(RootDir)Sources\**\bin\**\*.Unit.Test.dll" />
   </ItemGroup>
  
   <Target Name="RunTests">
     <Message Text="Found test assemblies: @(TestAssemblies)" />
  
-    <MakeDir Directories="./TestResults" />
+    <MakeDir Directories="$(TestResultsDir)" />
     <CallTarget Targets="RunMsTest" />
   </Target>
  
   <Target Name="RunMsTest" >
-    <Message Text="Running to results file: %(ResultsFile.Identity)" />
+    <Message Text="Running to results file: $(TestResultsFile)" />
  
     <PropertyGroup>
-      <MsTestCommand>"$(MsTestExePath)" @(TestAssemblies ->'/testcontainer:&quot;%(RecursiveDir)%(Filename)%(Extension)&quot; ', ' ') /resultsfile:TestResults\%(ResultsFile.Identity)</MsTestCommand>
+      <MsTestCommand>"$(MsTestExePath)" @(TestAssemblies ->'/testcontainer:&quot;%(RelativeDir)%(Filename)%(Extension)&quot; ', ' ') /resultsfile:$(TestResultsFile)</MsTestCommand>
     </PropertyGroup>
  
     <Message Text="Running command $(MsTestCommand)" />
