@@ -111,6 +111,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="GlobalConstants.cs" />
+    <Compile Include="Lookup\FileConverterKindLookup.cs" />
     <Compile Include="Lookup\TransactionCompletionLookup.cs" />
     <Compile Include="Lookup\TransactionDataLookup.cs" />
     <Compile Include="Lookup\TransactionDirectionLookup.cs" />
@@ -120,7 +121,11 @@
     <Compile Include="Model\Comment.cs" />
     <Compile Include="Model\ConfigMap.cs" />
     <Compile Include="Model\DeviceBatch.cs" />
+    <Compile Include="Model\FileConverter.cs" />
+    <Compile Include="Model\FileConverterMap.cs" />
+    <Compile Include="Model\FileConverterKindMap.cs" />
     <Compile Include="Model\DeviceBatchMap.cs" />
+    <Compile Include="Model\FileConverterKind.cs" />
     <Compile Include="Model\MeterTestStep.cs" />
     <Compile Include="Model\ExternalSystem.cs" />
     <Compile Include="Model\RelatedFile.cs" />
