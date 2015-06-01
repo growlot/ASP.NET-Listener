@@ -12,3 +12,4 @@ StyleCop.Cache
 /packages/
 !packages/repositories.config
 **/FakesAssemblies/
+*.GhostDoc.xml
