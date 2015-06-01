@@ -117,6 +117,22 @@ namespace AMSLLC.Listener.Common.WNP.Model
         public DateTime CreateDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the purchase order reference.
+        /// </summary>
+        /// <value>
+        /// The purchase order reference.
+        /// </value>
+        public string PurchaseOrderReference { get; set; }
+
+        /// <summary>
+        /// Gets or sets the purchase date.
+        /// </summary>
+        /// <value>
+        /// The purchase date.
+        /// </value>
+        public DateTime? PurchaseDate { get; set; }
+
+        /// <summary>
         /// Gets or sets the new batch.
         /// </summary>
         /// <value>
