@@ -145,6 +145,8 @@
     <Compile Include="v2.2.0\Migration_202000001_TransactionData_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000002_ExternalSystem_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000003_TransactionType_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000012_FileQuoteMultiline_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000011_FileQuoteMultiline_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000010_FileQuoteMode_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000009_FileQuoteMode_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000008_FileTrimMode_Populate.cs" />
