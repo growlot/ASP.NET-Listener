@@ -20,7 +20,7 @@ namespace AMSLLC.Listener.Common.Model
         public FileTrimModeMap()
         {
             this.Table("FileTrimMode");
-            this.Lazy(false);
+            this.Lazy(true);
 
             this.Id(
                 x => x.Id,

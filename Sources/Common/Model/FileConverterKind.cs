@@ -16,7 +16,7 @@ namespace AMSLLC.Listener.Common.Model
         /// <value>
         /// The identifier.
         /// </value>
-        public int Id { get; set; }
+        public virtual int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -24,6 +24,6 @@ namespace AMSLLC.Listener.Common.Model
         /// <value>
         /// The description.
         /// </value>
-        public string Description { get; set; }
+        public virtual string Description { get; set; }
     }
 }

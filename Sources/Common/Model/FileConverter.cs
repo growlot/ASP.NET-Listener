@@ -16,7 +16,7 @@ namespace AMSLLC.Listener.Common.Model
         /// <value>
         /// The identifier.
         /// </value>
-        public int Id { get; set; }
+        public virtual int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the first argument.
@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.Common.Model
         /// <value>
         /// The first argument.
         /// </value>
-        public string Argument1 { get; set; }
+        public virtual string Argument1 { get; set; }
 
         /// <summary>
         /// Gets or sets the second argument.
@@ -32,7 +32,7 @@ namespace AMSLLC.Listener.Common.Model
         /// <value>
         /// The second argument.
         /// </value>
-        public string Argument2 { get; set; }
+        public virtual string Argument2 { get; set; }
 
         /// <summary>
         /// Gets or sets the third argument.
@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.Common.Model
         /// <value>
         /// The third argument.
         /// </value>
-        public string Argument3 { get; set; }
+        public virtual string Argument3 { get; set; }
 
         /// <summary>
         /// Gets or sets the kind of the file converter.
@@ -48,6 +48,6 @@ namespace AMSLLC.Listener.Common.Model
         /// <value>
         /// The kind of the file converter.
         /// </value>
-        public FileConverterKind FileConverterKind { get; set; }
+        public virtual FileConverterKind FileConverterKind { get; set; }
     }
 }
