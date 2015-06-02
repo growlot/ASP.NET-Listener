@@ -111,6 +111,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="GlobalConstants.cs" />
+    <Compile Include="Lookup\FileFixedModeLookup.cs" />
     <Compile Include="Lookup\FileAlignModeLookup.cs" />
     <Compile Include="Lookup\FileQuoteMultilineLookup.cs" />
     <Compile Include="Lookup\FileQuoteModeLookup.cs" />
@@ -125,6 +126,8 @@
     <Compile Include="Model\Comment.cs" />
     <Compile Include="Model\ConfigMap.cs" />
     <Compile Include="Model\DeviceBatch.cs" />
+    <Compile Include="Model\FileFixedModeMap.cs" />
+    <Compile Include="Model\FileFixedMode.cs" />
     <Compile Include="Model\FileConverter.cs" />
     <Compile Include="Model\FileAlignMode.cs" />
     <Compile Include="Model\FileAlignModeMap.cs" />
