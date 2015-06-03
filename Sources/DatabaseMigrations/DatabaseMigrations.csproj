@@ -148,6 +148,7 @@
     <Compile Include="v2.2.0\Migration_202000015_FileFixedMode_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000016_FileFixedMode_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000017_File_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000018_FileField_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000014_FileAlignMode_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000013_FileAlignMode_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000012_FileQuoteMultiline_Populate.cs" />

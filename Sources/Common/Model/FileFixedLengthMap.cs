@@ -55,6 +55,20 @@ namespace AMSLLC.Listener.Common.Model
                     map.Column("FileFixedModeId");
                     map.Fetch(FetchKind.Join);
                 });
+
+            this.Bag(
+                x => x.Fields,
+                m =>
+                {
+                    m.Cascade(Cascade.DeleteOrphans);
+                    m.Fetch(CollectionFetchMode.Join);
+                    m.Key(k => k.Column("FileId"));
+                    m.Table("FileField");
+                },
+                map =>
+                {
+                    map.OneToMany(p => p.Class(typeof(FileFieldFixedLength)));
+                });
         }
     }
 }

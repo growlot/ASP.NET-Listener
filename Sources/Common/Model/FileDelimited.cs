@@ -5,6 +5,8 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Common.Model
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Data model class representing FileDelimited entities
     /// </summary>
@@ -17,5 +19,14 @@ namespace AMSLLC.Listener.Common.Model
         /// The file delimiter.
         /// </value>
         public virtual string Delimiter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fields.
+        /// </summary>
+        /// <value>
+        /// The fields.
+        /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "At least protected modifier is required for nHibernate.")]
+        public virtual IList<FileFieldDelimited> Fields { get; protected set; }
     }
 }

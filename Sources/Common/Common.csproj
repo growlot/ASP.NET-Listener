@@ -121,6 +121,11 @@
     <Compile Include="Lookup\TransactionDataLookup.cs" />
     <Compile Include="Lookup\TransactionDirectionLookup.cs" />
     <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\BaseFileField.cs" />
+    <Compile Include="Model\FileFieldFixedLengthMap.cs" />
+    <Compile Include="Model\FileFieldDelimitedMap.cs" />
+    <Compile Include="Model\FileFieldFixedLength.cs" />
+    <Compile Include="Model\FileFieldDelimited.cs" />
     <Compile Include="Model\FileDelimitedMap.cs" />
     <Compile Include="Model\FileFixedLengthMap.cs" />
     <Compile Include="Model\FileDelimited.cs" />
