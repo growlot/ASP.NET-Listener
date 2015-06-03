@@ -121,11 +121,16 @@
     <Compile Include="Lookup\TransactionDataLookup.cs" />
     <Compile Include="Lookup\TransactionDirectionLookup.cs" />
     <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\FileDelimitedMap.cs" />
+    <Compile Include="Model\FileFixedLengthMap.cs" />
+    <Compile Include="Model\FileDelimited.cs" />
+    <Compile Include="Model\FileFixedLength.cs" />
     <Compile Include="Model\Circuit.cs" />
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\Comment.cs" />
     <Compile Include="Model\ConfigMap.cs" />
     <Compile Include="Model\DeviceBatch.cs" />
+    <Compile Include="Model\BaseFile.cs" />
     <Compile Include="Model\FileFixedModeMap.cs" />
     <Compile Include="Model\FileFixedMode.cs" />
     <Compile Include="Model\FileConverter.cs" />
