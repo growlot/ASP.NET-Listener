@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Service.Host
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.Composition;
     using System.Configuration;
     using System.Data;
     using System.Diagnostics;
@@ -17,12 +18,14 @@ namespace AMSLLC.Listener.Service.Host
     using System.Text;
     using System.Threading.Tasks;
     using AMSLLC.Listener.Common;
+    using AMSLLC.Listener.Service.Contract;
     using AMSLLC.Listener.Service.Implementation;
     using log4net;
 
     /// <summary>
     /// Controls all services hosted by this project.
     /// </summary>
+    [Export(typeof(CustomServiceHost))]
     public partial class CustomServiceHost : ServiceBase
     {
         /// <summary>
@@ -34,6 +37,14 @@ namespace AMSLLC.Listener.Service.Host
         /// The list of service hosts
         /// </summary>
         private IList<ServiceHost> serviceHosts = new List<ServiceHost>();
+
+        /// <summary>
+        /// The alliant service
+        /// </summary>
+        #pragma warning disable 0649
+        [ImportMany]
+        private IEnumerable<Lazy<IPluginService, INamedPluginMetadata>> servicePlugins;
+        #pragma warning restore 0649
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomServiceHost"/> class.
@@ -48,32 +59,17 @@ namespace AMSLLC.Listener.Service.Host
         /// </summary>
         public void OpenAll()
         {
-            // Initializes services based on the customer setting in application config file
-            // Need to put actuall references to separate methods, because otherwize C# tries 
-            // to load the assembly even if it is not called because of conditional logic
             if (ConfigurationManager.AppSettings["Customer"].Contains("Core"))
             {
-                this.OpenHost<ServiceCore>();
-            }
-            
-            if (ConfigurationManager.AppSettings["Customer"].Contains("Alliant"))
-            {
-                this.LoadAlliant();
+                this.OpenHost(typeof(ServiceCore));
             }
 
-            if (ConfigurationManager.AppSettings["Customer"].Contains("KCP&L"))
+            foreach (Lazy<IPluginService, INamedPluginMetadata> plugin in this.servicePlugins)
             {
-                this.LoadKCPL();
-            }
-
-            if (ConfigurationManager.AppSettings["Customer"].Contains("LabTrack"))
-            {
-                this.LoadLabTrack();
-            }
-
-            if (ConfigurationManager.AppSettings["Customer"].Contains("WecoMobile"))
-            {
-                this.LoadWecoMobile();
+                foreach (Type type in plugin.Value.ServiceTypes)
+                {
+                    this.OpenHost(type);
+                }
             }
 
             //// this.OpenHost<Service.Implementation.Service1Rest>();
@@ -113,11 +109,10 @@ namespace AMSLLC.Listener.Service.Host
         /// <summary>
         /// Opens service host and adds it to the list of hosted services.
         /// </summary>
-        /// <typeparam name="T">Type of the service that must be opened.</typeparam>
+        /// <param name="type">The type.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "False positive")]
-        private void OpenHost<T>()
+        private void OpenHost(Type type)
         {
-            Type type = typeof(T);
             ServiceHost serviceHost = null;
             try
             {
@@ -140,50 +135,20 @@ namespace AMSLLC.Listener.Service.Host
             }
         }
 
-        /// <summary>
-        /// Loads the alliant web services.
-        /// </summary>
-        private void LoadAlliant()
-        {
-            this.OpenHost<AMSLLC.Listener.Service.Implementation.Alliant.CustomService>();
-            this.OpenHost<AMSLLC.Listener.Service.Implementation.Alliant.UpdateClassificationCode>();
-        }
+        /////// <summary>
+        /////// Loads the KCPL web services.
+        /////// </summary>
+        ////[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "System.Boolean.TryParse(System.String,System.Boolean@)", Justification = "In case TryParse fails, initialProcessing will be set to false. This is desired value")]
+        ////private void LoadKCPL()
+        ////{
+        ////    bool initialProcessing;
+        ////    bool.TryParse(ConfigurationManager.AppSettings["Kcpl.InitialProcessingOn"], out initialProcessing);
 
-        /// <summary>
-        /// Loads the LabTrack web services.
-        /// </summary>
-        private void LoadLabTrack()
-        {
-            this.OpenHost<AMSLLC.Listener.Service.Implementation.LabTrack.CustomService>();
-        }
-
-        /// <summary>
-        /// Loads the KCPL web services.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "System.Boolean.TryParse(System.String,System.Boolean@)", Justification = "In case TryParse fails, initialProcessing will be set to false. This is desired value")]
-        private void LoadKCPL()
-        {
-            bool initialProcessing;
-            bool.TryParse(ConfigurationManager.AppSettings["Kcpl.InitialProcessingOn"], out initialProcessing);
-
-            if (initialProcessing)
-            {
-                AMSLLC.Listener.Service.Implementation.KCPL.CustomService service = new Implementation.KCPL.CustomService();
-                service.ProcessInitialLoad();
-            } 
-            else
-            {
-                this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.CustomService>();
-                this.OpenHost<AMSLLC.Listener.Service.Implementation.KCPL.TransactionResponseService>();
-            }
-        }
-
-        /// <summary>
-        /// Loads the alliant web services.
-        /// </summary>
-        private void LoadWecoMobile()
-        {
-            this.OpenHost<AMSLLC.Listener.Service.Implementation.WecoMobile.SiteInfo>();
-        }
+        ////    if (initialProcessing)
+        ////    {
+        ////        AMSLLC.Listener.Service.Implementation.KCPL.CustomService service = new Implementation.KCPL.CustomService();
+        ////        service.ProcessInitialLoad();
+        ////    } 
+        ////}
     }
 }

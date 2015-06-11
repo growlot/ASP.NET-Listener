@@ -1,5 +1,6 @@
 /$tf/
 /Releases/
+/Build/
 obj
 bin
 *.vspscc

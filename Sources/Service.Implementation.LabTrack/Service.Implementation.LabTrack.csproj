@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Build\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,10 +32,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Build\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -46,23 +47,19 @@
   <ItemGroup>
     <Reference Include="FileHelpers">
       <HintPath>..\..\packages\FileHelpers-Stable.2.9.9\lib\4.0\FileHelpers.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="FileHelpers.DataLink">
       <HintPath>..\..\packages\FileHelpers-Stable.2.9.9\lib\4.0\FileHelpers.DataLink.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.Excel">
-      <HintPath>..\..\packages\FileHelpers-Stable.2.9.9\lib\4.0\Interop.Excel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Interop.Office">
-      <HintPath>..\..\packages\FileHelpers-Stable.2.9.9\lib\4.0\Interop.Office.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <Private>False</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -77,6 +74,7 @@
     </Compile>
     <Compile Include="CustomService.cs" />
     <Compile Include="LabTrackFileFormat.cs" />
+    <Compile Include="PluginService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -97,22 +95,27 @@
     <ProjectReference Include="..\Common.WNP\Common.WNP.csproj">
       <Project>{0fd7fc3e-e13c-4083-bfc5-fbb21385e593}</Project>
       <Name>Common.WNP</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{ec4a22ee-3a4f-4b08-9c98-d5aacca3667c}</Project>
       <Name>Common</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Globalization\Globalization.csproj">
       <Project>{81155c93-08d8-4c3d-aaff-7bfd5705f001}</Project>
       <Name>Globalization</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Service.Contract\Service.Contract.csproj">
       <Project>{96112d5c-9b11-435d-836a-6b96ead53c7f}</Project>
       <Name>Service.Contract</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Service.Implementation\Service.Implementation.csproj">
       <Project>{15b3e0d2-6217-493a-a690-158c497f5318}</Project>
       <Name>Service.Implementation</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

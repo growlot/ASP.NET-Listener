@@ -55,7 +55,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>..\..\Build\</OutputPath>
     <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>full</DebugType>
@@ -66,7 +66,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>..\..\Build\</OutputPath>
     <DefineConstants>CODE_ANALYSIS;TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -89,6 +89,7 @@
       <HintPath>..\..\packages\Oracle.DataAccess.x86.2.112.1.0\lib\Oracle.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -143,22 +144,6 @@
     <ProjectReference Include="..\Service.Contract\Service.Contract.csproj">
       <Project>{96112d5c-9b11-435d-836a-6b96ead53c7f}</Project>
       <Name>Service.Contract</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Service.Implementation.Alliant\Service.Implementation.Alliant.csproj">
-      <Project>{ba402649-b85f-4a39-82da-8cccfc8b1a83}</Project>
-      <Name>Service.Implementation.Alliant</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Service.Implementation.KCPL\Service.Implementation.KCPL.csproj">
-      <Project>{020e077c-8ce4-4250-8a4e-b80a0df1e993}</Project>
-      <Name>Service.Implementation.KCPL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Service.Implementation.WecoMobile\Service.Implementation.WecoMobile.csproj">
-      <Project>{0b826983-db0f-4c6f-84e2-66c219cd33d1}</Project>
-      <Name>Service.Implementation.WecoMobile</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Service.Implementation.LabTrack\Service.Implementation.LabTrack.csproj">
-      <Project>{47468b73-c09a-405c-8a21-67d34050a7c4}</Project>
-      <Name>Service.Implementation.LabTrack</Name>
     </ProjectReference>
     <ProjectReference Include="..\Service.Implementation\Service.Implementation.csproj">
       <Project>{15b3e0d2-6217-493a-a690-158c497f5318}</Project>
