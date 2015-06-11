@@ -17,9 +17,7 @@ namespace AMSLLC.Listener.Service.Host
     using System.ServiceProcess;
     using System.Text;
     using System.Threading.Tasks;
-    using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Service.Contract;
-    using AMSLLC.Listener.Service.Implementation;
     using log4net;
 
     /// <summary>
@@ -59,11 +57,6 @@ namespace AMSLLC.Listener.Service.Host
         /// </summary>
         public void OpenAll()
         {
-            if (ConfigurationManager.AppSettings["Customer"].Contains("Core"))
-            {
-                this.OpenHost(typeof(ServiceCore));
-            }
-
             foreach (Lazy<IPluginService, INamedPluginMetadata> plugin in this.servicePlugins)
             {
                 foreach (Type type in plugin.Value.ServiceTypes)

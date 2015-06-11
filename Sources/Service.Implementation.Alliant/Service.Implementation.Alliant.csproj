@@ -121,6 +121,7 @@
     <Compile Include="UpdateDeviceClassificationCodeWECOProvABCSImpl.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Service References\GetDevice\AMSLLC.Listener.Service.Implementation.Alliant.GetDevice.QueryDeviceTestInfoResponseABMType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>

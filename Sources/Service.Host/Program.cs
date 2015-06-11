@@ -14,7 +14,6 @@ namespace AMSLLC.Listener.Service.Host
     using System.ServiceProcess;
     using System.Text;
     using System.Threading.Tasks;
-    using Listener.Common;
     using log4net;
     using log4net.Config;
 

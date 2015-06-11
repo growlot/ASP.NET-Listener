@@ -117,6 +117,10 @@
       <Project>{ba402649-b85f-4a39-82da-8cccfc8b1a83}</Project>
       <Name>Service.Implementation.Alliant</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Service.Implementation\Service.Implementation.csproj">
+      <Project>{15b3e0d2-6217-493a-a690-158c497f5318}</Project>
+      <Name>Service.Implementation</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Fakes Include="Fakes\AMSLLC.Listener.Common.fakes" />

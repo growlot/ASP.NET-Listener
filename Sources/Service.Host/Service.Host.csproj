@@ -137,9 +137,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common.WNP\Common.WNP.csproj">
+      <Project>{0fd7fc3e-e13c-4083-bfc5-fbb21385e593}</Project>
+      <Name>Common.WNP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{ec4a22ee-3a4f-4b08-9c98-d5aacca3667c}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Globalization\Globalization.csproj">
+      <Project>{81155c93-08d8-4c3d-aaff-7bfd5705f001}</Project>
+      <Name>Globalization</Name>
     </ProjectReference>
     <ProjectReference Include="..\Service.Contract\Service.Contract.csproj">
       <Project>{96112d5c-9b11-435d-836a-6b96ead53c7f}</Project>
