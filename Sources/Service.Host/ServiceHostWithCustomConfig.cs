@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.Service.Host
 
     /// <summary>
     /// Custom WCF service host that allows to inject custom config file.
+    /// Implementation based on <see href="http://blogs.msdn.com/b/dotnetinterop/archive/2008/09/22/custom-service-config-file-for-a-wcf-service-hosted-in-iis.aspx">this article</see>
     /// </summary>
     public class ServiceHostWithCustomConfig : ServiceHost
     {

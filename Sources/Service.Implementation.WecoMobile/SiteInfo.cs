@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
     using System.Configuration;
     using System.Globalization;
     using System.Linq;
+    using System.Reflection;
     using System.Resources;
     using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Common.Lookup;
@@ -67,7 +68,8 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             this.transactionLogManager = StaticPersistence.TransactionLogManager;
             this.deviceManager = StaticPersistence.DeviceManager;
             this.wnpSystem = StaticPersistence.WnpSystem;
-            this.ownerId = int.Parse(ConfigurationManager.AppSettings["WecoMobile.Owner"], CultureInfo.InvariantCulture);
+            Configuration assemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+            this.ownerId = int.Parse(assemblyConfig.AppSettings.Settings["WecoMobile.Owner"].Value, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

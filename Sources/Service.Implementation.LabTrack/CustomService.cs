@@ -155,7 +155,8 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
             {
                 case "LabTrack":
                     string labTrackEntry = this.PrepareElectricMeterTestResultsForLabTrack(device, deviceTest, meter);
-                    Utilities.AppendLineToFile(labTrackEntry, ConfigurationManager.AppSettings["ExportFileLocation.LabTrack"]);
+                    Configuration assemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+                    Utilities.AppendLineToFile(labTrackEntry, assemblyConfig.AppSettings.Settings["ExportFileLocation.LabTrack"].Value);
                     break;
                 default:
                     string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("ExternalSystemNotSupported", CultureInfo.CurrentCulture), currentTransaction.TransactionType.ExternalSystem.Name);

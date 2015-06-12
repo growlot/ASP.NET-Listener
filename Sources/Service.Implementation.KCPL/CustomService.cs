@@ -38,6 +38,11 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
+        /// The configuration specific for this assembly
+        /// </summary>
+        private static readonly Configuration AssemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
         /// The string manager
         /// </summary>
         private static readonly ResourceManager StringManager = Init.StringManager;
@@ -656,14 +661,14 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     this.TransactionLogManager.UpdateTransactionDataHash(transactionId, GetMeterHash(meter));
 
                     AssetLoadServiceRequest kcplServiceRequest = PrepareElectricMeterAssetLoadForODM(meter);
-                    this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetLoad.Url"], transactionId);
+                    this.CallOdm(kcplServiceRequest, AssemblyConfig.AppSettings.Settings["Kcpl.AssetLoad.Url"].Value, transactionId);
                 }
                 else
                 {
                     this.TransactionLogManager.UpdateTransactionDataHash(transactionId, currentHash);
 
                     AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
-                    this.CallOdm(kcplServiceRequest, ConfigurationManager.AppSettings["Kcpl.AssetUpdate.Url"], transactionId);
+                    this.CallOdm(kcplServiceRequest, AssemblyConfig.AppSettings.Settings["Kcpl.AssetUpdate.Url"].Value, transactionId);
                 } 
             }
             else
@@ -706,7 +711,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                         break;
                     case "ODM":
                         TestResultServiceRequest serviceRequest = this.PrepareElectricMeterTestResultsForODM(device, deviceTest, meter);
-                        this.CallOdm(serviceRequest, ConfigurationManager.AppSettings["Kcpl.AssetTestResult.Url"], transactionId);
+                        this.CallOdm(serviceRequest, AssemblyConfig.AppSettings.Settings["Kcpl.AssetTestResult.Url"].Value, transactionId);
                         break;
                     default:
                         string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("ExternalSystemNotSupported", CultureInfo.CurrentCulture), currentTransaction.TransactionType.ExternalSystem.Name);
@@ -735,12 +740,12 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             {
                 case "KCPL":
                     string kcplCisEntry = this.PrepareElectricMeterTestResultsForKcplCisFile(device, deviceTest, meter);
-                    SaveResultsToFile(kcplCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.KcplCis"]);
+                    SaveResultsToFile(kcplCisEntry, AssemblyConfig.AppSettings.Settings["ExportFileLocation.KcplCis"].Value);
                     break;
                 case "MPS":
                 case "SJLP":
                     string gmoCisEntry = this.PrepareElectricMeterTestResultsForGmoCisFile(device, deviceTest, meter);
-                    SaveResultsToFile(gmoCisEntry, ConfigurationManager.AppSettings["ExportFileLocation.GmoCis"]);
+                    SaveResultsToFile(gmoCisEntry, AssemblyConfig.AppSettings.Settings["ExportFileLocation.GmoCis"].Value);
                     break;
                 default:
                     string message = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("CompanyNotSupported", CultureInfo.CurrentCulture), meter.CustomField1);

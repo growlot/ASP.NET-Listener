@@ -11,6 +11,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Resources;
     using System.ServiceModel;
     using System.Xml.Serialization;
@@ -34,6 +35,11 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// The logger
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
+        /// The configuration specific for this assembly
+        /// </summary>
+        private static readonly Configuration AssemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
         /// The string manager
@@ -77,7 +83,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             QueryDeviceTestInfoResponseABMType alliantResponse;
 
             bool useMockup;
-            bool.TryParse(ConfigurationManager.AppSettings["Test.UseMockup"], out useMockup);
+            bool.TryParse(AssemblyConfig.AppSettings.Settings["Test.UseMockup"].Value, out useMockup);
 
             try
             {
@@ -227,7 +233,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             CreateDeviceTestResultResponseABMType alliantResponse;
 
             bool useMockup;
-            if (!bool.TryParse(ConfigurationManager.AppSettings["Test.UseMockup"], out useMockup))
+            if (!bool.TryParse(AssemblyConfig.AppSettings.Settings["Test.UseMockup"].Value, out useMockup))
             {
                 useMockup = false;
             }
@@ -466,7 +472,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         private QueryDeviceTestInfoResponseABMType GetDeviceResponseFromFile(Device device, QueryDeviceTestInfoABMType alliantRequest)
         {
             QueryDeviceTestInfoResponseABMType alliantResponse = null;
-            string mockupFilesLocation = ConfigurationManager.AppSettings["Test.MockupFilesLocation"];
+            string mockupFilesLocation = AssemblyConfig.AppSettings.Settings["Test.MockupFilesLocation"].Value;
             string mockupFile = Path.Combine(mockupFilesLocation, "GetDevice_" + device.EquipmentType.InternalCode + "_" + device.EquipmentNumber + ".xml");
             string mockupFileFault = Path.Combine(mockupFilesLocation, "GetDevice_Fault_" + device.EquipmentType.InternalCode + "_" + device.EquipmentNumber + ".txt");
             string mockupFileDefault = Path.Combine(mockupFilesLocation, "GetDevice_" + device.EquipmentType.InternalCode + "_Default.xml");
@@ -580,7 +586,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         private CreateDeviceTestResultResponseABMType SendDeviceTestResponseFromFile(Device device, CreateDeviceTestResultABMType alliantRequest)
         {
             CreateDeviceTestResultResponseABMType alliantResponse;
-            string mockupFilesLocation = ConfigurationManager.AppSettings["Test.MockupFilesLocation"];
+            string mockupFilesLocation = AssemblyConfig.AppSettings.Settings["Test.MockupFilesLocation"].Value;
             string mockupFile = Path.Combine(mockupFilesLocation, "SendDeviceTest_" + device.EquipmentType.InternalCode + "_" + device.EquipmentNumber + ".xml");
             string mockupFileFault = Path.Combine(mockupFilesLocation, "SendDeviceTest_Fault_" + device.EquipmentType.InternalCode + "_" + device.EquipmentNumber + ".txt");
             string mockupFileDefault = Path.Combine(mockupFilesLocation, "SendDeviceTest_" + device.EquipmentType.InternalCode + "_Default.xml");
