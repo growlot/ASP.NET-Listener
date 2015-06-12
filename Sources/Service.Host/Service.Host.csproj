@@ -7,7 +7,7 @@
     <ProjectGuid>{6CFF1DF4-2A64-4AE4-9C87-722E3ABF3608}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Service.Host</RootNamespace>
+    <RootNamespace>AMSLLC.Listener.Service.Host</RootNamespace>
     <AssemblyName>AMSLLC.Listener.Service.Host</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceHostWithCustomConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\packages\NHibernate.4.0.1.4000\nhibernate-configuration.xsd">

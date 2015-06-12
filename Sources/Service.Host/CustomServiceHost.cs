@@ -34,7 +34,7 @@ namespace AMSLLC.Listener.Service.Host
         /// <summary>
         /// The list of service hosts
         /// </summary>
-        private IList<ServiceHost> serviceHosts = new List<ServiceHost>();
+        private IList<ServiceHostWithCustomConfig> serviceHosts = new List<ServiceHostWithCustomConfig>();
 
         /// <summary>
         /// The alliant service
@@ -106,10 +106,10 @@ namespace AMSLLC.Listener.Service.Host
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "False positive")]
         private void OpenHost(Type type)
         {
-            ServiceHost serviceHost = null;
+            ServiceHostWithCustomConfig serviceHost = null;
             try
             {
-                serviceHost = new ServiceHost(type);
+                serviceHost = new ServiceHostWithCustomConfig(type);
                 serviceHost.Open();
                 this.serviceHosts.Add(serviceHost);
                 serviceHost = null;
