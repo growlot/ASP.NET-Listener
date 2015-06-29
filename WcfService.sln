@@ -59,6 +59,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Implementation.LabT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.WNP.Unit.Test", "Sources\Common.WNP.Unit.Test\Common.WNP.Unit.Test.csproj", "{DC45C98D-2B9A-4F1D-997C-6C4FEDEAE2E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Sources\Domain\Domain.csproj", "{7937EB80-3944-4AB3-96E3-4745CFC5E21A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Test", "Sources\Domain.Test\Domain.Test.csproj", "{2B3CD647-671F-4016-A383-15A8A8A2BF34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -211,6 +215,22 @@ Global
 		{DC45C98D-2B9A-4F1D-997C-6C4FEDEAE2E3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC45C98D-2B9A-4F1D-997C-6C4FEDEAE2E3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DC45C98D-2B9A-4F1D-997C-6C4FEDEAE2E3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7937EB80-3944-4AB3-96E3-4745CFC5E21A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7937EB80-3944-4AB3-96E3-4745CFC5E21A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7937EB80-3944-4AB3-96E3-4745CFC5E21A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7937EB80-3944-4AB3-96E3-4745CFC5E21A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7937EB80-3944-4AB3-96E3-4745CFC5E21A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7937EB80-3944-4AB3-96E3-4745CFC5E21A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7937EB80-3944-4AB3-96E3-4745CFC5E21A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7937EB80-3944-4AB3-96E3-4745CFC5E21A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
