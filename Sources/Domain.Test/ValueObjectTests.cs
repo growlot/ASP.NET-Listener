@@ -45,9 +45,11 @@ namespace AMSLLC.Listener.Domain.Test
         {
             Address address = new Address(null, "Austin", "TX");
             Address address2 = new Address("Address2", "Austin", "TX");
+            Address address3 = new Address(null, "Austin", "TX");
 
             Assert.IsFalse(address.Equals(address2));
             Assert.IsFalse(address2.Equals(address));
+            Assert.IsTrue(address.Equals(address3));
         }
 
         /// <summary>
@@ -102,6 +104,19 @@ namespace AMSLLC.Listener.Domain.Test
 
             Assert.IsFalse(address2 == address);
             Assert.IsTrue(address2 != address);
+        }
+
+        /// <summary>
+        /// Equals work with null objects.
+        /// </summary>
+        [TestMethod]
+        public void EqualsWorkWithNullObjects()
+        {
+            Address address = null;
+            Address address2 = new Address("Address", "Austin", "TX");
+
+            Assert.IsFalse(address2.Equals(address));
+            Assert.IsFalse(address2.Equals((object)address));
         }
 
         /// <summary>

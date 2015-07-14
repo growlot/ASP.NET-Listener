@@ -35,6 +35,7 @@ namespace AMSLLC.Listener.Domain.Test
             TestEntity persistedEntity2 = new TestEntity(1, "Some value 2");
 
             Assert.IsTrue(persistedEntity1.Equals(persistedEntity2));
+            Assert.IsTrue(persistedEntity1.Equals((object)persistedEntity2));
         }
 
         /// <summary>
@@ -59,6 +60,18 @@ namespace AMSLLC.Listener.Domain.Test
             TestEntity newEntity2 = new TestEntity("Some value");
 
             Assert.IsFalse(newEntity1.Equals(newEntity2));
+        }
+
+        /// <summary>
+        /// Entity should not be equal to non entity.
+        /// </summary>
+        [TestMethod]
+        public void EntityShouldNotBeEqualToNonentity()
+        {
+            TestEntity persistedEntity = new TestEntity(1, "Some value 1");
+            TestNonentity nonentity = new TestNonentity(1, "Some value 1");
+
+            Assert.IsFalse(persistedEntity.Equals(nonentity));
         }
 
         /// <summary>
@@ -96,6 +109,42 @@ namespace AMSLLC.Listener.Domain.Test
 
             Assert.IsTrue(newEntity.Equals(newEntity));
             Assert.IsTrue(persistedEntity.Equals(persistedEntity));
+        }
+
+        /// <summary>
+        /// Class that has same fields as <see cref="TestEntity"/>, but doesn't inherit from <see cref="Entity"/>.
+        /// </summary>
+        private class TestNonentity
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TestNonentity"/> class.
+            /// For persisted entity simulation.
+            /// </summary>
+            /// <param name="id">The identifier.</param>
+            /// <param name="field">The field.</param>
+            public TestNonentity(int id, string field)
+            {
+                this.Id = id;
+                this.Field = field;
+            }
+
+            /// <summary>
+            /// Gets the identifier.
+            /// </summary>
+            /// <value>
+            /// The identifier.
+            /// </value>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "It's just an imitation of how real entity would be set up.")]
+            public int Id { get; private set; }
+
+            /// <summary>
+            /// Gets the field.
+            /// </summary>
+            /// <value>
+            /// The field.
+            /// </value>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "It's just an imitation of how real entity would be set up.")]
+            public string Field { get; private set; }
         }
 
         /// <summary>

@@ -203,7 +203,15 @@ namespace AMSLLC.Listener.Domain
         /// </returns>
         public override string ToString()
         {
-            return this.GetAddressUSFormat();
+            // address is formated based on country code
+            // if no country specific format is available, then US address format is used.
+            switch (this.Country)
+            {
+                case "US": 
+                    return this.GetAddressUSFormat();
+                default:
+                    return this.GetAddressUSFormat();
+            }
         }
     }
 }
