@@ -105,6 +105,7 @@
     <Compile Include="RemoveRelatedFilesRequest.cs" />
     <Compile Include="SiteInfo.cs" />
     <Compile Include="SiteInfoRequest.cs" />
+    <Compile Include="CheckoutRequest.cs" />
     <Compile Include="MeterTestResultsRequest.cs" />
     <Compile Include="UpdateCircuitLocationRequest.cs" />
     <Compile Include="UpdateCommentRequest.cs" />

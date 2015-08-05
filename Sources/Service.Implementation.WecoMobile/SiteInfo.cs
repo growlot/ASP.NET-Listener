@@ -153,6 +153,78 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         }
 
         /// <summary>
+        /// Checks out device to specified user and assignes it to specified truck.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>The checked out device</returns>
+        /// <exception cref="ArgumentNullException">request;Can not process request if it is not specified</exception>
+        public ListenerModel.Device CheckoutDevice(CheckoutRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not process request if it is not specified");
+            }
+
+            Log.Info("CheckOutDevice started.");
+
+            ListenerModel.Device device = null;
+
+            if (!string.IsNullOrWhiteSpace(request.ServiceType) && !string.IsNullOrWhiteSpace(request.EquipmentType) && !string.IsNullOrWhiteSpace(request.EquipmentNumber))
+            {
+                ListenerModel.EquipmentType equipmentType = this.deviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
+                if (equipmentType == null)
+                {
+                    string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeUnknown", CultureInfo.CurrentCulture), request.EquipmentType, request.ServiceType);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
+                }
+
+                switch (equipmentType.InternalCode)
+                {
+                    case "EM":
+                        WnpModel.Meter meter = this.wnpSystem.GetEquipment<WnpModel.Meter>(request.EquipmentNumber, this.ownerId);
+                        if (meter == null)
+                        {
+                            string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("MeterNotFound", CultureInfo.CurrentCulture), request.EquipmentNumber);
+                            Log.Error(message);
+                            throw new ArgumentException(message);
+                        }
+
+                        device = this.ConvertMeterToDevice(meter);
+                        break;
+                    case "CT":
+                        WnpModel.CurrentTransformer currentTransformer = this.wnpSystem.GetEquipment<WnpModel.CurrentTransformer>(request.EquipmentNumber, this.ownerId);
+                        if (currentTransformer == null)
+                        {
+                            string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("CTNotFound", CultureInfo.CurrentCulture), request.EquipmentNumber);
+                            Log.Error(message);
+                            throw new ArgumentException(message);
+                        }
+
+                        device = this.ConvertCurrentTransformerToDevice(currentTransformer);
+                        break;
+                    case "PT":
+                        WnpModel.PotentialTransformer potentialTransformer = this.wnpSystem.GetEquipment<WnpModel.PotentialTransformer>(request.EquipmentNumber, this.ownerId);
+                        if (potentialTransformer == null)
+                        {
+                            string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("PTNotFound", CultureInfo.CurrentCulture), request.EquipmentNumber);
+                            Log.Error(message);
+                            throw new ArgumentException(message);
+                        }
+
+                        device = this.ConvertPotentialTransformerToDevice(potentialTransformer);
+                        break;
+                    default:
+                        string message1 = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), equipmentType.Description, equipmentType.ServiceType.Description);
+                        Log.Error(message1);
+                        throw new ArgumentException(message1);
+                }
+            }
+
+            return device;
+        }
+
+        /// <summary>
         /// Adds the meter test results.
         /// </summary>
         /// <param name="request">The request.</param>
