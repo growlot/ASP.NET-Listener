@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "3", Description = "Skipped" });
+            this.Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "3", Description = "Skipped" });
         }
     }
 }

@@ -39,7 +39,7 @@ namespace AMSLLC.Listener.Common.Model
         /// The device batch identifier.
         /// </value>
         public int Id { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the external identifier.
         /// </summary>

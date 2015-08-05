@@ -28,7 +28,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         /// The WNP system.
         /// </value>
         private WNPSystem wnpSystem;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestConstructor"/> class.
         /// </summary>

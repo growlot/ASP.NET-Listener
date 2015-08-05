@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing fields common for all barcodes 
+    /// Data model class representing fields common for all barcodes
     /// </summary>
     public class Barcode : IBarcode
     {
@@ -33,7 +33,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The barcode identifier.
         /// </value>
-        public BarcodeIdentifier BarcodeId 
+        public BarcodeIdentifier BarcodeId
         {
             get
             {
@@ -55,15 +55,15 @@ namespace AMSLLC.Listener.Common.WNP.Model
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the barcode lookup code.
         /// </summary>
         /// <value>
         /// The barcode lookup code.
         /// </value>
-        public string LookupCode 
-        { 
+        public string LookupCode
+        {
             get
             {
                 return this.lookupCode;
@@ -82,7 +82,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The owner.
         /// </value>
-        public Owner Owner 
+        public Owner Owner
         {
             get
             {
@@ -248,7 +248,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// </value>
         public string CustomField18 { get; set; }
 
-        /// <summary> 
+        /// <summary>
         /// Gets or sets the custom field19.
         /// </summary>
         /// <value>

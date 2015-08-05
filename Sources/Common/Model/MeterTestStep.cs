@@ -98,7 +98,7 @@ namespace AMSLLC.Listener.Common.Model
         /// As left.
         /// </value>
         public decimal AsLeft { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the test amps.
         /// </summary>

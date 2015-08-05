@@ -87,7 +87,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                     throw new ArgumentException(message1);
             }
         }
-        
+
         /// <summary>
         /// Called when [send batch data]. Must override with client specific implementation.
         /// </summary>
@@ -207,7 +207,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
                 StockHeaderChangeDate = meter.EquipmentStatusDate,
                 StockHeaderEventTrigger1 = 0,
                 StockHeaderEventTrigger2 = 0,
-                
+
                 MeterHeaderTypeCode = meter.ModelNumber,
                 MeterHeaderSetupCode = meter.AepCode,
                 MeterHeaderKwhDials = meter.KwhDials,
@@ -313,7 +313,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
             {
                 labTrackEntry.MeterSetupDiskConstant = 0m;
             }
-                        
+
             // check if there are test steps that didn't pass
             ////IList<MeterTestResult> failedTests = meterTestResults.Where(item => item.AccuracyStatus != 'P').ToList();
             ////if (failedTests.Count() > 0)

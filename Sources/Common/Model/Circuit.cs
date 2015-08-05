@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.Common.Model
             this.Id = id;
             this.Devices = new List<Device>();
         }
-        
+
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>

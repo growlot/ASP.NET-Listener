@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Common.Model
     using System.Text;
 
     /// <summary>
-    /// Data model class representing configuration setting 
+    /// Data model class representing configuration setting
     /// </summary>
     public class Config
     {
@@ -34,7 +34,7 @@ namespace AMSLLC.Listener.Common.Model
             this.Name = name;
             this.Value = value;
         }
-        
+
         /// <summary>
         /// Gets or sets the identifier of configuration setting.
         /// </summary>

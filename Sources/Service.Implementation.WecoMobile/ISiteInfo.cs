@@ -5,11 +5,9 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 {
-    using System;
     using System.ServiceModel;
-    using System.ServiceModel.Web;
-    using AMSLLC.Listener.Common.Model;
-    using AMSLLC.Listener.Service.Contract;
+    using Contract;
+    using ListenerModel = Common.Model;
 
     /// <summary>
     /// Interface for web service that will communicate with Weco Mobile application
@@ -25,15 +23,24 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// The site information
         /// </returns>
         [OperationContract]
-        [FaultContractAttribute(typeof(ServiceFaultDetails))]
-        Site GetSiteInfo(SiteInfoRequest request);
+        [FaultContract(typeof(ServiceFaultDetails))]
+        ListenerModel.Site GetSiteInfo(SiteInfoRequest request);
+
+        /// <summary>
+        /// Checks out device to specified user and assigns it to specified truck.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>The checked out device</returns>
+        [OperationContract]
+        [FaultContract(typeof(ServiceFaultDetails))]
+        ListenerModel.Device CheckoutDevice(CheckoutRequest request);
 
         /// <summary>
         /// Adds the meter test results.
         /// </summary>
         /// <param name="request">The request.</param>
         [OperationContract]
-        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        [FaultContract(typeof(ServiceFaultDetails))]
         void AddMeterTestResults(MeterTestResultsRequest request);
 
         /// <summary>
@@ -41,7 +48,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </summary>
         /// <param name="request">The request.</param>
         [OperationContract]
-        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        [FaultContract(typeof(ServiceFaultDetails))]
         void AddRelatedFiles(AddRelatedFilesRequest request);
 
         /// <summary>
@@ -49,7 +56,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </summary>
         /// <param name="request">The request.</param>
         [OperationContract]
-        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        [FaultContract(typeof(ServiceFaultDetails))]
         void RemoveRelatedFiles(RemoveRelatedFilesRequest request);
 
         /// <summary>
@@ -57,7 +64,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </summary>
         /// <param name="request">The request.</param>
         [OperationContract]
-        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        [FaultContract(typeof(ServiceFaultDetails))]
         void UpdateCircuitLocation(UpdateCircuitLocationRequest request);
 
         /// <summary>
@@ -65,7 +72,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </summary>
         /// <param name="request">The request.</param>
         [OperationContract]
-        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        [FaultContract(typeof(ServiceFaultDetails))]
         void AddComments(AddCommentsRequest request);
 
         /// <summary>
@@ -73,15 +80,15 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </summary>
         /// <param name="request">The request.</param>
         [OperationContract]
-        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        [FaultContract(typeof(ServiceFaultDetails))]
         void RemoveComments(RemoveCommentsRequest request);
-        
+
         /// <summary>
         /// Updates the comments for site and/or device.
         /// </summary>
         /// <param name="request">The request.</param>
         [OperationContract]
-        [FaultContractAttribute(typeof(ServiceFaultDetails))]
+        [FaultContract(typeof(ServiceFaultDetails))]
         void UpdateComments(UpdateCommentsRequest request);
     }
 }

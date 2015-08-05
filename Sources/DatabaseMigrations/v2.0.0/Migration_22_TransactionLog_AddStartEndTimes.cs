@@ -23,17 +23,17 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Alter.Table("TransactionLog")
+            this.Alter.Table("TransactionLog")
                 .AddColumn("TransactionStart").AsDateTime().NotNullable().SetExistingRowsTo(DateTime.Now)
                 .AddColumn("TransactionEnd").AsDateTime().Nullable();
         }
 
         /// <summary>
-        /// Reverts the database migration 
+        /// Reverts the database migration
         /// </summary>
         public override void Down()
         {
-            Delete
+            this.Delete
                 .Column("TransactionStart")
                 .Column("TransactionEnd")
                 .FromTable("TransactionLog");

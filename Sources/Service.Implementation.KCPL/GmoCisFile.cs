@@ -3,6 +3,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+#pragma warning disable SA1401
+
 namespace AMSLLC.Listener.Service.Implementation.KCPL
 {
     using System;
@@ -437,7 +439,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         [FieldFixedLength(7)]
         [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00", "-999.99")]
         public decimal? AsLeftLightLoad;
-        
+
         /// <summary>
         /// As left a full load
         /// </summary>
@@ -519,7 +521,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             /// <returns>
             /// The Field value as string.
             /// </returns>
-            /// <exception cref="FileHelpers.Events.AfterWriteEventArgs`1">See FileHelpers for exception details.</exception>
+            /// <exception cref="ArgumentNullException">from;Can not convert string to Meter Serial Number if string is not provided.</exception>
             public override object StringToField(string from)
             {
                 if (from == null)
@@ -551,3 +553,4 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         }
     }
 }
+#pragma warning restore SA1401

@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing electric meter test results 
+    /// Data model class representing electric meter test results
     /// </summary>
     public class MeterTestResult : EquipmentTestResult
     {
@@ -68,7 +68,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// As left.
         /// </value>
         public decimal AsLeft { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the test amps.
         /// </summary>

@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("FileAlignMode")
+            this.Create.Table("FileAlignMode")
                 .WithColumn("FileAlignModeId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("Description").AsString(50).NotNullable().Unique("IX_AligMode_Description");
         }

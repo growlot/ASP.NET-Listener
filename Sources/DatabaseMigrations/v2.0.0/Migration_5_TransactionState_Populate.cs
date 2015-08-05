@@ -23,12 +23,12 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "1", Description = "Listener client start" });
-            Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "2", Description = "Listener client send message" });
-            Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "3", Description = "Listener service receive call" });
-            Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "4", Description = "Listener service send message" });
-            Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "5", Description = "Listener client end" });
-            Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "6", Description = "Listener service end" });
+            this.Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "1", Description = "Listener client start" });
+            this.Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "2", Description = "Listener client send message" });
+            this.Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "3", Description = "Listener service receive call" });
+            this.Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "4", Description = "Listener service send message" });
+            this.Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "5", Description = "Listener client end" });
+            this.Insert.IntoTable("TransactionState").Row(new { TransactionStateId = "6", Description = "Listener service end" });
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            Delete.FromTable("TransactionState").AllRows();
+            this.Delete.FromTable("TransactionState").AllRows();
         }
     }
 }

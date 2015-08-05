@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("ExternalSystem")
+            this.Create.Table("ExternalSystem")
                 .WithColumn("ExternalSystemId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("Name").AsString(50).NotNullable().Unique("IX_ExteSyst_Name")
                 .WithColumn("Description").AsString(500).Nullable();

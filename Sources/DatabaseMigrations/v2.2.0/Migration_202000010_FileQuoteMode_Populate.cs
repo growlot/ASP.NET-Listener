@@ -23,10 +23,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("FileQuoteMode").Row(new { FileQuoteModeId = "0", Description = "AlwaysQuoted" });
-            Insert.IntoTable("FileQuoteMode").Row(new { FileQuoteModeId = "1", Description = "OptionalForRead" });
-            Insert.IntoTable("FileQuoteMode").Row(new { FileQuoteModeId = "2", Description = "OptionalForWrite" });
-            Insert.IntoTable("FileQuoteMode").Row(new { FileQuoteModeId = "3", Description = "OptionalForBoth" });
+            this.Insert.IntoTable("FileQuoteMode").Row(new { FileQuoteModeId = "0", Description = "AlwaysQuoted" });
+            this.Insert.IntoTable("FileQuoteMode").Row(new { FileQuoteModeId = "1", Description = "OptionalForRead" });
+            this.Insert.IntoTable("FileQuoteMode").Row(new { FileQuoteModeId = "2", Description = "OptionalForWrite" });
+            this.Insert.IntoTable("FileQuoteMode").Row(new { FileQuoteModeId = "3", Description = "OptionalForBoth" });
         }
     }
 }

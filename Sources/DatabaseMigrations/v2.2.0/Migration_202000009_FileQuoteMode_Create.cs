@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("FileQuoteMode")
+            this.Create.Table("FileQuoteMode")
                 .WithColumn("FileQuoteModeId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("Description").AsString(50).NotNullable().Unique("IX_QoteMode_Description");
         }

@@ -43,7 +43,7 @@ namespace AMSLLC.Listener.Client.Implementation.Messages
         /// The transaction status.
         /// </value>
         public string TransactionStatus { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the test date.
         /// </summary>

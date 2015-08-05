@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("ExternalSystem").Row(new { Name = "WecoMobile", Description = "Weco Mobile application" });
+            this.Insert.IntoTable("ExternalSystem").Row(new { Name = "WecoMobile", Description = "Weco Mobile application" });
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            Delete.FromTable("ExternalSystem").Row(new { Name = "WecoMobile" });
+            this.Delete.FromTable("ExternalSystem").Row(new { Name = "WecoMobile" });
         }
     }
 }

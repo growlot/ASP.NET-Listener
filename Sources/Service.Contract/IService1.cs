@@ -5,15 +5,7 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Service.Contract
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.Serialization;
     using System.ServiceModel;
-    using System.ServiceModel.Web;
-    using System.Text;
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "Namespace", Justification = "DataContract properties generate false positives")]
 
     /// <summary>
     /// SOAP interface for for Listener service

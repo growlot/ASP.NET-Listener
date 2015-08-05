@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Common.Model
     using System.Text;
 
     /// <summary>
-    /// Data model class representing TransactionType 
+    /// Data model class representing TransactionType
     /// </summary>
     public class TransactionType
     {

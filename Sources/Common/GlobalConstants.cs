@@ -13,6 +13,20 @@ namespace AMSLLC.Listener.Common
         /// <summary>
         /// The previous successful transaction not found
         /// </summary>
-        public static readonly string PreviousSuccessfulTransactionNotFound = "There are no previous successful transactions";
+        private const string PreviousSuccessfulTransactionNotFoundText = "There are no previous successful transactions";
+
+        /// <summary>
+        /// Gets the previous successful transaction not found marker text.
+        /// </summary>
+        /// <value>
+        /// The previous successful transaction not found.
+        /// </value>
+        public static string PreviousSuccessfulTransactionNotFound
+        {
+            get
+            {
+                return PreviousSuccessfulTransactionNotFoundText;
+            }
+        }
     }
 }

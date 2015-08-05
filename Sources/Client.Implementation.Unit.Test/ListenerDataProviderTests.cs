@@ -5,14 +5,11 @@
 //-----------------------------------------------------------------------
 namespace Client.Implementation.Unit.Test
 {
-    using System;
     using System.Collections.Generic;
     using AMSLLC.Listener.Client.Implementation;
     using AMSLLC.Listener.Client.Implementation.Messages;
-    using AMSLLC.Listener.Common;
     using AMSLLC.Listener.Common.Model;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using NHibernate.Criterion;
 
     /// <summary>
     /// Tests Listener data provider

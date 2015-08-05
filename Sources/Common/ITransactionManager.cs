@@ -92,7 +92,7 @@ namespace AMSLLC.Listener.Common
         /// <param name="transactionSource">The transaction source.</param>
         /// <returns>The list of transactions that need to be run.</returns>
         IList<TransactionType> GetTransactionTypes(TransactionDataLookup transactionData, TransactionDirectionLookup transactionDirection, TransactionSourceLookup transactionSource);
-        
+
         /// <summary>
         /// Gets the transaction type list.
         /// </summary>

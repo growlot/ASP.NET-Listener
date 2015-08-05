@@ -28,7 +28,7 @@ namespace AMSLLC.Listener.Service.Implementation
     using log4net;
 
     /// <summary>
-    /// Implements Listener web service 
+    /// Implements Listener web service
     /// </summary>
     public class ServiceCore : IService1
     {

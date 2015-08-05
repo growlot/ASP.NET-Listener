@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "5", Description = "Site" });
+            this.Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "5", Description = "Site" });
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            Delete.FromTable("TransactionData").Row(new { TransactionDataId = "5" });
+            this.Delete.FromTable("TransactionData").Row(new { TransactionDataId = "5" });
         }
     }
 }

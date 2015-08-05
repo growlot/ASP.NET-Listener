@@ -17,7 +17,7 @@ namespace AMSLLC.Listener.Common.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionLogMap"/> class.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Can't simplify mapping."), 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Can't simplify mapping."),
          System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Can't simplify mapping.")]
         public TransactionLogMap()
         {
@@ -96,7 +96,7 @@ namespace AMSLLC.Listener.Common.Model
 
             this.Bag(
                 x => x.TransactionLogStates,
-                m => 
+                m =>
                 {
                     m.Cascade(Cascade.DeleteOrphans);
                     m.Fetch(CollectionFetchMode.Join);

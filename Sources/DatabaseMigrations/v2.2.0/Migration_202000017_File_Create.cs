@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("File")
+            this.Create.Table("File")
                 .WithColumn("FileId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("ExternalSystemId").AsInt32().NotNullable()
                 .WithColumn("Name").AsString(50).NotNullable()
@@ -31,11 +31,11 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("Delimiter").AsString(2).Nullable()
                 .WithColumn("System").AsBoolean().NotNullable();
 
-            Create.ForeignKey("FK_File_FixeMode")
+            this.Create.ForeignKey("FK_File_FixeMode")
                 .FromTable("File").ForeignColumn("FileFixedModeId")
                 .ToTable("FileFixedMode").PrimaryColumn("FileFixedModeId");
 
-            Create.ForeignKey("FK_File_ExteSyst")
+            this.Create.ForeignKey("FK_File_ExteSyst")
                 .FromTable("File").ForeignColumn("ExternalSystemId")
                 .ToTable("ExternalSystem").PrimaryColumn("ExternalSystemId");
         }

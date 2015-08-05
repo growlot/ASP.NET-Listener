@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.Common
     /// <summary>
     /// Specifies whether to begin a new session, continue an existing session, or end an existing session.
     /// </summary>
-    public enum SessionAction 
+    public enum SessionAction
     {
         /// <summary>
         /// Create new session for request and leave it open.
@@ -43,7 +43,7 @@ namespace AMSLLC.Listener.Common
         /// <summary>
         /// Create new session and close it after request is done.
         /// </summary>
-        BeginAndEnd 
+        BeginAndEnd
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ namespace AMSLLC.Listener.Common
         /// The assembly containing additional mappings
         /// </summary>
         private Assembly mappingAssembly;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PersistenceManager"/> class.
         /// </summary>
@@ -112,7 +112,7 @@ namespace AMSLLC.Listener.Common
         /// <value>
         /// The database (ex. MSSQL2005, Oracle, etc.)
         /// </value>
-        public string Database 
+        public string Database
         {
             get
             {
@@ -131,14 +131,14 @@ namespace AMSLLC.Listener.Common
         /// <value>
         /// The connection string.
         /// </value>
-        public string ConnectionString 
+        public string ConnectionString
         {
             get
             {
                 return this.connectionString;
             }
         }
-        
+
         /// <summary>
         /// Retrieves all objects of a specified type.
         /// </summary>
@@ -152,12 +152,12 @@ namespace AMSLLC.Listener.Common
             /* Note that NHibernate guarantees that two object references will point to the
              * same object only if the references are set in the same session. For example,
              * Order #123 under the Customer object Able Inc and Order #123 in the Orders
-             * list will point to the same object only if we load Customers and Orders in 
+             * list will point to the same object only if we load Customers and Orders in
              * the same session. If we load them in different sessions, then changes that
              * we make to Able Inc's Order #123 will not be reflected in Order #123 in the
              * Orders list, since the references point to different objects. That's why we
              * maintain a session as a member variable, instead of as a local variable. */
-            
+
             // Open a new session if specified
             if ((sessionAction == SessionAction.Begin) || (sessionAction == SessionAction.BeginAndEnd))
             {
@@ -165,7 +165,7 @@ namespace AMSLLC.Listener.Common
             }
 
             // Retrieve all objects of the type passed in
-            ICriteria targetObjects = this.session.CreateCriteria(typeof(T));            
+            ICriteria targetObjects = this.session.CreateCriteria(typeof(T));
             IList<T> itemList = targetObjects.List<T>();
 
             // Close the session if specified
@@ -332,7 +332,7 @@ namespace AMSLLC.Listener.Common
                 return localSession.Get<T>(key);
             }
         }
-        
+
         /// <summary>
         /// Saves an object and its persistent children.
         /// </summary>
@@ -374,7 +374,7 @@ namespace AMSLLC.Listener.Common
 
                     localSession.Transaction.Commit();
                 }
-            } 
+            }
 
             ////using (IStatelessSession statelessSession = sessionFactory.OpenStatelessSession())
             ////{
@@ -399,7 +399,7 @@ namespace AMSLLC.Listener.Common
             using (ISession localSession = this.sessionFactory.OpenSession())
             {
                 localSession.CreateQuery("delete from " + typeof(T).ToString()).ExecuteUpdate();
-            } 
+            }
         }
 
         /// <summary>
@@ -412,10 +412,10 @@ namespace AMSLLC.Listener.Common
             using (ISession localSession = this.sessionFactory.OpenSession())
             {
                 localSession.Delete(localSession.Load(typeof(T), id));
-                localSession.Flush();                                    
+                localSession.Flush();
             }
         }
-        
+
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -467,14 +467,14 @@ namespace AMSLLC.Listener.Common
 
             configuration.Configure();
 
-            /* Note: The AddAssembly() method requires that mappings be 
-             * contained in hbm.xml files whose BuildAction properties 
+            /* Note: The AddAssembly() method requires that mappings be
+             * contained in hbm.xml files whose BuildAction properties
              * are set to ‘Embedded Resource’. */
 
             // Add class mappings to configuration object
             Assembly thisAssembly = typeof(Config).Assembly;
             configuration.AddAssembly(thisAssembly);
-                        
+
             // Add mappings by code
             ModelMapper mapper = new ModelMapper();
             mapper.AddMappings(thisAssembly.GetExportedTypes());
@@ -484,7 +484,7 @@ namespace AMSLLC.Listener.Common
             }
 
             configuration.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
-            
+
             // Create session factory from configuration object
             this.sessionFactory = configuration.BuildSessionFactory();
             this.connectionString = configuration.Properties["connection.connection_string"];

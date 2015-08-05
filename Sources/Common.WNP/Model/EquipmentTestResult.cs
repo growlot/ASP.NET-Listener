@@ -155,7 +155,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// The custom field7.
         /// </value>
         public string CustomField7 { get; set; }
-    
+
 ////CREATE TABLE [wndba].[TCT_TEST_RESULTS](
 ////    [PERCENT_LOAD] [nvarchar](3) NULL CONSTRAINT [DF__TCT_TEST_R__LOAD__09E968C4]  DEFAULT (NULL),
 ////    [PERCENT_CHANGE] [float] NULL CONSTRAINT [DF__TCT_TEST___PERCE__0ADD8CFD]  DEFAULT (NULL),
@@ -172,7 +172,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
 ////    [results_user09] [varchar](50) NULL,
 ////    [results_user10] [varchar](50) NULL,
 ////    [PROCESS_TAG] [char](1) NULL,
- 
+
 ////CREATE TABLE [wndba].[TMETER_TEST_RESULTS](
 ////--  [SITE] [int] NULL,
 ////--  [CIRCUIT] [int] NULL,

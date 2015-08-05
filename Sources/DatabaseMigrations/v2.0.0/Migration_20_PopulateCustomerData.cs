@@ -25,27 +25,27 @@ namespace AMSLLC.Listener.DatabaseMigrations
         public override void Up()
         {
             if (((string)this.ApplicationContext).Contains("Alliant"))
-            {            
-                Update.Table("Company").Set(new { InternalCode = "1" }).Where(new { ExternalCode = "W" });
-                Update.Table("Company").Set(new { InternalCode = "2" }).Where(new { ExternalCode = "I" });
+            {
+                this.Update.Table("Company").Set(new { InternalCode = "1" }).Where(new { ExternalCode = "W" });
+                this.Update.Table("Company").Set(new { InternalCode = "2" }).Where(new { ExternalCode = "I" });
             }
 
             if (((string)this.ApplicationContext).Contains("KCP&L"))
             {
-                Update.Table("Company").Set(new { InternalCode = "0" }).Where(new { CompanyId = "0" });
-                Update.Table("Company").Set(new { InternalCode = "1" }).Where(new { CompanyId = "1" });
+                this.Update.Table("Company").Set(new { InternalCode = "0" }).Where(new { CompanyId = "0" });
+                this.Update.Table("Company").Set(new { InternalCode = "1" }).Where(new { CompanyId = "1" });
             }
 
             if (((string)this.ApplicationContext).Contains("Concord"))
             {
-                Insert.IntoTable("Company").Row(new { CompanyId = "0", ExternalCode = "CCD", InternalCode = "0", Name = "Concord" });
+                this.Insert.IntoTable("Company").Row(new { CompanyId = "0", ExternalCode = "CCD", InternalCode = "0", Name = "Concord" });
             }
 
             if (((string)this.ApplicationContext).Contains("LabTrack"))
             {
-                Update.Table("EquipmentType").Set(new { ExternalCode = "EMT" }).Where(new { EquipmentTypeId = "1" });
-                Update.Table("EquipmentType").Set(new { ExternalCode = "VT" }).Where(new { EquipmentTypeId = "3" });
-            }            
+                this.Update.Table("EquipmentType").Set(new { ExternalCode = "EMT" }).Where(new { EquipmentTypeId = "1" });
+                this.Update.Table("EquipmentType").Set(new { ExternalCode = "VT" }).Where(new { EquipmentTypeId = "3" });
+            }
         }
 
         /// <summary>

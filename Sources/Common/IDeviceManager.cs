@@ -104,7 +104,7 @@ namespace AMSLLC.Listener.Common
         /// The company.
         /// </returns>
         Company GetCompanyByInternalCode(string internalCode);
-        
+
         /// <summary>
         /// Gets all companies.
         /// </summary>

@@ -92,8 +92,8 @@ namespace AMSLLC.Listener.Common
             if (message != null && message.Length > 1000)
             {
                 message = message.Substring(0, 1000);
-            } 
-            
+            }
+
             this.listenerSystem.UpdateTransactionLogStatus(transactionId, (int)transactionStatus, message, debugInfo);
         }
 
@@ -175,7 +175,7 @@ namespace AMSLLC.Listener.Common
         {
             return this.listenerSystem.GetTransactionTypes((int)transactionData, (int)transactionDirection, (int)transactionSource, externalSystemName);
         }
-        
+
         /// <summary>
         /// Gets the latest successful transaction hash for specified device.
         /// </summary>

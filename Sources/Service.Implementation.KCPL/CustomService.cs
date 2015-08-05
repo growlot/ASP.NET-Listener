@@ -125,7 +125,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 if (deviceOdmTransaction != null)
                 {
                     string newHash = GetMeterHash(fullMeter);
-                
+
                     if (currentHash != newHash)
                     {
                         TransactionLog transaction = new TransactionLog()
@@ -138,7 +138,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
                         this.TransactionLogManager.UpdateTransactionStatus(deviceTransactionId, TransactionStatusLookup.Succeeded, CustomStringManager.GetString("InitialLoadTransactionMessage", CultureInfo.CurrentCulture), null);
                     }
-                } 
+                }
 
                 // skip processing of tests if device status is not Active
                 if (fullMeter.CustomField13 != "A")
@@ -239,7 +239,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     throw new ArgumentException(message1);
             }
         }
-        
+
         /// <summary>
         /// Called when [send test data].
         /// </summary>
@@ -284,7 +284,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                     string message1 = string.Format(CultureInfo.InvariantCulture, StringManager.GetString("ServiceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType.ServiceType.Description);
                     Log.Error(message1);
                     throw new ArgumentException(message1);
-            } 
+            }
         }
 
         /// <summary>
@@ -384,7 +384,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 Log.Error(message);
                 throw new ArgumentException(message);
             }
-  
+
             if (meter.KwhDials.HasValue)
             {
                 serviceRequest.assetDetails.numberOfDials = meter.KwhDials.Value.ToString(CultureInfo.InvariantCulture);
@@ -435,7 +435,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 default:
                     string message = string.Format(CultureInfo.InvariantCulture, CustomStringManager.GetString("MeterStatusNotSupported", CultureInfo.CurrentCulture), meter.CustomField13);
                     Log.Error(message);
-                    throw new ArgumentException(message);                    
+                    throw new ArgumentException(message);
             }
 
             return request;
@@ -669,7 +669,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
                     AssetUpdateServiceRequest kcplServiceRequest = PrepareElectricMeterAssetUpdateForODM(meter);
                     this.CallOdm(kcplServiceRequest, AssemblyConfig.AppSettings.Settings["Kcpl.AssetUpdate.Url"].Value, transactionId);
-                } 
+                }
             }
             else
             {
@@ -726,7 +726,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 this.TransactionLogManager.UpdateTransactionStatus(transactionId, TransactionStatusLookup.Skipped, message, null);
             }
         }
-        
+
         /// <summary>
         /// Processes meter test results export to CIS flat files.
         /// </summary>
@@ -779,7 +779,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
                 throw;
             }
         }
-         
+
         /// <summary>
         /// Prepares the electric meter test results for GMO cis file.
         /// </summary>
@@ -1077,7 +1077,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
             serviceRequest.testResults.asFound.lightLoad = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
             testValue = Transformations.GetAsFound(meterTestResults, 'S', "WA");
             serviceRequest.testResults.asFound.weightedAverage = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
-            
+
             testValue = Transformations.GetAsLeft(meterTestResults, 'S', "FL");
             serviceRequest.testResults.asLeft.fullLoad = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
             testValue = Transformations.GetAsLeft(meterTestResults, 'S', "LL");
@@ -1087,7 +1087,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
             testValue = Transformations.GetAsLeft(meterTestResults, 'S', "PF");
             serviceRequest.testResults.seriesPowerFactor = testValue.HasValue ? testValue.Value.ToString(CultureInfo.InvariantCulture) : "0";
-            
+
             switch (meterTest.Location)
             {
                 case "FL":

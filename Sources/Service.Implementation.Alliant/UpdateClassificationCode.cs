@@ -88,7 +88,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             this.deviceManager = StaticPersistence.DeviceManager;
             this.wnpSystem = StaticPersistence.WnpSystem;
         }
-        
+
         /// <summary>
         /// Updates barcodes in WNP database.
         /// </summary>
@@ -237,7 +237,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 Owner = owner,
                 RegisterRatio = classificationCode.ElectricDevice.RegisterRatio,
                 TestSequence = classificationCode.ElectricDevice.TestSequence,
-                
+
                 // Default values
                 TestRevision = 1,
                 StandardMode = "WattHrs",
@@ -398,7 +398,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             {
                 result.CustomField16 = classificationCode.TransformerAttribute.CurrentTransformer.LightLoadPercentage.ToString(CultureInfo.InvariantCulture);
             }
-            
+
             if (int.TryParse(classificationCode.TransformerAttribute.NumberOfRatios, NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt))
             {
                 result.Taps = tempInt;
@@ -493,7 +493,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             return result;
         }
-        
+
         /// <summary>
         /// Processes the transaction.
         /// </summary>
@@ -668,7 +668,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
             if (transformer.PotentialTransformer != null && !this.PotentialTransformerClassificationCodeValid(classificationCode))
             {
                 valid = false;
-            }                
+            }
 
             if (transformer.CurrentTransformer != null && !this.CurrentTransformerClassificationCodeValid(classificationCode))
             {
@@ -927,7 +927,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 Log.Error(message);
                 this.transactionLogDebugMessage += string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, Environment.NewLine);
             }
-            else 
+            else
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "Classification Code {0}, will not be imported.", classificationCode);
                 Log.Error(message);

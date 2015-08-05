@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing current transformer device 
+    /// Data model class representing current transformer device
     /// </summary>
     public class CurrentTransformer : Transformer
     {

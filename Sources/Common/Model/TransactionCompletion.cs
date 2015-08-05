@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.Common.Model
     using System.Collections.Generic;
 
     /// <summary>
-    /// Data model class representing TransactionCompletion 
+    /// Data model class representing TransactionCompletion
     /// </summary>
     public class TransactionCompletion
     {

@@ -47,12 +47,26 @@ namespace AMSLLC.Listener.Domain.Test
             /// <summary>
             /// The handler
             /// </summary>
-            public static readonly Action<TestEvent> Handler = (eventData) => callCounter++;
+            private static readonly Action<TestEvent> HandlerDefinition = (eventData) => callCounter++;
 
             /// <summary>
             /// The call counter
             /// </summary>
             private static int callCounter = 0;
+
+            /// <summary>
+            /// Gets the handler.
+            /// </summary>
+            /// <value>
+            /// The handler.
+            /// </value>
+            public static Action<TestEvent> Handler
+            {
+                get
+                {
+                    return HandlerDefinition;
+                }
+            }
 
             /// <summary>
             /// Gets the call counter.

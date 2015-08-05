@@ -65,11 +65,17 @@ namespace AMSLLC.Listener.Client.Implementation
         /// <summary>
         /// Gets or sets the transaction manager
         /// </summary>
+        /// <value>
+        /// The transaction manager
+        /// </value>
         protected ITransactionManager TransactionLogManager { get; set; }
 
         /// <summary>
         /// Gets or sets the device manager
         /// </summary>
+        /// <value>
+        /// The device manager
+        /// </value>
         protected IDeviceManager DeviceManager { get; set; }
 
         /// <summary>
@@ -149,7 +155,7 @@ namespace AMSLLC.Listener.Client.Implementation
             }
 
             this.CreateDevice(request);
-            
+
             foreach (TransactionType transactionType in transactionTypes)
             {
                 TransactionLog transaction = new TransactionLog()
@@ -164,7 +170,7 @@ namespace AMSLLC.Listener.Client.Implementation
                 int returnCode = 0;
                 string message = null;
                 string debugInfo = null;
-                
+
                 GetDeviceServiceRequest serviceRequest = null;
 
                 using (Service1Client client = new Service1Client("BasicHttpBinding_IService1", request.ListenerUrl.ToString()))
@@ -214,7 +220,7 @@ namespace AMSLLC.Listener.Client.Implementation
                 }
 
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientEnd);
-                
+
                 // reload transaction info from db
                 transaction = this.TransactionLogManager.GetTransaction(transactionId);
 
@@ -292,7 +298,7 @@ namespace AMSLLC.Listener.Client.Implementation
             if (request == null)
             {
                 throw new ArgumentNullException("request", "Can not create device record if request is not specified.");
-            } 
+            }
 
             EquipmentType equipmentType = this.DeviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
             Company company = this.DeviceManager.GetCompanyByInternalCode(request.CompanyId.ToString(CultureInfo.InvariantCulture));
@@ -351,7 +357,7 @@ namespace AMSLLC.Listener.Client.Implementation
 
                 this.DeviceBatch = this.DeviceManager.SaveDeviceBatch(deviceBatch);
             }
-        }        
+        }
 
         /// <summary>
         /// Initializes the <see cref="ListenerWebServiceClient" /> class.
@@ -369,7 +375,7 @@ namespace AMSLLC.Listener.Client.Implementation
             this.StringManager = Init.StringManager;
             this.WnpSystem = wnpPersistenceController.WNPSystem;
         }
-        
+
         /// <summary>
         /// Call web service to publish device test results
         /// </summary>

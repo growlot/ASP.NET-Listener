@@ -23,14 +23,14 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("FileConverter")
+            this.Create.Table("FileConverter")
                 .WithColumn("FileConverterId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("Argument1").AsString(50).Nullable()
                 .WithColumn("Argument2").AsString(50).Nullable()
                 .WithColumn("Argument3").AsString(50).Nullable()
                 .WithColumn("FileConverterKindId").AsInt32().NotNullable();
 
-            Create.ForeignKey("FK_FileConv_ConvType")
+            this.Create.ForeignKey("FK_FileConv_ConvType")
                 .FromTable("FileConverter").ForeignColumn("FileConverterKindId")
                 .ToTable("FileConverterKind").PrimaryColumn("FileConverterKindId");
         }

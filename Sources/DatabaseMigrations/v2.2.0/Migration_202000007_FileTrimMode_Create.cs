@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("FileTrimMode")
+            this.Create.Table("FileTrimMode")
                 .WithColumn("FileTrimModeId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("Description").AsString(50).NotNullable().Unique("IX_TrimMode_Description");
         }

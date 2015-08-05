@@ -25,8 +25,8 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
         /// <param name="contractDescription">The contract description to modify.</param>
         /// <param name="endpoint">The endpoint to modify.</param>
         /// <param name="bindingParameters">The objects that binding elements require to support the behavior.</param>
-        public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters) 
-        { 
+        public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
+        {
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
         /// <param name="contractDescription">The contract description for which the extension is intended.</param>
         /// <param name="endpoint">The endpoint.</param>
         /// <param name="clientRuntime">The client runtime.</param>
-        public void ApplyClientBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, ClientRuntime clientRuntime) 
+        public void ApplyClientBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, ClientRuntime clientRuntime)
         {
         }
 
@@ -44,15 +44,15 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
         /// </summary>
         /// <param name="contractDescription">The contract to validate.</param>
         /// <param name="endpoint">The endpoint to validate.</param>
-        public void Validate(ContractDescription contractDescription, ServiceEndpoint endpoint) 
-        { 
+        public void Validate(ContractDescription contractDescription, ServiceEndpoint endpoint)
+        {
         }
 
         /// <summary>
         /// Implements a modification or extension of the client across a contract.
-        /// First, it sets up the lookup dictionary for the operation selector by iterating over the OperationDescription 
-        /// elements in the service endpoint's ContractDescription. Then, each operation description is inspected for the 
-        /// presence of the <see cref="DispatchBodyElementAttribute"/> behavior. If such a behavior is found, a value pair 
+        /// First, it sets up the lookup dictionary for the operation selector by iterating over the OperationDescription
+        /// elements in the service endpoint's ContractDescription. Then, each operation description is inspected for the
+        /// presence of the <see cref="DispatchBodyElementAttribute"/> behavior. If such a behavior is found, a value pair
         /// created from the XML qualified name (QualifiedName property) and the operation name (Name property) is added to the dictionary.
         /// </summary>
         /// <param name="contractDescription">The contract description to be modified.</param>

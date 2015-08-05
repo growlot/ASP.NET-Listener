@@ -7,6 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+#pragma warning disable 1591
 
 namespace AMSLLC.Listener.Client.Implementation.ListenerService {
     using System.Runtime.Serialization;
@@ -309,3 +310,4 @@ namespace AMSLLC.Listener.Client.Implementation.ListenerService {
         }
     }
 }
+#pragma warning restore 1591

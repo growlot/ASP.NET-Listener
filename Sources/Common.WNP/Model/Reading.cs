@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing reading 
+    /// Data model class representing reading
     /// </summary>
     public class Reading
     {

@@ -23,9 +23,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("EquipmentType").Row(new { EquipmentTypeId = "1", ServiceTypeId = "1", ExternalCode = "EM", InternalCode = "EM", Description = "Electric Meter" });
-            Insert.IntoTable("EquipmentType").Row(new { EquipmentTypeId = "2", ServiceTypeId = "1", ExternalCode = "CT", InternalCode = "CT", Description = "Current Transformer" });
-            Insert.IntoTable("EquipmentType").Row(new { EquipmentTypeId = "3", ServiceTypeId = "1", ExternalCode = "PT", InternalCode = "PT", Description = "Potential Transformer" });
+            this.Insert.IntoTable("EquipmentType").Row(new { EquipmentTypeId = "1", ServiceTypeId = "1", ExternalCode = "EM", InternalCode = "EM", Description = "Electric Meter" });
+            this.Insert.IntoTable("EquipmentType").Row(new { EquipmentTypeId = "2", ServiceTypeId = "1", ExternalCode = "CT", InternalCode = "CT", Description = "Current Transformer" });
+            this.Insert.IntoTable("EquipmentType").Row(new { EquipmentTypeId = "3", ServiceTypeId = "1", ExternalCode = "PT", InternalCode = "PT", Description = "Potential Transformer" });
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            Delete.FromTable("ServiceType").AllRows();
+            this.Delete.FromTable("ServiceType").AllRows();
         }
     }
 }

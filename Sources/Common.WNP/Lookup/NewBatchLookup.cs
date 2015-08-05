@@ -10,7 +10,7 @@ namespace AMSLLC.Listener.Common.WNP.Lookup
     using System.ComponentModel;
     using System.Linq;
     using System.Text;
-    
+
     /// <summary>
     /// List of possible new batch status values
     /// </summary>
@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.Common.WNP.Lookup
         Accepted,
 
         /// <summary>
-        /// The new batch is new. Not all required devices are tested. 
+        /// The new batch is new. Not all required devices are tested.
         /// </summary>
         [Description("N")]
         New,

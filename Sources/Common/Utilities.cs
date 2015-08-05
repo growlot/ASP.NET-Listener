@@ -224,7 +224,7 @@ namespace AMSLLC.Listener.Common
                 }
             }
         }
-        
+
         /// <summary>
         /// Trims all string properties, and sets null for empty or white space strings.
         /// </summary>

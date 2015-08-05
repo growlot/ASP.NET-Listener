@@ -23,15 +23,15 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            IfDatabase("sqlserver", "oracle12c")
+            this.IfDatabase("sqlserver", "oracle12c")
                 .Create.Table("TransactionLog")
                     .WithColumn("TransactionLogId").AsInt32().NotNullable().PrimaryKey().Identity();
 
-            IfDatabase("oracle")
+            this.IfDatabase("oracle")
                 .Create.Table("TransactionLog")
                     .WithColumn("TransactionLogId").AsInt32().NotNullable().PrimaryKey();
 
-            Alter.Table("TransactionLog")
+            this.Alter.Table("TransactionLog")
                 .AddColumn("ExternalId").AsString(50).Nullable()
                 .AddColumn("DeviceId").AsInt32().Nullable()
                 .AddColumn("DeviceTestId").AsInt32().Nullable()
@@ -42,27 +42,27 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .AddColumn("Message").AsString().Nullable()
                 .AddColumn("DebugInfo").AsString().Nullable();
 
-            Create.ForeignKey("FK_TranLog_Devi")
+            this.Create.ForeignKey("FK_TranLog_Devi")
                 .FromTable("TransactionLog").ForeignColumn("DeviceId")
                 .ToTable("Device").PrimaryColumn("DeviceId");
 
-            Create.ForeignKey("FK_TranLog_DeviTest")
+            this.Create.ForeignKey("FK_TranLog_DeviTest")
                 .FromTable("TransactionLog").ForeignColumn("DeviceTestId")
                 .ToTable("DeviceTest").PrimaryColumn("DeviceTestId");
 
-            Create.ForeignKey("FK_TranLog_Batc")
+            this.Create.ForeignKey("FK_TranLog_Batc")
                 .FromTable("TransactionLog").ForeignColumn("BatchId")
                 .ToTable("Batch").PrimaryColumn("BatchId");
 
-            Create.ForeignKey("FK_TranLog_TranType")
+            this.Create.ForeignKey("FK_TranLog_TranType")
                 .FromTable("TransactionLog").ForeignColumn("TransactionTypeId")
                 .ToTable("TransactionType").PrimaryColumn("TransactionTypeId");
 
-            Create.ForeignKey("FK_TranLog_TranStatus")
+            this.Create.ForeignKey("FK_TranLog_TranStatus")
                 .FromTable("TransactionLog").ForeignColumn("TransactionStatusId")
                 .ToTable("TransactionStatus").PrimaryColumn("TransactionStatusId");
 
-            Create.ForeignKey("FK_TranLog_TranSource")
+            this.Create.ForeignKey("FK_TranLog_TranSource")
                 .FromTable("TransactionLog").ForeignColumn("TransactionSourceId")
                 .ToTable("TransactionSource").PrimaryColumn("TransactionSourceId");
         }

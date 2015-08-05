@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing multimedia 
+    /// Data model class representing multimedia
     /// </summary>
     public class Multimedia : BaseMultimedia
     {

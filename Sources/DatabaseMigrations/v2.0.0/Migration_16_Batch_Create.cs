@@ -23,15 +23,15 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            IfDatabase("sqlserver", "oracle12c")
+            this.IfDatabase("sqlserver", "oracle12c")
                 .Create.Table("Batch")
                     .WithColumn("BatchId").AsInt32().NotNullable().PrimaryKey().Identity();
 
-            IfDatabase("oracle")
+            this.IfDatabase("oracle")
                 .Create.Table("Batch")
                     .WithColumn("BatchId").AsInt32().NotNullable().PrimaryKey();
 
-            Alter.Table("Batch")
+            this.Alter.Table("Batch")
                 .AddColumn("TotalChunks").AsInt32().NotNullable()
                 .AddColumn("LatestChunk").AsInt32().NotNullable();
         }

@@ -23,13 +23,13 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Index("IX_TranLog_DeviTypeStat")
+            this.Create.Index("IX_TranLog_DeviTypeStat")
                 .OnTable("TransactionLog")
                 .OnColumn("DeviceId").Ascending()
                 .OnColumn("TransactionTypeId").Ascending()
                 .OnColumn("TransactionStatusId").Ascending();
 
-            Create.Index("IX_TranLog_TestTypeStat")
+            this.Create.Index("IX_TranLog_TestTypeStat")
                 .OnTable("TransactionLog")
                 .OnColumn("DeviceTestId").Ascending()
                 .OnColumn("TransactionTypeId").Ascending()

@@ -280,6 +280,6 @@ namespace AMSLLC.Listener.Service.Implementation
             };
 
             return StaticPersistence.DeviceManager.GetOrCreateDeviceTest(test);
-        }    
+        }
     }
 }

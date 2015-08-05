@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("TransactionDirection")
+            this.Create.Table("TransactionDirection")
                 .WithColumn("TransactionDirectionId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("Description").AsString(50).NotNullable().Unique("IX_TranDire_Description");
         }

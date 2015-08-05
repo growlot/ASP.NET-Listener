@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.Common.WNP
         /// <returns>True if specified objects are equal. False if objects are different.</returns>
         public bool Equals(MeterBarcode x, MeterBarcode y)
         {
-            // Check whether the objects are the same object.  
+            // Check whether the objects are the same object.
             if (object.ReferenceEquals(x, y))
             {
                 return true;
@@ -49,7 +49,7 @@ namespace AMSLLC.Listener.Common.WNP
         /// </summary>
         /// <param name="obj">The meter barcode.</param>
         /// <returns>
-        /// A hash code for meter barcode, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for meter barcode, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public int GetHashCode(MeterBarcode obj)
         {

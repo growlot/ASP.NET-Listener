@@ -95,8 +95,8 @@ namespace AMSLLC.Listener.Common.WNP.Model
                     m.Length(3);
                 });
             this.Property(
-                x => x.Trouble1, 
-                m => 
+                x => x.Trouble1,
+                m =>
                 {
                     m.Column("TROUBLE1");
                     m.Type(TypeFactory.GetAnsiStringType(3));
@@ -133,7 +133,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
                     m.Column("TROUBLE5");
                     m.Type(TypeFactory.GetAnsiStringType(3));
                     m.Length(3);
-                });            
+                });
         }
     }
 }

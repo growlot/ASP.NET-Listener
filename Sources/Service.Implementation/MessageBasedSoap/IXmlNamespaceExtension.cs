@@ -15,8 +15,8 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
         /// <summary>
         /// Gets the namespaces.
         /// Per Microsoft's documentation, you can add some public member that
-        /// returns a XmlSerializerNamespaces object. Also, per the documentation, 
-        /// for this to work with the XmlSerializer, decorate it with the 
+        /// returns a XmlSerializerNamespaces object. Also, per the documentation,
+        /// for this to work with the XmlSerializer, decorate it with the
         /// XmlNamespaceDeclarations attribute.
         /// </summary>
         /// <value>

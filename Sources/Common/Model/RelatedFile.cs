@@ -35,6 +35,9 @@ namespace AMSLLC.Listener.Common.Model
         /// <summary>
         /// Gets or sets the description
         /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
         public string Description { get; set; }
 
         /// <summary>

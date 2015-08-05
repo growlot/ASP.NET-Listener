@@ -35,7 +35,7 @@ namespace AMSLLC.Listener.Common.Model
             this.Comments = new List<Comment>();
             this.RelatedFiles = new List<RelatedFile>();
         }
-        
+
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
@@ -62,29 +62,44 @@ namespace AMSLLC.Listener.Common.Model
 
         /// <summary>
         /// Gets or sets Site Address Info
-        /// </summary>        
+        /// </summary>
+        /// <value>
+        /// The site address
+        /// </value>
         public Address Address { get; set; }
 
         /// <summary>
         /// Gets or sets Site Account Info
         /// </summary>
+        /// <value>
+        /// The client.
+        /// </value>
         public Client Client { get; set; }
 
         /// <summary>
         /// Gets or sets site circuit info
         /// </summary>
+        /// <value>
+        /// The circuits.
+        /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Public set is needed for WCF")]
         public IList<Circuit> Circuits { get; set; }
 
         /// <summary>
         /// Gets or sets site comment info
         /// </summary>
+        /// <value>
+        /// The comments.
+        /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Public set is needed for WCF")]
         public IList<Comment> Comments { get; set; }
 
         /// <summary>
         /// Gets or sets site multimedia info
         /// </summary>
+        /// <value>
+        /// The related files.
+        /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Public set is needed for WCF")]
         public IList<RelatedFile> RelatedFiles { get; set; }
     }

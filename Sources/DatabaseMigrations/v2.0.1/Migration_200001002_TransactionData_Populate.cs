@@ -23,10 +23,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "1", Description = "Device" });
-            Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "2", Description = "Device Test" });
-            Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "3", Description = "Barcode" });
-            Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "4", Description = "New Batch" });
+            this.Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "1", Description = "Device" });
+            this.Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "2", Description = "Device Test" });
+            this.Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "3", Description = "Barcode" });
+            this.Insert.IntoTable("TransactionData").Row(new { TransactionDataId = "4", Description = "New Batch" });
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            Delete.FromTable("TransactionData").AllRows();
+            this.Delete.FromTable("TransactionData").AllRows();
         }
     }
 }

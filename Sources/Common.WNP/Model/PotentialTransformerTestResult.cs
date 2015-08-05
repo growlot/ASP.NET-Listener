@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing electric meter test results 
+    /// Data model class representing electric meter test results
     /// </summary>
     public class PotentialTransformerTestResult : TransformerTestResult
     {

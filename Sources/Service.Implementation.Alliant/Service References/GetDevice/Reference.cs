@@ -7,6 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+#pragma warning disable CS1591
 
 namespace AMSLLC.Listener.Service.Implementation.Alliant.GetDevice {
     
@@ -606,3 +607,4 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.GetDevice {
         }
     }
 }
+#pragma warning restore CS1591

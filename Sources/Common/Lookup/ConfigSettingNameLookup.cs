@@ -10,7 +10,7 @@ namespace AMSLLC.Listener.Common.Lookup
     using System.ComponentModel;
     using System.Linq;
     using System.Text;
-    
+
     /// <summary>
     /// List of possible listener config settings
     /// </summary>

@@ -28,7 +28,7 @@ namespace AMSLLC.Listener.Common
         /// The listener system
         /// </summary>
         private ListenerClientSystem listenerClientSystem;
-        
+
         /// <summary>
         /// The configuration settings read from database
         /// </summary>
@@ -82,7 +82,7 @@ namespace AMSLLC.Listener.Common
                 Logger.Error(exceptionMessage);
                 throw new ArgumentNullException("configSettingValue", exceptionMessage);
             }
-            
+
             string settingName = Utilities.GetEnumDescription(configSettingName);
 
             if (this.config.ContainsKey(settingName))
@@ -148,7 +148,7 @@ namespace AMSLLC.Listener.Common
 
             return result;
         }
-                
+
         /// <summary>
         /// Gets the configuration setting value as boolean.
         /// </summary>
@@ -157,7 +157,7 @@ namespace AMSLLC.Listener.Common
         /// Configuration setting value, or false if setting had non boolean value.
         /// </returns>
         /// <exception cref="System.InvalidOperationException">
-        /// Thrown when setting read from database can not be converted to boolean value. 
+        /// Thrown when setting read from database can not be converted to boolean value.
         /// </exception>
         private bool GetConfigSettingValueAsBoolean(ConfigSettingNameLookup configSettingName)
         {

@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Common.Model
     using System.Text;
 
     /// <summary>
-    /// Data model class representing Company 
+    /// Data model class representing Company
     /// </summary>
     public class Company
     {

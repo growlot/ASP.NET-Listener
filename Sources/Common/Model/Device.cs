@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Common.Model
     using System.Text;
 
     /// <summary>
-    /// Data model class representing Device 
+    /// Data model class representing Device
     /// </summary>
     public class Device
     {
@@ -78,12 +78,18 @@ namespace AMSLLC.Listener.Common.Model
         /// <summary>
         /// Gets or sets site comment info
         /// </summary>
+        /// <value>
+        /// The comments.
+        /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Public set is needed for WCF")]
         public IList<Comment> Comments { get; set; }
 
         /// <summary>
         /// Gets or sets site multimedia info
         /// </summary>
+        /// <value>
+        /// The related files.
+        /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Public set is needed for WCF")]
         public IList<RelatedFile> RelatedFiles { get; set; }
 
@@ -135,5 +141,21 @@ namespace AMSLLC.Listener.Common.Model
         /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Needed for WCF")]
         public IList<DeviceTest> Tests { get; set; }
+
+        /// <summary>
+        /// Gets or sets  the manufacturer.
+        /// </summary>
+        /// <value>
+        /// The manufacturer.
+        /// </value>
+        public string Manufacturer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the model number.
+        /// </summary>
+        /// <value>
+        /// The model number.
+        /// </value>
+        public string ModelNumber { get; set; }
     }
 }

@@ -7,9 +7,9 @@ namespace AMSLLC.Listener.Common.Model
 {
     using System;
     using System.Collections.Generic;
-    
+
     /// <summary>
-    /// Data model class representing ExternalSystem 
+    /// Data model class representing ExternalSystem
     /// </summary>
     public class ExternalSystem
     {

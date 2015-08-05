@@ -7,9 +7,9 @@ namespace AMSLLC.Listener.Common.Model
 {
     using System;
     using System.Collections.Generic;
-    
+
     /// <summary>
-    /// Data model class representing TransactionDirection 
+    /// Data model class representing TransactionDirection
     /// </summary>
     public class TransactionDirection
     {

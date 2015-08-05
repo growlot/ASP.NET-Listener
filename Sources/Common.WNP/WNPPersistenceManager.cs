@@ -39,7 +39,7 @@ namespace AMSLLC.Listener.Common.WNP
         /// <param name="assembly">The assembly with additional mappings.</param>
         private WNPPersistenceManager(string connectionString, Assembly assembly)
             : base(connectionString, assembly)
-        { 
+        {
         }
     }
 }

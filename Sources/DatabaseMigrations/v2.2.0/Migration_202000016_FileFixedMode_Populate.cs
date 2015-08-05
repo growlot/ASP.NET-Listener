@@ -23,10 +23,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("FileFixedMode").Row(new { FileFixedModeId = "0", Description = "ExactLength" });
-            Insert.IntoTable("FileFixedMode").Row(new { FileFixedModeId = "1", Description = "AllowMoreChars" });
-            Insert.IntoTable("FileFixedMode").Row(new { FileFixedModeId = "2", Description = "AllowLessChars" });
-            Insert.IntoTable("FileFixedMode").Row(new { FileFixedModeId = "3", Description = "AllowVariableLength" });
+            this.Insert.IntoTable("FileFixedMode").Row(new { FileFixedModeId = "0", Description = "ExactLength" });
+            this.Insert.IntoTable("FileFixedMode").Row(new { FileFixedModeId = "1", Description = "AllowMoreChars" });
+            this.Insert.IntoTable("FileFixedMode").Row(new { FileFixedModeId = "2", Description = "AllowLessChars" });
+            this.Insert.IntoTable("FileFixedMode").Row(new { FileFixedModeId = "3", Description = "AllowVariableLength" });
         }
     }
 }

@@ -38,7 +38,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <summary>
         /// The transaction log manager
         /// </summary>
-        private ITransactionManager transactionLogManager;        
+        private ITransactionManager transactionLogManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionResponseService"/> class.
@@ -46,8 +46,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         public TransactionResponseService()
         {
             this.transactionLogManager = StaticPersistence.TransactionLogManager;
-        }  
-        
+        }
+
         /// <summary>
         /// Web service contract for receiving transaction responses from ODM.
         /// </summary>
@@ -72,7 +72,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
 
         /*
          * ODM web service mocks
-         * 
+         *
         /// <summary>
         /// Update the asset.
         /// </summary>

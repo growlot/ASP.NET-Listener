@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing fields common for all devices 
+    /// Data model class representing fields common for all devices
     /// </summary>
     public class Equipment : IEquipment
     {

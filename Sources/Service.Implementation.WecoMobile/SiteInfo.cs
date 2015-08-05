@@ -12,13 +12,13 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
     using System.Linq;
     using System.Reflection;
     using System.Resources;
-    using AMSLLC.Listener.Common;
-    using AMSLLC.Listener.Common.Lookup;
-    using AMSLLC.Listener.Common.WNP;
-    using AMSLLC.Listener.Globalization;
+    using Common;
+    using Common.Lookup;
+    using Common.WNP;
+    using Globalization;
     using log4net;
-    using ListenerModel = AMSLLC.Listener.Common.Model;
-    using WnpModel = AMSLLC.Listener.Common.WNP.Model;
+    using ListenerModel = Common.Model;
+    using WnpModel = Common.WNP.Model;
 
     /// <summary>
     /// Implements SiteInfo web service interface
@@ -119,7 +119,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                         }
 
                         this.FillSiteInfo(meter.Site);
-                        break;    
+                        break;
                     case "CT":
                         WnpModel.CurrentTransformer currentTransformer = this.wnpSystem.GetEquipment<WnpModel.CurrentTransformer>(request.EquipmentNumber, this.ownerId);
                         if (currentTransformer == null)
@@ -339,7 +339,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                         CreateUser = comment.Comment.CreatedBy,
                         EquipmentNumber = comment.EquipmentNumber,
                         EquipmentType = comment.EquipmentType,
-                        Source = "EQP",                        
+                        Source = "EQP",
                         Owner = new WnpModel.Owner(this.ownerId)
                     };
                     if (comment.Comment.Popup)
@@ -440,8 +440,8 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                     else
                     {
                         wnpComment.CommentType = 'G';
-                    } 
-                    
+                    }
+
                     this.wnpSystem.UpdateEquipmentComment(wnpComment);
                 }
                 else if (comment.SiteId.HasValue)
@@ -525,7 +525,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         private void FillSiteComments(WnpModel.Site site)
         {
             IList<WnpModel.SiteComment> siteComments = this.wnpSystem.GetSiteComments(site);
-            
+
             foreach (WnpModel.SiteComment siteComment in siteComments)
             {
                 ListenerModel.Comment comment = new ListenerModel.Comment()
@@ -553,7 +553,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                 this.response.Comments.Add(comment);
             }
         }
-        
+
         /// <summary>
         /// Fills the site related files.
         /// </summary>
@@ -601,31 +601,45 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 
             foreach (WnpModel.Meter meter in meters)
             {
-                ListenerModel.Device device = new ListenerModel.Device()
-                {
-                    Base = meter.Base,
-                    Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
-                    EquipmentNumber = meter.EquipmentNumber,
-                    EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "EM"),
-                    Form = meter.Form,
-                    KH = meter.KH
-                };
-
-                if (meter.TestAmps.HasValue)
-                {
-                    device.TestAmps = meter.TestAmps.Value;
-                }
-
-                if (meter.TestVolts.HasValue)
-                {
-                    device.TestVolts = meter.TestVolts.Value;
-                }
-
+                ListenerModel.Device device = this.ConvertMeterToDevice(meter);
                 listenerCircuit.Devices.Add(device);
+
                 this.FillDeviceComments(meter, "EM", device);
                 this.FillDeviceRelatedFiles(meter, "EM", device);
                 this.FillMeterTests(meter, device);
             }
+        }
+
+        /// <summary>
+        /// Converts the wnp meter to listener device.
+        /// </summary>
+        /// <param name="meter">The meter.</param>
+        /// <returns>The device</returns>
+        private ListenerModel.Device ConvertMeterToDevice(WnpModel.Meter meter)
+        {
+            ListenerModel.Device device = new ListenerModel.Device()
+            {
+                Base = meter.Base,
+                Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
+                EquipmentNumber = meter.EquipmentNumber,
+                EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "EM"),
+                Form = meter.Form,
+                KH = meter.KH,
+                Manufacturer = meter.Manufacturer,
+                ModelNumber = meter.ModelNumber
+            };
+
+            if (meter.TestAmps.HasValue)
+            {
+                device.TestAmps = meter.TestAmps.Value;
+            }
+
+            if (meter.TestVolts.HasValue)
+            {
+                device.TestVolts = meter.TestVolts.Value;
+            }
+
+            return device;
         }
 
         /// <summary>
@@ -639,17 +653,31 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 
             foreach (WnpModel.CurrentTransformer currentTransformer in currentTransformers)
             {
-                ListenerModel.Device device = new ListenerModel.Device()
-                {
-                    Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
-                    EquipmentNumber = currentTransformer.EquipmentNumber,
-                    EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "CT")
-                };
-
+                ListenerModel.Device device = this.ConvertCurrentTransformerToDevice(currentTransformer);
                 listenerCircuit.Devices.Add(device);
+
                 this.FillDeviceComments(currentTransformer, "CT", device);
                 this.FillDeviceRelatedFiles(currentTransformer, "CT", device);
             }
+        }
+
+        /// <summary>
+        /// Converts the wnp current transformer to listener device.
+        /// </summary>
+        /// <param name="currentTransformer">The current transformer.</param>
+        /// <returns>The device</returns>
+        private ListenerModel.Device ConvertCurrentTransformerToDevice(WnpModel.CurrentTransformer currentTransformer)
+        {
+            ListenerModel.Device device = new ListenerModel.Device()
+            {
+                Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
+                EquipmentNumber = currentTransformer.EquipmentNumber,
+                EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "CT"),
+                Manufacturer = currentTransformer.Manufacturer,
+                ModelNumber = currentTransformer.ModelNumber
+            };
+
+            return device;
         }
 
         /// <summary>
@@ -663,17 +691,31 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 
             foreach (WnpModel.PotentialTransformer potentialTransformer in potentialTransformers)
             {
-                ListenerModel.Device device = new ListenerModel.Device()
-                {
-                    Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
-                    EquipmentNumber = potentialTransformer.EquipmentNumber,
-                    EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "PT")
-                };
-
+                ListenerModel.Device device = this.ConvertPotentialTransformerToDevice(potentialTransformer);
                 listenerCircuit.Devices.Add(device);
+
                 this.FillDeviceComments(potentialTransformer, "PT", device);
                 this.FillDeviceRelatedFiles(potentialTransformer, "PT", device);
             }
+        }
+
+        /// <summary>
+        /// Converts the wnp potential transformer to listener device.
+        /// </summary>
+        /// <param name="potentialTransformer">The potential transformer.</param>
+        /// <returns>The device</returns>
+        private ListenerModel.Device ConvertPotentialTransformerToDevice(WnpModel.PotentialTransformer potentialTransformer)
+        {
+            ListenerModel.Device device = new ListenerModel.Device()
+            {
+                Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
+                EquipmentNumber = potentialTransformer.EquipmentNumber,
+                EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "PT"),
+                Manufacturer = potentialTransformer.Manufacturer,
+                ModelNumber = potentialTransformer.ModelNumber
+            };
+
+            return device;
         }
 
         /// <summary>

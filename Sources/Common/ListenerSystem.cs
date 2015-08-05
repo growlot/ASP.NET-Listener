@@ -32,7 +32,7 @@ namespace AMSLLC.Listener.Common
         public ListenerSystem(IPersistenceManager persistenceManager)
         {
             this.persistenceManager = persistenceManager;
-        }        
+        }
 
         /* TransactionStatus retrievedTransactionStatus = persistenceManager.RetrieveFirstEqual<TransactionStatus>("Id", (int)Lookups.TransactionStatus.InProgress);
          * IList<TransactionType> allTransactionTypes = persistenceManager.RetrieveAll<TransactionType>(SessionAction.BeginAndEnd);
@@ -191,7 +191,7 @@ namespace AMSLLC.Listener.Common
             criteria.SetProjection(projectionList).SetResultTransformer(Transformers.AliasToBean<TransactionLog>());
 
             IList<TransactionLog> transactions = this.persistenceManager.RetrieveAllEqual<TransactionLog>(criteria);
-            
+
             if (transactions.Count > 0)
             {
                 result = transactions.OrderByDescending<TransactionLog, DateTime>(x => (DateTime)x.TransactionStart).First().DataHash;
@@ -290,7 +290,7 @@ namespace AMSLLC.Listener.Common
         {
             return this.persistenceManager.GetByKey<Device>(deviceId);
         }
-        
+
         /// <summary>
         /// Saves the device test.
         /// </summary>

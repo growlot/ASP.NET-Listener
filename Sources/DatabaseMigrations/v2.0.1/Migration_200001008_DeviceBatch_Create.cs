@@ -23,15 +23,15 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            IfDatabase("sqlserver", "oracle12c")
+            this.IfDatabase("sqlserver", "oracle12c")
                 .Create.Table("DeviceBatch")
                     .WithColumn("DeviceBatchId").AsInt32().NotNullable().PrimaryKey().Identity();
 
-            IfDatabase("oracle")
+            this.IfDatabase("oracle")
                 .Create.Table("DeviceBatch")
                     .WithColumn("DeviceBatchId").AsInt32().NotNullable().PrimaryKey();
 
-            Alter.Table("DeviceBatch")
+            this.Alter.Table("DeviceBatch")
                 .AddColumn("BatchNumber").AsString(10).NotNullable().Unique("IX_DeviceBatch_BatchNumber")
                 .AddColumn("ExternalId").AsString(50).Nullable().Unique("IX_DeviceBatch_ExternalId");
         }

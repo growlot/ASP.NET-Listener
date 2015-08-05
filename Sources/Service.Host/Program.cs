@@ -60,8 +60,8 @@ namespace AMSLLC.Listener.Service.Host
                         if (!Environment.UserInteractive)
                         {
                             ServiceBase[] servicesToRun;
-                            servicesToRun = new ServiceBase[] 
-                                { 
+                            servicesToRun = new ServiceBase[]
+                                {
                                     this.serviceHost
                                 };
                             ServiceBase.Run(servicesToRun);

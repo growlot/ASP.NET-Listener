@@ -16,7 +16,8 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         /// <value>
         /// The listener transaction identifier.
         /// </value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "listener", Justification = "Variable provided by conract.")]
+#pragma warning disable SA1300 // already released code
         int listenerTransactionId { get; set; }
+#pragma warning restore SA1300
     }
 }

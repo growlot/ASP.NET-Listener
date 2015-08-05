@@ -23,10 +23,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("FileTrimMode").Row(new { FileTrimModeId = "0", Description = "None" });
-            Insert.IntoTable("FileTrimMode").Row(new { FileTrimModeId = "1", Description = "Both" });
-            Insert.IntoTable("FileTrimMode").Row(new { FileTrimModeId = "2", Description = "Left" });
-            Insert.IntoTable("FileTrimMode").Row(new { FileTrimModeId = "3", Description = "Right" });
+            this.Insert.IntoTable("FileTrimMode").Row(new { FileTrimModeId = "0", Description = "None" });
+            this.Insert.IntoTable("FileTrimMode").Row(new { FileTrimModeId = "1", Description = "Both" });
+            this.Insert.IntoTable("FileTrimMode").Row(new { FileTrimModeId = "2", Description = "Left" });
+            this.Insert.IntoTable("FileTrimMode").Row(new { FileTrimModeId = "3", Description = "Right" });
         }
     }
 }

@@ -23,18 +23,18 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Delete.ForeignKey("FK_TranLog_TranSource").OnTable("TransactionLog");
-            Delete.Column("TransactionSourceId").FromTable("TransactionLog");
+            this.Delete.ForeignKey("FK_TranLog_TranSource").OnTable("TransactionLog");
+            this.Delete.Column("TransactionSourceId").FromTable("TransactionLog");
 
-            Alter.Table("TransactionLog")
+            this.Alter.Table("TransactionLog")
                 .AddColumn("DeviceBatchId").AsInt32().Nullable()
                 .AddColumn("DataHash").AsAnsiString(40).Nullable();
 
-            Create.ForeignKey("FK_TranLog_TranType")
+            this.Create.ForeignKey("FK_TranLog_TranType")
                 .FromTable("TransactionLog").ForeignColumn("TransactionTypeId")
                 .ToTable("TransactionType").PrimaryColumn("TransactionTypeId");
 
-            Create.ForeignKey("FK_TranLog_DeviBatc")
+            this.Create.ForeignKey("FK_TranLog_DeviBatc")
                 .FromTable("TransactionLog").ForeignColumn("DeviceBatchId")
                 .ToTable("DeviceBatch").PrimaryColumn("DeviceBatchId");
         }

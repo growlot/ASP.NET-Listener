@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.Service.Contract
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Data contract for data sending service request. 
+    /// Data contract for data sending service request.
     /// </summary>
     [DataContract]
     public class SendDataServiceRequest

@@ -7,6 +7,8 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+#pragma warning disable CS1591
+
 namespace AMSLLC.Listener.Service.Implementation.Alliant
 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1413,3 +1415,4 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
         }
     }
 }
+#pragma warning restore CS1591

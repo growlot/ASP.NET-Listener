@@ -27,15 +27,21 @@ namespace AMSLLC.Listener.Common
         /// <summary>
         /// Does this dialect support identity column key generation?
         /// </summary>
+        /// <value>
+        /// <c>true</c> if [supports identity columns]; otherwise, <c>false</c>.
+        /// </value>
         public override bool SupportsIdentityColumns
         {
             get { return true; }
         }
 
-        /// <summary> 
+        /// <summary>
         /// Does the dialect support some form of inserting and selecting
         /// the generated IDENTITY value all in the same statement.
         /// </summary>
+        /// <value>
+        /// <c>true</c> if [supports insert select identity]; otherwise, <c>false</c>.
+        /// </value>
         public override bool SupportsInsertSelectIdentity
         {
             get { return true; }
@@ -44,16 +50,21 @@ namespace AMSLLC.Listener.Common
         /// <summary>
         /// The keyword used to specify an identity column, if native key generation is supported
         /// </summary>
+        /// <value>
+        /// The identity column string.
+        /// </value>
         public override string IdentityColumnString
         {
             get { return "generated as identity"; }
         }
 
-        /// <summary> 
-        /// The class (which implements <see cref="NHibernate.Id.IIdentifierGenerator"/>)
+        /// <summary>
+        /// The class (which implements <see cref="NHibernate.Id.IIdentifierGenerator" />)
         /// which acts as this dialects native generation strategy.
         /// </summary>
-        /// <returns> The native generator class. </returns>
+        /// <value>
+        /// The native identifier generator class.
+        /// </value>
         /// <remarks>
         /// Comes into play whenever the user specifies the native generator.
         /// </remarks>

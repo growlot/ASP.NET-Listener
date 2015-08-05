@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         public override void Up()
         {
             // TransactionType populate
-            Execute.Sql(@"
+            this.Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId

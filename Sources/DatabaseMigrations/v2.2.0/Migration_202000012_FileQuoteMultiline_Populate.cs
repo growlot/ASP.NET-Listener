@@ -23,10 +23,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("FileQuoteMultiline").Row(new { FileQuoteMultilineId = "0", Description = "AllowForBoth" });
-            Insert.IntoTable("FileQuoteMultiline").Row(new { FileQuoteMultilineId = "1", Description = "AllowForRead" });
-            Insert.IntoTable("FileQuoteMultiline").Row(new { FileQuoteMultilineId = "2", Description = "AllowForWrite" });
-            Insert.IntoTable("FileQuoteMultiline").Row(new { FileQuoteMultilineId = "3", Description = "NotAllow" });
+            this.Insert.IntoTable("FileQuoteMultiline").Row(new { FileQuoteMultilineId = "0", Description = "AllowForBoth" });
+            this.Insert.IntoTable("FileQuoteMultiline").Row(new { FileQuoteMultilineId = "1", Description = "AllowForRead" });
+            this.Insert.IntoTable("FileQuoteMultiline").Row(new { FileQuoteMultilineId = "2", Description = "AllowForWrite" });
+            this.Insert.IntoTable("FileQuoteMultiline").Row(new { FileQuoteMultilineId = "3", Description = "NotAllow" });
         }
     }
 }

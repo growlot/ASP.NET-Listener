@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing potential transformer device 
+    /// Data model class representing potential transformer device
     /// </summary>
     public class PotentialTransformer : Transformer
     {

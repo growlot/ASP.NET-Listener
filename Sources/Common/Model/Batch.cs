@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Common.Model
     using System.Text;
 
     /// <summary>
-    /// Data model class representing Batch 
+    /// Data model class representing Batch
     /// </summary>
     public class Batch
     {

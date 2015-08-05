@@ -23,30 +23,30 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            IfDatabase(new string[] { "sqlserver", "oracle12c" })
+            this.IfDatabase(new string[] { "sqlserver", "oracle12c" })
                 .Create.Table("Device")
                     .WithColumn("DeviceId").AsInt32().NotNullable().PrimaryKey().Identity();
 
-            IfDatabase("oracle")
+            this.IfDatabase("oracle")
                 .Create.Table("Device")
-                    .WithColumn("DeviceId").AsInt32().NotNullable().PrimaryKey();                    
-            IfDatabase("oracle").Create.Sequence("hibernate_sequence");
+                    .WithColumn("DeviceId").AsInt32().NotNullable().PrimaryKey();
+            this.IfDatabase("oracle").Create.Sequence("hibernate_sequence");
 
-            Alter.Table("Device")
+            this.Alter.Table("Device")
                 .AddColumn("ExternalId").AsString(50).Nullable()
                 .AddColumn("CompanyId").AsInt32().NotNullable()
                 .AddColumn("EquipmentNumber").AsString(20).NotNullable()
                 .AddColumn("EquipmentTypeId").AsInt32().NotNullable();
 
-            Create.ForeignKey("FK_Devi_EquiType")
+            this.Create.ForeignKey("FK_Devi_EquiType")
                 .FromTable("Device").ForeignColumn("EquipmentTypeId")
                 .ToTable("EquipmentType").PrimaryColumn("EquipmentTypeId");
 
-            Create.ForeignKey("FK_Devi_Comp")
+            this.Create.ForeignKey("FK_Devi_Comp")
                 .FromTable("Device").ForeignColumn("CompanyId")
                 .ToTable("Company").PrimaryColumn("CompanyId");
 
-            Create.Index("IX_Devi_CI_EN_ETI")
+            this.Create.Index("IX_Devi_CI_EN_ETI")
                 .OnTable("Device")
                     .OnColumn("CompanyId").Ascending()
                     .OnColumn("EquipmentNumber").Ascending()

@@ -12,9 +12,9 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
     using System.Xml;
 
     /// <summary>
-    /// While this class is also a behavior, it is passive and does not actively contribute any configuration changes to the dispatch runtime. 
-    /// All of its methods return to the caller without taking any actions. 
-    /// The operation behavior only exists so that the metadata required for the new dispatch mechanism, namely the qualified name of 
+    /// While this class is also a behavior, it is passive and does not actively contribute any configuration changes to the dispatch runtime.
+    /// All of its methods return to the caller without taking any actions.
+    /// The operation behavior only exists so that the metadata required for the new dispatch mechanism, namely the qualified name of
     /// the body element on whose occurrence an operation is selected, can be associated with the respective operations.
     /// <see href="http://msdn.microsoft.com/en-us/library/aa395223(v=vs.90).aspx">Initial source</see>
     /// </summary>
@@ -71,8 +71,8 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
         /// </summary>
         /// <param name="operationDescription">The operation being examined. Use for examination only. If the operation description is modified, the results are undefined.</param>
         /// <param name="clientOperation">The run-time object that exposes customization properties for the operation described by <paramref name="operationDescription" />.</param>
-        public void ApplyClientBehavior(OperationDescription operationDescription, ClientOperation clientOperation) 
-        { 
+        public void ApplyClientBehavior(OperationDescription operationDescription, ClientOperation clientOperation)
+        {
         }
 
         /// <summary>
@@ -80,16 +80,16 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
         /// </summary>
         /// <param name="operationDescription">The operation being examined. Use for examination only. If the operation description is modified, the results are undefined.</param>
         /// <param name="dispatchOperation">The run-time object that exposes customization properties for the operation described by <paramref name="operationDescription" />.</param>
-        public void ApplyDispatchBehavior(OperationDescription operationDescription, DispatchOperation dispatchOperation) 
-        { 
+        public void ApplyDispatchBehavior(OperationDescription operationDescription, DispatchOperation dispatchOperation)
+        {
         }
 
         /// <summary>
         /// Implement to confirm that the operation meets some intended criteria.
         /// </summary>
         /// <param name="operationDescription">The operation being examined. Use for examination only. If the operation description is modified, the results are undefined.</param>
-        public void Validate(OperationDescription operationDescription) 
-        { 
+        public void Validate(OperationDescription operationDescription)
+        {
         }
     }
 }

@@ -71,7 +71,7 @@ namespace AMSLLC.Listener.Common
         /// First object of the specified type meeting specified criteria.
         /// </returns>
         T RetrieveFirstEqual<T>(DetachedCriteria selectCriteria);
-        
+
         /// <summary>
         /// Retrieves first object of a specified type where a specified property equals a specified value.
         /// </summary>

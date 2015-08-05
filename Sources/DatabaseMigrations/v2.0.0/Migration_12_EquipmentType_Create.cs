@@ -23,23 +23,23 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("EquipmentType")
+            this.Create.Table("EquipmentType")
                 .WithColumn("EquipmentTypeId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("ServiceTypeId").AsInt32().NotNullable()
                 .WithColumn("ExternalCode").AsString(50).NotNullable()
                 .WithColumn("InternalCode").AsString(50).NotNullable()
                 .WithColumn("Description").AsString(50).NotNullable().Unique("IX_EquiType_Description");
 
-            Create.ForeignKey("FK_EquiType_ServType")
+            this.Create.ForeignKey("FK_EquiType_ServType")
                 .FromTable("EquipmentType").ForeignColumn("ServiceTypeId")
                 .ToTable("ServiceType").PrimaryColumn("ServiceTypeId");
 
-            Create.Index("IX_EquiType_STI_EC")
+            this.Create.Index("IX_EquiType_STI_EC")
                 .OnTable("EquipmentType")
                     .OnColumn("ServiceTypeId").Ascending()
                     .OnColumn("ExternalCode").Ascending().WithOptions().Unique();
 
-            Create.Index("IX_EquiType_STI_IC")
+            this.Create.Index("IX_EquiType_STI_IC")
                 .OnTable("EquipmentType")
                     .OnColumn("ServiceTypeId").Ascending()
                     .OnColumn("InternalCode").Ascending().WithOptions().Unique();

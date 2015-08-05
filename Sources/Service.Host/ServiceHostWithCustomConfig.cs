@@ -53,7 +53,7 @@ namespace AMSLLC.Listener.Service.Host
                 this.LoadConfigFromCustomLocation(configFilename);
             }
         }
-        
+
         /// <summary>
         /// Loads the configuration from custom location.
         /// </summary>

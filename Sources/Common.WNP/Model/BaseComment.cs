@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing common fields for equipment and site comments 
+    /// Data model class representing common fields for equipment and site comments
     /// </summary>
     public class BaseComment
     {

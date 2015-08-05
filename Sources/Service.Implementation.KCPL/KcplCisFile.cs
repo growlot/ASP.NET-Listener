@@ -3,6 +3,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+#pragma warning disable SA1401
+
 namespace AMSLLC.Listener.Service.Implementation.KCPL
 {
     using System;
@@ -261,7 +263,7 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         [FieldFixedLength(10)]
         [FieldTrim(TrimMode.Right)]
         public string AmrModuleNumber;
-        
+
         /// <summary>
         /// The program code
         /// </summary>
@@ -311,3 +313,4 @@ namespace AMSLLC.Listener.Service.Implementation.KCPL
         public string Company;
     }
 }
+#pragma warning restore SA1401

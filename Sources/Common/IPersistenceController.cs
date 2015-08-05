@@ -30,7 +30,7 @@ namespace AMSLLC.Listener.Common
         /// The listener client system.
         /// </value>
         ListenerClientSystem ListenerClientSystem { get; }
-        
+
         /// <summary>
         /// Initializes systems working with listener persistence providers.
         /// </summary>

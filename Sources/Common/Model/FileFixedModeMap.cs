@@ -30,7 +30,7 @@ namespace AMSLLC.Listener.Common.Model
                 });
             this.Property(
                 x => x.Description,
-                x => x.Length(50)); 
+                x => x.Length(50));
         }
     }
 }

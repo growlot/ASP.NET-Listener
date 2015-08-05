@@ -17,12 +17,26 @@ namespace AMSLLC.Listener.Common.WNP.Unit.Test
         /// <summary>
         /// The default equipment create date time
         /// </summary>
-        public static readonly DateTime DefaultEquipmentCreateDateTime = new DateTime(2014, 1, 20);
-        
+        private static readonly DateTime DefaultEquipmentCreateDateTime = new DateTime(2014, 1, 20);
+
         /// <summary>
         /// The default test start date time
         /// </summary>
-        public static readonly DateTime DefaultTestStartDateTime = new DateTime(2014, 2, 15);
+        private static readonly DateTime DefaultTestStartDateTime = new DateTime(2014, 2, 15);
+
+        /// <summary>
+        /// Gets the default test start.
+        /// </summary>
+        /// <value>
+        /// The default test start.
+        /// </value>
+        public static DateTime DefaultTestStart
+        {
+            get
+            {
+                return DefaultTestStartDateTime;
+            }
+        }
 
         /// <summary>
         /// Constructs the default meter object.

@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("ServiceType")
+            this.Create.Table("ServiceType")
                 .WithColumn("ServiceTypeId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("ExternalCode").AsString(50).NotNullable().Unique("IX_ServType_ExternalCode")
                 .WithColumn("InternalCode").AsString(50).NotNullable().Unique("IX_ServType_InternalCode")

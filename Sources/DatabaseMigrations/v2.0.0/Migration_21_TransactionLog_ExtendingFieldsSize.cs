@@ -23,24 +23,24 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Delete.Column("DebugInfo").FromTable("TransactionLog");
+            this.Delete.Column("DebugInfo").FromTable("TransactionLog");
 
-            Alter.Table("TransactionLog")
+            this.Alter.Table("TransactionLog")
                 .AlterColumn("Message").AsString(1000).Nullable()
                 .AddColumn("DebugInfo").AsString(int.MaxValue).Nullable();
         }
 
         /// <summary>
-        /// Reverts the database migration 
+        /// Reverts the database migration
         /// </summary>
         public override void Down()
         {
-            Delete
+            this.Delete
                 .Column("Message")
                 .Column("DebugInfo")
                 .FromTable("TransactionLog");
 
-            Alter.Table("TransactionLog")
+            this.Alter.Table("TransactionLog")
                 .AddColumn("Message").AsString().Nullable()
                 .AddColumn("DebugInfo").AsString().Nullable();
         }

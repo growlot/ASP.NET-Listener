@@ -112,7 +112,7 @@ namespace AMSLLC.Listener.Domain.Test
         }
 
         /// <summary>
-        /// Class that has same fields as <see cref="TestEntity"/>, but doesn't inherit from <see cref="Entity"/>.
+        /// Class that has same fields as <see cref="TestEntity"/>, but doesn't inherit from <see cref="Entity{T}"/>.
         /// </summary>
         private class TestNonentity
         {

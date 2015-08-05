@@ -45,8 +45,8 @@ namespace Service.Implementation.Alliant.Unit.Test
                     return meter;
                 });
                 persistenceManager.RetrieveAllEqualOf1DetachedCriteria<WnpModel.MeterTestResult>((criteria) =>
-                {                    
-                    return CustomizedMeterTestResults();
+                {
+                    return this.CustomizedMeterTestResults();
                 });
                 persistenceManager.RetrieveAllEqualOf1DetachedCriteria<WnpModel.Comment>((criteria) =>
                 {
@@ -92,7 +92,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 });
                 persistenceManager.RetrieveAllEqualOf1DetachedCriteria<WnpModel.MeterTestResult>((criteria) =>
                 {
-                    IList<WnpModel.MeterTestResult> meterTestResults = CustomizedMeterTestResults();
+                    IList<WnpModel.MeterTestResult> meterTestResults = this.CustomizedMeterTestResults();
                     foreach (WnpModel.MeterTestResult testStep in meterTestResults)
                     {
                         testStep.CustomField4 = " ";
@@ -165,7 +165,7 @@ namespace Service.Implementation.Alliant.Unit.Test
             {
                 Id = 1,
                 Device = device,
-                TestDate = MotherObjects.DefaultTestStartDateTime
+                TestDate = MotherObjects.DefaultTestStart
             };
 
             return deviceTest;
@@ -204,9 +204,9 @@ namespace Service.Implementation.Alliant.Unit.Test
                 ClassificationCode = "AA0",
                 Comments = "Comment 1. Comment 2.",
                 Company = "W",
-                DeviceAttribute = new CreateDeviceTestResultABMTypeDeviceAttribute() 
-                { 
-                    ElectricDevice = new CreateDeviceTestResultABMTypeDeviceAttributeElectricDevice() 
+                DeviceAttribute = new CreateDeviceTestResultABMTypeDeviceAttribute()
+                {
+                    ElectricDevice = new CreateDeviceTestResultABMTypeDeviceAttributeElectricDevice()
                     {
                         AFL = (decimal)100.21,
                         AFLSpecified = true,
@@ -244,7 +244,7 @@ namespace Service.Implementation.Alliant.Unit.Test
                 TestLocation = "TestLocation",
                 TestReason = "TestReason",
                 TestStandard = "TestStandard",
-                TestStartDateTime = MotherObjects.DefaultTestStartDateTime
+                TestStartDateTime = MotherObjects.DefaultTestStart
             };
 
             return meterTestResultsRequst;

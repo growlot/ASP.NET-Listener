@@ -12,17 +12,17 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
     using System.Xml;
 
     /// <summary>
-    /// Some SOAP 1.1 Web services stacks that do not follow the WS-I Basic Profile 1.1 guidelines do not dispatch messages based on the Action URI, 
-    /// but rather based on the XML qualified name of the first element inside the SOAP body. Likewise, the client side of these stacks might 
+    /// Some SOAP 1.1 Web services stacks that do not follow the WS-I Basic Profile 1.1 guidelines do not dispatch messages based on the Action URI,
+    /// but rather based on the XML qualified name of the first element inside the SOAP body. Likewise, the client side of these stacks might
     /// send messages with an empty or arbitrary HTTP SoapAction header, which was permitted by the SOAP 1.1 specification.
-    /// This class selects operations based on the first element of the message body. 
+    /// This class selects operations based on the first element of the message body.
     /// <see href="http://msdn.microsoft.com/en-us/library/aa395223(v=vs.90).aspx">Initial source</see>
     /// </summary>
     public class DispatchByBodyElementOperationSelector : IDispatchOperationSelector
     {
         /// <summary>
         /// The dispatch dictionary.
-        /// The class constructor expects a dictionary populated with pairs of XmlQualifiedName and strings, whereby 
+        /// The class constructor expects a dictionary populated with pairs of XmlQualifiedName and strings, whereby
         /// the qualified names indicate the name of the first child of the SOAP body and the strings indicate the matching operation name
         /// </summary>
         private Dictionary<XmlQualifiedName, string> dispatchDictionary;
@@ -44,8 +44,8 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
         }
 
         /// <summary>
-        /// Associates a local operation with the incoming method by inspecting an incoming message and returning a string that equals 
-        /// the name of a method on the service contract for the current endpoint. 
+        /// Associates a local operation with the incoming method by inspecting an incoming message and returning a string that equals
+        /// the name of a method on the service contract for the current endpoint.
         /// </summary>
         /// <param name="message">The incoming <see cref="T:System.ServiceModel.Channels.Message" /> to be associated with an operation.</param>
         /// <returns>
@@ -62,8 +62,8 @@ namespace AMSLLC.Listener.Service.Implementation.MessageBasedSoap
             XmlQualifiedName lookupQName = new
             XmlQualifiedName(bodyReader.LocalName, bodyReader.NamespaceURI);
 
-            // Accessing the message body with GetReaderAtBodyContents or any of the other methods that provide access to the message's body 
-            // content causes the message to be marked as "read", which means that the message is invalid for any further processing. 
+            // Accessing the message body with GetReaderAtBodyContents or any of the other methods that provide access to the message's body
+            // content causes the message to be marked as "read", which means that the message is invalid for any further processing.
             // Therefore we need to create a copy of the incoming message.
             message = CreateMessageCopy(message, bodyReader);
 

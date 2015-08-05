@@ -3,6 +3,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+#pragma warning disable SA1124, SA1401
+
 namespace AMSLLC.Listener.Service.Implementation.LabTrack
 {
     using System;
@@ -21,7 +23,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         public string StockHeaderCompanyCode;
-        
+
         /// <summary>
         /// The device type code
         /// </summary>
@@ -66,7 +68,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
 
         /// <summary>
         /// The hold device flag
-        /// Flag used to prevent shipment of meter 
+        /// Flag used to prevent shipment of meter
         /// 'Y' = Hold
         /// 'N' = No Hold
         /// </summary>
@@ -74,15 +76,15 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         public char StockHeaderHoldDevice;
 
         /// <summary>
-        /// The limits flag 
-        /// 'Y' = In limits 
+        /// The limits flag
+        /// 'Y' = In limits
         /// 'N' = Not in limits
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         public char StockHeaderLimits;
 
         /// <summary>
-        /// The inventory flag 
+        /// The inventory flag
         /// 'Y' = Device has been inventoried
         /// 'N' = Not inventoried
         /// </summary>
@@ -253,7 +255,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         public string MeterTypeManufacturerCode;
-        
+
         /// <summary>
         /// The user field 1
         /// </summary>
@@ -471,7 +473,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundSeriesLight;
-        
+
         /// <summary>
         /// As found element A full load test result
         /// </summary>
@@ -493,7 +495,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementALight;
-        
+
         /// <summary>
         /// As found element B full load test result
         /// </summary>
@@ -515,7 +517,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementBLight;
-        
+
         /// <summary>
         /// As found element C full load test result
         /// </summary>
@@ -536,7 +538,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsFoundElementCLight;
-        
+
         /// <summary>
         /// As left test date
         /// </summary>
@@ -589,7 +591,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftSeriesLight;
-        
+
         /// <summary>
         /// As left element A full load test result
         /// </summary>
@@ -611,7 +613,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementALight;
-        
+
         /// <summary>
         /// As left element B full load test result
         /// </summary>
@@ -633,7 +635,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldConverter(typeof(CustomDecimalConverter), ".", "0.00")]
         public decimal? ShopTestHistoryAsLeftElementBLight;
-        
+
         /// <summary>
         /// As left element C full load test result
         /// </summary>
@@ -710,7 +712,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         public char ShopTestHistoryCreepPass;
-        
+
         /// <summary>
         /// The user double 1
         /// </summary>
@@ -752,7 +754,7 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         public string ShopTransferHistoryShipperId;
 
         /// <summary>
-        /// The date device was shipped 
+        /// The date device was shipped
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Required by FileHelpers library")]
         [FieldConverter(ConverterKind.Date, "yyyy-MM-dd")]
@@ -869,3 +871,4 @@ namespace AMSLLC.Listener.Service.Implementation.LabTrack
         public decimal? AsLeftWeightedAverage;
     }
 }
+#pragma warning restore SA1124, SA1401

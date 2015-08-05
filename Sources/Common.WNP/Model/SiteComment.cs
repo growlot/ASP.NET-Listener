@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing site comment 
+    /// Data model class representing site comment
     /// </summary>
     public class SiteComment : BaseComment
     {

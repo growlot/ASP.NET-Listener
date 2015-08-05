@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
                     map.Column("OWNER");
                     map.Fetch(FetchKind.Join);
                 });
-            
+
             // many to one mappings
             this.ManyToOne(
                 x => x.Site,

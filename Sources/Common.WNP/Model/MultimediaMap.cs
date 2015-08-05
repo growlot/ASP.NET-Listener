@@ -100,7 +100,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
                     m.Column("EQP_TYPE");
                     m.Type(TypeFactory.GetAnsiStringType(2));
                     m.Length(2);
-                });  
+                });
         }
     }
 }

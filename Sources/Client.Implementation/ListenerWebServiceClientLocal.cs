@@ -82,7 +82,7 @@ namespace AMSLLC.Listener.Client.Implementation
             }
 
             this.CreateDevice(request);
-            
+
             foreach (TransactionType transactionType in transactionTypes)
             {
                 TransactionLog transaction = new TransactionLog()
@@ -93,7 +93,7 @@ namespace AMSLLC.Listener.Client.Implementation
 
                 int transactionId = this.TransactionLogManager.NewTransaction(transaction);
                 this.TransactionLogManager.UpdateTransactionState(transactionId, TransactionStateLookup.ClientStart);
-                
+
                 switch (request.EquipmentType)
                 {
                     case "EM":

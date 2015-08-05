@@ -23,10 +23,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// Performs the database migration
         /// </summary>
         public override void Up()
-        {           
+        {
             if (((string)this.ApplicationContext).Contains("KCP&L"))
             {
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                                     INSERT INTO TransactionType
                                                (TransactionDataId
                                                ,TransactionSourceId
@@ -48,7 +48,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                                ,'Device Update (ODM)'
                                                ,'')");
 
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                                     INSERT INTO TransactionType
                                                (TransactionDataId
                                                ,TransactionSourceId
@@ -73,10 +73,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
 
             if (((string)this.ApplicationContext).Contains("LabTrack"))
             {
-                Insert.IntoTable("ExternalSystem").Row(new { Name = "LabTrack", Description = "Meter Data Collection and Inventory System" });
+                this.Insert.IntoTable("ExternalSystem").Row(new { Name = "LabTrack", Description = "Meter Data Collection and Inventory System" });
 
                 // TransactionType populate
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId
@@ -98,7 +98,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                ,'Device Shop Test (LabTrack)'
                                ,'')");
 
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId

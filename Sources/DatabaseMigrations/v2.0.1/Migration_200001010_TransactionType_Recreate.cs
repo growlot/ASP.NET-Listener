@@ -23,10 +23,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Delete.ForeignKey("FK_TranLog_TranType").OnTable("TransactionLog");
-            Delete.Table("TransactionType");
+            this.Delete.ForeignKey("FK_TranLog_TranType").OnTable("TransactionLog");
+            this.Delete.Table("TransactionType");
 
-            Create.Table("TransactionType")
+            this.Create.Table("TransactionType")
                 .WithColumn("TransactionTypeId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("Name").AsString().NotNullable().Unique("IX_TranType_Name")
                 .WithColumn("TransactionDataId").AsInt32().NotNullable()
@@ -36,23 +36,23 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("ExternalSystemId").AsInt32().Nullable()
                 .WithColumn("Description").AsString(500).Nullable();
 
-            Create.ForeignKey("FK_TranType_TranData")
+            this.Create.ForeignKey("FK_TranType_TranData")
                 .FromTable("TransactionType").ForeignColumn("TransactionDataId")
                 .ToTable("TransactionData").PrimaryColumn("TransactionDataId");
 
-            Create.ForeignKey("FK_TranType_TranSource")
+            this.Create.ForeignKey("FK_TranType_TranSource")
                 .FromTable("TransactionType").ForeignColumn("TransactionSourceId")
                 .ToTable("TransactionSource").PrimaryColumn("TransactionSourceId");
 
-            Create.ForeignKey("FK_TranType_TranDire")
+            this.Create.ForeignKey("FK_TranType_TranDire")
                 .FromTable("TransactionType").ForeignColumn("TransactionDirectionId")
                 .ToTable("TransactionDirection").PrimaryColumn("TransactionDirectionId");
 
-            Create.ForeignKey("FK_TranType_TranComp")
+            this.Create.ForeignKey("FK_TranType_TranComp")
                 .FromTable("TransactionType").ForeignColumn("TransactionCompletionId")
                 .ToTable("TransactionCompletion").PrimaryColumn("TransactionCompletionId");
 
-            Create.ForeignKey("FK_TranType_ExteSyst")
+            this.Create.ForeignKey("FK_TranType_ExteSyst")
                 .FromTable("TransactionType").ForeignColumn("ExternalSystemId")
                 .ToTable("ExternalSystem").PrimaryColumn("ExternalSystemId");
         }

@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.Client.Implementation.Messages
     using AMSLLC.Listener.Common.Lookup;
 
     /// <summary>
-    /// Request message type for new batch 
+    /// Request message type for new batch
     /// </summary>
     public class NewBatchRequest : IListenerFields
     {

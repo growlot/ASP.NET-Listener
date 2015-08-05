@@ -26,10 +26,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         {
             if (((string)this.ApplicationContext).Contains("Alliant"))
             {
-                Insert.IntoTable("ExternalSystem").Row(new { Name = "CC&B", Description = "Oracle Utilities Customer Care & Billing" });
+                this.Insert.IntoTable("ExternalSystem").Row(new { Name = "CC&B", Description = "Oracle Utilities Customer Care & Billing" });
 
                 // TransactionType populate
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId
@@ -49,7 +49,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                ,'Device Retrieve'
                                ,'')");
 
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId
@@ -69,7 +69,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                ,'Device Shop Test'
                                ,'')");
 
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId
@@ -90,7 +90,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                ,'')");
 
                 // TransactionLog update TransactionTypeId
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     UPDATE TransactionLog
                     SET TransactionTypeId = (
                                                 select TransactionTypeId 
@@ -99,7 +99,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                               )
                     WHERE TransactionTypeId = 400");
 
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     UPDATE TransactionLog
                     SET TransactionTypeId = (
                                                 select TransactionTypeId 
@@ -108,7 +108,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                               )
                     WHERE TransactionTypeId = 100");
 
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     UPDATE TransactionLog
                     SET TransactionTypeId = (
                                                 select TransactionTypeId 
@@ -120,11 +120,11 @@ namespace AMSLLC.Listener.DatabaseMigrations
 
             if (((string)this.ApplicationContext).Contains("KCP&L"))
             {
-                Insert.IntoTable("ExternalSystem").Row(new { Name = "CIS", Description = "Customer Information System" });
-                Insert.IntoTable("ExternalSystem").Row(new { Name = "ODM", Description = "Oracle Utilities Operational Device Management" });
+                this.Insert.IntoTable("ExternalSystem").Row(new { Name = "CIS", Description = "Customer Information System" });
+                this.Insert.IntoTable("ExternalSystem").Row(new { Name = "ODM", Description = "Oracle Utilities Operational Device Management" });
 
                 // TransactionType populate
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId
@@ -159,8 +159,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
 ////                               ,2
 ////                               ,2
 ////                               ,(
-////                                    SELECT ExternalSystemId 
-////                                    FROM ExternalSystem 
+////                                    SELECT ExternalSystemId
+////                                    FROM ExternalSystem
 ////                                    WHERE Name = 'ODM'
 ////                               )
 ////                               ,'Device Update (ODM)'
@@ -181,14 +181,14 @@ namespace AMSLLC.Listener.DatabaseMigrations
 ////                               ,2
 ////                               ,2
 ////                               ,(
-////                                    SELECT ExternalSystemId 
-////                                    FROM ExternalSystem 
+////                                    SELECT ExternalSystemId
+////                                    FROM ExternalSystem
 ////                                    WHERE Name = 'ODM'
 ////                               )
 ////                               ,'Device Shop Test (ODM)'
 ////                               ,'')");
 
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     INSERT INTO TransactionType
                                (TransactionDataId
                                ,TransactionSourceId
@@ -203,7 +203,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                                ,'')");
 
                 // TransactionLog update TransactionTypeId
-                Execute.Sql(@"
+                this.Execute.Sql(@"
                     UPDATE TransactionLog
                     SET TransactionTypeId = (
                                                 select TransactionTypeId 

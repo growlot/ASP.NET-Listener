@@ -99,7 +99,7 @@ namespace AMSLLC.Listener.Common.Unit.Test
                 persistenceController.InitializeListenerClientSystems(persistenceManager);
                 settings = new ConfigManager(persistenceController);
             }
-            
+
             Assert.AreEqual(false, settings.IsListenerEnabled());
             Assert.AreEqual(false, settings.IsNotificationsEnabled());
         }
@@ -292,7 +292,7 @@ namespace AMSLLC.Listener.Common.Unit.Test
             settings.SetConfigSettingValue(ConfigSettingNameLookup.ListenerUrl, url);
             Assert.AreEqual(url, settings.GetConfigSettingValue(ConfigSettingNameLookup.ListenerUrl));
         }
-        
+
         /// <summary>
         /// Tests if exception is thrown if config value is not specified (null).
         /// </summary>

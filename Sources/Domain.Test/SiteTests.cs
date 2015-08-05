@@ -35,11 +35,11 @@ namespace AMSLLC.Listener.Domain.Test
         {
             SiteAddressUpdatedTestHandler.ResetCallCounter();
             Site site = new Site();
-            ((IOriginator)site).SetMemento(new SiteMemento(1));
+            ((IOriginator)site).SetMemento(new SiteMemento(id: 1));
             PhysicalAddress address = new PhysicalAddress("US", "CA", "San Jose", "455 Larkspur Dr.", string.Empty, "92926");
 
             site.UpdateAddress(address);
-            Assert.AreEqual(1, SiteAddressUpdatedTestHandler.CallCounter);            
+            Assert.AreEqual(1, SiteAddressUpdatedTestHandler.CallCounter);
         }
 
         /// <summary>
@@ -90,12 +90,26 @@ namespace AMSLLC.Listener.Domain.Test
             /// <summary>
             /// The handler
             /// </summary>
-            public static readonly Action<SiteAddressUpdated> Handler = (eventData) => callCounter++;
+            private static readonly Action<SiteAddressUpdated> HandlerDefinition = (eventData) => callCounter++;
 
             /// <summary>
             /// The call counter
             /// </summary>
             private static int callCounter = 1;
+
+            /// <summary>
+            /// Gets the handler.
+            /// </summary>
+            /// <value>
+            /// The handler.
+            /// </value>
+            public static Action<SiteAddressUpdated> Handler
+            {
+                get
+                {
+                    return HandlerDefinition;
+                }
+            }
 
             /// <summary>
             /// Gets the call counter.

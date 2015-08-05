@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Update.Table("TransactionSource").Set(new { Description = "Web Service Call" }).Where(new { TransactionSourceId = "1" });
+            this.Update.Table("TransactionSource").Set(new { Description = "Web Service Call" }).Where(new { TransactionSourceId = "1" });
         }
 
         /// <summary>

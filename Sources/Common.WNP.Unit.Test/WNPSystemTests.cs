@@ -92,7 +92,7 @@ namespace AMSLLC.Listener.Common.WNP.Unit.Test
         public void MeterCreateDateShouldBeSetToNowIfNullDuringUpdate()
         {
             Meter motherMeter = MotherObjects.DefaultMeter();
-            
+
             // original record has null create date
             motherMeter.CreateDate = default(DateTime);
 

@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Common.Model
     using System.Text;
 
     /// <summary>
-    /// Data model class representing ServiceType 
+    /// Data model class representing ServiceType
     /// </summary>
     public class ServiceType
     {

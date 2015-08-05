@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     using System;
 
     /// <summary>
-    /// Data model class representing electric meter device 
+    /// Data model class representing electric meter device
     /// </summary>
     public class Meter : Equipment
     {

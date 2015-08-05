@@ -262,8 +262,8 @@ namespace AMSLLC.Listener.Common.WNP
                 }
 
                 testResults = sanitizedTestResults;
-            } 
-            
+            }
+
             return testResults;
         }
 
@@ -860,7 +860,7 @@ namespace AMSLLC.Listener.Common.WNP
                 this.persistenceManager.Delete<SiteMultimedia>(currentMultimedia.Id);
             }
         }
-        
+
         /// <summary>
         /// Adds the comment to site.
         /// </summary>
@@ -894,7 +894,7 @@ namespace AMSLLC.Listener.Common.WNP
                 this.persistenceManager.Save(comment);
             }
         }
-        
+
         /// <summary>
         /// Remove the comment from the site.
         /// </summary>

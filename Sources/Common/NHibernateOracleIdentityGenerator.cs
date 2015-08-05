@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Common
     using NHibernate.Engine;
     using NHibernate.Id;
     using NHibernate.Id.Insert;
-    
+
     /// <summary>
     /// A generator which combines identity generation with immediate retrieval
     /// by attaching a output parameter to the SQL command

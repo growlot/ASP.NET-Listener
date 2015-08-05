@@ -30,7 +30,7 @@ namespace AMSLLC.Listener.Service.Host
         /// The logger
         /// </summary>
         private static readonly ILog Logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
         /// <summary>
         /// The list of service hosts
         /// </summary>
@@ -141,7 +141,7 @@ namespace AMSLLC.Listener.Service.Host
         ////    {
         ////        AMSLLC.Listener.Service.Implementation.KCPL.CustomService service = new Implementation.KCPL.CustomService();
         ////        service.ProcessInitialLoad();
-        ////    } 
+        ////    }
         ////}
     }
 }

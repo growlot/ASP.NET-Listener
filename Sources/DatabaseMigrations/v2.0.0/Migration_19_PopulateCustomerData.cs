@@ -25,17 +25,17 @@ namespace AMSLLC.Listener.DatabaseMigrations
         public override void Up()
         {
             if (((string)this.ApplicationContext).Contains("Alliant"))
-            {               
-                Insert.IntoTable("Company").Row(new { CompanyId = "1", ExternalCode = "W", InternalCode = "Wisconsin", Name = "WPL" });
-                Insert.IntoTable("Company").Row(new { CompanyId = "2", ExternalCode = "I", InternalCode = "Iowa", Name = "IPL" });
+            {
+                this.Insert.IntoTable("Company").Row(new { CompanyId = "1", ExternalCode = "W", InternalCode = "Wisconsin", Name = "WPL" });
+                this.Insert.IntoTable("Company").Row(new { CompanyId = "2", ExternalCode = "I", InternalCode = "Iowa", Name = "IPL" });
 
-                Update.Table("EquipmentType").Set(new { ExternalCode = "MR" }).Where(new { EquipmentTypeId = "1" });
+                this.Update.Table("EquipmentType").Set(new { ExternalCode = "MR" }).Where(new { EquipmentTypeId = "1" });
             }
 
             if (((string)this.ApplicationContext).Contains("KCP&L"))
             {
-                Insert.IntoTable("Company").Row(new { CompanyId = "0", Name = "KCP&L" });
-                Insert.IntoTable("Company").Row(new { CompanyId = "1", Name = "KCP&L GMO" });
+                this.Insert.IntoTable("Company").Row(new { CompanyId = "0", Name = "KCP&L" });
+                this.Insert.IntoTable("Company").Row(new { CompanyId = "1", Name = "KCP&L GMO" });
             }
         }
 

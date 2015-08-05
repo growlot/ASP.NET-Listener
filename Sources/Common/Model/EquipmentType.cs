@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Common.Model
     using System.Text;
 
     /// <summary>
-    /// Data model class representing EquipmentType 
+    /// Data model class representing EquipmentType
     /// </summary>
     public class EquipmentType
     {

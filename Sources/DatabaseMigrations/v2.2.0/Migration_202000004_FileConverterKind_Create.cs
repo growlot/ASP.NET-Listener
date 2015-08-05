@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("FileConverterKind")
+            this.Create.Table("FileConverterKind")
                 .WithColumn("FileConverterKindId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("Description").AsString(50).NotNullable().Unique("IX_ConvKind_Description");
         }

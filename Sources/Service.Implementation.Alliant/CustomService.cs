@@ -146,7 +146,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 Log.Error("Service call timed out.", ex);
                 throw;
             }
-            
+
             if (alliantResponse != null)
             {
                 switch (device.EquipmentType.ServiceType.ExternalCode)
@@ -298,7 +298,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                 Log.Error("Service call timed out.", ex);
                 throw;
             }
-            
+
             if (alliantResponse != null)
             {
                 // save test results id received from CC&B
@@ -561,7 +561,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
                     ////};
                     ////faults.Add(fault);
                     ////Utilities.WriteToXmlFile<List<Alliant.GetDevice.FaultNotificationType>>(mockupFileFault, faults);
-                     
+
                     string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("GetDeviceMockupFileNotFound", CultureInfo.CurrentCulture), mockupFile, mockupFileDefault);
                     Log.Error(message);
                     throw new FileNotFoundException(message);
@@ -699,7 +699,7 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant
 
             return alliantResponse;
         }
-        
+
         /// <summary>
         /// Gets the send device test response from web service.
         /// </summary>

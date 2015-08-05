@@ -7,9 +7,9 @@ namespace AMSLLC.Listener.Common.WNP.Model
 {
     using System;
     using System.Collections.Generic;
-    
+
     /// <summary>
-    /// Data model class representing electric meter barcode 
+    /// Data model class representing electric meter barcode
     /// </summary>
     [Serializable]
     public class MeterBarcode : Barcode

@@ -28,7 +28,7 @@ namespace AMSLLC.Listener.Client.Host
     using AMSLLC.Listener.Common.Lookup;
     using AMSLLC.Listener.Globalization;
     using log4net.Config;
-    
+
     /// <summary>
     /// Interaction logic for application
     /// </summary>
@@ -69,11 +69,11 @@ namespace AMSLLC.Listener.Client.Host
 
             GetDeviceRequest request = new GetDeviceRequest()
             {
-                ListenerUrl = new Uri(ServiceAddress.Text),
+                ListenerUrl = new Uri(this.ServiceAddress.Text),
                 CompanyId = 0,
-                EquipmentNumber = enteredEquipmenNumberDRT.Text,
-                ServiceType = ((ComboBoxItem)enteredServiceTypeDRT.SelectedItem).Tag.ToString(),
-                EquipmentType = ((ComboBoxItem)enteredEqipmentTypeDRT.SelectedItem).Tag.ToString(),
+                EquipmentNumber = this.enteredEquipmenNumberDRT.Text,
+                ServiceType = ((ComboBoxItem)this.enteredServiceTypeDRT.SelectedItem).Tag.ToString(),
+                EquipmentType = ((ComboBoxItem)this.enteredEqipmentTypeDRT.SelectedItem).Tag.ToString(),
                 Location = "VR7",
                 TesterId = "Vladas",
                 TestStandard = "TS"
@@ -91,7 +91,7 @@ namespace AMSLLC.Listener.Client.Host
             }
 
             watch.Stop();
-            requestDuration.Text = watch.Elapsed.ToString();
+            this.requestDuration.Text = watch.Elapsed.ToString();
         }
 
         /// <summary>
@@ -103,15 +103,15 @@ namespace AMSLLC.Listener.Client.Host
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            
+
             DeviceTestRequest request = new DeviceTestRequest()
             {
-                ListenerUrl = new Uri(ServiceAddress.Text),
+                ListenerUrl = new Uri(this.ServiceAddress.Text),
                 CompanyId = 1,
-                EquipmentNumber = enteredEquipmenNumberDST.Text,
-                ServiceType = ((ComboBoxItem)enteredServiceTypeDST.SelectedItem).Tag.ToString(),
-                EquipmentType = ((ComboBoxItem)enteredEqipmentTypeDST.SelectedItem).Tag.ToString(),
-                TestDate = DateTime.Parse(enteredTestDateDST.Text, CultureInfo.InvariantCulture)
+                EquipmentNumber = this.enteredEquipmenNumberDST.Text,
+                ServiceType = ((ComboBoxItem)this.enteredServiceTypeDST.SelectedItem).Tag.ToString(),
+                EquipmentType = ((ComboBoxItem)this.enteredEqipmentTypeDST.SelectedItem).Tag.ToString(),
+                TestDate = DateTime.Parse(this.enteredTestDateDST.Text, CultureInfo.InvariantCulture)
             };
 
             ClientResponse response = this.webService.SendDeviceTestData(request);
@@ -127,7 +127,7 @@ namespace AMSLLC.Listener.Client.Host
             }
 
             watch.Stop();
-            requestDuration.Text = watch.Elapsed.ToString();
+            this.requestDuration.Text = watch.Elapsed.ToString();
         }
 
         /// <summary>

@@ -23,24 +23,24 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "0", Description = "None" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "1", Description = "Date" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "2", Description = "Boolean" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "3", Description = "Byte" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "4", Description = "Int16" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "5", Description = "Int32" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "6", Description = "Int64" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "7", Description = "Decimal" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "8", Description = "Double" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "9", Description = "PercentDouble" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "10", Description = "Single" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "11", Description = "SByte" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "12", Description = "UInt16" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "13", Description = "UInt32" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "14", Description = "UInt64" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "15", Description = "DateMultiFormat" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "16", Description = "Char" });
-            Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "17", Description = "Guid" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "0", Description = "None" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "1", Description = "Date" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "2", Description = "Boolean" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "3", Description = "Byte" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "4", Description = "Int16" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "5", Description = "Int32" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "6", Description = "Int64" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "7", Description = "Decimal" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "8", Description = "Double" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "9", Description = "PercentDouble" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "10", Description = "Single" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "11", Description = "SByte" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "12", Description = "UInt16" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "13", Description = "UInt32" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "14", Description = "UInt64" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "15", Description = "DateMultiFormat" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "16", Description = "Char" });
+            this.Insert.IntoTable("FileConverterKind").Row(new { FileConverterKindId = "17", Description = "Guid" });
         }
     }
 }

@@ -23,28 +23,28 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            IfDatabase("sqlserver", "oracle12c")
+            this.IfDatabase("sqlserver", "oracle12c")
                 .Create.Table("TransactionLogState")
                     .WithColumn("TransactionLogStateId").AsInt32().NotNullable().PrimaryKey().Identity();
 
-            IfDatabase("oracle")
+            this.IfDatabase("oracle")
                 .Create.Table("TransactionLogState")
                     .WithColumn("TransactionLogStateId").AsInt32().NotNullable().PrimaryKey();
 
-            Alter.Table("TransactionLogState")
+            this.Alter.Table("TransactionLogState")
                 .AddColumn("TransactionLogId").AsInt32().NotNullable()
                 .AddColumn("TransactionStateId").AsInt32().NotNullable()
                 .AddColumn("ExecutionTime").AsDateTime().NotNullable();
 
-            Create.ForeignKey("FK_TranLState_TranLog")
+            this.Create.ForeignKey("FK_TranLState_TranLog")
                 .FromTable("TransactionLogState").ForeignColumn("TransactionLogId")
                 .ToTable("TransactionLog").PrimaryColumn("TransactionLogId");
 
-            Create.ForeignKey("FK_TranLState_TranState")
+            this.Create.ForeignKey("FK_TranLState_TranState")
                 .FromTable("TransactionLogState").ForeignColumn("TransactionStateId")
                 .ToTable("TransactionState").PrimaryColumn("TransactionStateId");
 
-            Create.Index("IX_TranLState_TLI_TSI")
+            this.Create.Index("IX_TranLState_TLI_TSI")
                 .OnTable("TransactionLogState")
                     .OnColumn("TransactionLogId").Ascending()
                     .OnColumn("TransactionStateId").Ascending().WithOptions().Unique();

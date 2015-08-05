@@ -23,9 +23,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("FileAlignMode").Row(new { FileAlignModeId = "0", Description = "Left" });
-            Insert.IntoTable("FileAlignMode").Row(new { FileAlignModeId = "1", Description = "Center" });
-            Insert.IntoTable("FileAlignMode").Row(new { FileAlignModeId = "2", Description = "Right" });
+            this.Insert.IntoTable("FileAlignMode").Row(new { FileAlignModeId = "0", Description = "Left" });
+            this.Insert.IntoTable("FileAlignMode").Row(new { FileAlignModeId = "1", Description = "Center" });
+            this.Insert.IntoTable("FileAlignMode").Row(new { FileAlignModeId = "2", Description = "Right" });
         }
     }
 }

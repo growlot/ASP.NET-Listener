@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("Company")
+            this.Create.Table("Company")
                 .WithColumn("CompanyId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("ExternalCode").AsString(50).Nullable()
                 .WithColumn("InternalCode").AsString(50).Nullable()

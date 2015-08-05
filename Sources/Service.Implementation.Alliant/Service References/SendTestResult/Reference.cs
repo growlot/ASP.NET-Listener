@@ -7,6 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+#pragma warning disable CS1591
 
 namespace AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult {
     
@@ -1435,3 +1436,4 @@ namespace AMSLLC.Listener.Service.Implementation.Alliant.SendTestResult {
         }
     }
 }
+#pragma warning restore CS1591

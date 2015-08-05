@@ -16,6 +16,20 @@ namespace AMSLLC.Listener.Globalization
         /// <summary>
         /// The string manager
         /// </summary>
-        public static readonly ResourceManager StringManager = new ResourceManager("AMSLLC.Listener.Globalization.Properties.Resources", Assembly.GetExecutingAssembly());
+        private static readonly ResourceManager CommonStringManager = new ResourceManager("AMSLLC.Listener.Globalization.Properties.Resources", Assembly.GetExecutingAssembly());
+
+        /// <summary>
+        /// Gets the string manager.
+        /// </summary>
+        /// <value>
+        /// The string manager.
+        /// </value>
+        public static ResourceManager StringManager
+        {
+            get
+            {
+                return CommonStringManager;
+            }
+        }
     }
 }

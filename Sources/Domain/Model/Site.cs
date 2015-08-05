@@ -42,7 +42,7 @@ namespace AMSLLC.Listener.Domain.Model
         /////// The account.
         /////// </value>
         ////private Account Account { get; set; }
-        
+
         /////// <summary>
         /////// Gets or sets the premise number.
         /////// </summary>

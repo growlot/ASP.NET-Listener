@@ -23,9 +23,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "0", Description = "Success" });
-            Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "1", Description = "In Progress" });
-            Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "2", Description = "Failed" });
+            this.Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "0", Description = "Success" });
+            this.Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "1", Description = "In Progress" });
+            this.Insert.IntoTable("TransactionStatus").Row(new { TransactionStatusId = "2", Description = "Failed" });
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            Delete.FromTable("TransactionStatus").AllRows(); 
+            this.Delete.FromTable("TransactionStatus").AllRows();
         }
     }
 }

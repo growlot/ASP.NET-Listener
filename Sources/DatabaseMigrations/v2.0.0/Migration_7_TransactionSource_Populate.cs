@@ -23,8 +23,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Insert.IntoTable("TransactionSource").Row(new { TransactionSourceId = "0", Description = "WNP" });
-            Insert.IntoTable("TransactionSource").Row(new { TransactionSourceId = "1", Description = "Web Srvice Call" });
+            this.Insert.IntoTable("TransactionSource").Row(new { TransactionSourceId = "0", Description = "WNP" });
+            this.Insert.IntoTable("TransactionSource").Row(new { TransactionSourceId = "1", Description = "Web Srvice Call" });
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            Delete.FromTable("TransactionSource").AllRows();
+            this.Delete.FromTable("TransactionSource").AllRows();
         }
     }
 }

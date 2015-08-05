@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            Create.Table("FileQuoteMultiline")
+            this.Create.Table("FileQuoteMultiline")
                 .WithColumn("FileQuoteMultilineId").AsInt32().NotNullable().PrimaryKey()
                 .WithColumn("Description").AsString(50).NotNullable().Unique("IX_QoteMult_Description");
         }

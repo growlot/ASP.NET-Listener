@@ -67,12 +67,12 @@ namespace AMSLLC.Listener.Domain
         /// <value>
         /// The country.
         /// </value>
-        public string Country 
-        { 
-            get 
-            { 
-                return this.country; 
-            } 
+        public string Country
+        {
+            get
+            {
+                return this.country;
+            }
         }
 
         /// <summary>
@@ -81,12 +81,12 @@ namespace AMSLLC.Listener.Domain
         /// <value>
         /// The state.
         /// </value>
-        public string State 
-        { 
-            get 
-            { 
-                return this.state; 
-            } 
+        public string State
+        {
+            get
+            {
+                return this.state;
+            }
         }
 
         /// <summary>
@@ -95,12 +95,12 @@ namespace AMSLLC.Listener.Domain
         /// <value>
         /// The city.
         /// </value>
-        public string City 
-        { 
-            get 
-            { 
-                return this.city; 
-            } 
+        public string City
+        {
+            get
+            {
+                return this.city;
+            }
         }
 
         /// <summary>
@@ -109,12 +109,12 @@ namespace AMSLLC.Listener.Domain
         /// <value>
         /// The address (first line).
         /// </value>
-        public string Address1 
-        { 
-            get 
-            { 
-                return this.address1; 
-            } 
+        public string Address1
+        {
+            get
+            {
+                return this.address1;
+            }
         }
 
         /// <summary>
@@ -123,12 +123,12 @@ namespace AMSLLC.Listener.Domain
         /// <value>
         /// The address (second line).
         /// </value>
-        public string Address2 
-        { 
-            get 
-            { 
-                return this.address2; 
-            } 
+        public string Address2
+        {
+            get
+            {
+                return this.address2;
+            }
         }
 
         /// <summary>
@@ -137,19 +137,19 @@ namespace AMSLLC.Listener.Domain
         /// <value>
         /// The zip code.
         /// </value>
-        public string Zip 
-        { 
-            get 
-            { 
-                return this.zip; 
-            } 
+        public string Zip
+        {
+            get
+            {
+                return this.zip;
+            }
         }
 
         /// <summary>
         /// Gets the address in US recommended format.
-        /// Only the United States Postal Service (USPS) can deliver to a P.O. Box. 
-        /// For this reason the recipient may choose to insert their physical (aka street) address as line two, 
-        /// expanding the complete address to four lines. 
+        /// Only the United States Postal Service (USPS) can deliver to a P.O. Box.
+        /// For this reason the recipient may choose to insert their physical (aka street) address as line two,
+        /// expanding the complete address to four lines.
         /// Providing both allows a sender to ship via the USPS or via a private carrier.
         /// (<see href="https://en.wikipedia.org/wiki/Address_(geography)#Address_format">source</see>)
         /// </summary>
@@ -157,7 +157,7 @@ namespace AMSLLC.Listener.Domain
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This is a method, not a property.")]
         public string GetAddressUSFormat()
         {
-            // If second address line is specified then it should be street address and first line (P.O. Box address) 
+            // If second address line is specified then it should be street address and first line (P.O. Box address)
             // should not be included in string representation
             StringBuilder builder = new StringBuilder();
             if (!string.IsNullOrWhiteSpace(this.Address2))
@@ -196,10 +196,10 @@ namespace AMSLLC.Listener.Domain
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -207,7 +207,7 @@ namespace AMSLLC.Listener.Domain
             // if no country specific format is available, then US address format is used.
             switch (this.Country)
             {
-                case "US": 
+                case "US":
                     return this.GetAddressUSFormat();
                 default:
                     return this.GetAddressUSFormat();

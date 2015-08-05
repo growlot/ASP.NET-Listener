@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// The logger
         /// </summary>
         private static readonly ILog Logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
         /// <summary>
         /// The main entry point for the application.
         /// Runs service as a console application or as windows service.
@@ -31,7 +31,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
             try
             {
                 DatabaseUpdater databaseUpdater = new DatabaseUpdater();
-                                
+
                 //// databaseUpdater.Downgrade(21);
                 //// databaseUpdater.DestroyDatabase();
                 databaseUpdater.UpdateDatabase();
