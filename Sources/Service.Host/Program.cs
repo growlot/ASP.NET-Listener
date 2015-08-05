@@ -6,14 +6,9 @@
 namespace AMSLLC.Listener.Service.Host
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.Composition;
     using System.ComponentModel.Composition.Hosting;
-    using System.Configuration;
-    using System.Linq;
     using System.ServiceProcess;
-    using System.Text;
-    using System.Threading.Tasks;
     using log4net;
     using log4net.Config;
 
@@ -36,7 +31,7 @@ namespace AMSLLC.Listener.Service.Host
 #pragma warning restore 0649
 
         /// <summary>
-        /// Creates non static instance of the <see cref="Program"/> class.
+        /// Prevents a default instance of the <see cref="Program" /> class from being created.
         /// <see href="https://msdn.microsoft.com/en-us/library/dd460648(v=vs.100).aspx">MEF reference</see>
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Need to catch all exceptions before pgoram crashes, so they would be logged")]
