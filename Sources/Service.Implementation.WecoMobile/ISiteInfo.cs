@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 {
+    using System.Collections.ObjectModel;
     using System.ServiceModel;
     using Contract;
     using ListenerModel = Common.Model;
@@ -27,6 +28,26 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         ListenerModel.Site GetSiteInfo(SiteInfoRequest request);
 
         /// <summary>
+        /// Gets the truck inventory.
+        /// </summary>
+        /// <param name="vehicleNumber">The vehicle number.</param>
+        /// <returns>
+        /// The truck inventory
+        /// </returns>
+        [OperationContract]
+        [FaultContract(typeof(ServiceFaultDetails))]
+        ReadOnlyCollection<InventoryItem> GetTruckInventory(string vehicleNumber);
+
+        /// <summary>
+        /// Gets the full information for devices specified in request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>The list of devices</returns>
+        [OperationContract]
+        [FaultContract(typeof(ServiceFaultDetails))]
+        ReadOnlyCollection<ListenerModel.Device> GetDevices(GetDevicesRequest request);
+
+        /// <summary>
         /// Checks out device to specified user and assigns it to specified truck.
         /// </summary>
         /// <param name="request">The request.</param>
@@ -34,6 +55,22 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         [OperationContract]
         [FaultContract(typeof(ServiceFaultDetails))]
         ListenerModel.Device CheckoutDevice(CheckoutRequest request);
+
+        /// <summary>
+        /// Checks in the device.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        [OperationContract]
+        [FaultContract(typeof(ServiceFaultDetails))]
+        void CheckInDevice(CheckInRequest request);
+
+        /// <summary>
+        /// Updates the devices information.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        [OperationContract]
+        [FaultContract(typeof(ServiceFaultDetails))]
+        void UpdateDevices(UpdateDevicesRequest request);
 
         /// <summary>
         /// Adds the meter test results.

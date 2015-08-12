@@ -89,6 +89,12 @@ namespace AMSLLC.Listener.Common
         DeviceTest GetDeviceTest(int deviceTestId);
 
         /// <summary>
+        /// Gets all the equipment types.
+        /// </summary>
+        /// <returns>The list of equipment types</returns>
+        IList<EquipmentType> GetEquipmentTypes();
+
+        /// <summary>
         /// Gets the equipment type by internal service and equipment type codes.
         /// </summary>
         /// <param name="serviceTypeInternalCode">The service type internal code.</param>

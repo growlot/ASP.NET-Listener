@@ -123,6 +123,8 @@
     <Compile Include="Lookup\TransactionDirectionLookup.cs" />
     <Compile Include="Model\Address.cs" />
     <Compile Include="Model\BaseFileField.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Model\Vehicle.cs" />
     <Compile Include="Model\FileFieldFixedLengthMap.cs" />
     <Compile Include="Model\FileFieldDelimitedMap.cs" />
     <Compile Include="Model\FileFieldFixedLength.cs" />

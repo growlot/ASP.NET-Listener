@@ -42,6 +42,8 @@
     <property name="CreateDate" column="CREATE_DATE" />
     <property name="PurchaseDate" column="PURCHASE_DATE" />
     <property name="PurchaseOrderReference" column="PO_REF" type="AnsiString" length="20" />
+    <property name="VehicleNumber" column="vehicle_id" type="AnsiString" length="32" />
+    <property name="ReceivedBy" column="received_by" type="AnsiString" length="32" />
 
     <property name="CustomField1" column="PT_USER01" type="AnsiString" length="50" />
     <property name="CustomField2" column="PT_USER02" type="AnsiString" length="50" />

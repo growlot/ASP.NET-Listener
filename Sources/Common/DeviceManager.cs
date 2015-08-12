@@ -180,6 +180,15 @@ namespace AMSLLC.Listener.Common
         }
 
         /// <summary>
+        /// Gets all the equipment types.
+        /// </summary>
+        /// <returns>The list of equipment types</returns>
+        public IList<EquipmentType> GetEquipmentTypes()
+        {
+            return this.listenerSystem.GetEquipmentTypes();
+        }
+
+        /// <summary>
         /// Gets the company using internal code.
         /// </summary>
         /// <param name="internalCode">The internal code.</param>

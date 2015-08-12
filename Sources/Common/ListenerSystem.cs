@@ -333,6 +333,15 @@ namespace AMSLLC.Listener.Common
         }
 
         /// <summary>
+        /// Gets all the equipment types.
+        /// </summary>
+        /// <returns>The list of equipment types</returns>
+        public IList<EquipmentType> GetEquipmentTypes()
+        {
+            return this.persistenceManager.RetrieveAll<EquipmentType>(SessionAction.BeginAndEnd);
+        }
+
+        /// <summary>
         /// Gets the equipment type by internal service and equipment type codes.
         /// </summary>
         /// <param name="serviceTypeInternalCode">The service type internal code.</param>

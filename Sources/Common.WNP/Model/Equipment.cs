@@ -154,7 +154,23 @@ namespace AMSLLC.Listener.Common.WNP.Model
         /// <value>
         /// The circuit.
         /// </value>
-        public int Circuit { get; set; }
+        public int? Circuit { get; set; }
+
+        /// <summary>
+        /// Gets or sets the vehicle number where equipment is currently located.
+        /// </summary>
+        /// <value>
+        /// The vehicle number.
+        /// </value>
+        public string VehicleNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user who received the equipment on checkout.
+        /// </summary>
+        /// <value>
+        /// The user.
+        /// </value>
+        public string ReceivedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the meter custom field 1.

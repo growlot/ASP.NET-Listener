@@ -192,4 +192,10 @@
   <data name="CircuitNotFound" xml:space="preserve">
     <value>Circuit with index {0} could not be found in site {1}.</value>
   </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>User with user name {0} could not be found.</value>
+  </data>
+  <data name="VehicleNotFound" xml:space="preserve">
+    <value>Vehicle with vehicle number {0} could not be found.</value>
+  </data>
 </root>

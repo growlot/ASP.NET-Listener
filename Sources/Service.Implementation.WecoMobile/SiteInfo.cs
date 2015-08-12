@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Configuration;
     using System.Globalization;
     using System.Linq;
@@ -23,6 +24,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
     /// <summary>
     /// Implements SiteInfo web service interface
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "It's a temporary implementation")]
     public class SiteInfo : ISiteInfo
     {
         /// <summary>
@@ -153,6 +155,97 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         }
 
         /// <summary>
+        /// Gets the truck inventory.
+        /// </summary>
+        /// <param name="vehicleNumber">The vehicle number.</param>
+        /// <returns>
+        /// The truck inventory
+        /// </returns>
+        public ReadOnlyCollection<InventoryItem> GetTruckInventory(string vehicleNumber)
+        {
+            List<InventoryItem> inventory = new List<InventoryItem>();
+            IEnumerable<WnpModel.Meter> meters = this.wnpSystem.GetEquipmentNumbersByVehicle<WnpModel.Meter>(vehicleNumber);
+
+            foreach (WnpModel.Meter meter in meters)
+            {
+                InventoryItem inventoryItem = new InventoryItem()
+                {
+                    EquipmentNumber = meter.EquipmentNumber,
+                    EquipmentType = "EM",
+                    ServiceType = "E"
+                };
+
+                inventory.Add(inventoryItem);
+            }
+
+            return inventory.AsReadOnly();
+        }
+
+        /// <summary>
+        /// Gets the full information for devices specified in request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>The list of devices</returns>
+        public ReadOnlyCollection<ListenerModel.Device> GetDevices(GetDevicesRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not process request if it is not specified");
+            }
+
+            List<ListenerModel.Device> result = new List<Common.Model.Device>();
+
+            foreach (InventoryItem device in request.Devices)
+            {
+                if (!string.IsNullOrWhiteSpace(device.ServiceType) && !string.IsNullOrWhiteSpace(device.EquipmentType) && !string.IsNullOrWhiteSpace(device.EquipmentNumber))
+                {
+                    switch (device.EquipmentType)
+                    {
+                        case "EM":
+                            WnpModel.Meter meter = this.wnpSystem.GetEquipment<WnpModel.Meter>(device.EquipmentNumber, this.ownerId);
+                            if (meter == null)
+                            {
+                                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("MeterNotFound", CultureInfo.CurrentCulture), device.EquipmentNumber);
+                                Log.Error(message);
+                                throw new ArgumentException(message);
+                            }
+
+                            result.Add(this.ConvertMeterToDevice(meter));
+                            break;
+                        case "CT":
+                            WnpModel.CurrentTransformer currentTransformer = this.wnpSystem.GetEquipment<WnpModel.CurrentTransformer>(device.EquipmentNumber, this.ownerId);
+                            if (currentTransformer == null)
+                            {
+                                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("CTNotFound", CultureInfo.CurrentCulture), device.EquipmentNumber);
+                                Log.Error(message);
+                                throw new ArgumentException(message);
+                            }
+
+                            result.Add(this.ConvertCurrentTransformerToDevice(currentTransformer));
+                            break;
+                        case "PT":
+                            WnpModel.PotentialTransformer potentialTransformer = this.wnpSystem.GetEquipment<WnpModel.PotentialTransformer>(device.EquipmentNumber, this.ownerId);
+                            if (potentialTransformer == null)
+                            {
+                                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("PTNotFound", CultureInfo.CurrentCulture), device.EquipmentNumber);
+                                Log.Error(message);
+                                throw new ArgumentException(message);
+                            }
+
+                            result.Add(this.ConvertPotentialTransformerToDevice(potentialTransformer));
+                            break;
+                        default:
+                            string message1 = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType, device.ServiceType);
+                            Log.Error(message1);
+                            throw new ArgumentException(message1);
+                    }
+                }
+            }
+
+            return result.AsReadOnly();
+        }
+
+        /// <summary>
         /// Checks out device to specified user and assignes it to specified truck.
         /// </summary>
         /// <param name="request">The request.</param>
@@ -179,6 +272,24 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                     throw new ArgumentException(message);
                 }
 
+                WnpModel.Vehicle vehicle = this.wnpSystem.GetVehicle(this.ownerId, request.VehicleNumber);
+
+                if (vehicle == null)
+                {
+                    string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("VehicleNotFound", CultureInfo.CurrentCulture), request.VehicleNumber);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
+                }
+
+                WnpModel.User user = this.wnpSystem.GetUser(request.UserName);
+
+                if (user == null)
+                {
+                    string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("UserNotFound", CultureInfo.CurrentCulture), request.UserName);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
+                }
+
                 switch (equipmentType.InternalCode)
                 {
                     case "EM":
@@ -189,6 +300,8 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                             Log.Error(message);
                             throw new ArgumentException(message);
                         }
+
+                        this.CheckOutDevice(vehicle.VehicleNumber, user.UserName, meter);
 
                         device = this.ConvertMeterToDevice(meter);
                         break;
@@ -201,6 +314,8 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                             throw new ArgumentException(message);
                         }
 
+                        this.CheckOutDevice(vehicle.VehicleNumber, user.UserName, currentTransformer);
+
                         device = this.ConvertCurrentTransformerToDevice(currentTransformer);
                         break;
                     case "PT":
@@ -212,6 +327,8 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                             throw new ArgumentException(message);
                         }
 
+                        this.CheckOutDevice(vehicle.VehicleNumber, user.UserName, potentialTransformer);
+
                         device = this.ConvertPotentialTransformerToDevice(potentialTransformer);
                         break;
                     default:
@@ -222,6 +339,119 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             }
 
             return device;
+        }
+
+        /// <summary>
+        /// Checks in the device.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        public void CheckInDevice(CheckInRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not process request if it is not specified");
+            }
+
+            Log.Info("CheckInDevice started.");
+
+            if (!string.IsNullOrWhiteSpace(request.ServiceType) && !string.IsNullOrWhiteSpace(request.EquipmentType) && !string.IsNullOrWhiteSpace(request.EquipmentNumber))
+            {
+                ListenerModel.EquipmentType equipmentType = this.deviceManager.GetEquipmentTypeByInternalCode(request.ServiceType, request.EquipmentType);
+                if (equipmentType == null)
+                {
+                    string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeUnknown", CultureInfo.CurrentCulture), request.EquipmentType, request.ServiceType);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
+                }
+
+                switch (equipmentType.InternalCode)
+                {
+                    case "EM":
+                        WnpModel.Meter meter = this.wnpSystem.GetEquipment<WnpModel.Meter>(request.EquipmentNumber, this.ownerId);
+                        if (meter == null)
+                        {
+                            string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("MeterNotFound", CultureInfo.CurrentCulture), request.EquipmentNumber);
+                            Log.Error(message);
+                            throw new ArgumentException(message);
+                        }
+
+                        this.CheckInDevice(meter);
+                        break;
+                    case "CT":
+                        WnpModel.CurrentTransformer currentTransformer = this.wnpSystem.GetEquipment<WnpModel.CurrentTransformer>(request.EquipmentNumber, this.ownerId);
+                        if (currentTransformer == null)
+                        {
+                            string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("CTNotFound", CultureInfo.CurrentCulture), request.EquipmentNumber);
+                            Log.Error(message);
+                            throw new ArgumentException(message);
+                        }
+
+                        this.CheckInDevice(currentTransformer);
+                        break;
+                    case "PT":
+                        WnpModel.PotentialTransformer potentialTransformer = this.wnpSystem.GetEquipment<WnpModel.PotentialTransformer>(request.EquipmentNumber, this.ownerId);
+                        if (potentialTransformer == null)
+                        {
+                            string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("PTNotFound", CultureInfo.CurrentCulture), request.EquipmentNumber);
+                            Log.Error(message);
+                            throw new ArgumentException(message);
+                        }
+
+                        this.CheckInDevice(potentialTransformer);
+                        break;
+                    default:
+                        string message1 = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), equipmentType.Description, equipmentType.ServiceType.Description);
+                        Log.Error(message1);
+                        throw new ArgumentException(message1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks the out the device, by applying "hardcoded" outgoing tracking rule.
+        /// </summary>
+        /// <typeparam name="T">The equipment type</typeparam>
+        /// <param name="vehicle">The vehicle.</param>
+        /// <param name="user">The user.</param>
+        /// <param name="equipment">The meter.</param>
+        private void CheckOutDevice<T>(string vehicle, string user, T equipment) where T : WnpModel.Equipment
+        {
+            equipment.VehicleNumber = vehicle;
+            equipment.ReceivedBy = user;
+            equipment.Location = "Truck";
+            equipment.ShopStatus = "B";
+            equipment.EquipmentStatus = "S";
+            this.wnpSystem.AddOrReplaceEquipment<T>(equipment);
+        }
+
+        /// <summary>
+        /// Checks the device in.
+        /// </summary>
+        /// <typeparam name="T">The equipment type</typeparam>
+        /// <param name="equipment">The equipment.</param>
+        private void CheckInDevice<T>(T equipment) where T : WnpModel.Equipment
+        {
+            switch (equipment.EquipmentStatus)
+            {
+                case "S":
+                    equipment.VehicleNumber = null;
+                    equipment.ReceivedBy = null;
+                    equipment.Location = "Packup";
+                    equipment.ShopStatus = "K";
+                    break;
+                case "U":
+                    equipment.VehicleNumber = null;
+                    equipment.ReceivedBy = null;
+                    equipment.Location = "Test Area";
+                    equipment.ShopStatus = "R";
+                    break;
+                default:
+                    string message1 = "Equipment status 'U' is unknown";
+                    Log.Error(message1);
+                    throw new ArgumentException(message1);
+            }
+
+            this.wnpSystem.AddOrReplaceEquipment<T>(equipment);
         }
 
         /// <summary>
@@ -274,6 +504,92 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                     this.wnpSystem.AddEquipmentTestResult<WnpModel.MeterTestResult>(meterTestResult);
                 }
             }
+        }
+
+        /// <summary>
+        /// Updates the devices information.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        public void UpdateDevices(UpdateDevicesRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Can not process request if it is not specified");
+            }
+
+            foreach (UpdateDeviceRequest device in request.Devices)
+            {
+                if (!string.IsNullOrWhiteSpace(device.ServiceType) && !string.IsNullOrWhiteSpace(device.EquipmentType) && !string.IsNullOrWhiteSpace(device.EquipmentNumber))
+                {
+                    switch (device.EquipmentType)
+                    {
+                        case "EM":
+                            WnpModel.Meter meter = this.wnpSystem.GetEquipment<WnpModel.Meter>(device.EquipmentNumber, this.ownerId);
+                            if (meter == null)
+                            {
+                                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("MeterNotFound", CultureInfo.CurrentCulture), device.EquipmentNumber);
+                                Log.Error(message);
+                                throw new ArgumentException(message);
+                            }
+
+                            this.UpdateEquipmentInfo(device, meter);
+                            break;
+                        case "CT":
+                            WnpModel.CurrentTransformer currentTransformer = this.wnpSystem.GetEquipment<WnpModel.CurrentTransformer>(device.EquipmentNumber, this.ownerId);
+                            if (currentTransformer == null)
+                            {
+                                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("CTNotFound", CultureInfo.CurrentCulture), device.EquipmentNumber);
+                                Log.Error(message);
+                                throw new ArgumentException(message);
+                            }
+
+                            this.UpdateEquipmentInfo(device, currentTransformer);
+                            break;
+                        case "PT":
+                            WnpModel.PotentialTransformer potentialTransformer = this.wnpSystem.GetEquipment<WnpModel.PotentialTransformer>(device.EquipmentNumber, this.ownerId);
+                            if (potentialTransformer == null)
+                            {
+                                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("PTNotFound", CultureInfo.CurrentCulture), device.EquipmentNumber);
+                                Log.Error(message);
+                                throw new ArgumentException(message);
+                            }
+
+                            this.UpdateEquipmentInfo(device, potentialTransformer);
+                            break;
+                        default:
+                            string message1 = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceTypeNotSupported", CultureInfo.CurrentCulture), device.EquipmentType, device.ServiceType);
+                            Log.Error(message1);
+                            throw new ArgumentException(message1);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the equipment information.
+        /// </summary>
+        /// <typeparam name="T">The equipment type.</typeparam>
+        /// <param name="device">The device.</param>
+        /// <param name="equipment">The equipment.</param>
+        private void UpdateEquipmentInfo<T>(UpdateDeviceRequest device, T equipment) where T : WnpModel.Equipment
+        {
+            equipment.VehicleNumber = device.VehicleNumber;
+            equipment.ReceivedBy = device.ReceivedBy;
+            equipment.Location = device.Location;
+            equipment.ShopStatus = device.ShopStatus;
+            equipment.EquipmentStatus = device.EquipmentStatus;
+            if (device.SiteId.HasValue)
+            {
+                equipment.Site = new WnpModel.Site(device.SiteId.Value);
+                equipment.Circuit = device.CircuitIndex;
+            }
+            else
+            {
+                equipment.Site = null;
+                equipment.Circuit = null;
+            }
+
+            this.wnpSystem.AddOrReplaceEquipment<T>(equipment);
         }
 
         /// <summary>
@@ -675,10 +991,6 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             {
                 ListenerModel.Device device = this.ConvertMeterToDevice(meter);
                 listenerCircuit.Devices.Add(device);
-
-                this.FillDeviceComments(meter, "EM", device);
-                this.FillDeviceRelatedFiles(meter, "EM", device);
-                this.FillMeterTests(meter, device);
             }
         }
 
@@ -689,17 +1001,11 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// <returns>The device</returns>
         private ListenerModel.Device ConvertMeterToDevice(WnpModel.Meter meter)
         {
-            ListenerModel.Device device = new ListenerModel.Device()
-            {
-                Base = meter.Base,
-                Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
-                EquipmentNumber = meter.EquipmentNumber,
-                EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "EM"),
-                Form = meter.Form,
-                KH = meter.KH,
-                Manufacturer = meter.Manufacturer,
-                ModelNumber = meter.ModelNumber
-            };
+            ListenerModel.Device device = this.FillCommonDeviceFields(meter);
+
+            device.Base = meter.Base;
+            device.Form = meter.Form;
+            device.KH = meter.KH;
 
             if (meter.TestAmps.HasValue)
             {
@@ -709,6 +1015,56 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             if (meter.TestVolts.HasValue)
             {
                 device.TestVolts = meter.TestVolts.Value;
+            }
+
+            this.FillDeviceComments(meter, "EM", device);
+            this.FillDeviceRelatedFiles(meter, "EM", device);
+            this.FillMeterTests(meter, device);
+
+            return device;
+        }
+
+        /// <summary>
+        /// Fills the fields common for all device types.
+        /// </summary>
+        /// <typeparam name="T">The equipment type.</typeparam>
+        /// <param name="equipment">The equipment.</param>
+        /// <returns>The device.</returns>
+        private ListenerModel.Device FillCommonDeviceFields<T>(T equipment) where T : WnpModel.Equipment
+        {
+            ListenerModel.Device device = new ListenerModel.Device()
+            {
+                Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
+                EquipmentNumber = equipment.EquipmentNumber,
+                EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "EM"),
+                EquipmentStatus = equipment.EquipmentStatus,
+                Location = equipment.Location,
+                Manufacturer = equipment.Manufacturer,
+                ModelNumber = equipment.ModelNumber,
+                ShopStatus = equipment.ShopStatus
+            };
+
+            WnpModel.Vehicle vehicle = this.wnpSystem.GetVehicle(equipment.Owner.Id, equipment.VehicleNumber);
+
+            if (vehicle != null)
+            {
+                device.Vehicle = new ListenerModel.Vehicle()
+                {
+                    Description = vehicle.Description,
+                    VehicleNumber = vehicle.VehicleNumber
+                };
+            }
+
+            WnpModel.User user = this.wnpSystem.GetUser(equipment.ReceivedBy);
+
+            if (user != null)
+            {
+                device.ReceivedBy = new ListenerModel.User()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName
+                };
             }
 
             return device;
@@ -727,9 +1083,6 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             {
                 ListenerModel.Device device = this.ConvertCurrentTransformerToDevice(currentTransformer);
                 listenerCircuit.Devices.Add(device);
-
-                this.FillDeviceComments(currentTransformer, "CT", device);
-                this.FillDeviceRelatedFiles(currentTransformer, "CT", device);
             }
         }
 
@@ -740,15 +1093,10 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// <returns>The device</returns>
         private ListenerModel.Device ConvertCurrentTransformerToDevice(WnpModel.CurrentTransformer currentTransformer)
         {
-            ListenerModel.Device device = new ListenerModel.Device()
-            {
-                Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
-                EquipmentNumber = currentTransformer.EquipmentNumber,
-                EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "CT"),
-                Manufacturer = currentTransformer.Manufacturer,
-                ModelNumber = currentTransformer.ModelNumber
-            };
+            ListenerModel.Device device = this.FillCommonDeviceFields(currentTransformer);
 
+            this.FillDeviceComments(currentTransformer, "CT", device);
+            this.FillDeviceRelatedFiles(currentTransformer, "CT", device);
             return device;
         }
 
@@ -765,9 +1113,6 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             {
                 ListenerModel.Device device = this.ConvertPotentialTransformerToDevice(potentialTransformer);
                 listenerCircuit.Devices.Add(device);
-
-                this.FillDeviceComments(potentialTransformer, "PT", device);
-                this.FillDeviceRelatedFiles(potentialTransformer, "PT", device);
             }
         }
 
@@ -778,14 +1123,10 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// <returns>The device</returns>
         private ListenerModel.Device ConvertPotentialTransformerToDevice(WnpModel.PotentialTransformer potentialTransformer)
         {
-            ListenerModel.Device device = new ListenerModel.Device()
-            {
-                Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
-                EquipmentNumber = potentialTransformer.EquipmentNumber,
-                EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "PT"),
-                Manufacturer = potentialTransformer.Manufacturer,
-                ModelNumber = potentialTransformer.ModelNumber
-            };
+            ListenerModel.Device device = this.FillCommonDeviceFields(potentialTransformer);
+
+            this.FillDeviceComments(potentialTransformer, "PT", device);
+            this.FillDeviceRelatedFiles(potentialTransformer, "PT", device);
 
             return device;
         }

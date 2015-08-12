@@ -157,5 +157,53 @@ namespace AMSLLC.Listener.Common.Model
         /// The model number.
         /// </value>
         public string ModelNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets  the location.
+        /// </summary>
+        /// <value>
+        /// The location.
+        /// </value>
+        public string Location { get; set; }
+
+        /// <summary>
+        /// Gets or sets  the equipment status.
+        /// </summary>
+        /// <value>
+        /// The equipment status.
+        /// </value>
+        public string EquipmentStatus { get; set; }
+
+        /// <summary>
+        /// Gets or sets the equipment status date.
+        /// </summary>
+        /// <value>
+        /// The equipment status date.
+        /// </value>
+        public DateTime? EquipmentStatusDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets  the shop status.
+        /// </summary>
+        /// <value>
+        /// The shop status.
+        /// </value>
+        public string ShopStatus { get; set; }
+
+        /// <summary>
+        /// Gets or sets the vehicle.
+        /// </summary>
+        /// <value>
+        /// The vehicle.
+        /// </value>
+        public Vehicle Vehicle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user who checked-out the device.
+        /// </summary>
+        /// <value>
+        /// The user who received the device.
+        /// </value>
+        public User ReceivedBy { get; set; }
     }
 }

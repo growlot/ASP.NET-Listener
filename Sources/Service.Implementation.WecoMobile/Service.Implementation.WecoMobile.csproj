@@ -87,11 +87,14 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="GetDevicesRequest.cs" />
     <Compile Include="AddCommentRequest.cs" />
     <Compile Include="AddCommentsRequest.cs" />
+    <Compile Include="CheckInRequest.cs" />
     <Compile Include="Circuit.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Address.cs" />
+    <Compile Include="InventoryItem.cs" />
     <Compile Include="ISiteInfo.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="MeterTestResultRequest.cs" />
@@ -108,7 +111,9 @@
     <Compile Include="CheckoutRequest.cs" />
     <Compile Include="MeterTestResultsRequest.cs" />
     <Compile Include="UpdateCircuitLocationRequest.cs" />
+    <Compile Include="UpdateDeviceRequest.cs" />
     <Compile Include="UpdateCommentRequest.cs" />
+    <Compile Include="UpdateDevicesRequest.cs" />
     <Compile Include="UpdateCommentsRequest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -124,12 +129,10 @@
     <ProjectReference Include="..\Common.WNP\Common.WNP.csproj">
       <Project>{0fd7fc3e-e13c-4083-bfc5-fbb21385e593}</Project>
       <Name>Common.WNP</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{ec4a22ee-3a4f-4b08-9c98-d5aacca3667c}</Project>
       <Name>Common</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Globalization\Globalization.csproj">
       <Project>{81155c93-08d8-4c3d-aaff-7bfd5705f001}</Project>

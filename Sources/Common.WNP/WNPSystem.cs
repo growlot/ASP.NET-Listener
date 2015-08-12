@@ -132,6 +132,30 @@ namespace AMSLLC.Listener.Common.WNP
         }
 
         /// <summary>
+        /// Gets the equipment numbers assigned to specific vehicle.
+        /// </summary>
+        /// <typeparam name="T">The equipment type</typeparam>
+        /// <param name="vehicleNumber">The vehicle number.</param>
+        /// <returns>The list of equipment numbers.</returns>
+        public IList<T> GetEquipmentNumbersByVehicle<T>(string vehicleNumber)
+        {
+            if (vehicleNumber == null)
+            {
+                return null;
+            }
+
+            DetachedCriteria criteria = DetachedCriteria.For<T>();
+            criteria.Add(Restrictions.Eq("VehicleNumber", vehicleNumber));
+
+            ProjectionList projectionList = Projections.ProjectionList();
+            projectionList.Add(Projections.Property("EquipmentNumber"), "EquipmentNumber");
+
+            criteria.SetProjection(projectionList).SetResultTransformer(Transformers.AliasToBean<T>());
+
+            return this.persistenceManager.RetrieveAllEqual<T>(criteria);
+        }
+
+        /// <summary>
         /// Gets the equipment by batch.
         /// </summary>
         /// <typeparam name="T">The equipment type.</typeparam>
@@ -933,6 +957,34 @@ namespace AMSLLC.Listener.Common.WNP
             }
 
             this.persistenceManager.Save<SiteComment>(comment);
+        }
+
+        /// <summary>
+        /// Gets the vehicle.
+        /// </summary>
+        /// <param name="ownerId">The owner identifier.</param>
+        /// <param name="vehicleNumber">The vehicle number.</param>
+        /// <returns>The vehicle</returns>
+        public Vehicle GetVehicle(int ownerId, string vehicleNumber)
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<Vehicle>();
+            criteria.Add(Restrictions.Eq("Owner", new Owner(ownerId)));
+            criteria.Add(Restrictions.Eq("VehicleNumber", vehicleNumber));
+
+            return this.persistenceManager.RetrieveFirstEqual<Vehicle>(criteria);
+        }
+
+        /// <summary>
+        /// Gets the user.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        /// <returns>The user</returns>
+        public User GetUser(string userName)
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<User>();
+            criteria.Add(Restrictions.Eq("UserName", userName));
+
+            return this.persistenceManager.RetrieveFirstEqual<User>(criteria);
         }
     }
 }

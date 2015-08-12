@@ -98,6 +98,10 @@
     <Compile Include="Model\Barcode.cs" />
     <Compile Include="Model\BarcodeIdentifier.cs" />
     <Compile Include="Model\BaseMultimedia.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Model\UserMap.cs" />
+    <Compile Include="Model\VehicleMap.cs" />
+    <Compile Include="Model\Vehicle.cs" />
     <Compile Include="Model\Circuit.cs" />
     <Compile Include="Model\CircuitMap.cs" />
     <Compile Include="Model\Multimedia.cs" />

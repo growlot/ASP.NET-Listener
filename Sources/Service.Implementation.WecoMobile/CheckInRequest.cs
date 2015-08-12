@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CheckoutRequest.cs" company="Advanced Metering Services LLC">
+// <copyright file="CheckInRequest.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
     /// <summary>
     /// Site info request message for web service
     /// </summary>
-    public class CheckoutRequest
+    public class CheckInRequest
     {
         /// <summary>
         /// Gets or sets the type of the service.
@@ -33,21 +33,5 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// The equipment number.
         /// </value>
         public string EquipmentNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the username.
-        /// </summary>
-        /// <value>
-        /// The username.
-        /// </value>
-        public string UserName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the vehicle number.
-        /// </summary>
-        /// <value>
-        /// The vehicle number.
-        /// </value>
-        public string VehicleNumber { get; set; }
     }
 }
