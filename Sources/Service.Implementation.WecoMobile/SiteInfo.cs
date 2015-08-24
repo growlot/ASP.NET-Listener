@@ -505,7 +505,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             }
             else
             {
-                string message1 = string.Format(CultureInfo.InvariantCulture, "Equipment status {0} is unknown", equipment.EquipmentStatus);
+                string message1 = string.Format(CultureInfo.InvariantCulture, "Equipment with status {0} can not be checked in", equipment.EquipmentStatus);
                 Log.Error(message1);
                 throw new ArgumentException(message1);
             }
