@@ -456,7 +456,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// <param name="equipment">The meter.</param>
         private void CheckOutDevice<T>(string vehicle, string user, T equipment) where T : WnpModel.Equipment
         {
-            if (equipment.TestProgram != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.Location"].Value ||
+            if (equipment.Location != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.Location"].Value ||
                 equipment.ShopStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.ShopStatus"].Value ||
                 equipment.EquipmentStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.EquipmentStatus"].Value ||
                 equipment.TestProgram != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.TestProgram"].Value)
