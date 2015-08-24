@@ -198,4 +198,7 @@
   <data name="VehicleNotFound" xml:space="preserve">
     <value>Vehicle with vehicle number {0} could not be found.</value>
   </data>
+  <data name="DeviceCheckOutNotAllowed" xml:space="preserve">
+    <value>Device can not be checked out, because it's current state doesn't allow this operation.</value>
+  </data>
 </root>

@@ -115,6 +115,15 @@ namespace AMSLLC.Listener.Globalization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device can not be checked out, because it&apos;s current state doesn&apos;t allow this operation..
+        /// </summary>
+        internal static string DeviceCheckOutNotAllowed {
+            get {
+                return ResourceManager.GetString("DeviceCheckOutNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Device information received successfully..
         /// </summary>
         internal static string DeviceReceivedSuccess {

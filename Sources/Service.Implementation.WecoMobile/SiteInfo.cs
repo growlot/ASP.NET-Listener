@@ -63,6 +63,11 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         private int ownerId;
 
         /// <summary>
+        /// The assembly configuration
+        /// </summary>
+        private static readonly Configuration AssemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SiteInfo"/> class.
         /// </summary>
         public SiteInfo()
@@ -70,8 +75,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             this.transactionLogManager = StaticPersistence.TransactionLogManager;
             this.deviceManager = StaticPersistence.DeviceManager;
             this.wnpSystem = StaticPersistence.WnpSystem;
-            Configuration assemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
-            this.ownerId = int.Parse(assemblyConfig.AppSettings.Settings["WecoMobile.Owner"].Value, CultureInfo.InvariantCulture);
+            this.ownerId = int.Parse(AssemblyConfig.AppSettings.Settings["WecoMobile.Owner"].Value, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -172,6 +176,34 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                 {
                     EquipmentNumber = meter.EquipmentNumber,
                     EquipmentType = "EM",
+                    ServiceType = "E"
+                };
+
+                inventory.Add(inventoryItem);
+            }
+
+            IEnumerable<WnpModel.CurrentTransformer> currentTransformers = this.wnpSystem.GetEquipmentNumbersByVehicle<WnpModel.CurrentTransformer>(vehicleNumber);
+
+            foreach (WnpModel.CurrentTransformer currentTransformer in currentTransformers)
+            {
+                InventoryItem inventoryItem = new InventoryItem()
+                {
+                    EquipmentNumber = currentTransformer.EquipmentNumber,
+                    EquipmentType = "CT",
+                    ServiceType = "E"
+                };
+
+                inventory.Add(inventoryItem);
+            }
+
+            IEnumerable<WnpModel.PotentialTransformer> potentialTransformers = this.wnpSystem.GetEquipmentNumbersByVehicle<WnpModel.PotentialTransformer>(vehicleNumber);
+
+            foreach (WnpModel.PotentialTransformer potentialTransformer in potentialTransformers)
+            {
+                InventoryItem inventoryItem = new InventoryItem()
+                {
+                    EquipmentNumber = potentialTransformer.EquipmentNumber,
+                    EquipmentType = "PT",
                     ServiceType = "E"
                 };
 
@@ -408,7 +440,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         }
 
         /// <summary>
-        /// Checks the out the device, by applying "hardcoded" outgoing tracking rule.
+        /// Checks the out the device, by applying "hardcoded" incomming and outgoing tracking rule.
         /// </summary>
         /// <typeparam name="T">The equipment type</typeparam>
         /// <param name="vehicle">The vehicle.</param>
@@ -416,11 +448,22 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// <param name="equipment">The meter.</param>
         private void CheckOutDevice<T>(string vehicle, string user, T equipment) where T : WnpModel.Equipment
         {
+            if (equipment.TestProgram != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.Location"].Value ||
+                equipment.ShopStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.ShopStatus"].Value ||
+                equipment.EquipmentStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.EquipmentStatus"].Value ||
+                equipment.TestProgram != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.TestProgram"].Value)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceCheckOutNotAllowed", CultureInfo.CurrentCulture));
+                Log.Error(message);
+                throw new ArgumentException(message);
+            }
+
             equipment.VehicleNumber = vehicle;
             equipment.ReceivedBy = user;
-            equipment.Location = "Truck";
-            equipment.ShopStatus = "B";
-            equipment.EquipmentStatus = "S";
+            equipment.Location = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.Location"].Value;
+            equipment.ShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.ShopStatus"].Value;
+            equipment.EquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.EquipmentStatus"].Value;
+            equipment.TestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.TestProgram"].Value;
             this.wnpSystem.AddOrReplaceEquipment<T>(equipment);
         }
 
@@ -431,24 +474,32 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// <param name="equipment">The equipment.</param>
         private void CheckInDevice<T>(T equipment) where T : WnpModel.Equipment
         {
-            switch (equipment.EquipmentStatus)
+            string untestedEquipmentStatus = AssemblyConfig.AppSettings.Settings["EquipmentStatus.Untested"].Value;
+            string stockEquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.EquipmentStatus"].Value;
+
+            if (equipment.EquipmentStatus == stockEquipmentStatus)
             {
-                case "S":
-                    equipment.VehicleNumber = null;
-                    equipment.ReceivedBy = null;
-                    equipment.Location = "Packup";
-                    equipment.ShopStatus = "K";
-                    break;
-                case "U":
-                    equipment.VehicleNumber = null;
-                    equipment.ReceivedBy = null;
-                    equipment.Location = "Test Area";
-                    equipment.ShopStatus = "R";
-                    break;
-                default:
-                    string message1 = "Equipment status 'U' is unknown";
-                    Log.Error(message1);
-                    throw new ArgumentException(message1);
+                equipment.VehicleNumber = null;
+                equipment.ReceivedBy = null;
+                equipment.Location = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.Location"].Value;
+                equipment.ShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.ShopStatus"].Value;
+                equipment.EquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.EquipmentStatus"].Value;
+                equipment.TestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.TestProgram"].Value;
+            }
+            else if (equipment.EquipmentStatus == untestedEquipmentStatus)
+            {
+                equipment.VehicleNumber = null;
+                equipment.ReceivedBy = null;
+                equipment.Location = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.Location"].Value;
+                equipment.ShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.ShopStatus"].Value;
+                equipment.EquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.EquipmentStatus"].Value;
+                equipment.TestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.TestProgram"].Value;
+            }
+            else
+            {
+                string message1 = string.Format(CultureInfo.InvariantCulture, "Equipment status {0} is unknown", equipment.EquipmentStatus);
+                Log.Error(message1);
+                throw new ArgumentException(message1);
             }
 
             this.wnpSystem.AddOrReplaceEquipment<T>(equipment);
@@ -1006,6 +1057,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             device.Base = meter.Base;
             device.Form = meter.Form;
             device.KH = meter.KH;
+            device.EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "EM");
 
             if (meter.TestAmps.HasValue)
             {
@@ -1036,7 +1088,6 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             {
                 Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
                 EquipmentNumber = equipment.EquipmentNumber,
-                EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "EM"),
                 EquipmentStatus = equipment.EquipmentStatus,
                 Location = equipment.Location,
                 Manufacturer = equipment.Manufacturer,
@@ -1094,6 +1145,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         private ListenerModel.Device ConvertCurrentTransformerToDevice(WnpModel.CurrentTransformer currentTransformer)
         {
             ListenerModel.Device device = this.FillCommonDeviceFields(currentTransformer);
+            device.EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "CT");
 
             this.FillDeviceComments(currentTransformer, "CT", device);
             this.FillDeviceRelatedFiles(currentTransformer, "CT", device);
@@ -1124,6 +1176,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         private ListenerModel.Device ConvertPotentialTransformerToDevice(WnpModel.PotentialTransformer potentialTransformer)
         {
             ListenerModel.Device device = this.FillCommonDeviceFields(potentialTransformer);
+            device.EquipmentType = this.deviceManager.GetEquipmentTypeByInternalCode("E", "PT");
 
             this.FillDeviceComments(potentialTransformer, "PT", device);
             this.FillDeviceRelatedFiles(potentialTransformer, "PT", device);
