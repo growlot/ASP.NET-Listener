@@ -167,6 +167,14 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </returns>
         public ReadOnlyCollection<InventoryItem> GetTruckInventory(string vehicleNumber)
         {
+            WnpModel.Vehicle vehicle = this.wnpSystem.GetVehicle(this.ownerId, vehicleNumber);
+            if (vehicle == null)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("VehicleNotFound", CultureInfo.CurrentCulture), vehicleNumber);
+                Log.Error(message);
+                throw new ArgumentException(message);
+            }
+
             List<InventoryItem> inventory = new List<InventoryItem>();
             IEnumerable<WnpModel.Meter> meters = this.wnpSystem.GetEquipmentNumbersByVehicle<WnpModel.Meter>(vehicleNumber);
 
