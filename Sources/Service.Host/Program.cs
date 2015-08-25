@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Service.Host
     using System;
     using System.ComponentModel.Composition;
     using System.ComponentModel.Composition.Hosting;
+    using System.IO;
     using System.ServiceProcess;
     using log4net;
     using log4net.Config;
@@ -38,6 +39,7 @@ namespace AMSLLC.Listener.Service.Host
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Console.WriteLine(System.String)", Justification = "This method is used only for debugging of program and not presented to user")]
         private Program()
         {
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
             using (AggregateCatalog catalog = new AggregateCatalog())
             {
                 catalog.Catalogs.Add(new AssemblyCatalog(typeof(Program).Assembly));
@@ -52,38 +54,26 @@ namespace AMSLLC.Listener.Service.Host
                     catch (CompositionException exception)
                     {
                         Logger.Error("Composition exception occured.", exception);
-                        Console.WriteLine(exception.ToString());
                     }
 
-                    try
+                    if (!Environment.UserInteractive)
                     {
-                        if (!Environment.UserInteractive)
-                        {
-                            ServiceBase[] servicesToRun;
-                            servicesToRun = new ServiceBase[]
-                                {
+                        ServiceBase[] servicesToRun;
+                        servicesToRun = new ServiceBase[]
+                            {
                                     this.serviceHost
-                                };
-                            ServiceBase.Run(servicesToRun);
-                        }
-                        else
-                        {
-                            this.serviceHost.OpenAll();
-                            Console.WriteLine("**");
-                            Console.WriteLine("** Web service started successfully. Press any key to stop.");
-                            Console.WriteLine("**");
-                            Console.ReadKey(true);
-
-                            this.serviceHost.CloseAll();
-                        }
+                            };
+                        ServiceBase.Run(servicesToRun);
                     }
-                    catch (Exception exception)
+                    else
                     {
-                        Logger.Error("Unknown error occured.", exception);
+                        this.serviceHost.OpenAll();
                         Console.WriteLine("**");
-                        Console.WriteLine("** Web service failed to start. Press any key to exit.");
+                        Console.WriteLine("** Web service started successfully. Press any key to stop.");
                         Console.WriteLine("**");
                         Console.ReadKey(true);
+
+                        this.serviceHost.CloseAll();
                     }
                 }
             }
@@ -93,11 +83,27 @@ namespace AMSLLC.Listener.Service.Host
         /// The main entry point for the application.
         /// Runs service as a console application or as windows service.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Need to catch all exceptions before pgoram crashes, so they would be logged")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Console.WriteLine(System.String)", Justification = "This method is used only for debugging of program and not presented to user")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "AMSLLC.Listener.Service.Host.Program", Justification = "Call to constructor actually runs the whole program.")]
         public static void Main()
         {
-            XmlConfigurator.Configure();
-            new Program();
+            try
+            {
+                XmlConfigurator.Configure();
+                new Program();
+            }
+            catch (Exception exception)
+            {
+                Logger.Error("Unknown error occured.", exception);
+                if (Environment.UserInteractive)
+                {
+                    Console.WriteLine("**");
+                    Console.WriteLine("** Web service failed to start. Press any key to exit.");
+                    Console.WriteLine("**");
+                    Console.ReadKey(true);
+                }
+            }
         }
     }
 }
