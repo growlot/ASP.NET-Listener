@@ -92,6 +92,7 @@ namespace AMSLLC.Listener.Common
         /// Gets all the equipment types.
         /// </summary>
         /// <returns>The list of equipment types</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Method is more appropriate in this place, because data is queried from database")]
         IList<EquipmentType> GetEquipmentTypes();
 
         /// <summary>
