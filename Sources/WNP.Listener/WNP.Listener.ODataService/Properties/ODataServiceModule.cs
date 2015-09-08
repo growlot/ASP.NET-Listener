@@ -23,6 +23,8 @@ namespace WNP.Listener.ODataService.Properties
             Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();
 
             Kernel.Bind<IODataEntityConfiguration>().To<ODataEntityConfigurationImpl>();
+
+            Kernel.Bind<IFilterProcessor>().To<FilterProcessorNaiveImpl>();
         }
     }
 }
