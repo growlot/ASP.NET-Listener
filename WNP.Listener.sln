@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Test", "Sources\WNP.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{60141318-ECBA-478D-B316-878BA875EAA6}"
 EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject", "Sources\WNP.Listener\ModelingProject\ModelingProject.modelproj", "{66E18C40-0765-45A6-B334-59E6CF905661}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,11 @@ Global
 		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B3CD647-671F-4016-A383-15A8A8A2BF34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66E18C40-0765-45A6-B334-59E6CF905661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66E18C40-0765-45A6-B334-59E6CF905661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66E18C40-0765-45A6-B334-59E6CF905661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66E18C40-0765-45A6-B334-59E6CF905661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8B858C2-2C16-4E54-BD0F-4935CF1EFD15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

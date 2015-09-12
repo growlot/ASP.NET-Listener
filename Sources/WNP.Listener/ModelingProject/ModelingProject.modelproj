@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{66e18c40-0765-45a6-b334-59e6cf905661}</ProjectGuid>
+    <ArchitectureToolsVersion>2.0.0.0</ArchitectureToolsVersion>
+    <Name>ModelingProject</Name>
+    <RootNamespace>ModelingProject</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ItemGroup>
+    <Content Include="UMLClassDiagram.classdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UMLClassDiagram.classdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>UMLClassDiagram.classdiagram</DependentUpon>
+    </Content>
+    <Folder Include="ModelDefinition\" />
+    <Content Include="ModelDefinition\ModelingProject.uml">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Validate Include="LayerDiagram1.layerdiagram">
+      <SubType>Content</SubType>
+    </Validate>
+    <Validate Include="LayerDiagram1.layerdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>LayerDiagram1.layerdiagram</DependentUpon>
+    </Validate>
+    <Validate Include="LayerDiagram1.layerdiagram.suppressions">
+      <SubType>Content</SubType>
+      <DependentUpon>LayerDiagram1.layerdiagram</DependentUpon>
+    </Validate>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain.Test\Domain.Test.csproj">
+      <Name>Domain.Test</Name>
+      <Project>{2b3cd647-671f-4016-a383-15a8a8a2bf34}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain.Transactions\Domain.Transactions.csproj">
+      <Name>Domain.Transactions</Name>
+      <Project>{67913c89-a9fe-41ef-a791-9119dcd9537a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Name>Domain</Name>
+      <Project>{7937eb80-3944-4ab3-96e3-4745cfc5e21a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WNP.Listener.Bootstrapper\WNP.Listener.Bootstrapper.csproj">
+      <Name>WNP.Listener.Bootstrapper</Name>
+      <Project>{e3183353-f97e-4ee2-84d7-d81ce2707ff7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WNP.Listener.MetadataService\WNP.Listener.MetadataService.csproj">
+      <Name>WNP.Listener.MetadataService</Name>
+      <Project>{702b10d4-57d6-4406-a159-715f658ae54d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WNP.Listener.Model\WNP.Listener.Model.csproj">
+      <Name>WNP.Listener.Model</Name>
+      <Project>{4e188aab-3fef-4ca2-ae34-c2bc8080efdb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WNP.Listener.ODataService\WNP.Listener.ODataService.csproj">
+      <Name>WNP.Listener.ODataService</Name>
+      <Project>{28de87b5-514b-4996-b65a-9d8f9e4578e0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WNP.Listener.Persistence\WNP.Listener.Persistence.csproj">
+      <Name>WNP.Listener.Persistence</Name>
+      <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WNP.Listener.Utilities\WNP.Listener.Utilities.csproj">
+      <Name>WNP.Listener.Utilities</Name>
+      <Project>{cf40fb68-247d-4024-a8e9-3b707973ad11}</Project>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

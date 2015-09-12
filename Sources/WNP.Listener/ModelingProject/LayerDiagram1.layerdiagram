@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="25eca7df-13e7-45db-9608-5031ba63e4e7" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
+  <layers>
+    <layer Id="2c0ad1c8-ec2e-4392-a064-79f2fb1652cb" name="Domain Services">
+      <childLayers>
+        <layer Id="e185d843-e286-4f74-98d7-c982bcf2c68c" name="Domain Model" />
+      </childLayers>
+    </layer>
+    <layer Id="97465480-5b5d-4336-b1a4-df477a8e24a0" name="Services">
+      <references>
+        <reference Id="ec13f18b-d320-4715-8b55-6b41f73eb302" name="Services">
+          <ArtifactNode Label="Services" Category="CodeSchema_Project" Id="(Assembly=../../../Services)">
+            <Category Ref="CodeMap_SolutionFolder" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=WNP.Listener.MetadataService)" Label="WNP.Listener.MetadataService.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+          <ExpandedNode Id="(Assembly=WNP.Listener.ODataService)" Label="WNP.Listener.ODataService.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+    <layer Id="fdb6b31f-75ed-4b10-93d0-f98037dcc1a6" name="Data">
+      <childLayers>
+        <layer Id="74b36570-2e2d-4aad-88f6-4320f7d2d014" name="WNP.Listener.Model">
+          <dependencyToLayers>
+            <dependencyFromLayerToLayer Id="0cd44c1e-1c56-41aa-ada9-30a27fceaf19" direction="Forward">
+              <layerMoniker Id="7436194e-2983-4495-a11a-c7bd68dc9dfa" />
+            </dependencyFromLayerToLayer>
+          </dependencyToLayers>
+          <references>
+            <reference Id="2b673c1a-fa1c-4a78-8508-54feb06c92f1" name="WNP.Listener.Model">
+              <ArtifactNode Label="WNP.Listener.Model" Category="CodeSchema_Project" Id="(Assembly=../WNP.Listener.Model/WNP.Listener.Model.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=WNP.Listener.Model)" Label="WNP.Listener.Model.dll" Category="CodeSchema_Assembly">
+                <Category Ref="FileSystem.Category.FileOfType.dll" />
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+        <layer Id="7436194e-2983-4495-a11a-c7bd68dc9dfa" name="WNP.Listener.Persistence">
+          <references>
+            <reference Id="c0a91f4e-9291-47bf-8657-a8a5984d1208" name="WNP.Listener.Persistence">
+              <ArtifactNode Label="WNP.Listener.Persistence" Category="CodeSchema_Project" Id="(Assembly=../WNP.Listener.Persistence/WNP.Listener.Persistence.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=WNP.Listener.Persistence)" Label="WNP.Listener.Persistence.dll" Category="CodeSchema_Assembly">
+                <Category Ref="FileSystem.Category.FileOfType.dll" />
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+      </childLayers>
+      <references>
+        <reference Id="c9b52ba5-7d65-45a0-9d48-10cccc4846bd" name="Data">
+          <ArtifactNode Label="Data" Category="CodeSchema_Project" Id="(Assembly=../../../Data)">
+            <Category Ref="CodeMap_SolutionFolder" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=WNP.Listener.Model)" Label="WNP.Listener.Model.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+          <ExpandedNode Id="(Assembly=WNP.Listener.Persistence)" Label="WNP.Listener.Persistence.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+        <reference Id="f9f766e0-9101-493d-966c-56a3c2e877ad" name="WNP.Listener.Model">
+          <ArtifactNode Label="WNP.Listener.Model" Category="CodeSchema_Project" Id="(Assembly=../WNP.Listener.Model/WNP.Listener.Model.csproj)">
+            <Category Ref="File" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=WNP.Listener.Model)" Label="WNP.Listener.Model.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Produces" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+    <layer Id="a4298a52-2f1c-4aa2-aca4-99f24ccedff3" name="Common">
+      <references>
+        <reference Id="06440eb8-71df-4f79-80bf-e53aa245440f" name="Common">
+          <ArtifactNode Label="Common" Category="CodeSchema_Project" Id="(Assembly=../../../Common)">
+            <Category Ref="CodeMap_SolutionFolder" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=WNP.Listener.Utilities)" Label="WNP.Listener.Utilities.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+    <layer Id="7e25199f-18e9-458a-a788-c3f85e92dcba" name="WNP.Listener.Bootstrapper">
+      <references>
+        <reference Id="db8228c0-eba9-4fa5-84ff-c7d0094ace75" name="WNP.Listener.Bootstrapper">
+          <ArtifactNode Label="WNP.Listener.Bootstrapper" Category="CodeSchema_Project" Id="(Assembly=../WNP.Listener.Bootstrapper/WNP.Listener.Bootstrapper.csproj)">
+            <Category Ref="File" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=WNP.Listener.Bootstrapper)" Label="WNP.Listener.Bootstrapper.exe" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.exe" />
+            <LinkCategory Ref="Produces" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+  </layers>
+</layerModel>
