@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{60141318-E
 EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject", "Sources\WNP.Listener\ModelingProject\ModelingProject.modelproj", "{66E18C40-0765-45A6-B334-59E6CF905661}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Listener", "Sources\WNP.Listener\Domain.Listener\Domain.Listener.csproj", "{67913C89-A9FE-41EF-A791-9119DCD9537A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,10 @@ Global
 		{66E18C40-0765-45A6-B334-59E6CF905661}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66E18C40-0765-45A6-B334-59E6CF905661}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A8B858C2-2C16-4E54-BD0F-4935CF1EFD15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67913C89-A9FE-41EF-A791-9119DCD9537A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67913C89-A9FE-41EF-A791-9119DCD9537A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67913C89-A9FE-41EF-A791-9119DCD9537A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67913C89-A9FE-41EF-A791-9119DCD9537A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,5 +90,6 @@ Global
 		{CF40FB68-247D-4024-A8E9-3B707973AD11} = {EC6CCDC7-2D91-4FE4-88B0-F36E1BB951A8}
 		{7937EB80-3944-4AB3-96E3-4745CFC5E21A} = {60141318-ECBA-478D-B316-878BA875EAA6}
 		{2B3CD647-671F-4016-A383-15A8A8A2BF34} = {60141318-ECBA-478D-B316-878BA875EAA6}
+		{67913C89-A9FE-41EF-A791-9119DCD9537A} = {60141318-ECBA-478D-B316-878BA875EAA6}
 	EndGlobalSection
 EndGlobal

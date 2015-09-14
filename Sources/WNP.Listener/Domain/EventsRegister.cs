@@ -3,7 +3,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.Events
+namespace AMSLLC.Listener.Domain
 {
     using System;
     using System.Collections.Generic;

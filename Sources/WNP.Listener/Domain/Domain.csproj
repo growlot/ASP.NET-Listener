@@ -60,10 +60,12 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="IAggregateRoot.cs" />
+    <Compile Include="ISpecification.cs" />
     <Compile Include="Entity.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Events\EventsRegister.cs" />
+    <Compile Include="EventsRegister.cs" />
     <Compile Include="Events\SiteAddressUpdated.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IEntity.cs">
