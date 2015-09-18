@@ -61,6 +61,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="IAggregateRoot.cs" />
+    <Compile Include="IDomainBuilder.cs" />
     <Compile Include="ISpecification.cs" />
     <Compile Include="Entity.cs">
       <SubType>Code</SubType>

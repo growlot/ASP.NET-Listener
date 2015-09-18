@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CF40FB68-247D-4024-A8E9-3B707973AD11}</ProjectGuid>
+    <ProjectGuid>{6B540066-84AB-4D63-81A6-9C724AEF039F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WNP.Listener.Utilities</RootNamespace>
-    <AssemblyName>WNP.Listener.Utilities</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>WNP.Listener.ApplicationService</RootNamespace>
+    <AssemblyName>WNP.Listener.ApplicationService</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,12 +29,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,12 +41,42 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonUtilities.cs" />
-    <Compile Include="FailFast.cs" />
-    <Compile Include="IEnumerableExtensions.cs" />
-    <Compile Include="MemoryCacheExtenstions.cs" />
+    <Compile Include="ApplicationEventManager.cs" />
+    <Compile Include="ApplicationServiceScope.cs" />
+    <Compile Include="DomainBuilder.cs" />
+    <Compile Include="DomainEventHandlerAttribute.cs" />
+    <Compile Include="Handler\WcfHttpDataReadyEventHandler.cs" />
+    <Compile Include="IApplicationConfigurationService.cs" />
+    <Compile Include="IApplicationServiceScope.cs" />
+    <Compile Include="Impl\ApplicationConfigurationService.cs" />
+    <Compile Include="Impl\TransactionService.cs" />
+    <Compile Include="IEventHandler.cs" />
+    <Compile Include="ITransactionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain.Listener\Domain.Listener.csproj">
+      <Project>{67913C89-A9FE-41EF-A791-9119DCD9537A}</Project>
+      <Name>Domain.Listener</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Repository.csproj">
+      <Project>{72E29F3F-E27A-4224-9F7B-59C2497D3BF3}</Project>
+      <Name>Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WNP.Listener.Communication\WNP.Listener.Communication.csproj">
+      <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
+      <Name>WNP.Listener.Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WNP.Listener.Utilities\WNP.Listener.Utilities.csproj">
+      <Project>{cf40fb68-247d-4024-a8e9-3b707973ad11}</Project>
+      <Name>WNP.Listener.Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
