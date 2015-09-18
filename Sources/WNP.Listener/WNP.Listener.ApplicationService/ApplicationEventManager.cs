@@ -11,7 +11,8 @@ namespace WNP.Listener.ApplicationService
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Utilities;
+    using AMSLLC.Core;
+    using AMSLLC.Listener.Domain;
 
     public class ApplicationEventManager
     {
@@ -22,8 +23,8 @@ namespace WNP.Listener.ApplicationService
             return returnValue;
         });
 
-        private readonly Dictionary<Type, List<IEventHandler>> _eventHandlers =
-            new Dictionary<Type, List<IEventHandler>>();
+        private readonly Dictionary<Type, List<IDomainHandler>> _eventHandlers =
+            new Dictionary<Type, List<IDomainHandler>>();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ApplicationEventManager" /> class from being created.
@@ -43,7 +44,7 @@ namespace WNP.Listener.ApplicationService
         {
             FailFast.EnsureNotNull(eventData, nameof(eventData));
             var dataType = eventData.GetType();
-            if (_eventHandlers.ContainsKey(dataType))
+            if (this._eventHandlers.ContainsKey(dataType))
             {
                 var tasks = _eventHandlers[dataType].Select(eventHandler => eventHandler.Handle(eventData));
                 return Task.WhenAll(tasks);
@@ -54,18 +55,18 @@ namespace WNP.Listener.ApplicationService
         private void Initialize()
         {
             var types =
-                TypesImplementingInterface(typeof (IEventHandler))
+                TypesImplementingInterface(typeof (IDomainHandler))
                     .Where(t => t.GetCustomAttributes<DomainEventHandlerAttribute>().Any());
             foreach (var type in types)
             {
                 var eventType = type.GetCustomAttributes<DomainEventHandlerAttribute>();
                 foreach (var domainEventHandlerAttribute in eventType)
                 {
-                    if (!_eventHandlers.ContainsKey(domainEventHandlerAttribute.Type))
+                    if (!this._eventHandlers.ContainsKey(domainEventHandlerAttribute.EventType))
                     {
-                        _eventHandlers.Add(domainEventHandlerAttribute.Type, new List<IEventHandler>());
+                        this._eventHandlers.Add(domainEventHandlerAttribute.EventType, new List<IDomainHandler>());
                     }
-                    _eventHandlers[domainEventHandlerAttribute.Type].Add((IEventHandler) Activator.CreateInstance(type));
+                    this._eventHandlers[domainEventHandlerAttribute.EventType].Add((IDomainHandler) Activator.CreateInstance(type));
                 }
             }
         }

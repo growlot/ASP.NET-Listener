@@ -14,6 +14,7 @@
       <Word>itron</Word> <!-- company name used in ODM integration -->
       <Word>labtrack</Word> <!-- LabTrack is a third party software name -->
       <Word>sql</Word>
+      <Word>jms</Word>
     </Recognized>
     <Compound>
 		  <Term CompoundAlternate="LabTrack">labtrack</Term>

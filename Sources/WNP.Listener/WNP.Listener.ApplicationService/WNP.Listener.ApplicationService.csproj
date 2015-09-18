@@ -44,17 +44,18 @@
     <Compile Include="ApplicationEventManager.cs" />
     <Compile Include="ApplicationServiceScope.cs" />
     <Compile Include="DomainBuilder.cs" />
-    <Compile Include="DomainEventHandlerAttribute.cs" />
-    <Compile Include="Handler\WcfHttpDataReadyEventHandler.cs" />
     <Compile Include="IApplicationConfigurationService.cs" />
     <Compile Include="IApplicationServiceScope.cs" />
     <Compile Include="Impl\ApplicationConfigurationService.cs" />
     <Compile Include="Impl\TransactionService.cs" />
-    <Compile Include="IEventHandler.cs" />
     <Compile Include="ITransactionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Domain.Listener\Domain.Listener.csproj">
       <Project>{67913C89-A9FE-41EF-A791-9119DCD9537A}</Project>
       <Name>Domain.Listener</Name>

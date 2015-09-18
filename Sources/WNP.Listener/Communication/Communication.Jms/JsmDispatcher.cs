@@ -1,20 +1,24 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="WcfHttpDataReadyEventHandler.cs" company="Advanced Metering Services LLC">
+// // <copyright file="JsmDispatcher.cs" company="Advanced Metering Services LLC">
 // //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService.Handler
+namespace AMSLLC.Listener.Communication.Jms
 {
     using System;
     using System.Threading.Tasks;
+    using AMSLLC.Listener.Domain;
     using AMSLLC.Listener.Domain.Listener.Transaction.DomainEvent;
 
-    [DomainEventHandler(typeof (WcfHttpDataReady))]
-    public class WcfHttpDataReadyEventHandler : IEventHandler
+    /// <summary>
+    /// Jsm data dispatcher
+    /// </summary>
+    [DomainEventHandler(typeof(JmsDataReady))]
+    public class JsmDispatcher : IDomainHandler
     {
         /// <summary>
-        /// Handles the specified event.
+        /// Handles the specified event data.
         /// </summary>
         /// <param name="eventData">The event data.</param>
         /// <returns>Task.</returns>

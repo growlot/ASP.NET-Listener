@@ -68,6 +68,7 @@
     <Compile Include="Company\CompanyConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transaction\DomainEvent\FileDataReady.cs" />
+    <Compile Include="Transaction\DomainEvent\JmsDataReady.cs" />
     <Compile Include="Transaction\DomainEvent\WcfHttpDataReady.cs" />
     <Compile Include="Transaction\TransactionConfiguration.cs" />
     <Compile Include="Transaction\TransactionConfigurationMemento.cs" />

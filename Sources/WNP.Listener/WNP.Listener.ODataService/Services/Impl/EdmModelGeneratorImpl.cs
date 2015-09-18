@@ -4,10 +4,11 @@ using AutoMapper;
 using Microsoft.OData.Edm;
 using WNP.Listener.MetadataService;
 using WNP.Listener.ODataService.Controllers;
-using WNP.Listener.Utilities;
 
 namespace WNP.Listener.ODataService.Services.Impl
 {
+    using Ninject.Infrastructure.Language;
+
     public class EdmModelGeneratorImpl : IEdmModelGenerator
     {
         private readonly IMetadataService _metadataService;

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// //-----------------------------------------------------------------------
+// // <copyright file="FailFast.cs" company="Advanced Metering Services LLC">
+// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// // </copyright>
+// //-----------------------------------------------------------------------
 
-namespace WNP.Listener.Utilities
+namespace AMSLLC.Core
 {
+    using System;
+
     public static class FailFast
     {
         /// <summary>
@@ -49,7 +50,9 @@ namespace WNP.Listener.Utilities
         public static void AssertTrue(Func<bool> rule, string message, string argumentName = null)
         {
             if (!rule())
-                throw string.IsNullOrEmpty(argumentName) ? new ArgumentException(message) : new ArgumentException(message, argumentName);
+                throw string.IsNullOrEmpty(argumentName)
+                    ? new ArgumentException(message)
+                    : new ArgumentException(message, argumentName);
         }
     }
 }

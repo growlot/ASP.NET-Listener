@@ -8,12 +8,13 @@ using System.Reflection;
 using System.Runtime.Caching;
 using Microsoft.CSharp;
 using WNP.Listener.MetadataService.Model;
-using WNP.Listener.Utilities;
 using static DBMetadata;
 using static PetaPoco.Sql;
 
 namespace WNP.Listener.MetadataService.Impl
 {
+    using Utilities;
+
     public class MetadataServiceImpl : IMetadataService
     {
         private readonly IODataEntityConfiguration _entityConfiguration;

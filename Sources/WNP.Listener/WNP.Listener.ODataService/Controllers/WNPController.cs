@@ -14,10 +14,11 @@ using Microsoft.OData.Edm.Library;
 using PetaPoco;
 using WNP.Listener.MetadataService;
 using WNP.Listener.MetadataService.Impl;
-using WNP.Listener.Utilities;
 
 namespace WNP.Listener.ODataService.Controllers
 {
+    using Utilities;
+
     [EnableQuery]
     public class WNPController : ODataController
     {

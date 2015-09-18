@@ -1,8 +1,8 @@
-using System;
-using System.Runtime.Caching;
-
 namespace WNP.Listener.Utilities
 {
+    using System;
+    using System.Runtime.Caching;
+
     public static class MemoryCacheExtenstions
     {
         public static T GetOrAddExisting<T>(this MemoryCache cache, string key, Func<T> valueFactory, DateTime? expiration = null)

@@ -1,15 +1,15 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="IEventHandler.cs" company="Advanced Metering Services LLC">
+// // <copyright file="JmsDataReady.cs" company="Advanced Metering Services LLC">
 // //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService
+namespace AMSLLC.Listener.Domain.Listener.Transaction.DomainEvent
 {
-    using System.Threading.Tasks;
-
-    public interface IEventHandler
+    /// <summary>
+    /// JmsDataReady event data
+    /// </summary>
+    public class JmsDataReady : IEvent
     {
-        Task Handle(object eventData);
     }
 }

@@ -4,11 +4,10 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService
+namespace AMSLLC.Listener.Domain
 {
     using System;
-    using AMSLLC.Listener.Domain;
-    using Utilities;
+    using Core;
 
     /// <summary>
     /// Marker attribute to identify which event should be handled by the given handler
@@ -17,19 +16,19 @@ namespace WNP.Listener.ApplicationService
     public class DomainEventHandlerAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DomainEventHandlerAttribute"/> class.
+        /// Initializes a new instance of the <see cref="DomainEventHandlerAttribute" /> class.
         /// </summary>
-        /// <param name="type">The type.</param>
-        public DomainEventHandlerAttribute(Type type)
+        /// <param name="eventType">Type of the data.</param>
+        public DomainEventHandlerAttribute(Type eventType)
         {
-            FailFast.AssertTrue(() => typeof (IEvent).IsAssignableFrom(type), "Type must be of IEvent");
-            Type = type;
+            FailFast.AssertTrue(() => typeof(IEvent).IsAssignableFrom(eventType), "Type must be of {0}".FormatWith(typeof(IEvent).Name));
+            this.EventType = eventType;
         }
 
         /// <summary>
         /// Gets or sets the event handler type.
         /// </summary>
         /// <value>The type.</value>
-        public Type Type { get; set; }
+        public Type EventType { get; set; }
     }
 }
