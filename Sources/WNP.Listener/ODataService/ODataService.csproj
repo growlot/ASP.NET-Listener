@@ -194,7 +194,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{cf40fb68-247d-4024-a8e9-3b707973ad11}</Project>
-      <Name>WNP.Listener.Utilities</Name>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

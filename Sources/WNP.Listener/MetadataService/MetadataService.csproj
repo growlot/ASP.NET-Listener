@@ -99,7 +99,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{CF40FB68-247D-4024-A8E9-3B707973AD11}</Project>
-      <Name>WNP.Listener.Utilities</Name>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
