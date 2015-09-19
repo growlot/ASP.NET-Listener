@@ -17,6 +17,9 @@ namespace AMSLLC.Listener.MetadataService.Properties
             Kernel.Bind<IMetadataService>().To<MetadataServiceImpl>().
                 InTransientScope();
 
+            Kernel.Bind<IODataEntityConfiguration>().To<ODataEntityConfigurationImpl>().
+                InSingletonScope();
+
             Mappers.Register(typeof(WNPMetadataEntry), new WNPMetadataMapping());
         }
     }

@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             var builder = new ODataConventionModelBuilder
             {
                 Namespace = _metadataService.ODataModelNamespace,
-                ContainerName = "WNP"
+                ContainerName = "AMSLLC.Listener"
             };
 
             var method = typeof(ODataConventionModelBuilder).GetMethod("EntitySet");

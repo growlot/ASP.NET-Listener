@@ -23,8 +23,6 @@ namespace AMSLLC.Listener.ODataService.Properties
             Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();            
             Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();
 
-            Kernel.Bind<IODataEntityConfiguration>().To<ODataEntityConfigurationImpl>();
-
             Kernel.Bind<IAutoConvertor>().To<AutoConvertorImpl>();
             Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
             Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
