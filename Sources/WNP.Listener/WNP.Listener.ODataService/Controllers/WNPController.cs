@@ -14,6 +14,8 @@ using Microsoft.OData.Edm.Library;
 using PetaPoco;
 using WNP.Listener.MetadataService;
 using WNP.Listener.MetadataService.Impl;
+using WNP.Listener.ODataService.Services;
+using WNP.Listener.ODataService.Services.FilterTransformer;
 
 namespace WNP.Listener.ODataService.Controllers
 {
@@ -22,15 +24,20 @@ namespace WNP.Listener.ODataService.Controllers
     [EnableQuery]
     public class WNPController : ODataController
     {
-        private readonly IMetadataService _metadataService;
+        private readonly IMetadataService _metadataService;        
+        private readonly IFilterTransformer _filterTransformer;
+        private readonly IAutoConvertor _convertor;
+
         private readonly WNPDBContext _dbContext;
 
         private readonly ODataValidationSettings _defaultODataValidationSettings;
 
-        public WNPController(IMetadataService metadataService, WNPDBContext dbContext)
+        public WNPController(IMetadataService metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor)
         {
             _metadataService = metadataService;
             _dbContext = dbContext;
+            _filterTransformer = filterTransformer;
+            _convertor = convertor;
 
             _defaultODataValidationSettings = new ODataValidationSettings()
             {
@@ -39,13 +46,6 @@ namespace WNP.Listener.ODataService.Controllers
                     AllowedQueryOptions.Skip,
             };
         }
-
-        private static readonly Dictionary<Type, Func<object, object>> _conversions = new Dictionary<Type, Func<object, object>>
-        {
-            {typeof (decimal), v => Convert.ToDecimal(v)},
-            {typeof (float), v => Convert.ToSingle(v)},
-            {typeof (double), v => Convert.ToDouble(v)}
-        };
 
         public IHttpActionResult Get()
         {
@@ -67,7 +67,7 @@ namespace WNP.Listener.ODataService.Controllers
             var result = CreateResultList(oDataModelType);
 
             var dbResults = _dbContext.SkipTake<dynamic>(skip, top,
-                Sql.Builder.Select(GetDBColumnsList(queryOptions.SelectExpand, modelMapping.Mappings))
+                Sql.Builder.Select(GetDBColumnsList(queryOptions.SelectExpand, modelMapping.ModelToColumnMappings))
                            .From(modelMapping.TableName));
 
             foreach (var record in dbResults)
@@ -77,13 +77,8 @@ namespace WNP.Listener.ODataService.Controllers
                 var rawData = (IDictionary<string, object>)record;
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                 {
-                    var property = oDataModelType.GetProperty(modelMapping.ReverseMappings[key]);
-
-                    var data = rawData[key];
-                    if (_conversions.ContainsKey(property.PropertyType))
-                        data = _conversions[property.PropertyType](rawData[key]);
-
-                    property.SetValue(entityInstance, data);
+                    var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key]);
+                    property.SetValue(entityInstance, _convertor.Convert(rawData[key], property.PropertyType));
                 }
 
                 result.Add(entityInstance);
