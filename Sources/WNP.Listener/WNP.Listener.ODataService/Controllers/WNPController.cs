@@ -66,9 +66,15 @@ namespace WNP.Listener.ODataService.Controllers
             // create actual result object we will be sending over the wire
             var result = CreateResultList(oDataModelType);
 
-            var dbResults = _dbContext.SkipTake<dynamic>(skip, top,
+            var sql =
                 Sql.Builder.Select(GetDBColumnsList(queryOptions.SelectExpand, modelMapping.ModelToColumnMappings))
-                           .From(modelMapping.TableName));
+                           .From($"{modelMapping.TableName}");
+
+            var sqlWhere = _filterTransformer.TransformFilterQueryOption(queryOptions.Filter);
+            if (!string.IsNullOrWhiteSpace(sqlWhere.Clause))
+                sql = sql.Where(sqlWhere.Clause, sqlWhere.PositionalParameters);
+
+            var dbResults = _dbContext.SkipTake<dynamic>(skip, top, sql);
 
             foreach (var record in dbResults)
             {
