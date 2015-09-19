@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class VendorContactImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -86,4 +87,5 @@ public class VendorContactImpl: ITableInformation {
 	{
 		return "wndba.tvendor_contact";
 	}
+}
 }

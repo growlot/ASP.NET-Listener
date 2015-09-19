@@ -4,7 +4,7 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService
+namespace AMSLLC.Listener.ApplicationService
 {
     public interface ITransactionService
     {

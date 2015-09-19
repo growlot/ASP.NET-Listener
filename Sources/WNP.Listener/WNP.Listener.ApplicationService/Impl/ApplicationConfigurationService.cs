@@ -4,12 +4,12 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService.Impl
-{
-    using AMSLLC.Listener.Domain.Listener.Application;
-    using AMSLLC.Listener.Domain.Listener.Lookups;
-    using Repository;
+using AMSLLC.Listener.Domain.Listener.Application;
+using AMSLLC.Listener.Domain.Listener.Lookups;
+using AMSLLC.Listener.Repository;
 
+namespace AMSLLC.Listener.ApplicationService.Impl
+{
     /// <summary>
     /// Application configuration service
     /// </summary>

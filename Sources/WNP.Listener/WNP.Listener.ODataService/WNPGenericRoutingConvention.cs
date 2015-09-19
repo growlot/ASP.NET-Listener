@@ -4,9 +4,8 @@ using System.Web.Http.Controllers;
 using System.Web.OData.Routing;
 using System.Web.OData.Routing.Conventions;
 using Microsoft.OData.Edm;
-using WNP.Listener.MetadataService;
 
-namespace WNP.Listener.ODataService
+namespace AMSLLC.Listener.ODataService
 {
     public class WNPGenericRoutingConvention : IODataRoutingConvention
     {

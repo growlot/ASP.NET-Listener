@@ -4,12 +4,12 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService.Impl
-{
-    using AMSLLC.Listener.Domain.Listener.Transaction;
-    using Communication;
-    using Repository;
+using AMSLLC.Listener.Communication;
+using AMSLLC.Listener.Domain.Listener.Transaction;
+using AMSLLC.Listener.Repository;
 
+namespace AMSLLC.Listener.ApplicationService.Impl
+{
     public class TransactionService : ITransactionService
     {
         public void Process(TransactionRequestMessage requestMessage)

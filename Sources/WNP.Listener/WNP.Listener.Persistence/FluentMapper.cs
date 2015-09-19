@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using PetaPoco;
 
-namespace WNP.Listener.Persistence
+namespace AMSLLC.Listener.Persistence
 {
     public class FluentColumnMap
     {

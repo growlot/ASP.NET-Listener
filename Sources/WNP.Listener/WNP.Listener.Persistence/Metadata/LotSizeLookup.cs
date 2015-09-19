@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class LotSizeLookupImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -58,4 +59,5 @@ public class LotSizeLookupImpl: ITableInformation {
 	{
 		return "wndba.tlot_size_lookup";
 	}
+}
 }

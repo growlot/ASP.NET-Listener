@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class SelectionProgramGroupImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -149,4 +150,5 @@ public class SelectionProgramGroupImpl: ITableInformation {
 	{
 		return "wndba.tselection_program_group";
 	}
+}
 }

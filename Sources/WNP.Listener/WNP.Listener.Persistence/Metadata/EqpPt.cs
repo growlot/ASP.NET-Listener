@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class EqpPtImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -457,4 +458,5 @@ public class EqpPtImpl: ITableInformation {
 	{
 		return "wndba.teqp_pt";
 	}
+}
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class SecurityRightsImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -79,4 +80,5 @@ public class SecurityRightsImpl: ITableInformation {
 	{
 		return "wndba.tsecurity_rights";
 	}
+}
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class MeterEmulationImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -198,4 +199,5 @@ public class MeterEmulationImpl: ITableInformation {
 	{
 		return "wndba.tmeter_emulation";
 	}
+}
 }

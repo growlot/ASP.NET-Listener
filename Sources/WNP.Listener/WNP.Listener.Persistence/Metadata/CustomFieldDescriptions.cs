@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class CustomFieldDescriptionsImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -261,4 +262,5 @@ public class CustomFieldDescriptionsImpl: ITableInformation {
 	{
 		return "wndba.tcustom_field_descriptions";
 	}
+}
 }

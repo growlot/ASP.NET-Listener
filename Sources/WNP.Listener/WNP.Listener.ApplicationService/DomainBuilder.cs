@@ -4,10 +4,10 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService
-{
-    using AMSLLC.Listener.Domain;
+using AMSLLC.Listener.Domain;
 
+namespace AMSLLC.Listener.ApplicationService
+{
     /// <summary>
     /// Domain builder
     /// </summary>

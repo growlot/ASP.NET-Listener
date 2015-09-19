@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class CircuitHistImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -177,4 +178,5 @@ public class CircuitHistImpl: ITableInformation {
 	{
 		return "wndba.tcircuit_hist";
 	}
+}
 }

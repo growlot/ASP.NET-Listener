@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class PbcatfmtImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -44,4 +45,5 @@ public class PbcatfmtImpl: ITableInformation {
 	{
 		return "wndba.pbcatfmt";
 	}
+}
 }

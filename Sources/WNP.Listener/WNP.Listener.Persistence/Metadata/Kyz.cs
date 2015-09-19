@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class KyzImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -100,4 +101,5 @@ public class KyzImpl: ITableInformation {
 	{
 		return "wndba.tkyz";
 	}
+}
 }

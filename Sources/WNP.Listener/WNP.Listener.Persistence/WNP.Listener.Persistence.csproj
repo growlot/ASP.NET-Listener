@@ -7,8 +7,8 @@
     <ProjectGuid>{993CDFFD-FB9F-4C45-9F10-E4F006F0B8EA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WNP.Listener.Persistence</RootNamespace>
-    <AssemblyName>WNP.Listener.Persistence</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.Persistence</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.Persistence</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

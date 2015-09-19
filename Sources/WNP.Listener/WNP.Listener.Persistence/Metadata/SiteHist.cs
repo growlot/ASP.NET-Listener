@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class SiteHistImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -142,4 +143,5 @@ public class SiteHistImpl: ITableInformation {
 	{
 		return "wndba.tsite_hist";
 	}
+}
 }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AMSLLC.Listener.Domain;
-using AMSLLC.Listener.Domain.Listener.Transaction;
+﻿using AMSLLC.Listener.Domain.Listener.Transaction;
 
-namespace Repository
+namespace AMSLLC.Listener.Repository
 {
     public interface ITransactionRepository : IRepository
     {

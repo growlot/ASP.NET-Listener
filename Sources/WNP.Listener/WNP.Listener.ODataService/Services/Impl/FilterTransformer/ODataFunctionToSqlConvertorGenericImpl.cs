@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AMSLLC.Listener.ODataService.Services.FilterTransformer;
 using Microsoft.OData.Core.UriParser.Semantic;
-using WNP.Listener.ODataService.Services.FilterTransformer;
 
-namespace WNP.Listener.ODataService.Services.Impl.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
 {
     public abstract class ODataFunctionToSqlConvertorGenericImpl : IODataFunctionToSqlConvertor, ISupportedODataFunctionToSql
     {

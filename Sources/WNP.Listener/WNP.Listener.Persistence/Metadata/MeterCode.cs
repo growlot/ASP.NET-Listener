@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class MeterCodeImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -751,4 +752,5 @@ public class MeterCodeImpl: ITableInformation {
 	{
 		return "wndba.tmeter_code";
 	}
+}
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class SecurityGroupsImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -30,4 +31,5 @@ public class SecurityGroupsImpl: ITableInformation {
 	{
 		return "wndba.tsecurity_groups";
 	}
+}
 }

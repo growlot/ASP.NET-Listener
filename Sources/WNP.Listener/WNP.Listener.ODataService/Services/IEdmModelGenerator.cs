@@ -1,6 +1,6 @@
 ﻿using Microsoft.OData.Edm;
 
-namespace WNP.Listener.ODataService.Services
+namespace AMSLLC.Listener.ODataService.Services
 {
     public interface IEdmModelGenerator
     {

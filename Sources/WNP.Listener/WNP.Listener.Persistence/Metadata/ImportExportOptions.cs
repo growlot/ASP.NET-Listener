@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class ImportExportOptionsImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -212,4 +213,5 @@ public class ImportExportOptionsImpl: ITableInformation {
 	{
 		return "wndba.timport_export_options";
 	}
+}
 }

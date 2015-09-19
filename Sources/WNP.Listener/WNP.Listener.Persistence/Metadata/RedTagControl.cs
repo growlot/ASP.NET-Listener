@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class RedTagControlImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -261,4 +262,5 @@ public class RedTagControlImpl: ITableInformation {
 	{
 		return "wndba.tred_tag_control";
 	}
+}
 }

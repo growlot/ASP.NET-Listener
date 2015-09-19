@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Management;
-using System.Text;
 using Microsoft.Owin.Hosting;
 using Topshelf;
 
-namespace WNP.Listener.Bootstrapper
+namespace AMSLLC.Listener.Bootstrapper
 {
     public class ListenerBoostrapper : ServiceControl
     {

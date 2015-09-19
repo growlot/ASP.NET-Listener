@@ -1,9 +1,8 @@
 ﻿
-
+namespace AMSLLC.Listener.Persistence.Metadata {
 using System.Collections.Generic;
 
 public static class DBMetadata {
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: TransactionLogState
@@ -11,7 +10,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransactionLogStateImpl TransactionLogState = new TransactionLogStateImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: VersionInfo
@@ -19,7 +17,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly VersionInfoImpl VersionInfo = new VersionInfoImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: TransactionType
@@ -27,7 +24,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransactionTypeImpl TransactionType = new TransactionTypeImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: TransactionStatus
@@ -35,7 +31,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransactionStatusImpl TransactionStatus = new TransactionStatusImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: TransactionState
@@ -43,7 +38,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransactionStateImpl TransactionState = new TransactionStateImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: TransactionSource
@@ -51,7 +45,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransactionSourceImpl TransactionSource = new TransactionSourceImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: ServiceType
@@ -59,7 +52,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ServiceTypeImpl ServiceType = new ServiceTypeImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: Company
@@ -67,7 +59,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly CompanyImpl Company = new CompanyImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: Device
@@ -75,7 +66,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly DeviceImpl Device = new DeviceImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: DeviceTest
@@ -83,7 +73,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly DeviceTestImpl DeviceTest = new DeviceTestImpl();	
-
 	/// <summary>
 	/// <para />Schema: dbo
 	/// <para />Table Name: TransactionLog
@@ -91,7 +80,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransactionLogImpl TransactionLog = new TransactionLogImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TLOT_PERCENT_DEF
@@ -99,7 +87,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly LotPercentDefImpl LotPercentDef = new LotPercentDefImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TLOT_ACCEPT_QUALITY_LEVEL
@@ -107,7 +94,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly LotAcceptQualityLevelImpl LotAcceptQualityLevel = new LotAcceptQualityLevelImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TIMPORT_EXPORT_OPTIONS
@@ -115,7 +101,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ImportExportOptionsImpl ImportExportOptions = new ImportExportOptionsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TNEW_BATCH
@@ -123,7 +108,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly NewBatchImpl NewBatch = new NewBatchImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TRANSDUCER_HIST
@@ -131,7 +115,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpTransducerHistImpl EqpTransducerHist = new EqpTransducerHistImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TLOT_SIZE_LOOKUP
@@ -139,7 +122,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly LotSizeLookupImpl LotSizeLookup = new LotSizeLookupImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TIMPORT_EXPORT_DEFINITIONS
@@ -147,7 +129,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ImportExportDefinitionsImpl ImportExportDefinitions = new ImportExportDefinitionsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: pbcatcol
@@ -155,7 +136,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly PbcatcolImpl Pbcatcol = new PbcatcolImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TOTALIZER_HIST
@@ -163,7 +143,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpTotalizerHistImpl EqpTotalizerHist = new EqpTotalizerHistImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: pbcatfmt
@@ -171,7 +150,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly PbcatfmtImpl Pbcatfmt = new PbcatfmtImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: pbcatvld
@@ -179,7 +157,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly PbcatvldImpl Pbcatvld = new PbcatvldImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TRANSDUCER
@@ -187,7 +164,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpTransducerImpl EqpTransducer = new EqpTransducerImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: pbcatedt
@@ -195,7 +171,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly PbcatedtImpl Pbcatedt = new PbcatedtImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TOTALIZER
@@ -203,7 +178,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpTotalizerImpl EqpTotalizer = new EqpTotalizerImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: pbcattbl
@@ -211,7 +185,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly PbcattblImpl Pbcattbl = new PbcattblImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_RECORDER_HIST
@@ -219,7 +192,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpRecorderHistImpl EqpRecorderHist = new EqpRecorderHistImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_RECORDER
@@ -227,7 +199,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpRecorderImpl EqpRecorder = new EqpRecorderImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_PT_HIST
@@ -235,7 +206,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpPtHistImpl EqpPtHist = new EqpPtHistImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_PT
@@ -243,7 +213,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpPtImpl EqpPt = new EqpPtImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_METER_HIST
@@ -251,7 +220,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpMeterHistImpl EqpMeterHist = new EqpMeterHistImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TLOCATION
@@ -259,7 +227,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly LocationImpl Location = new LocationImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TTAMPER
@@ -267,7 +234,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TamperImpl Tamper = new TamperImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMANUFACTURERCODE
@@ -275,7 +241,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ManufacturercodeImpl Manufacturercode = new ManufacturercodeImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMETER_CODE
@@ -283,7 +248,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterCodeImpl MeterCode = new MeterCodeImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tevent_triggers
@@ -291,7 +255,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EventTriggersImpl EventTriggers = new EventTriggersImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tmeter_emulation
@@ -299,7 +262,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterEmulationImpl MeterEmulation = new MeterEmulationImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TTRANSFORMER_CODE_CT
@@ -307,7 +269,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransformerCodeCtImpl TransformerCodeCt = new TransformerCodeCtImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMETER_POWER_SETUP
@@ -315,7 +276,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterPowerSetupImpl MeterPowerSetup = new MeterPowerSetupImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TTRANSFORMER_CODE_PT
@@ -323,7 +283,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransformerCodePtImpl TransformerCodePt = new TransformerCodePtImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMETER_TEST_RESULTS
@@ -331,7 +290,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterTestResultsImpl MeterTestResults = new MeterTestResultsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tsite_metrics
@@ -339,7 +297,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SiteMetricsImpl SiteMetrics = new SiteMetricsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tmeter_test_sequence
@@ -347,7 +304,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterTestSequenceImpl MeterTestSequence = new MeterTestSequenceImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tsite_wiring_check
@@ -355,7 +311,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SiteWiringCheckImpl SiteWiringCheck = new SiteWiringCheckImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMFR
@@ -363,7 +318,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MfrImpl Mfr = new MfrImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMAP_WINBOARD2
@@ -371,7 +325,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MapWinboard2Impl MapWinboard2 = new MapWinboard2Impl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: trma_batch_out
@@ -379,7 +332,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RmaBatchOutImpl RmaBatchOut = new RmaBatchOutImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMULTIMEDIA
@@ -387,7 +339,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MultimediaImpl Multimedia = new MultimediaImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: trma_eqp
@@ -395,7 +346,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RmaEqpImpl RmaEqp = new RmaEqpImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TREPAIR
@@ -403,7 +353,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RepairImpl Repair = new RepairImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TOWNER
@@ -411,7 +360,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly OwnerImpl Owner = new OwnerImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tmetadata
@@ -419,7 +367,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MetadataImpl Metadata = new MetadataImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TPROCESS_FLOW
@@ -427,7 +374,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ProcessFlowImpl ProcessFlow = new ProcessFlowImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TPT_TEST_RESULTS
@@ -435,7 +381,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly PtTestResultsImpl PtTestResults = new PtTestResultsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TREAD_SET
@@ -443,7 +388,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ReadSetImpl ReadSet = new ReadSetImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TREADING
@@ -451,7 +395,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ReadingImpl Reading = new ReadingImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSAMPLE_LIST
@@ -459,7 +402,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SampleListImpl SampleList = new SampleListImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSAMPLE_LIST_ARCH
@@ -467,7 +409,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SampleListArchImpl SampleListArch = new SampleListArchImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tdefault_values
@@ -475,7 +416,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly DefaultValuesImpl DefaultValues = new DefaultValuesImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSECURITY_GROUPS
@@ -483,7 +423,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SecurityGroupsImpl SecurityGroups = new SecurityGroupsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSECURITY_RIGHTS
@@ -491,7 +430,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SecurityRightsImpl SecurityRights = new SecurityRightsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSECURITY_USERS
@@ -499,7 +437,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SecurityUsersImpl SecurityUsers = new SecurityUsersImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tred_tag
@@ -507,7 +444,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RedTagImpl RedTag = new RedTagImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSELECTION_PROGRAM
@@ -515,7 +451,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SelectionProgramImpl SelectionProgram = new SelectionProgramImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tred_tag_control
@@ -523,7 +458,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RedTagControlImpl RedTagControl = new RedTagControlImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSELECTION_PROGRAM_GROUP
@@ -531,7 +465,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SelectionProgramGroupImpl SelectionProgramGroup = new SelectionProgramGroupImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSHOP_GOALS
@@ -539,7 +472,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ShopGoalsImpl ShopGoals = new ShopGoalsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_transaction_state
@@ -547,7 +479,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerTransactionStateImpl ListenerTransactionState = new ListenerTransactionStateImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSITE
@@ -555,7 +486,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SiteImpl Site = new SiteImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_transaction_statistics
@@ -563,7 +493,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerTransactionStatisticsImpl ListenerTransactionStatistics = new ListenerTransactionStatisticsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSITE_COMMENTS
@@ -571,7 +500,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SiteCommentsImpl SiteComments = new SiteCommentsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_transaction_status
@@ -579,7 +507,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerTransactionStatusImpl ListenerTransactionStatus = new ListenerTransactionStatusImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSITE_HIST
@@ -587,7 +514,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SiteHistImpl SiteHist = new SiteHistImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_transaction_type
@@ -595,7 +521,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerTransactionTypeImpl ListenerTransactionType = new ListenerTransactionTypeImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSITE_MULTIMEDIA
@@ -603,7 +528,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SiteMultimediaImpl SiteMultimedia = new SiteMultimediaImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tsocket_mapping
@@ -611,7 +535,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SocketMappingImpl SocketMapping = new SocketMappingImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSTATUS
@@ -619,7 +542,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly StatusImpl Status = new StatusImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_config_notifications
@@ -627,7 +549,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerConfigNotificationsImpl ListenerConfigNotifications = new ListenerConfigNotificationsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSYS_CONTROL
@@ -635,7 +556,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SysControlImpl SysControl = new SysControlImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSYS_VALIDATION
@@ -643,7 +563,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SysValidationImpl SysValidation = new SysValidationImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tfirmware_label
@@ -651,7 +570,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly FirmwareLabelImpl FirmwareLabel = new FirmwareLabelImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_config
@@ -659,7 +577,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerConfigImpl ListenerConfig = new ListenerConfigImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tbarcode_ct
@@ -667,7 +584,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly BarcodeCtImpl BarcodeCt = new BarcodeCtImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TTRACKING
@@ -675,7 +591,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TrackingImpl Tracking = new TrackingImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tbarcode_pt
@@ -683,7 +598,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly BarcodePtImpl BarcodePt = new BarcodePtImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TTRACKING_IN
@@ -691,7 +605,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TrackingInImpl TrackingIn = new TrackingInImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_transaction_log
@@ -699,7 +612,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerTransactionLogImpl ListenerTransactionLog = new ListenerTransactionLogImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TTRACKING_OUT
@@ -707,7 +619,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TrackingOutImpl TrackingOut = new TrackingOutImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_transaction_source
@@ -715,7 +626,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerTransactionSourceImpl ListenerTransactionSource = new ListenerTransactionSourceImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: ttransducer_test_results
@@ -723,7 +633,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TransducerTestResultsImpl TransducerTestResults = new TransducerTestResultsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TBARCODE
@@ -731,7 +640,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly BarcodeImpl Barcode = new BarcodeImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tmeter_limit_set
@@ -739,7 +647,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterLimitSetImpl MeterLimitSet = new MeterLimitSetImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TVALIDATION
@@ -747,7 +654,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ValidationImpl Validation = new ValidationImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TBARCODE_CONTROL
@@ -755,7 +661,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly BarcodeControlImpl BarcodeControl = new BarcodeControlImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: taudit_log
@@ -763,7 +668,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly AuditLogImpl AuditLog = new AuditLogImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TVENDOR
@@ -771,7 +675,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly VendorImpl Vendor = new VendorImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tkyz
@@ -779,7 +682,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly KyzImpl Kyz = new KyzImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TVENDOR_CONTACT
@@ -787,7 +689,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly VendorContactImpl VendorContact = new VendorContactImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: trma_batch_in
@@ -795,7 +696,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RmaBatchInImpl RmaBatchIn = new RmaBatchInImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tharmonic_configuration
@@ -803,7 +703,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly HarmonicConfigurationImpl HarmonicConfiguration = new HarmonicConfigurationImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TBARCODE_LABEL
@@ -811,7 +710,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly BarcodeLabelImpl BarcodeLabel = new BarcodeLabelImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tversion
@@ -819,7 +717,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly VersionImpl Version = new VersionImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TBARCODE_LABEL_DEF
@@ -827,7 +724,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly BarcodeLabelDefImpl BarcodeLabelDef = new BarcodeLabelDefImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tharmonic_config_data
@@ -835,7 +731,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly HarmonicConfigDataImpl HarmonicConfigData = new HarmonicConfigDataImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TVERSION_HISTORY
@@ -843,7 +738,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly VersionHistoryImpl VersionHistory = new VersionHistoryImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TWORKSTATION
@@ -851,7 +745,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly WorkstationImpl Workstation = new WorkstationImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TCIRCUIT
@@ -859,7 +752,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly CircuitImpl Circuit = new CircuitImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TTEST_CARD
@@ -867,7 +759,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly TestCardImpl TestCard = new TestCardImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TRATIO
@@ -875,7 +766,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RatioImpl Ratio = new RatioImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_REFERENCE
@@ -883,7 +773,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpReferenceImpl EqpReference = new EqpReferenceImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TCIRCUIT_HIST
@@ -891,7 +780,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly CircuitHistImpl CircuitHist = new CircuitHistImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TESTBOARD
@@ -899,7 +787,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpTestboardImpl EqpTestboard = new EqpTestboardImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TCOMMENT
@@ -907,7 +794,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly CommentImpl Comment = new CommentImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TCT_TEST_RESULTS
@@ -915,7 +801,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly CtTestResultsImpl CtTestResults = new CtTestResultsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TREFERENCE_INSTALL_HISTORY
@@ -923,7 +808,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ReferenceInstallHistoryImpl ReferenceInstallHistory = new ReferenceInstallHistoryImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TCUSTOM_FIELD_DESCRIPTIONS
@@ -931,7 +815,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly CustomFieldDescriptionsImpl CustomFieldDescriptions = new CustomFieldDescriptionsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TREFERENCE_TEST_RESULTS
@@ -939,7 +822,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ReferenceTestResultsImpl ReferenceTestResults = new ReferenceTestResultsImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_CT
@@ -947,7 +829,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpCtImpl EqpCt = new EqpCtImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tstandards_compare_sequence
@@ -955,7 +836,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly StandardsCompareSequenceImpl StandardsCompareSequence = new StandardsCompareSequenceImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_CT_HIST
@@ -963,7 +843,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpCtHistImpl EqpCtHist = new EqpCtHistImpl();	
-
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_METER
@@ -972,253 +851,130 @@ public static class DBMetadata {
 	/// </summary>
 	public static readonly EqpMeterImpl EqpMeter = new EqpMeterImpl();	
 
-
 	public static Dictionary<string, ITableInformation> TableLookup = new Dictionary<string, ITableInformation>() 
 	{
-		
-		{TransactionLogState.RealTableName, TransactionLogState},
-		
-		{VersionInfo.RealTableName, VersionInfo},
-		
-		{TransactionType.RealTableName, TransactionType},
-		
-		{TransactionStatus.RealTableName, TransactionStatus},
-		
-		{TransactionState.RealTableName, TransactionState},
-		
-		{TransactionSource.RealTableName, TransactionSource},
-		
-		{ServiceType.RealTableName, ServiceType},
-		
-		{Company.RealTableName, Company},
-		
-		{Device.RealTableName, Device},
-		
-		{DeviceTest.RealTableName, DeviceTest},
-		
-		{TransactionLog.RealTableName, TransactionLog},
-		
-		{LotPercentDef.RealTableName, LotPercentDef},
-		
-		{LotAcceptQualityLevel.RealTableName, LotAcceptQualityLevel},
-		
-		{ImportExportOptions.RealTableName, ImportExportOptions},
-		
-		{NewBatch.RealTableName, NewBatch},
-		
-		{EqpTransducerHist.RealTableName, EqpTransducerHist},
-		
-		{LotSizeLookup.RealTableName, LotSizeLookup},
-		
-		{ImportExportDefinitions.RealTableName, ImportExportDefinitions},
-		
-		{Pbcatcol.RealTableName, Pbcatcol},
-		
-		{EqpTotalizerHist.RealTableName, EqpTotalizerHist},
-		
-		{Pbcatfmt.RealTableName, Pbcatfmt},
-		
-		{Pbcatvld.RealTableName, Pbcatvld},
-		
-		{EqpTransducer.RealTableName, EqpTransducer},
-		
-		{Pbcatedt.RealTableName, Pbcatedt},
-		
-		{EqpTotalizer.RealTableName, EqpTotalizer},
-		
-		{Pbcattbl.RealTableName, Pbcattbl},
-		
-		{EqpRecorderHist.RealTableName, EqpRecorderHist},
-		
-		{EqpRecorder.RealTableName, EqpRecorder},
-		
-		{EqpPtHist.RealTableName, EqpPtHist},
-		
-		{EqpPt.RealTableName, EqpPt},
-		
-		{EqpMeterHist.RealTableName, EqpMeterHist},
-		
-		{Location.RealTableName, Location},
-		
-		{Tamper.RealTableName, Tamper},
-		
-		{Manufacturercode.RealTableName, Manufacturercode},
-		
-		{MeterCode.RealTableName, MeterCode},
-		
-		{EventTriggers.RealTableName, EventTriggers},
-		
-		{MeterEmulation.RealTableName, MeterEmulation},
-		
-		{TransformerCodeCt.RealTableName, TransformerCodeCt},
-		
-		{MeterPowerSetup.RealTableName, MeterPowerSetup},
-		
-		{TransformerCodePt.RealTableName, TransformerCodePt},
-		
-		{MeterTestResults.RealTableName, MeterTestResults},
-		
-		{SiteMetrics.RealTableName, SiteMetrics},
-		
-		{MeterTestSequence.RealTableName, MeterTestSequence},
-		
-		{SiteWiringCheck.RealTableName, SiteWiringCheck},
-		
-		{Mfr.RealTableName, Mfr},
-		
-		{MapWinboard2.RealTableName, MapWinboard2},
-		
-		{RmaBatchOut.RealTableName, RmaBatchOut},
-		
-		{Multimedia.RealTableName, Multimedia},
-		
-		{RmaEqp.RealTableName, RmaEqp},
-		
-		{Repair.RealTableName, Repair},
-		
-		{Owner.RealTableName, Owner},
-		
-		{Metadata.RealTableName, Metadata},
-		
-		{ProcessFlow.RealTableName, ProcessFlow},
-		
-		{PtTestResults.RealTableName, PtTestResults},
-		
-		{ReadSet.RealTableName, ReadSet},
-		
-		{Reading.RealTableName, Reading},
-		
-		{SampleList.RealTableName, SampleList},
-		
-		{SampleListArch.RealTableName, SampleListArch},
-		
-		{DefaultValues.RealTableName, DefaultValues},
-		
-		{SecurityGroups.RealTableName, SecurityGroups},
-		
-		{SecurityRights.RealTableName, SecurityRights},
-		
-		{SecurityUsers.RealTableName, SecurityUsers},
-		
-		{RedTag.RealTableName, RedTag},
-		
-		{SelectionProgram.RealTableName, SelectionProgram},
-		
-		{RedTagControl.RealTableName, RedTagControl},
-		
-		{SelectionProgramGroup.RealTableName, SelectionProgramGroup},
-		
-		{ShopGoals.RealTableName, ShopGoals},
-		
-		{ListenerTransactionState.RealTableName, ListenerTransactionState},
-		
-		{Site.RealTableName, Site},
-		
-		{ListenerTransactionStatistics.RealTableName, ListenerTransactionStatistics},
-		
-		{SiteComments.RealTableName, SiteComments},
-		
-		{ListenerTransactionStatus.RealTableName, ListenerTransactionStatus},
-		
-		{SiteHist.RealTableName, SiteHist},
-		
-		{ListenerTransactionType.RealTableName, ListenerTransactionType},
-		
-		{SiteMultimedia.RealTableName, SiteMultimedia},
-		
-		{SocketMapping.RealTableName, SocketMapping},
-		
-		{Status.RealTableName, Status},
-		
-		{ListenerConfigNotifications.RealTableName, ListenerConfigNotifications},
-		
-		{SysControl.RealTableName, SysControl},
-		
-		{SysValidation.RealTableName, SysValidation},
-		
-		{FirmwareLabel.RealTableName, FirmwareLabel},
-		
-		{ListenerConfig.RealTableName, ListenerConfig},
-		
-		{BarcodeCt.RealTableName, BarcodeCt},
-		
-		{Tracking.RealTableName, Tracking},
-		
-		{BarcodePt.RealTableName, BarcodePt},
-		
-		{TrackingIn.RealTableName, TrackingIn},
-		
-		{ListenerTransactionLog.RealTableName, ListenerTransactionLog},
-		
-		{TrackingOut.RealTableName, TrackingOut},
-		
-		{ListenerTransactionSource.RealTableName, ListenerTransactionSource},
-		
-		{TransducerTestResults.RealTableName, TransducerTestResults},
-		
-		{Barcode.RealTableName, Barcode},
-		
-		{MeterLimitSet.RealTableName, MeterLimitSet},
-		
-		{Validation.RealTableName, Validation},
-		
-		{BarcodeControl.RealTableName, BarcodeControl},
-		
-		{AuditLog.RealTableName, AuditLog},
-		
-		{Vendor.RealTableName, Vendor},
-		
-		{Kyz.RealTableName, Kyz},
-		
-		{VendorContact.RealTableName, VendorContact},
-		
-		{RmaBatchIn.RealTableName, RmaBatchIn},
-		
-		{HarmonicConfiguration.RealTableName, HarmonicConfiguration},
-		
-		{BarcodeLabel.RealTableName, BarcodeLabel},
-		
-		{Version.RealTableName, Version},
-		
-		{BarcodeLabelDef.RealTableName, BarcodeLabelDef},
-		
-		{HarmonicConfigData.RealTableName, HarmonicConfigData},
-		
-		{VersionHistory.RealTableName, VersionHistory},
-		
-		{Workstation.RealTableName, Workstation},
-		
-		{Circuit.RealTableName, Circuit},
-		
-		{TestCard.RealTableName, TestCard},
-		
-		{Ratio.RealTableName, Ratio},
-		
-		{EqpReference.RealTableName, EqpReference},
-		
-		{CircuitHist.RealTableName, CircuitHist},
-		
-		{EqpTestboard.RealTableName, EqpTestboard},
-		
-		{Comment.RealTableName, Comment},
-		
-		{CtTestResults.RealTableName, CtTestResults},
-		
-		{ReferenceInstallHistory.RealTableName, ReferenceInstallHistory},
-		
-		{CustomFieldDescriptions.RealTableName, CustomFieldDescriptions},
-		
-		{ReferenceTestResults.RealTableName, ReferenceTestResults},
-		
-		{EqpCt.RealTableName, EqpCt},
-		
-		{StandardsCompareSequence.RealTableName, StandardsCompareSequence},
-		
-		{EqpCtHist.RealTableName, EqpCtHist},
-		
-		{EqpMeter.RealTableName, EqpMeter},
-		
-	};
+				{TransactionLogState.RealTableName, TransactionLogState},
+				{VersionInfo.RealTableName, VersionInfo},
+				{TransactionType.RealTableName, TransactionType},
+				{TransactionStatus.RealTableName, TransactionStatus},
+				{TransactionState.RealTableName, TransactionState},
+				{TransactionSource.RealTableName, TransactionSource},
+				{ServiceType.RealTableName, ServiceType},
+				{Company.RealTableName, Company},
+				{Device.RealTableName, Device},
+				{DeviceTest.RealTableName, DeviceTest},
+				{TransactionLog.RealTableName, TransactionLog},
+				{LotPercentDef.RealTableName, LotPercentDef},
+				{LotAcceptQualityLevel.RealTableName, LotAcceptQualityLevel},
+				{ImportExportOptions.RealTableName, ImportExportOptions},
+				{NewBatch.RealTableName, NewBatch},
+				{EqpTransducerHist.RealTableName, EqpTransducerHist},
+				{LotSizeLookup.RealTableName, LotSizeLookup},
+				{ImportExportDefinitions.RealTableName, ImportExportDefinitions},
+				{Pbcatcol.RealTableName, Pbcatcol},
+				{EqpTotalizerHist.RealTableName, EqpTotalizerHist},
+				{Pbcatfmt.RealTableName, Pbcatfmt},
+				{Pbcatvld.RealTableName, Pbcatvld},
+				{EqpTransducer.RealTableName, EqpTransducer},
+				{Pbcatedt.RealTableName, Pbcatedt},
+				{EqpTotalizer.RealTableName, EqpTotalizer},
+				{Pbcattbl.RealTableName, Pbcattbl},
+				{EqpRecorderHist.RealTableName, EqpRecorderHist},
+				{EqpRecorder.RealTableName, EqpRecorder},
+				{EqpPtHist.RealTableName, EqpPtHist},
+				{EqpPt.RealTableName, EqpPt},
+				{EqpMeterHist.RealTableName, EqpMeterHist},
+				{Location.RealTableName, Location},
+				{Tamper.RealTableName, Tamper},
+				{Manufacturercode.RealTableName, Manufacturercode},
+				{MeterCode.RealTableName, MeterCode},
+				{EventTriggers.RealTableName, EventTriggers},
+				{MeterEmulation.RealTableName, MeterEmulation},
+				{TransformerCodeCt.RealTableName, TransformerCodeCt},
+				{MeterPowerSetup.RealTableName, MeterPowerSetup},
+				{TransformerCodePt.RealTableName, TransformerCodePt},
+				{MeterTestResults.RealTableName, MeterTestResults},
+				{SiteMetrics.RealTableName, SiteMetrics},
+				{MeterTestSequence.RealTableName, MeterTestSequence},
+				{SiteWiringCheck.RealTableName, SiteWiringCheck},
+				{Mfr.RealTableName, Mfr},
+				{MapWinboard2.RealTableName, MapWinboard2},
+				{RmaBatchOut.RealTableName, RmaBatchOut},
+				{Multimedia.RealTableName, Multimedia},
+				{RmaEqp.RealTableName, RmaEqp},
+				{Repair.RealTableName, Repair},
+				{Owner.RealTableName, Owner},
+				{Metadata.RealTableName, Metadata},
+				{ProcessFlow.RealTableName, ProcessFlow},
+				{PtTestResults.RealTableName, PtTestResults},
+				{ReadSet.RealTableName, ReadSet},
+				{Reading.RealTableName, Reading},
+				{SampleList.RealTableName, SampleList},
+				{SampleListArch.RealTableName, SampleListArch},
+				{DefaultValues.RealTableName, DefaultValues},
+				{SecurityGroups.RealTableName, SecurityGroups},
+				{SecurityRights.RealTableName, SecurityRights},
+				{SecurityUsers.RealTableName, SecurityUsers},
+				{RedTag.RealTableName, RedTag},
+				{SelectionProgram.RealTableName, SelectionProgram},
+				{RedTagControl.RealTableName, RedTagControl},
+				{SelectionProgramGroup.RealTableName, SelectionProgramGroup},
+				{ShopGoals.RealTableName, ShopGoals},
+				{ListenerTransactionState.RealTableName, ListenerTransactionState},
+				{Site.RealTableName, Site},
+				{ListenerTransactionStatistics.RealTableName, ListenerTransactionStatistics},
+				{SiteComments.RealTableName, SiteComments},
+				{ListenerTransactionStatus.RealTableName, ListenerTransactionStatus},
+				{SiteHist.RealTableName, SiteHist},
+				{ListenerTransactionType.RealTableName, ListenerTransactionType},
+				{SiteMultimedia.RealTableName, SiteMultimedia},
+				{SocketMapping.RealTableName, SocketMapping},
+				{Status.RealTableName, Status},
+				{ListenerConfigNotifications.RealTableName, ListenerConfigNotifications},
+				{SysControl.RealTableName, SysControl},
+				{SysValidation.RealTableName, SysValidation},
+				{FirmwareLabel.RealTableName, FirmwareLabel},
+				{ListenerConfig.RealTableName, ListenerConfig},
+				{BarcodeCt.RealTableName, BarcodeCt},
+				{Tracking.RealTableName, Tracking},
+				{BarcodePt.RealTableName, BarcodePt},
+				{TrackingIn.RealTableName, TrackingIn},
+				{ListenerTransactionLog.RealTableName, ListenerTransactionLog},
+				{TrackingOut.RealTableName, TrackingOut},
+				{ListenerTransactionSource.RealTableName, ListenerTransactionSource},
+				{TransducerTestResults.RealTableName, TransducerTestResults},
+				{Barcode.RealTableName, Barcode},
+				{MeterLimitSet.RealTableName, MeterLimitSet},
+				{Validation.RealTableName, Validation},
+				{BarcodeControl.RealTableName, BarcodeControl},
+				{AuditLog.RealTableName, AuditLog},
+				{Vendor.RealTableName, Vendor},
+				{Kyz.RealTableName, Kyz},
+				{VendorContact.RealTableName, VendorContact},
+				{RmaBatchIn.RealTableName, RmaBatchIn},
+				{HarmonicConfiguration.RealTableName, HarmonicConfiguration},
+				{BarcodeLabel.RealTableName, BarcodeLabel},
+				{Version.RealTableName, Version},
+				{BarcodeLabelDef.RealTableName, BarcodeLabelDef},
+				{HarmonicConfigData.RealTableName, HarmonicConfigData},
+				{VersionHistory.RealTableName, VersionHistory},
+				{Workstation.RealTableName, Workstation},
+				{Circuit.RealTableName, Circuit},
+				{TestCard.RealTableName, TestCard},
+				{Ratio.RealTableName, Ratio},
+				{EqpReference.RealTableName, EqpReference},
+				{CircuitHist.RealTableName, CircuitHist},
+				{EqpTestboard.RealTableName, EqpTestboard},
+				{Comment.RealTableName, Comment},
+				{CtTestResults.RealTableName, CtTestResults},
+				{ReferenceInstallHistory.RealTableName, ReferenceInstallHistory},
+				{CustomFieldDescriptions.RealTableName, CustomFieldDescriptions},
+				{ReferenceTestResults.RealTableName, ReferenceTestResults},
+				{EqpCt.RealTableName, EqpCt},
+				{StandardsCompareSequence.RealTableName, StandardsCompareSequence},
+				{EqpCtHist.RealTableName, EqpCtHist},
+				{EqpMeter.RealTableName, EqpMeter},
+			};
 
 	public static readonly string ALL = "*";
 
@@ -1239,6 +995,5 @@ public class ColumnInformation
 	public string ModelName { get; set; }
 	public string ColumnName { get; set; }
 }
-
-
+}
 

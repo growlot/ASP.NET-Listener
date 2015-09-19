@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WNP.Listener.Bootstrapper.Owin.Middleware
+namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 {
     internal class UnsubscribeDisposable : IDisposable
     {

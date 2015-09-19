@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using AMSLLC.Listener.Persistence;
 using NLog;
-using PetaPoco;
 using StackExchange.Profiling;
 using StackExchange.Profiling.Data;
-using WNP.Listener.MetadataService.Mapping;
-using WNP.Listener.MetadataService.Model;
 
-namespace WNP.Listener.MetadataService
+namespace AMSLLC.Listener.MetadataService
 {
     public class MetadataDbContext : Database
     {

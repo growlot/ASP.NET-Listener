@@ -7,8 +7,8 @@
     <ProjectGuid>{6B540066-84AB-4D63-81A6-9C724AEF039F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WNP.Listener.ApplicationService</RootNamespace>
-    <AssemblyName>WNP.Listener.ApplicationService</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.ApplicationService</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.ApplicationService</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -52,6 +52,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Communication\Communication.Jms\Communication.Jms.csproj">
+      <Project>{0213748a-3255-4704-84ea-8821b311a3a2}</Project>
+      <Name>Communication.Jms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
       <Name>Core</Name>

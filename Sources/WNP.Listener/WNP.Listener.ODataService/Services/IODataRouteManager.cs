@@ -1,4 +1,4 @@
-﻿namespace WNP.Listener.ODataService.Services
+﻿namespace AMSLLC.Listener.ODataService.Services
 {
     public interface IODataRouteManager
     {

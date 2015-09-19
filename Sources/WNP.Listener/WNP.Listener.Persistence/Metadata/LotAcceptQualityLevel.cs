@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class LotAcceptQualityLevelImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -51,4 +52,5 @@ public class LotAcceptQualityLevelImpl: ITableInformation {
 	{
 		return "wndba.tlot_accept_quality_level";
 	}
+}
 }

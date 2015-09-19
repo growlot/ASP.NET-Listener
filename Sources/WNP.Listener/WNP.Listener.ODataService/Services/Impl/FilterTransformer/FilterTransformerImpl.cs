@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.OData.Query;
+using AMSLLC.Listener.MetadataService;
+using AMSLLC.Listener.ODataService.Services.FilterTransformer;
+using AMSLLC.Listener.Utilities;
 using Microsoft.OData.Core.UriParser.Semantic;
 using Microsoft.OData.Core.UriParser.TreeNodeKinds;
 using Microsoft.OData.Edm;
-using WNP.Listener.MetadataService;
-using WNP.Listener.ODataService.Services.FilterTransformer;
-using WNP.Listener.Utilities;
 
-namespace WNP.Listener.ODataService.Services.Impl.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
 {
     public class FilterTransformerImpl : IFilterTransformer
     {

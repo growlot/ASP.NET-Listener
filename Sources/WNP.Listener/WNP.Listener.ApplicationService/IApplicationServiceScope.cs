@@ -4,12 +4,12 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService
-{
-    using System;
-    using AMSLLC.Listener.Domain;
-    using Repository;
+using System;
+using AMSLLC.Listener.Domain;
+using AMSLLC.Listener.Repository;
 
+namespace AMSLLC.Listener.ApplicationService
+{
     public interface IApplicationServiceScope : IDisposable
     {
         IDomainBuilder DomainBuilder { get; }

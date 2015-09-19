@@ -1,4 +1,4 @@
-﻿namespace WNP.Listener.MetadataService
+﻿namespace AMSLLC.Listener.MetadataService
 {
     public interface IODataEntity
     {

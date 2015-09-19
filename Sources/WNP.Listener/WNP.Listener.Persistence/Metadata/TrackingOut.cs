@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class TrackingOutImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -156,4 +157,5 @@ public class TrackingOutImpl: ITableInformation {
 	{
 		return "wndba.ttracking_out";
 	}
+}
 }

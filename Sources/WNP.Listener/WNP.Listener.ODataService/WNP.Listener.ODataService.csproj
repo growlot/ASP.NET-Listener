@@ -7,8 +7,8 @@
     <ProjectGuid>{28DE87B5-514B-4996-B65A-9D8F9E4578E0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WNP.Listener.ODataService</RootNamespace>
-    <AssemblyName>WNP.Listener.ODataService</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.ODataService</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.ODataService</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

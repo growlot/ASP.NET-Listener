@@ -8,8 +8,8 @@
     <ProjectGuid>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WNP.Listener.Communication</RootNamespace>
-    <AssemblyName>WNP.Listener.Communication</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.Communication</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.Communication</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

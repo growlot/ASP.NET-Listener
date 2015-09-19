@@ -3,7 +3,7 @@ using Microsoft.OData.Core.UriParser.Semantic;
 using Microsoft.OData.Core.UriParser.TreeNodeKinds;
 using Microsoft.OData.Edm.Library;
 
-namespace WNP.Listener.Utilities
+namespace AMSLLC.Listener.Utilities
 {
     public static class EdmExtensions
     {

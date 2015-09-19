@@ -8,19 +8,18 @@ using System.Web.Http;
 using System.Web.OData;
 using System.Web.OData.Extensions;
 using System.Web.OData.Query;
-using Microsoft.OData.Core.UriParser.Semantic;
+using AMSLLC.Listener.MetadataService;
+using AMSLLC.Listener.MetadataService.Impl;
+using AMSLLC.Listener.ODataService.Services;
+using AMSLLC.Listener.ODataService.Services.FilterTransformer;
+using AMSLLC.Listener.Persistence;
+using AMSLLC.Listener.Persistence.Metadata;
+using AMSLLC.Listener.Utilities;
 using Microsoft.OData.Edm;
 using Microsoft.OData.Edm.Library;
-using PetaPoco;
-using WNP.Listener.MetadataService;
-using WNP.Listener.MetadataService.Impl;
-using WNP.Listener.ODataService.Services;
-using WNP.Listener.ODataService.Services.FilterTransformer;
 
-namespace WNP.Listener.ODataService.Controllers
+namespace AMSLLC.Listener.ODataService.Controllers
 {
-    using Utilities;
-
     [EnableQuery]
     public class WNPController : ODataController
     {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class SiteWiringCheckImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -205,4 +206,5 @@ public class SiteWiringCheckImpl: ITableInformation {
 	{
 		return "wndba.tsite_wiring_check";
 	}
+}
 }

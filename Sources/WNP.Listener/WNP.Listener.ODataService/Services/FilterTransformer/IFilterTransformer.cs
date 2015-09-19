@@ -1,6 +1,6 @@
 ﻿using System.Web.OData.Query;
 
-namespace WNP.Listener.ODataService.Services.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.FilterTransformer
 {
     public interface IFilterTransformer
     {

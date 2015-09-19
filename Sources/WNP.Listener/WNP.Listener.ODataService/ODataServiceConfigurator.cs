@@ -1,16 +1,11 @@
-﻿using System.Linq;
-using System.Net.Http.Formatting;
-using System.Web.Http;
-using System.Web.OData.Builder;
+﻿using System.Web.Http;
 using System.Web.OData.Extensions;
 using System.Web.OData.Routing;
 using System.Web.OData.Routing.Conventions;
-using WNP.Listener.MetadataService;
-using WNP.Listener.ODataService.Controllers;
-using WNP.Listener.ODataService.MessageHandlers;
-using WNP.Listener.ODataService.Services;
+using AMSLLC.Listener.ODataService.MessageHandlers;
+using AMSLLC.Listener.ODataService.Services;
 
-namespace WNP.Listener.ODataService
+namespace AMSLLC.Listener.ODataService
 {
     public class ODataServiceConfigurator
     {

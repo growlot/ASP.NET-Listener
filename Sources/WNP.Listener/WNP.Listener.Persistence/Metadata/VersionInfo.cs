@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class VersionInfoImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: long
@@ -37,4 +38,5 @@ public class VersionInfoImpl: ITableInformation {
 	{
 		return "dbo.versioninfo";
 	}
+}
 }

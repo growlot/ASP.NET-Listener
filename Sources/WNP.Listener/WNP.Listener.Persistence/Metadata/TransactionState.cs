@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class TransactionStateImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -30,4 +31,5 @@ public class TransactionStateImpl: ITableInformation {
 	{
 		return "dbo.transactionstate";
 	}
+}
 }

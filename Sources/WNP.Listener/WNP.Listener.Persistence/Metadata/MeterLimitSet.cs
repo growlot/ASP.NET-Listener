@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class MeterLimitSetImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -184,4 +185,5 @@ public class MeterLimitSetImpl: ITableInformation {
 	{
 		return "wndba.tmeter_limit_set";
 	}
+}
 }

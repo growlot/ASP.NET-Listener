@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class StatusImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -72,4 +73,5 @@ public class StatusImpl: ITableInformation {
 	{
 		return "wndba.tstatus";
 	}
+}
 }

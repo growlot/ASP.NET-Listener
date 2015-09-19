@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class FirmwareLabelImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -163,4 +164,5 @@ public class FirmwareLabelImpl: ITableInformation {
 	{
 		return "wndba.tfirmware_label";
 	}
+}
 }

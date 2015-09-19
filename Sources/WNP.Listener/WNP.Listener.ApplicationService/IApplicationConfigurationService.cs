@@ -4,10 +4,10 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService
-{
-    using AMSLLC.Listener.Domain.Listener.Lookups;
+using AMSLLC.Listener.Domain.Listener.Lookups;
 
+namespace AMSLLC.Listener.ApplicationService
+{
     public interface IApplicationConfigurationService
     {
         /// <summary>

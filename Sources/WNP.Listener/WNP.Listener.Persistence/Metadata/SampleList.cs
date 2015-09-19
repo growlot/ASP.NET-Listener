@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class SampleListImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -233,4 +234,5 @@ public class SampleListImpl: ITableInformation {
 	{
 		return "wndba.tsample_list";
 	}
+}
 }

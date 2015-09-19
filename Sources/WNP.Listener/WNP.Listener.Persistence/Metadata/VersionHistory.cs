@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class VersionHistoryImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -184,4 +185,5 @@ public class VersionHistoryImpl: ITableInformation {
 	{
 		return "wndba.tversion_history";
 	}
+}
 }

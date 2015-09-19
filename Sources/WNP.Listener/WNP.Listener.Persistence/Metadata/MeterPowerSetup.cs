@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class MeterPowerSetupImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -205,4 +206,5 @@ public class MeterPowerSetupImpl: ITableInformation {
 	{
 		return "wndba.tmeter_power_setup";
 	}
+}
 }

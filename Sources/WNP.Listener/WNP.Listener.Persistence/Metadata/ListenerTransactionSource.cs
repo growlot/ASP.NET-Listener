@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class ListenerTransactionSourceImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -44,4 +45,5 @@ public class ListenerTransactionSourceImpl: ITableInformation {
 	{
 		return "wndba.tlistener_transaction_source";
 	}
+}
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class RmaBatchOutImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -149,4 +150,5 @@ public class RmaBatchOutImpl: ITableInformation {
 	{
 		return "wndba.trma_batch_out";
 	}
+}
 }

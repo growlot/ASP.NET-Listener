@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class EventTriggersImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -72,4 +73,5 @@ public class EventTriggersImpl: ITableInformation {
 	{
 		return "wndba.tevent_triggers";
 	}
+}
 }

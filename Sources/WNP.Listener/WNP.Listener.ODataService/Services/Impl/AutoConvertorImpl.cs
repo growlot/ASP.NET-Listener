@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WNP.Listener.ODataService.Services.Impl
+namespace AMSLLC.Listener.ODataService.Services.Impl
 {
     public class AutoConvertorImpl : IAutoConvertor
     {

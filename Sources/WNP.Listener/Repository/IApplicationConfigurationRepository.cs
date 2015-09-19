@@ -1,6 +1,6 @@
 ﻿using AMSLLC.Listener.Domain.Listener.Application;
 
-namespace Repository
+namespace AMSLLC.Listener.Repository
 {
     /// <summary>
     /// Application configuration repository interface

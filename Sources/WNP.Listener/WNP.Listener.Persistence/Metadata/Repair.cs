@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class RepairImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -184,4 +185,5 @@ public class RepairImpl: ITableInformation {
 	{
 		return "wndba.trepair";
 	}
+}
 }

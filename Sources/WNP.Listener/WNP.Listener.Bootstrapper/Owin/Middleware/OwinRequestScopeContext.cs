@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using Microsoft.Owin;
 
-namespace WNP.Listener.Bootstrapper.Owin.Middleware
+namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 {
     /// <summary>
     /// RequestScopeContext for Owin.

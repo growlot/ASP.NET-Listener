@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class DefaultValuesImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -79,4 +80,5 @@ public class DefaultValuesImpl: ITableInformation {
 	{
 		return "wndba.tdefault_values";
 	}
+}
 }

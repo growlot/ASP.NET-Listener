@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class RmaEqpImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -296,4 +297,5 @@ public class RmaEqpImpl: ITableInformation {
 	{
 		return "wndba.trma_eqp";
 	}
+}
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class PtTestResultsImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -345,4 +346,5 @@ public class PtTestResultsImpl: ITableInformation {
 	{
 		return "wndba.tpt_test_results";
 	}
+}
 }

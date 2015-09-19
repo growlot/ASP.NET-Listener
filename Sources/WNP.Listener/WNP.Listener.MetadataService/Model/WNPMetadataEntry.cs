@@ -1,6 +1,6 @@
-using PetaPoco;
+using AMSLLC.Listener.Persistence;
 
-namespace WNP.Listener.MetadataService.Model
+namespace AMSLLC.Listener.MetadataService.Model
 {
     public class WNPMetadataEntry
     {

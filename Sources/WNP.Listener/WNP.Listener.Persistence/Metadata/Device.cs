@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class DeviceImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -58,4 +59,5 @@ public class DeviceImpl: ITableInformation {
 	{
 		return "dbo.device";
 	}
+}
 }

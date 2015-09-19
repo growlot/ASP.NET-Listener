@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
+using AMSLLC.Listener.Persistence.Metadata;
 
-using static DBMetadata;
-
-namespace WNP.Listener.MetadataService.Impl
+namespace AMSLLC.Listener.MetadataService.Impl
 {
     public class ODataEntityConfigurationImpl : Dictionary<string, ExposedEntityConfiguration>, IODataEntityConfiguration
     {
         public ODataEntityConfigurationImpl()
         {
-            this[EqpMeter.RealTableName] = new ExposedEntityConfiguration() { DefaultEntityName = "Meter" };
+            this[DBMetadata.EqpMeter.RealTableName] = new ExposedEntityConfiguration() { DefaultEntityName = "Meter" };
         }
     }
 }

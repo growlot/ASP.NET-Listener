@@ -7,8 +7,8 @@
     <ProjectGuid>{E3183353-F97E-4EE2-84D7-D81CE2707FF7}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WNP.Listener.Bootstrapper</RootNamespace>
-    <AssemblyName>WNP.Listener.Bootstrapper</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.Bootstrapper</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.Bootstrapper</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

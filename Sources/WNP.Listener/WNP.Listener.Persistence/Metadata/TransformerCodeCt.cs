@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class TransformerCodeCtImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -289,4 +290,5 @@ public class TransformerCodeCtImpl: ITableInformation {
 	{
 		return "wndba.ttransformer_code_ct";
 	}
+}
 }

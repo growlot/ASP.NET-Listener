@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class MultimediaImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -100,4 +101,5 @@ public class MultimediaImpl: ITableInformation {
 	{
 		return "wndba.tmultimedia";
 	}
+}
 }

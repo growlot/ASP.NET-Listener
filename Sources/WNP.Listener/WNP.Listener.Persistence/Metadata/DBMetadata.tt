@@ -18,7 +18,7 @@
 
 <#@ output extension=".cs" #>
 
-using WNP.Listener.Persistence;
+using AMSLLC.Listener.Persistence.Metadata;
 
 <#
     ConnectionStringName = "WNPDatabase";			// Uses last connection string in config if not specified
@@ -34,6 +34,7 @@ using WNP.Listener.Persistence;
         var tableName = GetTableName(tableNameRedefined, table.Name);
 #>
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class <#=tableName#>Impl: ITableInformation {
 	<#foreach (var column in table.Columns) {
 		var realColName = column.Name;
@@ -69,12 +70,14 @@ public class <#=tableName#>Impl: ITableInformation {
 		return "<#= string.Format("{0}.{1}", table.Schema, table.Name.ToLowerInvariant()) #>";
 	}
 }
+}
 <#
 
 	SaveOutput(string.Format("{0}.cs", tableName));
     }
 #>
 
+namespace AMSLLC.Listener.Persistence.Metadata {
 using System.Collections.Generic;
 
 public static class DBMetadata {
@@ -116,7 +119,7 @@ public class ColumnInformation
 	public string ModelName { get; set; }
 	public string ColumnName { get; set; }
 }
-
+}
 <#
 	DeleteOldOutputs();
 #>

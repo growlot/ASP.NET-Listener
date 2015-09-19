@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class ServiceTypeImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -30,4 +31,5 @@ public class ServiceTypeImpl: ITableInformation {
 	{
 		return "dbo.servicetype";
 	}
+}
 }

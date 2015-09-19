@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class OwnerImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -121,4 +122,5 @@ public class OwnerImpl: ITableInformation {
 	{
 		return "wndba.towner";
 	}
+}
 }

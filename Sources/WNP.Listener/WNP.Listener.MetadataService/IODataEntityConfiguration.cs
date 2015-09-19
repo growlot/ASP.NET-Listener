@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WNP.Listener.MetadataService
+namespace AMSLLC.Listener.MetadataService
 {
     public interface IODataEntityConfiguration : IDictionary<string, ExposedEntityConfiguration>
     {

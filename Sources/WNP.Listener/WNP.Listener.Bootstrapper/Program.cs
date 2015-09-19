@@ -2,7 +2,7 @@
 using System.Configuration;
 using Topshelf;
 
-namespace WNP.Listener.Bootstrapper
+namespace AMSLLC.Listener.Bootstrapper
 {
     class Program
     {

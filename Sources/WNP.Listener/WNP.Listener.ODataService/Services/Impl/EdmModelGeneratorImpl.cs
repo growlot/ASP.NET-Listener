@@ -1,14 +1,11 @@
 ﻿using System.Linq;
 using System.Web.OData.Builder;
-using AutoMapper;
+using AMSLLC.Listener.MetadataService;
 using Microsoft.OData.Edm;
-using WNP.Listener.MetadataService;
-using WNP.Listener.ODataService.Controllers;
+using Ninject.Infrastructure.Language;
 
-namespace WNP.Listener.ODataService.Services.Impl
+namespace AMSLLC.Listener.ODataService.Services.Impl
 {
-    using Ninject.Infrastructure.Language;
-
     public class EdmModelGeneratorImpl : IEdmModelGenerator
     {
         private readonly IMetadataService _metadataService;

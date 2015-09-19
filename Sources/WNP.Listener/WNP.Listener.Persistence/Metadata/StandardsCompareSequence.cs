@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class StandardsCompareSequenceImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -121,4 +122,5 @@ public class StandardsCompareSequenceImpl: ITableInformation {
 	{
 		return "wndba.tstandards_compare_sequence";
 	}
+}
 }

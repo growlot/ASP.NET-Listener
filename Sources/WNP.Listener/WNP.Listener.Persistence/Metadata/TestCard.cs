@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class TestCardImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -86,4 +87,5 @@ public class TestCardImpl: ITableInformation {
 	{
 		return "wndba.ttest_card";
 	}
+}
 }

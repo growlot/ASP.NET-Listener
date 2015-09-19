@@ -7,8 +7,8 @@
     <ProjectGuid>{702B10D4-57D6-4406-A159-715F658AE54D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WNP.Listener.MetadataService</RootNamespace>
-    <AssemblyName>WNP.Listener.MetadataService</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.MetadataService</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.MetadataService</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

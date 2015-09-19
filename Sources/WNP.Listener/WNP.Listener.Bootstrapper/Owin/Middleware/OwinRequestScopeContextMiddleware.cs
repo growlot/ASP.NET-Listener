@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.Owin;
 using Owin;
 
-namespace WNP.Listener.Bootstrapper.Owin.Middleware
+namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 {
-    using AppFunc = Func<IDictionary<string, object>, Task>;
-
     public class OwinRequestScopeContextMiddleware : OwinMiddleware
     {
         readonly OwinMiddleware next;

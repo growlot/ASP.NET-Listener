@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using StackExchange.Profiling;
 
-namespace WNP.Listener.ODataService.MessageHandlers
+namespace AMSLLC.Listener.ODataService.MessageHandlers
 {
     public class MiniProfilerMessageHandler : DelegatingHandler
     {

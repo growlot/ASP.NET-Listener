@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class BarcodeImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -436,4 +437,5 @@ public class BarcodeImpl: ITableInformation {
 	{
 		return "wndba.tbarcode";
 	}
+}
 }

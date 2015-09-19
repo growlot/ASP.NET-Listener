@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class HarmonicConfigDataImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -51,4 +52,5 @@ public class HarmonicConfigDataImpl: ITableInformation {
 	{
 		return "wndba.tharmonic_config_data";
 	}
+}
 }

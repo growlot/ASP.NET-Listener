@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using AMSLLC.Listener.Persistence;
 using NLog;
-using PetaPoco;
 using StackExchange.Profiling;
 using StackExchange.Profiling.Data;
 
-namespace WNP.Listener.ODataService
+namespace AMSLLC.Listener.ODataService
 {
     public class WNPDBContext : Database
     {

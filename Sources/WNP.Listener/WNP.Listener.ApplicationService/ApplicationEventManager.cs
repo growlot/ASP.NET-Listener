@@ -4,16 +4,16 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace WNP.Listener.ApplicationService
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using AMSLLC.Core;
-    using AMSLLC.Listener.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using AMSLLC.Core;
+using AMSLLC.Listener.Domain;
 
+namespace AMSLLC.Listener.ApplicationService
+{
     public class ApplicationEventManager
     {
         private static readonly Lazy<ApplicationEventManager> instanceLazy = new Lazy<ApplicationEventManager>(() =>

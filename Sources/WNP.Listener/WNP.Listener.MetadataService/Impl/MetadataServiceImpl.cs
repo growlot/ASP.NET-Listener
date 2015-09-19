@@ -6,15 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Caching;
+using AMSLLC.Listener.MetadataService.Model;
+using AMSLLC.Listener.Persistence;
+using AMSLLC.Listener.Persistence.Metadata;
+using AMSLLC.Listener.Utilities;
 using Microsoft.CSharp;
-using WNP.Listener.MetadataService.Model;
-using static DBMetadata;
-using static PetaPoco.Sql;
 
-namespace WNP.Listener.MetadataService.Impl
+namespace AMSLLC.Listener.MetadataService.Impl
 {
-    using Utilities;
-
     public class MetadataServiceImpl : IMetadataService
     {
         private readonly IODataEntityConfiguration _entityConfiguration;
@@ -26,11 +25,11 @@ namespace WNP.Listener.MetadataService.Impl
 
         public Dictionary<string, ODataModelMapping> ODataModelMappings => _oDataModelMappings;
 
-        public string ODataModelNamespace => "WNP.Listener.ODataService.ODataModel";
+        public string ODataModelNamespace => "AMSLLC.Listener.ODataService.ODataModel";
 
         public List<WNPMetadataEntry> RawMetadata =>
                 MemoryCache.Default.GetOrAddExisting("_RawMetadata", 
-                    () => _dbContext.Fetch<WNPMetadataEntry>(Builder.Select(ALL).From(Metadata)), 
+                    () => _dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata)), 
                     DateTime.Now.AddMinutes(1));
 
         public Assembly ODataModelAssembly => _odataModelAssembly ?? (_odataModelAssembly = GenerateODataAssembly());
@@ -74,7 +73,7 @@ namespace WNP.Listener.MetadataService.Impl
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
 
             // TODO: we should move the IODataEntity marker interface to another library, think about this
-            codeNamespace.Imports.Add(new CodeNamespaceImport("WNP.Listener.MetadataService"));
+            codeNamespace.Imports.Add(new CodeNamespaceImport("AMSLLC.Listener.MetadataService"));
 
             //"WNP.Listener.ODataService.ODataModel.ElectricMeter" => { "Id" =>}            
 
@@ -100,10 +99,10 @@ namespace WNP.Listener.MetadataService.Impl
 
                 codeNamespace.Types.Add(codeClass);
 
-                foreach (var columnReadableName in TableLookup[tableName].ColumnsLookup.Keys)
+                foreach (var columnReadableName in DBMetadata.TableLookup[tableName].ColumnsLookup.Keys)
                 {
                     var property = new CodeSnippetTypeMember();
-                    var columnInfo = TableLookup[tableName].ColumnsLookup[columnReadableName];
+                    var columnInfo = DBMetadata.TableLookup[tableName].ColumnsLookup[columnReadableName];
                     var metadataInfo =
                         RawMetadata.FirstOrDefault(
                             metadata =>
@@ -139,7 +138,7 @@ namespace WNP.Listener.MetadataService.Impl
                 }
 
                 ODataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}",
-                    new ODataModelMapping(TableLookup[tableName].ToString(), mappingInfo, reverseMappingInfo));
+                    new ODataModelMapping(DBMetadata.TableLookup[tableName].ToString(), mappingInfo, reverseMappingInfo));
             }
 
             codeUnit.Namespaces.Add(codeNamespace);
@@ -160,7 +159,7 @@ namespace WNP.Listener.MetadataService.Impl
 
             compilerParameters.ReferencedAssemblies.Add("System.dll");
             compilerParameters.ReferencedAssemblies.Add("System.ComponentModel.DataAnnotations.dll");
-            compilerParameters.ReferencedAssemblies.Add("WNP.Listener.MetadataService.dll");
+            compilerParameters.ReferencedAssemblies.Add("AMSLLC.Listener.MetadataService.dll");
             var result = codeProvider.CompileAssemblyFromDom(compilerParameters, codeUnit);
 
             if (result.Errors.Count > 0)

@@ -7,8 +7,8 @@
     <ProjectGuid>{CF40FB68-247D-4024-A8E9-3B707973AD11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WNP.Listener.Utilities</RootNamespace>
-    <AssemblyName>WNP.Listener.Utilities</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.Utilities</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.Utilities</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

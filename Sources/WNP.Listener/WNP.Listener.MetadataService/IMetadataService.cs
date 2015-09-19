@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using WNP.Listener.MetadataService.Impl;
-using WNP.Listener.MetadataService.Model;
+using AMSLLC.Listener.MetadataService.Impl;
+using AMSLLC.Listener.MetadataService.Model;
 
-namespace WNP.Listener.MetadataService
+namespace AMSLLC.Listener.MetadataService
 {
     public interface IMetadataService
     {

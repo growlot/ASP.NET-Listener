@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class ReadingImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -107,4 +108,5 @@ public class ReadingImpl: ITableInformation {
 	{
 		return "wndba.treading";
 	}
+}
 }

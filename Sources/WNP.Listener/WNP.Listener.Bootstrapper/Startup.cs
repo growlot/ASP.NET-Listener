@@ -1,16 +1,16 @@
 ﻿using System.Web.Http;
+using AMSLLC.Listener.Bootstrapper.Owin.Middleware;
+using AMSLLC.Listener.MetadataService.Properties;
+using AMSLLC.Listener.ODataService;
+using AMSLLC.Listener.ODataService.Properties;
 using Microsoft.Owin.Diagnostics;
 using Ninject;
 using Ninject.Web.Common.OwinHost;
 using Ninject.Web.WebApi.OwinHost;
 using Owin;
 using StackExchange.Profiling;
-using WNP.Listener.Bootstrapper.Owin.Middleware;
-using WNP.Listener.MetadataService.Properties;
-using WNP.Listener.ODataService;
-using WNP.Listener.ODataService.Properties;
 
-namespace WNP.Listener.Bootstrapper
+namespace AMSLLC.Listener.Bootstrapper
 {
     public class Startup
     {

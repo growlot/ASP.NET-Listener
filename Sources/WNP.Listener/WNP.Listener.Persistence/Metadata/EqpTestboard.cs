@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class EqpTestboardImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -93,4 +94,5 @@ public class EqpTestboardImpl: ITableInformation {
 	{
 		return "wndba.teqp_testboard";
 	}
+}
 }

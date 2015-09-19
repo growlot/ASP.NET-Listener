@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class CommentImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -135,4 +136,5 @@ public class CommentImpl: ITableInformation {
 	{
 		return "wndba.tcomment";
 	}
+}
 }

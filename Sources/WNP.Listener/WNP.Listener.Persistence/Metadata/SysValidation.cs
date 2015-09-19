@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class SysValidationImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -65,4 +66,5 @@ public class SysValidationImpl: ITableInformation {
 	{
 		return "wndba.tsys_validation";
 	}
+}
 }

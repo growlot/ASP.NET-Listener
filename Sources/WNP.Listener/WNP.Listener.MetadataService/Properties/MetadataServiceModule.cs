@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using AMSLLC.Listener.MetadataService.Impl;
+using AMSLLC.Listener.MetadataService.Mapping;
+using AMSLLC.Listener.MetadataService.Model;
+using AMSLLC.Listener.Persistence;
 using Ninject.Modules;
 using Ninject.Web.Common;
-using PetaPoco;
-using StackExchange.Profiling;
-using StackExchange.Profiling.Data;
-using StackExchange.Profiling.Helpers;
-using WNP.Listener.MetadataService.Impl;
-using WNP.Listener.MetadataService.Mapping;
-using WNP.Listener.MetadataService.Model;
 
-namespace WNP.Listener.MetadataService.Properties
+namespace AMSLLC.Listener.MetadataService.Properties
 {
     public class MetadataServiceModule : NinjectModule
     {

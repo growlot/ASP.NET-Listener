@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class TamperImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
@@ -135,4 +136,5 @@ public class TamperImpl: ITableInformation {
 	{
 		return "wndba.ttamper";
 	}
+}
 }

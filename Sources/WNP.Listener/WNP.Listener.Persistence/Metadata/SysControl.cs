@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+namespace AMSLLC.Listener.Persistence.Metadata {
 public class SysControlImpl: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: string
@@ -135,4 +136,5 @@ public class SysControlImpl: ITableInformation {
 	{
 		return "wndba.tsys_control";
 	}
+}
 }

@@ -1,13 +1,13 @@
-﻿using Ninject.Modules;
+﻿using AMSLLC.Listener.MetadataService;
+using AMSLLC.Listener.MetadataService.Impl;
+using AMSLLC.Listener.ODataService.Services;
+using AMSLLC.Listener.ODataService.Services.FilterTransformer;
+using AMSLLC.Listener.ODataService.Services.Impl;
+using AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer;
+using Ninject.Modules;
 using Ninject.Web.Common;
-using WNP.Listener.MetadataService;
-using WNP.Listener.MetadataService.Impl;
-using WNP.Listener.ODataService.Services;
-using WNP.Listener.ODataService.Services.FilterTransformer;
-using WNP.Listener.ODataService.Services.Impl;
-using WNP.Listener.ODataService.Services.Impl.FilterTransformer;
 
-namespace WNP.Listener.ODataService.Properties
+namespace AMSLLC.Listener.ODataService.Properties
 {
     public class ODataServiceModule : NinjectModule
     {

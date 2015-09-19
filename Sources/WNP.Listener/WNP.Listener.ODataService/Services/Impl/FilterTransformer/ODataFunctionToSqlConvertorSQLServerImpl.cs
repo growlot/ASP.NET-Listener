@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.OData.Core.UriParser.Semantic;
 
-namespace WNP.Listener.ODataService.Services.Impl.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
 {
     public class ODataFunctionToSqlConvertorSqlServerImpl : ODataFunctionToSqlConvertorGenericImpl
     {

@@ -2,9 +2,8 @@
 using System.Web.Http;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
-using WNP.Listener.ODataService.Controllers;
 
-namespace WNP.Listener.ODataService.Services.Impl
+namespace AMSLLC.Listener.ODataService.Services.Impl
 {
     // this is stub service which we'll need in future for reloading/regenerating metadata
     public class ODataRouteManagerImpl : IODataRouteManager

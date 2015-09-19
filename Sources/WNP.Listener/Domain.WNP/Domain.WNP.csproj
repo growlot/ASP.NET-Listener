@@ -8,8 +8,8 @@
     <ProjectGuid>{960F9F7B-D3A8-405C-86CE-0287DE7096F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Domain.WNP</RootNamespace>
-    <AssemblyName>Domain.WNP</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.Domain.WNP</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.Domain.WNP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Domain.WNP.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\AMSLLC.Listener.Domain.WNP.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -43,7 +43,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Release\Domain.WNP.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\AMSLLC.Listener.Domain.WNP.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
