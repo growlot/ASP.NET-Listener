@@ -93,11 +93,11 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WNP.Listener.Persistence\WNP.Listener.Persistence.csproj">
+    <ProjectReference Include="..\Persistence\Persistence.csproj">
       <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>
-      <Name>WNP.Listener.Persistence</Name>
+      <Name>Persistence</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WNP.Listener.Utilities\WNP.Listener.Utilities.csproj">
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{CF40FB68-247D-4024-A8E9-3B707973AD11}</Project>
       <Name>WNP.Listener.Utilities</Name>
     </ProjectReference>

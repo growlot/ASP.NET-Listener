@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.ODataService", "Sources\WNP.Listener\WNP.Listener.ODataService\WNP.Listener.ODataService.csproj", "{28DE87B5-514B-4996-B65A-9D8F9E4578E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataService", "Sources\WNP.Listener\ODataService\ODataService.csproj", "{28DE87B5-514B-4996-B65A-9D8F9E4578E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.MetadataService", "Sources\WNP.Listener\WNP.Listener.MetadataService\WNP.Listener.MetadataService.csproj", "{702B10D4-57D6-4406-A159-715F658AE54D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetadataService", "Sources\WNP.Listener\MetadataService\MetadataService.csproj", "{702B10D4-57D6-4406-A159-715F658AE54D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.Persistence", "Sources\WNP.Listener\WNP.Listener.Persistence\WNP.Listener.Persistence.csproj", "{993CDFFD-FB9F-4C45-9F10-E4F006F0B8EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Sources\WNP.Listener\Persistence\Persistence.csproj", "{993CDFFD-FB9F-4C45-9F10-E4F006F0B8EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.Model", "Sources\WNP.Listener\WNP.Listener.Model\WNP.Listener.Model.csproj", "{4E188AAB-3FEF-4CA2-AE34-C2BC8080EFDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Sources\WNP.Listener\Model\Model.csproj", "{4E188AAB-3FEF-4CA2-AE34-C2BC8080EFDB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{C4BE66D0-2301-4028-A593-2F8DFA817E01}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{937AEB83-08A5-4B9C-BD18-4B40CEA78736}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.Bootstrapper", "Sources\WNP.Listener\WNP.Listener.Bootstrapper\WNP.Listener.Bootstrapper.csproj", "{E3183353-F97E-4EE2-84D7-D81CE2707FF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bootstrapper", "Sources\WNP.Listener\Bootstrapper\Bootstrapper.csproj", "{E3183353-F97E-4EE2-84D7-D81CE2707FF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.Utilities", "Sources\WNP.Listener\WNP.Listener.Utilities\WNP.Listener.Utilities.csproj", "{CF40FB68-247D-4024-A8E9-3B707973AD11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.Utilities", "Sources\WNP.Listener\Utilities\Utilities.csproj", "{CF40FB68-247D-4024-A8E9-3B707973AD11}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{EC6CCDC7-2D91-4FE4-88B0-F36E1BB951A8}"
 EndProject
@@ -33,15 +33,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Listener", "Sources\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Sources\WNP.Listener\Repository\Repository.csproj", "{72E29F3F-E27A-4224-9F7B-59C2497D3BF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.ApplicationService", "Sources\WNP.Listener\WNP.Listener.ApplicationService\WNP.Listener.ApplicationService.csproj", "{6B540066-84AB-4D63-81A6-9C724AEF039F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationService", "Sources\WNP.Listener\ApplicationService\ApplicationService.csproj", "{6B540066-84AB-4D63-81A6-9C724AEF039F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WNP.Listener.Communication", "Sources\WNP.Listener\WNP.Listener.Communication\WNP.Listener.Communication.csproj", "{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Sources\WNP.Listener\Communication\Communication.csproj", "{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.WNP", "Sources\WNP.Listener\Domain.WNP\Domain.WNP.csproj", "{960F9F7B-D3A8-405C-86CE-0287DE7096F4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Communication", "Communication", "{8C0D6EAD-4A1B-4247-9F61-32F99423BA5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.Jms", "Sources\WNP.Listener\Communication\Communication.Jms\Communication.Jms.csproj", "{0213748A-3255-4704-84EA-8821B311A3A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.Jms", "Sources\WNP.Listener\Communication.Jms\Communication.Jms.csproj", "{0213748A-3255-4704-84EA-8821B311A3A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Sources\WNP.Listener\Core\Core.csproj", "{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}"
 EndProject
