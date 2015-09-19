@@ -11,7 +11,5 @@ namespace WNP.Listener.MetadataService
         Dictionary<string, MetadataServiceImpl.ODataModelMapping> ODataModelMappings { get; }
         List<WNPMetadataEntry> RawMetadata { get; }
         Assembly ODataModelAssembly { get; }
-
-        MetadataServiceImpl.ODataModelMapping GetModelMapping(string clrModelName);
     }
 }

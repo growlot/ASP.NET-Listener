@@ -155,17 +155,13 @@
     <Compile Include="Properties\ODataServiceModule.cs" />
     <Compile Include="Services\IAutoConvertor.cs" />
     <Compile Include="Services\IEdmModelGenerator.cs" />
-    <Compile Include="Services\FilterTransformer\IFilterTransformer.cs" />
+    <Compile Include="Services\IFilterProcessor.cs" />
     <Compile Include="Services\Impl\AutoConvertorImpl.cs" />
     <Compile Include="Services\Impl\EdmModelGeneratorImpl.cs" />
-    <Compile Include="Services\Impl\FilterTransformer\FilterTransformerImpl.cs" />
-    <Compile Include="Services\Impl\FilterTransformer\ODataFunctionToSqlConvertorGenericImpl.cs" />
-    <Compile Include="Services\Impl\FilterTransformer\ODataFunctionToSqlConvertorSqlServerImpl.cs" />
-    <Compile Include="Services\FilterTransformer\IODataFunctionToSqlConvertor.cs" />
+    <Compile Include="Services\Impl\FilterProcessorNaiveImpl.cs" />
     <Compile Include="Services\IODataRouteManager.cs" />
     <Compile Include="Services\Impl\ODataRouteManagerImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\FilterTransformer\ISupportedODataFunctionToSql.cs" />
     <Compile Include="WNPDbContext.cs" />
     <Compile Include="WNPGenericRoutingConvention.cs" />
   </ItemGroup>
@@ -197,7 +193,6 @@
       <Name>WNP.Listener.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

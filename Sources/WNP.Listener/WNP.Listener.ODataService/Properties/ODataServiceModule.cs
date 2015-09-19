@@ -3,9 +3,7 @@ using Ninject.Web.Common;
 using WNP.Listener.MetadataService;
 using WNP.Listener.MetadataService.Impl;
 using WNP.Listener.ODataService.Services;
-using WNP.Listener.ODataService.Services.FilterTransformer;
 using WNP.Listener.ODataService.Services.Impl;
-using WNP.Listener.ODataService.Services.Impl.FilterTransformer;
 
 namespace WNP.Listener.ODataService.Properties
 {
@@ -18,6 +16,7 @@ namespace WNP.Listener.ODataService.Properties
                 .InRequestScope()
                 .WithConstructorArgument("connectionStringName", "WNPDatabase");
 
+
             Kernel.Bind<ODataServiceConfigurator>().ToSelf().InSingletonScope();
 
             Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();            
@@ -25,9 +24,7 @@ namespace WNP.Listener.ODataService.Properties
 
             Kernel.Bind<IODataEntityConfiguration>().To<ODataEntityConfigurationImpl>();
 
-            Kernel.Bind<IAutoConvertor>().To<AutoConvertorImpl>();
-            Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
-            Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
+            Kernel.Bind<IFilterProcessor>().To<FilterProcessorNaiveImpl>();
         }
     }
 }

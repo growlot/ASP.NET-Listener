@@ -9,17 +9,7 @@ namespace WNP.Listener.ODataService.Services.Impl
         {
             {typeof (decimal), v => System.Convert.ToDecimal(v)},
             {typeof (float), v => System.Convert.ToSingle(v)},
-            {typeof (double), v => System.Convert.ToDouble(v)},
-            {typeof (DateTimeOffset), v =>
-            {
-                if (v == null)
-                    return null;
-
-                if (v is DateTime)
-                    return new DateTimeOffset((DateTime) v);
-
-                throw new NotImplementedException($"Conversion of {v.GetType()} to DateTimeOffset is not implemented.");
-            } }
+            {typeof (double), v => System.Convert.ToDouble(v)}
         };
 
         public object Convert(object rawData, Type targetType) =>

@@ -35,9 +35,6 @@ namespace WNP.Listener.MetadataService.Impl
 
         public Assembly ODataModelAssembly => _odataModelAssembly ?? (_odataModelAssembly = GenerateODataAssembly());
 
-        public ODataModelMapping GetModelMapping(string clrModelName) =>
-            ODataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
-
         public MetadataServiceImpl(MetadataDbContext dbContext, IODataEntityConfiguration entityConfiguration)
         {
             _dbContext = dbContext;
@@ -51,14 +48,14 @@ namespace WNP.Listener.MetadataService.Impl
 
         public class ODataModelMapping
         {
-            public Dictionary<string, ODataToDatabaseColumnInfo> ModelToColumnMappings { get; }
-            public Dictionary<string, string> ColumnToModelMappings { get; }
+            public Dictionary<string, ODataToDatabaseColumnInfo> Mappings { get; }
+            public Dictionary<string, string> ReverseMappings { get; }
             public string TableName { get; }
 
-            public ODataModelMapping(string tableName, Dictionary<string, ODataToDatabaseColumnInfo> modelToColumnMappings, Dictionary<string, string> columnToModelMappings)
+            public ODataModelMapping(string tableName, Dictionary<string, ODataToDatabaseColumnInfo> mappings, Dictionary<string, string> reverseMappings)
             {
-                ModelToColumnMappings = modelToColumnMappings;
-                ColumnToModelMappings = columnToModelMappings;
+                Mappings = mappings;
+                ReverseMappings = reverseMappings;
                 TableName = tableName;
             }
         }
@@ -116,21 +113,13 @@ namespace WNP.Listener.MetadataService.Impl
                         if (metadataInfo.IsPrimaryKey == "Y")
                             property.Text = "[Key]";
 
-                        var dataType = metadataInfo.DataType;
-                        if (dataType.Equals("DateTime", StringComparison.OrdinalIgnoreCase))
-                            dataType = "DateTimeOffset";
-
-                        property.Text += $" public {dataType} {metadataInfo.CustomerLabel} {{ get; set; }}";
+                        property.Text += $" public {metadataInfo.DataType} {metadataInfo.CustomerLabel} {{ get; set; }}";
                         mappingInfo.Add(metadataInfo.CustomerLabel, new ODataToDatabaseColumnInfo() {DatabaseColumnName = columnInfo.ColumnName});
                         reverseMappingInfo.Add(columnInfo.ColumnName, metadataInfo.CustomerLabel);
                     }
                     else
                     {
-                        var dataType = columnInfo.DataType;
-                        if (dataType.Equals("DateTime", StringComparison.OrdinalIgnoreCase))
-                            dataType = "DateTimeOffset";
-
-                        property.Text = $" public {dataType} {columnInfo.ModelName} {{ get; set; }}";
+                        property.Text = $" public {columnInfo.DataType} {columnInfo.ModelName} {{ get; set; }}";
                         mappingInfo.Add(columnInfo.ModelName, new ODataToDatabaseColumnInfo() { DatabaseColumnName = columnInfo.ColumnName });
                         reverseMappingInfo.Add(columnInfo.ColumnName, columnInfo.ModelName);
                     }
