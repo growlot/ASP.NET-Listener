@@ -149,6 +149,22 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApiService\ApiService.csproj">
+      <Project>{ADBEBC77-2CDB-4A62-912A-138539F736EB}</Project>
+      <Name>ApiService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ApplicationService\ApplicationService.csproj">
+      <Project>{6B540066-84AB-4D63-81A6-9C724AEF039F}</Project>
+      <Name>ApplicationService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Ninject\Core.Ninject.csproj">
+      <Project>{D9DC3880-1557-45FE-828E-120D9670C50A}</Project>
+      <Name>Core.Ninject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MetadataService\MetadataService.csproj">
       <Project>{702B10D4-57D6-4406-A159-715F658AE54D}</Project>
       <Name>MetadataService</Name>

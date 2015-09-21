@@ -7,6 +7,9 @@ namespace AMSLLC.Listener.Domain
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Threading.Tasks;
+    using Core;
 
     /// <summary>
     /// Implements observer design pattern for domain events.
@@ -18,6 +21,7 @@ namespace AMSLLC.Listener.Domain
         /// The event handlers collection.
         /// </summary>
         private static readonly Dictionary<Type, List<Action<IEvent>>> Handlers = new Dictionary<Type, List<Action<IEvent>>>();
+        private static readonly Dictionary<Type, List<Func<IEvent, Task>>> AsyncHandlers = new Dictionary<Type, List<Func<IEvent, Task>>>();
 
         /// <summary>
         /// Registers the specified event handler.
@@ -35,6 +39,21 @@ namespace AMSLLC.Listener.Domain
         }
 
         /// <summary>
+        /// Registers the specified event handler.
+        /// </summary>
+        /// <typeparam name="T">The event type.</typeparam>
+        /// <param name="handler">The handler.</param>
+        public static void RegisterAsync<T>(Func<T, Task> handler) where T : IEvent
+        {
+            if (!AsyncHandlers.ContainsKey(typeof(T)))
+            {
+                AsyncHandlers.Add(typeof(T), new List<Func<IEvent, Task>>());
+            }
+
+            AsyncHandlers[typeof(T)].Add(x => handler((T)x));
+        }
+
+        /// <summary>
         /// Raises the event.
         /// </summary>
         /// <param name="eventData">The event data.</param>
@@ -47,10 +66,44 @@ namespace AMSLLC.Listener.Domain
                 throw new ArgumentNullException("eventData", "Event must be specified in order to raise it.");
             }
 
-            foreach (var eventHandler in Handlers[eventData.GetType()])
+            if (Handlers.ContainsKey(eventData.GetType()))
             {
-                eventHandler(eventData);
+                foreach (var eventHandler in Handlers[eventData.GetType()])
+                {
+                    eventHandler(eventData);
+                }
             }
+        }
+
+        /// <summary>
+        /// Raises the events as set of tasks.
+        /// </summary>
+        /// <param name="events">The events.</param>
+        /// <returns>Task[].</returns>
+        public static Task[] AsParallel(ReadOnlyCollection<IEvent> events)
+        {
+            if (events == null)
+            {
+                throw new ArgumentNullException(nameof(events));
+            }
+
+            Task[] tasks = new Task[events.Count];
+
+            for (int i = 0; i < events.Count; i++)
+            {
+                var evt = events[i];
+                if (!AsyncHandlers.ContainsKey(evt.GetType()))
+                {
+                    continue;
+                }
+
+                foreach (var eventHandler in AsyncHandlers[evt.GetType()])
+                {
+                    tasks[i] = eventHandler(evt);
+                }
+            }
+
+            return tasks;
         }
     }
 }

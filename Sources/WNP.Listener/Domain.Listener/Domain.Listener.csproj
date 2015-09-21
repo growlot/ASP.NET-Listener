@@ -70,6 +70,10 @@
     <Compile Include="Transaction\DomainEvent\FileDataReady.cs" />
     <Compile Include="Transaction\DomainEvent\JmsDataReady.cs" />
     <Compile Include="Transaction\DomainEvent\WcfHttpDataReady.cs" />
+    <Compile Include="Transaction\Endpoint\JmsEndpointConfiguration.cs" />
+    <Compile Include="Transaction\Endpoint\JmsEndpointProcessor.cs" />
+    <Compile Include="Transaction\IEndpointProcessor.cs" />
+    <Compile Include="Transaction\IIntegrationEndpointConfiguration.cs" />
     <Compile Include="Transaction\TransactionConfiguration.cs" />
     <Compile Include="Transaction\TransactionConfigurationMemento.cs" />
     <Compile Include="Transaction\TransactionExecution.cs" />
@@ -87,6 +91,10 @@
     <Folder Include="Specifications\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{7937eb80-3944-4ab3-96e3-4745cfc5e21a}</Project>
       <Name>Domain</Name>

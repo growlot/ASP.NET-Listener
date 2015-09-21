@@ -12,21 +12,29 @@ using StackExchange.Profiling;
 
 namespace AMSLLC.Listener.Bootstrapper
 {
+    using ApiService.Properties;
+    using ApplicationService;
+    using Core;
+    using Core.Ninject;
+
     public class Startup
     {
-        private readonly StandardKernel _kernel = new StandardKernel();
-
         public void Configuration(IAppBuilder app)
         {
-            InitKernel();
-            InitOwinHost(app);
-            InitProfiler();
-        }
+            var diAdapter = new NinjectDependencyInjectionAdapter();
+            diAdapter.Initialize(container =>
+            {
+                container.Load<ODataServiceModule>();
+                container.Load<MetadataServiceModule>();
+                container.Load<ApiServiceModule>();
+            });
 
-        private void InitKernel()
-        {
-            _kernel.Load<ODataServiceModule>();
-            _kernel.Load<MetadataServiceModule>();
+            ApplicationIntegration.SetDependencyInjectionResolver(diAdapter);
+
+            InitOwinHost(app, diAdapter.Kernel);
+            InitProfiler();
+
+            ApplicationServicesConfigurator.Configure();
         }
 
         private void InitProfiler()
@@ -35,16 +43,16 @@ namespace AMSLLC.Listener.Bootstrapper
             MiniProfiler.Settings.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter(true);
         }
 
-        private void InitOwinHost(IAppBuilder app)
+        private void InitOwinHost(IAppBuilder app, StandardKernel kernel)
         {
-            var config = _kernel.Get<HttpConfiguration>();
+            var config = kernel.Get<HttpConfiguration>();
 
-            var odataServiceConfigurator = _kernel.Get<ODataServiceConfigurator>();
+            var odataServiceConfigurator = kernel.Get<ODataServiceConfigurator>();
             odataServiceConfigurator.Configure(config);
 
             app.UseRequestScopeContext();
             app.UseErrorPage(ErrorPageOptions.ShowAll);
-            app.UseNinjectMiddleware(() => _kernel).UseNinjectWebApi(config);
+            app.UseNinjectMiddleware(() => kernel).UseNinjectWebApi(config);
 
             config.EnsureInitialized();
         }

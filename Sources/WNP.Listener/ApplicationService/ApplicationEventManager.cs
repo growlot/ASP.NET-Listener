@@ -4,16 +4,16 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using AMSLLC.Core;
-using AMSLLC.Listener.Domain;
-
 namespace AMSLLC.Listener.ApplicationService
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using AMSLLC.Core;
+    using AMSLLC.Listener.Domain;
+
     public class ApplicationEventManager
     {
         private static readonly Lazy<ApplicationEventManager> instanceLazy = new Lazy<ApplicationEventManager>(() =>
@@ -35,6 +35,12 @@ namespace AMSLLC.Listener.ApplicationService
 
         public static ApplicationEventManager Instance => instanceLazy.Value;
 
+        public void Ensure(params Type[] type)
+        {
+            //Doing nothing right now. Lazy loader of the instance would perform handlers load
+            //Type parameter at this point just helping to ensure that certain assemblies are loaded
+        }
+
         /// <summary>
         /// Handles the specified event.
         /// </summary>
@@ -55,20 +61,25 @@ namespace AMSLLC.Listener.ApplicationService
         private void Initialize()
         {
             var types =
-                TypesImplementingInterface(typeof (IDomainHandler))
+                TypesImplementingInterface(typeof(IDomainHandler))
                     .Where(t => t.GetCustomAttributes<DomainEventHandlerAttribute>().Any());
             foreach (var type in types)
             {
                 var eventType = type.GetCustomAttributes<DomainEventHandlerAttribute>();
                 foreach (var domainEventHandlerAttribute in eventType)
                 {
-                    if (!this._eventHandlers.ContainsKey(domainEventHandlerAttribute.EventType))
-                    {
-                        this._eventHandlers.Add(domainEventHandlerAttribute.EventType, new List<IDomainHandler>());
-                    }
-                    this._eventHandlers[domainEventHandlerAttribute.EventType].Add((IDomainHandler) Activator.CreateInstance(type));
+                    RegisterEvent(domainEventHandlerAttribute.EventType, (IDomainHandler)Activator.CreateInstance(type));
                 }
             }
+        }
+
+        public void RegisterEvent(Type eventType, IDomainHandler handler)
+        {
+            if (!this._eventHandlers.ContainsKey(eventType))
+            {
+                this._eventHandlers.Add(eventType, new List<IDomainHandler>());
+            }
+            this._eventHandlers[eventType].Add(handler);
         }
 
         private static bool DoesTypeSupportInterface(Type type, Type inter)

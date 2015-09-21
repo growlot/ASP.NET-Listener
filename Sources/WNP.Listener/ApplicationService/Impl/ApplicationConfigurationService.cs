@@ -4,12 +4,12 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-using AMSLLC.Listener.Domain.Listener.Application;
-using AMSLLC.Listener.Domain.Listener.Lookups;
-using AMSLLC.Listener.Repository;
-
 namespace AMSLLC.Listener.ApplicationService.Impl
 {
+    using AMSLLC.Listener.Domain.Listener.Application;
+    using AMSLLC.Listener.Domain.Listener.Lookups;
+    using AMSLLC.Listener.Repository;
+
     /// <summary>
     /// Application configuration service
     /// </summary>
@@ -22,11 +22,11 @@ namespace AMSLLC.Listener.ApplicationService.Impl
         /// <param name="deviceType">Type of the device.</param>
         public void EnableDevice(int applicationId, DeviceTypeLookup deviceType)
         {
-            using (var scope = ApplicationServiceScope.Create(new DomainBuilder(), null))
+            using (var scope = ApplicationServiceScope.Create())
             {
                 var listenerRepository = scope.RepositoryBuilder.Create<IApplicationConfigurationRepository>();
                 var model = scope.DomainBuilder.Create<ApplicationConfiguration>(listenerRepository.Get(applicationId));
-                model.EnableDeviceType((int) deviceType);
+                model.EnableDeviceType((int)deviceType);
                 listenerRepository.Save(model);
             }
         }

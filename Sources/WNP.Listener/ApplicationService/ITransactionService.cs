@@ -6,7 +6,11 @@
 
 namespace AMSLLC.Listener.ApplicationService
 {
+    using System.Threading.Tasks;
+    using Communication;
+
     public interface ITransactionService
     {
+        Task Process(TransactionRequestMessage requestMessage);
     }
 }

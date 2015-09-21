@@ -42,14 +42,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEventManager.cs" />
+    <Compile Include="ApplicationServicesConfigurator.cs" />
     <Compile Include="ApplicationServiceScope.cs" />
     <Compile Include="DomainBuilder.cs" />
+    <Compile Include="ExecutionContext.cs" />
     <Compile Include="IApplicationConfigurationService.cs" />
     <Compile Include="IApplicationServiceScope.cs" />
+    <Compile Include="IExecutionContext.cs" />
     <Compile Include="Impl\ApplicationConfigurationService.cs" />
     <Compile Include="Impl\TransactionService.cs" />
     <Compile Include="ITransactionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Communication.Jms\Communication.Jms.csproj">
@@ -81,7 +85,9 @@
       <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,10 +4,10 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-using AMSLLC.Listener.Domain;
-
 namespace AMSLLC.Listener.ApplicationService
 {
+    using AMSLLC.Listener.Domain;
+
     /// <summary>
     /// Domain builder
     /// </summary>
@@ -35,7 +35,7 @@ namespace AMSLLC.Listener.ApplicationService
 
             if (memento != null)
             {
-                ((IOriginator) returnValue).SetMemento(memento);
+                ((IOriginator)returnValue).SetMemento(memento);
             }
 
             return returnValue;

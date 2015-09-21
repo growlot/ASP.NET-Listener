@@ -4,22 +4,36 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-using System;
-using AMSLLC.Listener.Domain;
-using AMSLLC.Listener.Repository;
-
 namespace AMSLLC.Listener.ApplicationService
 {
+    using System;
+    using AMSLLC.Core;
+    using AMSLLC.Listener.Domain;
+    using Repository;
+
     public class ApplicationServiceScope : IApplicationServiceScope
     {
-        private ApplicationServiceScope(IDomainBuilder domainBuilder, IRepositoryBuilder repositoryBuilder)
+        private readonly IDateTimeProvider _dateTimeProvider;
+
+        private ApplicationServiceScope(IDomainBuilder domainBuilder, IRepositoryManager repositoryBuilder,
+            IDateTimeProvider dateTimeProvider)
         {
-            DomainBuilder = domainBuilder;
-            RepositoryBuilder = repositoryBuilder;
+            this.DomainBuilder = domainBuilder;
+            this.RepositoryBuilder = repositoryBuilder;
+            this._dateTimeProvider = dateTimeProvider;
+            this.ScopeDateTime = this._dateTimeProvider.Now();
         }
 
+        public DateTime ScopeDateTime { get; }
+
+        /// <summary>
+        /// Nows this instance.
+        /// </summary>
+        /// <returns>DateTime.</returns>
+        public DateTime Now => this._dateTimeProvider.Now();
+
         public IDomainBuilder DomainBuilder { get; } = null;
-        public IRepositoryBuilder RepositoryBuilder { get; } = null;
+        public IRepositoryManager RepositoryBuilder { get; } = null;
 
         public void Dispose()
         {
@@ -27,10 +41,11 @@ namespace AMSLLC.Listener.ApplicationService
             GC.SuppressFinalize(this);
         }
 
-        public static IApplicationServiceScope Create(IDomainBuilder domainBuilder,
-            IRepositoryBuilder repositoryBuilder = null)
+        public static IApplicationServiceScope Create()
         {
-            return new ApplicationServiceScope(domainBuilder, repositoryBuilder);
+            return new ApplicationServiceScope(ApplicationIntegration.DependencyResolver.ResolveType<IDomainBuilder>(),
+                ApplicationIntegration.DependencyResolver.ResolveType<IRepositoryManager>(),
+                ApplicationIntegration.DependencyResolver.ResolveType<IDateTimeProvider>());
         }
 
 
@@ -51,7 +66,7 @@ namespace AMSLLC.Listener.ApplicationService
         {
             if (disposing)
             {
-                RepositoryBuilder?.Dispose();
+                this.RepositoryBuilder?.Dispose();
             }
         }
     }

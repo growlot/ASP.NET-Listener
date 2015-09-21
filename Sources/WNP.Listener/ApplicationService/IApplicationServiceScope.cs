@@ -4,15 +4,17 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-using System;
-using AMSLLC.Listener.Domain;
-using AMSLLC.Listener.Repository;
-
 namespace AMSLLC.Listener.ApplicationService
 {
+    using System;
+    using AMSLLC.Listener.Domain;
+    using Repository;
+
     public interface IApplicationServiceScope : IDisposable
     {
+        DateTime ScopeDateTime { get; }
+        DateTime Now { get; }
         IDomainBuilder DomainBuilder { get; }
-        IRepositoryBuilder RepositoryBuilder { get; }
+        IRepositoryManager RepositoryBuilder { get; }
     }
 }

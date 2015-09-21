@@ -4,24 +4,29 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-using AMSLLC.Listener.Communication;
-using AMSLLC.Listener.Domain.Listener.Transaction;
-using AMSLLC.Listener.Repository;
-
 namespace AMSLLC.Listener.ApplicationService.Impl
 {
+    using System.Threading.Tasks;
+    using AMSLLC.Listener.Domain;
+    using AMSLLC.Listener.Domain.Listener.Transaction;
+    using AMSLLC.Listener.Repository;
+    using Communication;
+
     public class TransactionService : ITransactionService
     {
-        public void Process(TransactionRequestMessage requestMessage)
+        public async Task Process(TransactionRequestMessage requestMessage)
         {
-            using (var scope = ApplicationServiceScope.Create(new DomainBuilder(), null))
+            using (var scope = ApplicationServiceScope.Create())
             {
                 var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
-                var transactionExecution =
-                    scope.DomainBuilder.Create<TransactionConfiguration>(
+                var memento =
+                    await
                         sourceRepository.Get(requestMessage.SourceApplicationId, requestMessage.DestinationApplicationId,
-                            requestMessage.OperationKey));
-                transactionExecution.Process();
+                            requestMessage.OperationKey);
+                var transactionExecution =
+                    scope.DomainBuilder.Create<TransactionExecution>();
+                ((IOriginator)transactionExecution).SetMemento(memento);
+                await Task.WhenAll(transactionExecution.Process(requestMessage.TransactionId));
             }
         }
     }

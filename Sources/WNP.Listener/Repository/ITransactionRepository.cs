@@ -2,9 +2,12 @@
 
 namespace AMSLLC.Listener.Repository
 {
+    using System.Threading.Tasks;
+    using Domain;
+
     public interface ITransactionRepository : IRepository
     {
-        TransactionConfigurationMemento Get(int transactionId);
-        TransactionExecutionMemento Get(int sourceApplicationId, int destinationApplicationId, string operationKey);
+        Task<IMemento> Get(int transactionId);
+        Task<IMemento> Get(string sourceApplicationId, string destinationApplicationId, string operationKey);
     }
 }
