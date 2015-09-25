@@ -25,7 +25,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
 
         public string ODataModelNamespace => "AMSLLC.Listener.ODataService.ODataModel";
 
-        public List<WNPMetadataEntry> RawMetadata =>
+        private List<WNPMetadataEntry> RawMetadata =>
                 MemoryCache.Default.GetOrAddExisting("_RawMetadata", 
                     () => _dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata)), 
                     DateTime.Now.AddMinutes(1));
