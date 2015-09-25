@@ -41,25 +41,6 @@ namespace AMSLLC.Listener.MetadataService.Impl
             _entityConfiguration = entityConfiguration;
         }
 
-        public class ODataToDatabaseColumnInfo
-        {
-            public string DatabaseColumnName { get; set; }
-        }
-
-        public class ODataModelMapping
-        {
-            public Dictionary<string, ODataToDatabaseColumnInfo> ModelToColumnMappings { get; }
-            public Dictionary<string, string> ColumnToModelMappings { get; }
-            public string TableName { get; }
-
-            public ODataModelMapping(string tableName, Dictionary<string, ODataToDatabaseColumnInfo> modelToColumnMappings, Dictionary<string, string> columnToModelMappings)
-            {
-                ModelToColumnMappings = modelToColumnMappings;
-                ColumnToModelMappings = columnToModelMappings;
-                TableName = tableName;
-            }
-        }
-
         private Assembly GenerateODataAssembly()
         {
             var codeUnit = new CodeCompileUnit();
@@ -118,7 +99,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
                             dataType = "DateTimeOffset";
 
                         property.Text += $" public {dataType} {metadataInfo.CustomerLabel} {{ get; set; }}";
-                        mappingInfo.Add(metadataInfo.CustomerLabel, new ODataToDatabaseColumnInfo() {DatabaseColumnName = columnInfo.ColumnName});
+                        mappingInfo.Add(metadataInfo.CustomerLabel, columnInfo.ColumnName);
                         reverseMappingInfo.Add(columnInfo.ColumnName, metadataInfo.CustomerLabel);
                     }
                     else
@@ -128,7 +109,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
                             dataType = "DateTimeOffset";
 
                         property.Text = $" public {dataType} {columnInfo.ModelName} {{ get; set; }}";
-                        mappingInfo.Add(columnInfo.ModelName, new ODataToDatabaseColumnInfo() { DatabaseColumnName = columnInfo.ColumnName });
+                        mappingInfo.Add(columnInfo.ModelName, columnInfo.ColumnName);
                         reverseMappingInfo.Add(columnInfo.ColumnName, columnInfo.ModelName);
                     }
 

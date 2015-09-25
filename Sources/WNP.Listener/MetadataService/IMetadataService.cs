@@ -11,6 +11,6 @@ namespace AMSLLC.Listener.MetadataService
         List<WNPMetadataEntry> RawMetadata { get; }
         Assembly ODataModelAssembly { get; }
 
-        MetadataServiceImpl.ODataModelMapping GetModelMapping(string clrModelName);
+        ODataModelMapping GetModelMapping(string clrModelName);
     }
 }

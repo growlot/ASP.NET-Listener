@@ -197,7 +197,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
             var actualVar = VariableToActualName(variable);
             var modelMapping = _metadataService.GetModelMapping(actualVar);
 
-            return modelMapping.ModelToColumnMappings[propertyName].DatabaseColumnName;
+            return modelMapping.ModelToColumnMappings[propertyName];
         }
 
         private string VariableToActualName(string rangeVariable)

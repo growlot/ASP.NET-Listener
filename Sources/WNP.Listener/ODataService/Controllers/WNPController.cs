@@ -93,8 +93,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         }
 
         private string[] GetDBColumnsList(SelectExpandQueryOption queryOptions,
-            Dictionary<string, MetadataServiceImpl.ODataToDatabaseColumnInfo> mapping)
-            => queryOptions?.RawSelect.Split(',').Select(item => mapping[item].DatabaseColumnName).ToArray() ?? new [] { DBMetadata.ALL };
+            Dictionary<string, string> mapping)
+            => queryOptions?.RawSelect.Split(',').Select(item => mapping[item]).ToArray() ?? new [] { DBMetadata.ALL };
 
         private IHttpActionResult CreateOkResponse(Type oDataModelType, object result)
             => (IHttpActionResult) GetOkMethod(oDataModelType).Invoke(this, new[] {result});

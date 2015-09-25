@@ -76,6 +76,7 @@
     <Compile Include="Mapping\WNPMetadataMapping.cs" />
     <Compile Include="MetadataDbContext.cs" />
     <Compile Include="Impl\ODataEntityConfigurationImpl.cs" />
+    <Compile Include="ODataModelMapping.cs" />
     <Compile Include="Properties\MetadataServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\WNPMetadataEntry.cs" />
