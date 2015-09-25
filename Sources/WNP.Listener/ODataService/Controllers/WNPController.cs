@@ -57,7 +57,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             // we created earlier
             var oDataModelType = queryOptions.Context.ElementClrType;
 
-            var modelMapping = _metadataService.GetModelMapping(oDataModelType.FullName);
+            var modelMapping = _metadataService.GetModelMapping(oDataModelType.Name);
 
             var skip = queryOptions.Skip?.Value ?? 0;
             var top = queryOptions.Top?.Value ?? 10;
@@ -82,7 +82,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 var rawData = (IDictionary<string, object>)record;
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                 {
-                    var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key]);
+                    var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key.ToLowerInvariant()]);
                     property.SetValue(entityInstance, _convertor.Convert(rawData[key], property.PropertyType));
                 }
 
@@ -94,7 +94,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
         private string[] GetDBColumnsList(SelectExpandQueryOption queryOptions,
             Dictionary<string, string> mapping)
-            => queryOptions?.RawSelect.Split(',').Select(item => mapping[item]).ToArray() ?? new [] { DBMetadata.ALL };
+            => queryOptions?.RawSelect.Split(',').Select(item => mapping[item]).ToArray() ?? mapping.Values.ToArray();
 
         private IHttpActionResult CreateOkResponse(Type oDataModelType, object result)
             => (IHttpActionResult) GetOkMethod(oDataModelType).Invoke(this, new[] {result});

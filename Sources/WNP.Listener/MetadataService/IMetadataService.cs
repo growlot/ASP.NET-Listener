@@ -10,6 +10,6 @@ namespace AMSLLC.Listener.MetadataService
         string ODataModelNamespace { get; }
         Assembly ODataModelAssembly { get; }
 
-        ODataModelMapping GetModelMapping(string clrModelName);
+        MetadataModel GetModelMapping(string clrModelName);
     }
 }
