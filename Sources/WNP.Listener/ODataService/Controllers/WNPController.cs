@@ -57,7 +57,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             // we created earlier
             var oDataModelType = queryOptions.Context.ElementClrType;
 
-            var modelMapping = _metadataService.ODataModelMappings[oDataModelType.FullName];
+            var modelMapping = _metadataService.GetModelMapping(oDataModelType.FullName);
 
             var skip = queryOptions.Skip?.Value ?? 0;
             var top = queryOptions.Top?.Value ?? 10;

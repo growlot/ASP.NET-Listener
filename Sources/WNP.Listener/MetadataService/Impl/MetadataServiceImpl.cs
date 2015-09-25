@@ -23,8 +23,6 @@ namespace AMSLLC.Listener.MetadataService.Impl
         private static Dictionary<string, ODataModelMapping> _oDataModelMappings =
             new Dictionary<string, ODataModelMapping>();
 
-        public Dictionary<string, ODataModelMapping> ODataModelMappings => _oDataModelMappings;
-
         public string ODataModelNamespace => "AMSLLC.Listener.ODataService.ODataModel";
 
         public List<WNPMetadataEntry> RawMetadata =>
@@ -35,7 +33,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
         public Assembly ODataModelAssembly => _odataModelAssembly ?? (_odataModelAssembly = GenerateODataAssembly());
 
         public ODataModelMapping GetModelMapping(string clrModelName) =>
-            ODataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
+            _oDataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
 
         public MetadataServiceImpl(MetadataDbContext dbContext, IODataEntityConfiguration entityConfiguration)
         {
@@ -137,7 +135,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
                     codeClass.Members.Add(property);
                 }
 
-                ODataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}",
+                _oDataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}",
                     new ODataModelMapping(DBMetadata.TableLookup[tableName].ToString(), mappingInfo, reverseMappingInfo));
             }
 
