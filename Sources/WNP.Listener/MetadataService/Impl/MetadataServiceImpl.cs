@@ -16,7 +16,6 @@ namespace AMSLLC.Listener.MetadataService.Impl
 {
     public class MetadataServiceImpl : IMetadataService
     {
-        private readonly IODataEntityConfiguration _entityConfiguration;
         private readonly MetadataDbContext _dbContext;
         private static Assembly _odataModelAssembly;
 
@@ -35,10 +34,9 @@ namespace AMSLLC.Listener.MetadataService.Impl
         public ODataModelMapping GetModelMapping(string clrModelName) =>
             _oDataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
 
-        public MetadataServiceImpl(MetadataDbContext dbContext, IODataEntityConfiguration entityConfiguration)
+        public MetadataServiceImpl(MetadataDbContext dbContext)
         {
             _dbContext = dbContext;
-            _entityConfiguration = entityConfiguration;
         }
 
         private Assembly GenerateODataAssembly()
@@ -54,20 +52,16 @@ namespace AMSLLC.Listener.MetadataService.Impl
             // TODO: we should move the IODataEntity marker interface to another library, think about this
             codeNamespace.Imports.Add(new CodeNamespaceImport("AMSLLC.Listener.MetadataService"));
 
-            //"WNP.Listener.ODataService.ODataModel.ElectricMeter" => { "Id" =>}            
+            // only tables defined in metadata with INFO as column name and IsUsed flag will be exposed in oData
+            var tables = RawMetadata.Where(metadata => metadata.ColumnName == "INFO" && metadata.IsUsed == "Y");
 
-            foreach (var tableName in _entityConfiguration.Keys)
+            foreach (var table in tables)
             {
                 var mappingInfo = new Dictionary<string, ODataToDatabaseColumnInfo>();
                 var reverseMappingInfo = new Dictionary<string, string>();
 
-                // default name for entity is configured in IODataEntityConfiguration
-                var modelClassName = _entityConfiguration[tableName].DefaultEntityName;
-                var metadataEntry = RawMetadata.FirstOrDefault(metadata => metadata.ColumnName == "INFO");
-
                 // if there is a redefine in Metadata, use CustomerLabel inst
-                if (metadataEntry != null)
-                    modelClassName = metadataEntry.CustomerLabel;
+                var modelClassName = table.CustomerLabel;
 
                 var codeClass = new CodeTypeDeclaration(modelClassName)
                 {
@@ -78,14 +72,14 @@ namespace AMSLLC.Listener.MetadataService.Impl
 
                 codeNamespace.Types.Add(codeClass);
 
-                foreach (var columnReadableName in DBMetadata.TableLookup[tableName].ColumnsLookup.Keys)
+                foreach (var columnReadableName in DBMetadata.TableLookup[table.TableName.ToLowerInvariant()].ColumnsLookup.Keys)
                 {
                     var property = new CodeSnippetTypeMember();
-                    var columnInfo = DBMetadata.TableLookup[tableName].ColumnsLookup[columnReadableName];
+                    var columnInfo = DBMetadata.TableLookup[table.TableName.ToLowerInvariant()].ColumnsLookup[columnReadableName];
                     var metadataInfo =
                         RawMetadata.FirstOrDefault(
                             metadata =>
-                                metadata.TableName.ToLowerInvariant() == tableName &&
+                                metadata.TableName.ToLowerInvariant() == table.TableName.ToLowerInvariant() &&
                                 string.Equals(metadata.ColumnName, columnInfo.ColumnName, StringComparison.InvariantCultureIgnoreCase) &&
                                 metadata.IsUsed == "Y");
 
@@ -117,7 +111,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
                 }
 
                 _oDataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}",
-                    new ODataModelMapping(DBMetadata.TableLookup[tableName].ToString(), mappingInfo, reverseMappingInfo));
+                    new ODataModelMapping(DBMetadata.TableLookup[table.TableName.ToLowerInvariant()].ToString(), mappingInfo, reverseMappingInfo));
             }
 
             codeUnit.Namespaces.Add(codeNamespace);
