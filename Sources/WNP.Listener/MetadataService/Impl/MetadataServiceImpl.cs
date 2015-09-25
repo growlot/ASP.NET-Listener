@@ -16,27 +16,27 @@ namespace AMSLLC.Listener.MetadataService.Impl
 {
     public class MetadataServiceImpl : IMetadataService
     {
-        private readonly MetadataDbContext _dbContext;
-        private static Assembly _odataModelAssembly;
+        private readonly MetadataDbContext dbContext;
+        private static Assembly odataModelAssembly;
 
-        private static Dictionary<string, ODataModelMapping> _oDataModelMappings =
+        private static Dictionary<string, ODataModelMapping> oDataModelMappings =
             new Dictionary<string, ODataModelMapping>();
 
         public string ODataModelNamespace => "AMSLLC.Listener.ODataService.ODataModel";
 
         private List<WNPMetadataEntry> RawMetadata =>
                 MemoryCache.Default.GetOrAddExisting("_RawMetadata", 
-                    () => _dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata)), 
+                    () => dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata)), 
                     DateTime.Now.AddMinutes(1));
 
-        public Assembly ODataModelAssembly => _odataModelAssembly ?? (_odataModelAssembly = GenerateODataAssembly());
+        public Assembly ODataModelAssembly => odataModelAssembly ?? (odataModelAssembly = GenerateODataAssembly());
 
         public ODataModelMapping GetModelMapping(string clrModelName) =>
-            _oDataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
+            oDataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
 
         public MetadataServiceImpl(MetadataDbContext dbContext)
         {
-            _dbContext = dbContext;
+            this.dbContext = dbContext;
         }
 
         private Assembly GenerateODataAssembly()
@@ -110,7 +110,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
                     codeClass.Members.Add(property);
                 }
 
-                _oDataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}",
+                oDataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}",
                     new ODataModelMapping(DBMetadata.TableLookup[table.TableName.ToLowerInvariant()].ToString(), mappingInfo, reverseMappingInfo));
             }
 
