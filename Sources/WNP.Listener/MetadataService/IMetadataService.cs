@@ -8,10 +8,8 @@ namespace AMSLLC.Listener.MetadataService
     public interface IMetadataService
     {
         string ODataModelNamespace { get; }
-        Dictionary<string, MetadataServiceImpl.ODataModelMapping> ODataModelMappings { get; }
-        List<WNPMetadataEntry> RawMetadata { get; }
         Assembly ODataModelAssembly { get; }
 
-        MetadataServiceImpl.ODataModelMapping GetModelMapping(string clrModelName);
+        MetadataModel GetModelMapping(string clrModelName);
     }
 }

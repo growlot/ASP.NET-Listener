@@ -16,79 +16,104 @@ namespace AMSLLC.Listener.MetadataService.Impl
 {
     public class MetadataServiceImpl : IMetadataService
     {
-        private readonly IODataEntityConfiguration _entityConfiguration;
-        private readonly MetadataDbContext _dbContext;
-        private static Assembly _odataModelAssembly;
-
-        private static Dictionary<string, ODataModelMapping> _oDataModelMappings =
-            new Dictionary<string, ODataModelMapping>();
-
-        public Dictionary<string, ODataModelMapping> ODataModelMappings => _oDataModelMappings;
+        private readonly MetadataDbContext dbContext;
+        private static Assembly odataModelAssembly;
+        private static Dictionary<string, MetadataModel> oDataModelMappings;
 
         public string ODataModelNamespace => "AMSLLC.Listener.ODataService.ODataModel";
 
-        public List<WNPMetadataEntry> RawMetadata =>
-                MemoryCache.Default.GetOrAddExisting("_RawMetadata", 
-                    () => _dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata)), 
-                    DateTime.Now.AddMinutes(1));
+        public Assembly ODataModelAssembly => odataModelAssembly;
 
-        public Assembly ODataModelAssembly => _odataModelAssembly ?? (_odataModelAssembly = GenerateODataAssembly());
+        public MetadataModel GetModelMapping(string clrModelName) =>
+            oDataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
 
-        public ODataModelMapping GetModelMapping(string clrModelName) =>
-            ODataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
-
-        public MetadataServiceImpl(MetadataDbContext dbContext, IODataEntityConfiguration entityConfiguration)
+        public MetadataServiceImpl(MetadataDbContext dbContext)
         {
-            _dbContext = dbContext;
-            _entityConfiguration = entityConfiguration;
-        }
-
-        public class ODataToDatabaseColumnInfo
-        {
-            public string DatabaseColumnName { get; set; }
-        }
-
-        public class ODataModelMapping
-        {
-            public Dictionary<string, ODataToDatabaseColumnInfo> ModelToColumnMappings { get; }
-            public Dictionary<string, string> ColumnToModelMappings { get; }
-            public string TableName { get; }
-
-            public ODataModelMapping(string tableName, Dictionary<string, ODataToDatabaseColumnInfo> modelToColumnMappings, Dictionary<string, string> columnToModelMappings)
+            this.dbContext = dbContext;
+            if (oDataModelMappings == null)
             {
-                ModelToColumnMappings = modelToColumnMappings;
-                ColumnToModelMappings = columnToModelMappings;
-                TableName = tableName;
+                this.PrepareModel();
+            }
+
+            if (odataModelAssembly == null)
+            {
+                this.GenerateODataAssembly();
             }
         }
 
-        private Assembly GenerateODataAssembly()
+        private void PrepareModel()
+        {
+            oDataModelMappings = new Dictionary<string, MetadataModel>();
+
+            var RawMetadata = dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata));
+            foreach (var metadataEntry in RawMetadata)
+            {
+                metadataEntry.TableName = metadataEntry.TableName.ToLowerInvariant();
+                metadataEntry.ColumnName = metadataEntry.ColumnName.ToLowerInvariant();
+            }
+
+            // only tables defined in metadata with INFO as column name and IsUsed flag will be exposed in oData
+            var tables = RawMetadata.Where(metadata => metadata.ColumnName == "info" && metadata.IsUsed == "Y");
+
+            foreach (var table in tables)
+            {
+                var modelToColumnMappings = new Dictionary<string, string>();
+                var columnToModelMappings = new Dictionary<string, string>();
+                var fieldsInfo = new Dictionary<string, MetadataFieldInfo>();
+
+                var modelClassName = table.CustomerLabel.Replace(" ", string.Empty);
+                var tableName = table.TableName.ToLowerInvariant();
+
+                foreach (var column in RawMetadata.Where(metadata => metadata.TableName == tableName && metadata.ColumnName != "info" && metadata.IsUsed == "Y"))
+                {
+                    // removing spaces from customer label definition
+                    var customerLabel = column.CustomerLabel.Replace(" ", string.Empty);
+
+                    // resolve data type from database
+                    var dataType = column.DataType;
+                    if (dataType.Equals("DateTime", StringComparison.OrdinalIgnoreCase))
+                        dataType = "DateTimeOffset";
+
+                    // resolve if it's primary key from database
+                    bool isPrimary = false;
+                    if (column.IsPrimaryKey.Equals("Y", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isPrimary = true;
+                    }
+
+                    var fieldInfo = new MetadataFieldInfo()
+                    {
+                        DataType = dataType,
+                        IsPrimaryKey = isPrimary
+                    };
+
+                    fieldsInfo.Add(customerLabel, fieldInfo);
+                    modelToColumnMappings.Add(customerLabel, column.ColumnName);
+                    columnToModelMappings.Add(column.ColumnName, customerLabel);
+                }
+
+                var oDataModelMapping = new MetadataModel($"wndba.{tableName}", modelClassName, modelToColumnMappings, columnToModelMappings, fieldsInfo);
+                oDataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}", oDataModelMapping);
+            }
+        }
+
+        private void GenerateODataAssembly()
         {
             var codeUnit = new CodeCompileUnit();
-
-            //PetaPoco.Mappers.GetMapper(typeof(WNPMetadata)).GetColumnInfo(typeof(WNPMetadata).GetProperty("blabla")).
 
             var codeNamespace = new CodeNamespace(ODataModelNamespace);
             codeNamespace.Imports.Add(new CodeNamespaceImport("System"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
 
             // TODO: we should move the IODataEntity marker interface to another library, think about this
+            // Do we really need marker interface? All types in generated assembly will be ODataEntity types.
             codeNamespace.Imports.Add(new CodeNamespaceImport("AMSLLC.Listener.MetadataService"));
 
-            //"WNP.Listener.ODataService.ODataModel.ElectricMeter" => { "Id" =>}            
-
-            foreach (var tableName in _entityConfiguration.Keys)
-            {
-                var mappingInfo = new Dictionary<string, ODataToDatabaseColumnInfo>();
-                var reverseMappingInfo = new Dictionary<string, string>();
-
-                // default name for entity is configured in IODataEntityConfiguration
-                var modelClassName = _entityConfiguration[tableName].DefaultEntityName;
-                var metadataEntry = RawMetadata.FirstOrDefault(metadata => metadata.ColumnName == "INFO");
-
+            // only tables defined in metadata with INFO as column name and IsUsed flag will be exposed in oData
+            foreach (var table in oDataModelMappings.Values)
+            { 
                 // if there is a redefine in Metadata, use CustomerLabel inst
-                if (metadataEntry != null)
-                    modelClassName = metadataEntry.CustomerLabel;
+                var modelClassName = table.ClassName;
 
                 var codeClass = new CodeTypeDeclaration(modelClassName)
                 {
@@ -99,46 +124,16 @@ namespace AMSLLC.Listener.MetadataService.Impl
 
                 codeNamespace.Types.Add(codeClass);
 
-                foreach (var columnReadableName in DBMetadata.TableLookup[tableName].ColumnsLookup.Keys)
+                foreach (var field in table.FieldInfo)
                 {
                     var property = new CodeSnippetTypeMember();
-                    var columnInfo = DBMetadata.TableLookup[tableName].ColumnsLookup[columnReadableName];
-                    var metadataInfo =
-                        RawMetadata.FirstOrDefault(
-                            metadata =>
-                                metadata.TableName.ToLowerInvariant() == tableName &&
-                                string.Equals(metadata.ColumnName, columnInfo.ColumnName, StringComparison.InvariantCultureIgnoreCase) &&
-                                metadata.IsUsed == "Y");
+                    if (field.Value.IsPrimaryKey)
+                        property.Text = "[Key]";
 
-                    if (metadataInfo != null)
-                    {
-                        if (metadataInfo.IsPrimaryKey == "Y")
-                            property.Text = "[Key]";
-
-                        var dataType = metadataInfo.DataType;
-                        if (dataType.Equals("DateTime", StringComparison.OrdinalIgnoreCase))
-                            dataType = "DateTimeOffset";
-
-                        property.Text += $" public {dataType} {metadataInfo.CustomerLabel} {{ get; set; }}";
-                        mappingInfo.Add(metadataInfo.CustomerLabel, new ODataToDatabaseColumnInfo() {DatabaseColumnName = columnInfo.ColumnName});
-                        reverseMappingInfo.Add(columnInfo.ColumnName, metadataInfo.CustomerLabel);
-                    }
-                    else
-                    {
-                        var dataType = columnInfo.DataType;
-                        if (dataType.Equals("DateTime", StringComparison.OrdinalIgnoreCase))
-                            dataType = "DateTimeOffset";
-
-                        property.Text = $" public {dataType} {columnInfo.ModelName} {{ get; set; }}";
-                        mappingInfo.Add(columnInfo.ModelName, new ODataToDatabaseColumnInfo() { DatabaseColumnName = columnInfo.ColumnName });
-                        reverseMappingInfo.Add(columnInfo.ColumnName, columnInfo.ModelName);
-                    }
+                    property.Text += $" public {field.Value.DataType} {field.Key} {{ get; set; }}";
 
                     codeClass.Members.Add(property);
                 }
-
-                ODataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}",
-                    new ODataModelMapping(DBMetadata.TableLookup[tableName].ToString(), mappingInfo, reverseMappingInfo));
             }
 
             codeUnit.Namespaces.Add(codeNamespace);
@@ -165,7 +160,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
             if (result.Errors.Count > 0)
                 throw new Exception();
 
-            return result.CompiledAssembly;
+            odataModelAssembly = result.CompiledAssembly;
         }
     }
 }
