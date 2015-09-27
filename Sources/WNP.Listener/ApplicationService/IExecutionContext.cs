@@ -7,7 +7,7 @@
 namespace AMSLLC.Listener.ApplicationService
 {
     using System.Collections.Generic;
-    using AMSLLC.Core;
+    using Core;
 
     public interface IExecutionContext
     {

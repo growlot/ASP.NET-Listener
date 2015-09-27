@@ -1,5 +1,5 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="TransactionRequestMessage.cs" company="Advanced Metering Services LLC">
+// // <copyright file="ProcessTransactionRequestMessage.cs" company="Advanced Metering Services LLC">
 // //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // // </copyright>
 // //-----------------------------------------------------------------------

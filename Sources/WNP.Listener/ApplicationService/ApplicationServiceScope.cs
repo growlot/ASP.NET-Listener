@@ -7,8 +7,8 @@
 namespace AMSLLC.Listener.ApplicationService
 {
     using System;
-    using AMSLLC.Core;
-    using AMSLLC.Listener.Domain;
+    using Core;
+    using Domain;
     using Repository;
 
     public class ApplicationServiceScope : IApplicationServiceScope

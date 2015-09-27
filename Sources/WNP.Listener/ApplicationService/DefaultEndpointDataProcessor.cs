@@ -10,7 +10,6 @@ namespace AMSLLC.Listener.ApplicationService
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Dynamic;
-    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Text.RegularExpressions;
@@ -30,55 +29,54 @@ namespace AMSLLC.Listener.ApplicationService
         /// <param name="data">The data.</param>
         /// <param name="configuration">The endpoint configuration.</param>
         /// <returns>Task.</returns>
-        public virtual object Process(object data, IntegrationEndpointConfiguration configuration)
+        public virtual IEndpointDataProcessorResult Process(object data, IntegrationEndpointConfiguration configuration)
         {
+            IEndpointDataProcessorResult returnValue = new EndpointDataProcessorResult();
             bool remap = configuration.FieldConfigurations.Any(f => !string.IsNullOrWhiteSpace(f.MapToName));
-            if (remap)
+            returnValue.Data = remap ? ConvertToDynamic(data) : data;
+            Dictionary<string, object> hashElements = new Dictionary<string, object>();
+            foreach (var fieldConfiguration in configuration.FieldConfigurations)
             {
-                dynamic dynamicReturn = ConvertToDynamic(data);
-                foreach (var fieldConfiguration in configuration.FieldConfigurations)
+                ProcessProperty(data, fieldConfiguration.Name, null, (targetProperty, owner, propRef) =>
                 {
-                    ProcessProperty(data, fieldConfiguration.Name, null, (targetProperty, owner, propRef) =>
+                    var targetValue = targetProperty.GetValue(owner, null);
+                    if (fieldConfiguration.ValueMap != null && fieldConfiguration.ValueMap.ContainsKey(targetValue))
                     {
-                        var targetValue = targetProperty.GetValue(owner, null);
-                        if (fieldConfiguration.ValueMap != null && fieldConfiguration.ValueMap.ContainsKey(targetValue))
-                        {
-                            targetValue = fieldConfiguration.ValueMap[targetValue];
-                        }
+                        targetValue = fieldConfiguration.ValueMap[targetValue];
+                    }
 
-                        RemoveProperty(dynamicReturn, propRef);
+                    if (fieldConfiguration.IncludeInHash)
+                    {
+                        hashElements.Add(propRef, targetValue);
+                    }
+
+                    if (remap)
+                    {
+                        RemoveProperty(returnValue.Data, propRef);
                         int[] sequence =
                             Regex.Matches(propRef, @"\[([^]]*)\]")
                                 .Cast<Match>()
                                 .Select(x => int.Parse(x.Groups[1].Value))
                                 .ToArray();
 
-                        AddPropertyAs(dynamicReturn, targetValue, fieldConfiguration.MapToName, sequence, 0);
-                    });
-                }
-
-                return dynamicReturn;
-            }
-            else
-            {
-                foreach (var fieldConfiguration in configuration.FieldConfigurations)
-                {
-                    ProcessProperty(data, fieldConfiguration.Name, null, (targetProperty, owner, propRef) =>
+                        AddPropertyAs(returnValue.Data, targetValue, fieldConfiguration.MapToName, sequence, 0);
+                    }
+                    else
                     {
-                        var targetValue = targetProperty.GetValue(owner, null);
-                        if (fieldConfiguration.ValueMap != null && fieldConfiguration.ValueMap.ContainsKey(targetValue))
-                        {
-                            targetValue = fieldConfiguration.ValueMap[targetValue];
-                            var converter = TypeDescriptor.GetConverter(targetProperty.PropertyType);
-                            targetProperty.SetValue(owner, converter.ConvertFrom(targetValue?.ToString()));
-                        }
-                    });
-                }
-                return data;
+                        var converter = TypeDescriptor.GetConverter(targetProperty.PropertyType);
+                        targetProperty.SetValue(owner, converter.ConvertFrom(targetValue?.ToString()));
+                    }
+                });
             }
+
+            //IEnumerable<KeyValuePair<string, object>> hashSorted = hashElements.OrderBy(s => s.Key);
+
+
+            return returnValue;
         }
 
-        private void ProcessProperty(object data, string name, string propRef, Action<PropertyInfo, object, string> propertyFoundCallback)
+        private void ProcessProperty(object data, string name, string propRef,
+            Action<PropertyInfo, object, string> propertyFoundCallback)
         {
             object owner = data;
             string[] namePieces = name.Split('.');
@@ -92,8 +90,7 @@ namespace AMSLLC.Listener.ApplicationService
                 PropertyInfo property = FindProperty(owner, namePiece);
                 if (property.PropertyType.IsArray)
                 {
-                    var originalArray = (Array)property.GetValue(owner, null);
-                    //foreach (object o in originalArray)
+                    var originalArray = (Array) property.GetValue(owner, null);
                     for (int j = 0; j < originalArray.Length; j++)
                     {
                         var o = originalArray.GetValue(j);
@@ -106,7 +103,6 @@ namespace AMSLLC.Listener.ApplicationService
                 {
                     owner = property.GetValue(owner, null);
                 }
-
             }
             if (owner != null)
             {
@@ -136,7 +132,6 @@ namespace AMSLLC.Listener.ApplicationService
             prop = type.GetProperty(namePiece);
 
 
-
             return prop;
         }
 
@@ -150,20 +145,7 @@ namespace AMSLLC.Listener.ApplicationService
             for (int i = 0; i < parts.Length - 1; i++)
             {
                 var source = parts[i];
-                //var matches = Regex.Matches(source.Replace(Environment.NewLine, ""), @"\[([^]]*)\]")
-                //    .Cast<Match>()
-                //    .Select(x => x.Groups[1].Value).ToList();
-
-                //int? index = null;
                 var indexer = source.IndexOf("[]", StringComparison.InvariantCulture);
-
-
-
-                //if (matches.Count == 1)
-                //{
-                //    source = source.Substring(0, source.IndexOf("[", StringComparison.InvariantCulture));
-                //    index = int.Parse(matches.Single());
-                //}
 
                 if (indexer > -1)
                 {
@@ -196,15 +178,13 @@ namespace AMSLLC.Listener.ApplicationService
                         asList.Add(new ExpandoObject());
                     }
 
-                    //foreach (dynamic o in asList)
-                    //{
-                    AddPropertyAs(asList[sequence[pos]], currentValue, string.Join(".", parts.Skip(i + 1)), sequence, pos + 1);
-                    //}
+                    AddPropertyAs(asList[sequence[pos]], currentValue, string.Join(".", parts.Skip(i + 1)), sequence,
+                        pos + 1);
                     return;
                 }
                 else
                 {
-                    currentPath = (ExpandoObject)currentPath[source];
+                    currentPath = (ExpandoObject) currentPath[source];
                 }
             }
 
@@ -213,7 +193,6 @@ namespace AMSLLC.Listener.ApplicationService
                 currentPath[name] = currentValue;
             else
                 currentPath.Add(name, currentValue);
-
         }
 
         private void RemoveProperty(dynamic expando, string propertyName)
@@ -223,7 +202,6 @@ namespace AMSLLC.Listener.ApplicationService
                 return;
             var parts = propertyName.Split('.');
             var currentPath = expandoDictionary;
-            //foreach (var source in parts.Take(parts.Length - 1))
             for (int i = 0; i < parts.Length - 1; i++)
             {
                 var source = parts[i];
@@ -250,22 +228,18 @@ namespace AMSLLC.Listener.ApplicationService
                         throw new Exception("Array reference must have index resolved");
                     }
                     var o = asList.ElementAt(index.Value);
-                    //foreach (dynamic o in asEnumerable)
-                    //{
                     RemoveProperty(o, string.Join(".", parts.Skip(i + 1)));
-                    //}
                     return;
                 }
                 else
                 {
-                    currentPath = (ExpandoObject)currentPath[source];
+                    currentPath = (ExpandoObject) currentPath[source];
                 }
             }
 
             var name = parts.Last();
             if (currentPath.ContainsKey(name))
                 currentPath.Remove(name);
-
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="IEventHandler.cs" company="Advanced Metering Services LLC">
+// // <copyright file="ICommunicationHandler.cs" company="Advanced Metering Services LLC">
 // //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // // </copyright>
 // //-----------------------------------------------------------------------

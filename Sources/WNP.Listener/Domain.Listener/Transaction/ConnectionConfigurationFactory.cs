@@ -22,7 +22,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <returns>Connection configuration</returns>
         public static IConnectionConfiguration Create(string protocol, IMemento myMemento)
         {
-            var builder = ApplicationIntegration.DependencyResolver.ResolveNamed<IConnectionConfigurationBuilder>("connection-builder-{0}".FormatWith(protocol));
+            var builder =
+                ApplicationIntegration.DependencyResolver.ResolveNamed<IConnectionConfigurationBuilder>(
+                    "connection-builder-{0}".FormatWith(protocol));
 
             return builder.Create(myMemento);
         }

@@ -8,8 +8,8 @@ namespace AMSLLC.Listener.ApplicationService
 {
     using System;
     using System.Collections.Concurrent;
-    using AMSLLC.Core;
-    using AMSLLC.Listener.Repository;
+    using Core;
+    using Repository;
 
     public class RepositoryManager : IRepositoryManager
     {

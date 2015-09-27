@@ -16,7 +16,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="configuration">The endpoint configuration.</param>
-        /// <returns>Task.</returns>
-        object Process(object data, IntegrationEndpointConfiguration configuration);
+        /// <returns>IEndpointDataProcessorResult.</returns>
+        IEndpointDataProcessorResult Process(object data, IntegrationEndpointConfiguration configuration);
     }
 }

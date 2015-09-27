@@ -1,15 +1,16 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="TransactionFailedMessage.cs" company="Advanced Metering Services LLC">
+// // <copyright file="EndpointTriggerType.cs" company="Advanced Metering Services LLC">
 // //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // // </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Communication
 {
-    public class TransactionFailedMessage
+    public enum EndpointTriggerType
     {
-        public string TransactionId { get; set; }
-        public string Message { get; set; }
-        public string Details { get; set; }
+        Undefined = 0,
+        Always = 1,
+        Changed = 2,
+        Unchanged = 3
     }
 }

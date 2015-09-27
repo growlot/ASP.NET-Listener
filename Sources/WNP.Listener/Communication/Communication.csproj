@@ -44,6 +44,7 @@
     <None Include="1234.snk" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EndpointTriggerType.cs" />
     <Compile Include="IConnectionConfiguration.cs" />
     <Compile Include="ICommunicationHandler.cs" />
     <Compile Include="OpenTransactionRequestMessage.cs" />

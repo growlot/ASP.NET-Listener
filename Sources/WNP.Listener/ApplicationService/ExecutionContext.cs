@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.ApplicationService
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using AMSLLC.Core;
+    using Core;
 
     public class ExecutionContext : IExecutionContext
     {

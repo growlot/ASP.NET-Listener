@@ -28,6 +28,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Protocol { get; set; }
 
         /// <summary>
+        /// Gets or sets the endpoint trigger.
+        /// </summary>
+        /// <value>The trigger.</value>
+        public EndpointTriggerType Trigger { get; set; }
+
+        /// <summary>
         /// Gets the field configurations.
         /// </summary>
         /// <value>The field configurations.</value>
@@ -51,6 +57,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             var myMemento = (IntegrationEndpointConfigurationMemento)memento;
             this.Protocol = myMemento.Protocol;
+            this.Trigger = myMemento.Trigger;
             this.ConnectionConfiguration = ConnectionConfigurationFactory.Create(myMemento.Protocol, myMemento);
 
             List<FieldConfiguration> configurations = new List<FieldConfiguration>();

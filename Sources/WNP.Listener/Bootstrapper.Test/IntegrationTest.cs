@@ -27,8 +27,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         [TestMethod]
         public async Task TestEndpointFlow()
         {
-            const string sourceApplicationId = "{77C79AAF-8F95-46FE-8873-6D7C291ED092}";
-            const string operationKey = "SendDevice";
             const string transactionKey = "{70754941-6156-4C79-8F17-0C6BB5A85D9E}";
 
             var testMessageData = new TestMessageData()
@@ -68,7 +66,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value", "ArrayProperty[].NestedData.NestedArray[].DeepValue", integerMap));
 
             var memento = new TransactionExecutionMemento(transactionKey,
-                new[] { new IntegrationEndpointConfigurationMemento("jms", "", fieldConfigurations) });
+                new[] { new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Always, fieldConfigurations) });
 
 
             transactionRepositoryMock.Setup(s => s.Get(transactionKey))
@@ -184,10 +182,10 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             DefaultEndpointDataProcessor p = new DefaultEndpointDataProcessor();
             IntegrationEndpointConfiguration cfg = new IntegrationEndpointConfiguration();
-            ((IOriginator)cfg).SetMemento(new IntegrationEndpointConfigurationMemento("jms", "", fieldConfigurations));
+            ((IOriginator)cfg).SetMemento(new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Undefined, fieldConfigurations));
             var d = p.Process(testMessageData, cfg);
             const string expectedJson = "{\"Value\":987,\"ComplexProperty\":{\"AnotherValue\":\"Hello, World!\",\"NestedData\":{\"AnotherValue\":\"Hi, Bob!\",\"NestedData\":null,\"NestedArray\":null},\"NestedArray\":null},\"ArrayProperty\":[{\"AnotherValue\":\"ABC\",\"NestedData\":{\"AnotherValue\":\"EFD\",\"NestedData\":null,\"NestedArray\":[{\"Value\":159000,\"ComplexProperty\":null,\"ArrayProperty\":null},{\"Value\":9713000,\"ComplexProperty\":null,\"ArrayProperty\":null}]},\"NestedArray\":null},{\"AnotherValue\":\"F-1\",\"NestedData\":null,\"NestedArray\":null}]}";
-            Assert.AreEqual(expectedJson, JsonConvert.SerializeObject(d));
+            Assert.AreEqual(expectedJson, JsonConvert.SerializeObject(d.Data));
         }
 
         private class TestMessageData

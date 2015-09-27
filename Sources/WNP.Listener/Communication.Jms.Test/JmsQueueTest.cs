@@ -30,12 +30,6 @@ namespace AMSLLC.Listener.Communication.Jms.Test
 
         private static string cfName = "weblogic.jms.ConnectionFactory";
 
-        class TestMessage
-        {
-            public string TransactionId { get; set; }
-            public int Value { get; set; }
-        }
-
         [TestMethod]
         public async Task TestPutMessage()
         {
@@ -43,7 +37,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
             {
                 JmsDispatcher dispatcher = new JmsDispatcher();
                 var transactionId = Guid.NewGuid().ToString();
-                var testMessage = new TestMessage { TransactionId = transactionId, Value = (new Random()).Next(9999) };
+                var testMessage = new TestMessage {TransactionId = transactionId, Value = (new Random()).Next(9999)};
                 var eventData = new TransactionDataReady {Data = testMessage};
                 var connectionConfiguration = new JmsConnectionConfiguration
                 {
@@ -79,7 +73,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
             IConnectionFactory cf = context.LookupConnectionFactory(cfName);
 
             // lookup the queue
-            IQueue queue = (IQueue)context.LookupDestination(config.QueueName);
+            IQueue queue = (IQueue) context.LookupDestination(config.QueueName);
 
             // create a connection
             IConnection connection = cf.CreateConnection();
@@ -94,7 +88,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
 
             var found = false;
             ITextMessage message;
-            while ((message = (ITextMessage)consumer.ReceiveNoWait()) != null)
+            while ((message = (ITextMessage) consumer.ReceiveNoWait()) != null)
             {
                 found = string.Compare(message.Text, messageBody, StringComparison.InvariantCulture) == 0;
                 if (found)
@@ -111,6 +105,12 @@ namespace AMSLLC.Listener.Communication.Jms.Test
             connection.Close();
 
             context.CloseAll();
+        }
+
+        private class TestMessage
+        {
+            public string TransactionId { get; set; }
+            public int Value { get; set; }
         }
     }
 }

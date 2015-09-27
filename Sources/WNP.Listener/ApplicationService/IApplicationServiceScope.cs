@@ -7,7 +7,7 @@
 namespace AMSLLC.Listener.ApplicationService
 {
     using System;
-    using AMSLLC.Listener.Domain;
+    using Domain;
     using Repository;
 
     public interface IApplicationServiceScope : IDisposable

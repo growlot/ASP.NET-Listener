@@ -68,10 +68,12 @@
     <Compile Include="Company\CompanyConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transaction\ConnectionConfigurationFactory.cs" />
+    <Compile Include="Transaction\EndpointDataProcessorResult.cs" />
     <Compile Include="Transaction\FieldConfiguration.cs" />
     <Compile Include="Transaction\FieldConfigurationMemento.cs" />
     <Compile Include="Transaction\IConnectionConfigurationBuilder.cs" />
     <Compile Include="Transaction\IEndpointDataProcessor.cs" />
+    <Compile Include="Transaction\IEndpointDataProcessorResult.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfiguration.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfigurationMemento.cs" />
     <Compile Include="Transaction\TransactionConfiguration.cs" />

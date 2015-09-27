@@ -7,10 +7,10 @@
 namespace AMSLLC.Listener.ApplicationService.Impl
 {
     using System.Threading.Tasks;
-    using AMSLLC.Listener.Domain;
-    using AMSLLC.Listener.Domain.Listener.Transaction;
-    using AMSLLC.Listener.Repository;
     using Communication;
+    using Domain;
+    using Domain.Listener.Transaction;
+    using Repository;
 
     public class TransactionService : ITransactionService
     {
@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                         sourceRepository.Get(requestMessage.TransactionId);
                 var transactionExecution =
                     scope.DomainBuilder.Create<TransactionExecution>();
-                ((IOriginator)transactionExecution).SetMemento(memento);
+                ((IOriginator) transactionExecution).SetMemento(memento);
                 await Task.WhenAll(transactionExecution.Process(requestMessage.Data));
             }
         }

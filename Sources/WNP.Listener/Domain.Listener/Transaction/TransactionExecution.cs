@@ -15,7 +15,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction execution
     /// </summary>
-    public class TransactionExecution : Entity<int>, IAggregateRoot, IOriginator, IWithDomainBuilder
+    public class TransactionExecution : Entity<int>, IWithDomainBuilder, IAggregateRoot, IOriginator
     {
         /// <summary>
         /// Gets the transaction identifier.
@@ -73,11 +73,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 var cfg = this.EndpointConfigurations[i];
                 var preparedData = processor.Process(data, cfg);
                 var dispatcher =
-                    ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>("communication-{0}".FormatWith(cfg.Protocol));
+                    ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>(
+                        "communication-{0}".FormatWith(cfg.Protocol));
 
                 var eventData = new TransactionDataReady
                 {
-                    Data = preparedData
+                    Data = preparedData.Data
                 };
                 EventsRegister.Raise(eventData);
                 returnValue[i] = dispatcher.Handle(eventData, cfg.ConnectionConfiguration);

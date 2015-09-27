@@ -6,9 +6,9 @@
 
 namespace AMSLLC.Listener.ApplicationService.Impl
 {
-    using AMSLLC.Listener.Domain.Listener.Application;
-    using AMSLLC.Listener.Domain.Listener.Lookups;
-    using AMSLLC.Listener.Repository;
+    using Domain.Listener.Application;
+    using Domain.Listener.Lookups;
+    using Repository;
 
     /// <summary>
     /// Application configuration service
@@ -26,7 +26,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
             {
                 var listenerRepository = scope.RepositoryBuilder.Create<IApplicationConfigurationRepository>();
                 var model = scope.DomainBuilder.Create<ApplicationConfiguration>(listenerRepository.Get(applicationId));
-                model.EnableDeviceType((int)deviceType);
+                model.EnableDeviceType((int) deviceType);
                 listenerRepository.Save(model);
             }
         }

@@ -7,7 +7,6 @@
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Transaction configuration

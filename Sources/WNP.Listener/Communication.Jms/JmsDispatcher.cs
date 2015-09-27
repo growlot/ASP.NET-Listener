@@ -10,7 +10,6 @@ namespace AMSLLC.Listener.Communication.Jms
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Core;
-    using Domain;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using WebLogic.Messaging;
@@ -36,12 +35,15 @@ namespace AMSLLC.Listener.Communication.Jms
 
             if (request == null)
             {
-                throw new ArgumentException("eventData must be of type {0}".FormatWith(typeof(TransactionDataReady).FullName));
+                throw new ArgumentException(
+                    "eventData must be of type {0}".FormatWith(typeof (TransactionDataReady).FullName));
             }
 
             if (cfg == null)
             {
-                throw new ArgumentException("connectionConfiguration must be of type {0}".FormatWith(typeof(JmsConnectionConfiguration).FullName));
+                throw new ArgumentException(
+                    "connectionConfiguration must be of type {0}".FormatWith(
+                        typeof (JmsConnectionConfiguration).FullName));
             }
 
             return Task.Run(() =>
@@ -51,7 +53,7 @@ namespace AMSLLC.Listener.Communication.Jms
 
                 // add necessary properties
                 paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(cfg.Host,
-                   cfg.Port);
+                    cfg.Port);
                 paramMap[Constants.Context.SECURITY_PRINCIPAL] = cfg.UserName;
                 paramMap[Constants.Context.SECURITY_CREDENTIALS] = cfg.Password;
 
@@ -62,7 +64,7 @@ namespace AMSLLC.Listener.Communication.Jms
                 IConnectionFactory cf = context.LookupConnectionFactory(cfName);
 
                 // lookup the queue
-                IQueue queue = (IQueue)context.LookupDestination(cfg.QueueName);
+                IQueue queue = (IQueue) context.LookupDestination(cfg.QueueName);
 
                 // create a connection
                 IConnection connection = cf.CreateConnection();

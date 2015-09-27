@@ -39,6 +39,15 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Sets the memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
+        void IOriginator.SetMemento(IMemento memento)
+        {
+            this.SetMemento(memento);
+        }
+
+        /// <summary>
+        /// Sets the memento.
+        /// </summary>
+        /// <param name="memento">The memento.</param>
         protected void SetMemento(IMemento memento)
         {
             var myMemento = (FieldConfigurationMemento)memento;
@@ -51,15 +60,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                     this.ValueMap.Add(valueMap.Key, valueMap.Value);
                 }
             }
-        }
-
-        /// <summary>
-        /// Sets the memento.
-        /// </summary>
-        /// <param name="memento">The memento.</param>
-        void IOriginator.SetMemento(IMemento memento)
-        {
-            this.SetMemento(memento);
         }
     }
 }

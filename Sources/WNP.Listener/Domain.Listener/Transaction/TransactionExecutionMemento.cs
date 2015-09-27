@@ -20,9 +20,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
-        public TransactionExecutionMemento(string transactionId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration)
+        public TransactionExecutionMemento(string transactionId,
+            IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration)
         {
-            this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
+            this.EndpointConfigurations =
+                new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
         }
 

@@ -6,7 +6,7 @@
 
 namespace AMSLLC.Listener.ApplicationService
 {
-    using AMSLLC.Listener.Domain;
+    using Domain;
 
     /// <summary>
     /// Domain builder
@@ -35,7 +35,7 @@ namespace AMSLLC.Listener.ApplicationService
 
             if (memento != null)
             {
-                ((IOriginator)returnValue).SetMemento(memento);
+                ((IOriginator) returnValue).SetMemento(memento);
             }
 
             var withDomainBuilder = returnValue as IWithDomainBuilder;
