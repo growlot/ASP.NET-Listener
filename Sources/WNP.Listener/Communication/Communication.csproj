@@ -33,12 +33,24 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>1234.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="1234.snk" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TransactionRequestMessage.cs" />
+    <Compile Include="IConnectionConfiguration.cs" />
+    <Compile Include="ICommunicationHandler.cs" />
+    <Compile Include="OpenTransactionRequestMessage.cs" />
+    <Compile Include="TransactionFailedMessage.cs" />
+    <Compile Include="ProcessTransactionRequestMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransactionSuccessMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,7 +4,7 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace AMSLLC.Listener.ApplicationService
+namespace WNP.Listener.ApplicationService
 {
     using AMSLLC.Listener.Domain;
     using AMSLLC.Listener.Domain.Listener.Transaction.DomainEvent;

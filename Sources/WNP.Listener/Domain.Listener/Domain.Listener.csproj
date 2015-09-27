@@ -67,17 +67,19 @@
     <Compile Include="Application\ApplicationConfiguration.cs" />
     <Compile Include="Company\CompanyConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transaction\DomainEvent\FileDataReady.cs" />
-    <Compile Include="Transaction\DomainEvent\JmsDataReady.cs" />
-    <Compile Include="Transaction\DomainEvent\WcfHttpDataReady.cs" />
-    <Compile Include="Transaction\Endpoint\JmsEndpointConfiguration.cs" />
-    <Compile Include="Transaction\Endpoint\JmsEndpointProcessor.cs" />
-    <Compile Include="Transaction\IEndpointProcessor.cs" />
-    <Compile Include="Transaction\IIntegrationEndpointConfiguration.cs" />
+    <Compile Include="Transaction\ConnectionConfigurationFactory.cs" />
+    <Compile Include="Transaction\FieldConfiguration.cs" />
+    <Compile Include="Transaction\FieldConfigurationMemento.cs" />
+    <Compile Include="Transaction\IConnectionConfigurationBuilder.cs" />
+    <Compile Include="Transaction\IEndpointDataProcessor.cs" />
+    <Compile Include="Transaction\IntegrationEndpointConfiguration.cs" />
+    <Compile Include="Transaction\IntegrationEndpointConfigurationMemento.cs" />
     <Compile Include="Transaction\TransactionConfiguration.cs" />
     <Compile Include="Transaction\TransactionConfigurationMemento.cs" />
+    <Compile Include="Transaction\TransactionDataReady.cs" />
     <Compile Include="Transaction\TransactionExecution.cs" />
     <Compile Include="Transaction\TransactionExecutionMemento.cs" />
+    <Compile Include="Transaction\ValueMapDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta003\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
@@ -91,6 +93,10 @@
     <Folder Include="Specifications\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Communication\Communication.csproj">
+      <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
+      <Name>Communication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
       <Name>Core</Name>

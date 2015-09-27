@@ -63,7 +63,6 @@
     <Compile Include="DomainEventHandlerAttribute.cs" />
     <Compile Include="IAggregateRoot.cs" />
     <Compile Include="IDomainBuilder.cs" />
-    <Compile Include="IEventHandler.cs" />
     <Compile Include="ISpecification.cs" />
     <Compile Include="Entity.cs">
       <SubType>Code</SubType>
@@ -77,6 +76,7 @@
     <Compile Include="IEvent.cs" />
     <Compile Include="IMemento.cs" />
     <Compile Include="IOriginator.cs" />
+    <Compile Include="IWithDomainBuilder.cs" />
     <Compile Include="Mementos\SiteMemento.cs" />
     <Compile Include="Model\Site.cs">
       <SubType>Code</SubType>

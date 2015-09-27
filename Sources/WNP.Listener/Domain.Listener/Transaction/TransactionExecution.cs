@@ -6,46 +6,35 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Communication;
     using Core;
 
     /// <summary>
     /// Transaction execution
     /// </summary>
-    public class TransactionExecution : Entity<int>, IAggregateRoot, IOriginator
+    public class TransactionExecution : Entity<int>, IAggregateRoot, IOriginator, IWithDomainBuilder
     {
         /// <summary>
-        /// Gets the source application identifier.
+        /// Gets the transaction identifier.
         /// </summary>
-        /// <value>The source application identifier.</value>
-        public string SourceApplicationId { get; private set; }
-
-        /// <summary>
-        /// Gets the destination application identifier.
-        /// </summary>
-        /// <value>The destination application identifier.</value>
-        public string DestinationApplicationId { get; private set; }
-
-        /// <summary>
-        /// Gets the operation key.
-        /// </summary>
-        /// <value>The operation key.</value>
-        public string OperationKey { get; private set; }
+        /// <value>The transaction identifier.</value>
+        public string TransactionId { get; private set; }
 
         /// <summary>
         /// Gets the endpoint configurations.
         /// </summary>
         /// <value>The endpoint configurations.</value>
-        public ReadOnlyCollection<IIntegrationEndpointConfiguration> EndpointConfigurations { get; private set; } =
-            new ReadOnlyCollection<IIntegrationEndpointConfiguration>(new IIntegrationEndpointConfiguration[0]);
+        public ReadOnlyCollection<IntegrationEndpointConfiguration> EndpointConfigurations { get; private set; } =
+            new ReadOnlyCollection<IntegrationEndpointConfiguration>(new IntegrationEndpointConfiguration[0]);
 
-        /*/// <summary>
-        /// Gets the endpoint configurations.
+        /// <summary>
+        /// Gets or sets the domain builder.
         /// </summary>
-        /// <value>The endpoint configurations.</value>
-        public List<ListenerEndpointConfiguration> EndpointConfigurations { get; } = new List<ListenerEndpointConfiguration>();*/
+        /// <value>The domain builder.</value>
+        public virtual IDomainBuilder DomainBuilder { get; set; }
 
         /// <summary>
         /// Sets the memento.
@@ -63,33 +52,65 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         protected void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionExecutionMemento)memento;
-            this.SourceApplicationId = myMemento.SourceApplicationId;
-            this.DestinationApplicationId = myMemento.DestinationApplicationId;
-            this.OperationKey = myMemento.DestinationOperationKey;
+            this.TransactionId = myMemento.TransactionId;
             this.EndpointConfigurations =
-                new ReadOnlyCollection<IIntegrationEndpointConfiguration>(myMemento.EndpointConfigurations);
+                new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(
+                    cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
         }
 
         /// <summary>
         /// Processes the specified transaction.
         /// </summary>
-        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="data">The data.</param>
         /// <returns>Task.</returns>
-        public virtual Task[] Process(string transactionId)
+        public virtual Task[] Process(object data)
         {
-            List<IEvent> events = new List<IEvent>();
+            var returnValue = new Task[this.EndpointConfigurations.Count];
+            var processor =
+                ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
             for (int i = 0; i < this.EndpointConfigurations.Count; i++)
             {
                 var cfg = this.EndpointConfigurations[i];
-                var processor =
-                    ApplicationIntegration.DependencyResolver.ResolveNamed<IEndpointProcessor>(
-                        "endpoint-{0}".FormatWith(cfg.Name));
-                var data = processor.Process(this.SourceApplicationId, this.DestinationApplicationId, this.OperationKey,
-                    transactionId, cfg);
-                events.Add(data);
+                var preparedData = processor.Process(data, cfg);
+                var dispatcher =
+                    ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>("communication-{0}".FormatWith(cfg.Protocol));
+
+                var eventData = new TransactionDataReady
+                {
+                    Data = preparedData
+                };
+                EventsRegister.Raise(eventData);
+                returnValue[i] = dispatcher.Handle(eventData, cfg.ConnectionConfiguration);
             }
 
-            return EventsRegister.AsParallel(new ReadOnlyCollection<IEvent>(events));
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Open the transaction.
+        /// </summary>
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        public virtual Task<string> Open()
+        {
+            return Task.Factory.StartNew(() => string.Empty);
+        }
+
+        /// <summary>
+        /// Mark transaction as successful
+        /// </summary>
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        public virtual Task Success()
+        {
+            return Task.Factory.StartNew(() => { });
+        }
+
+        /// <summary>
+        /// Mark transaction as failed
+        /// </summary>
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        public virtual Task Failed()
+        {
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

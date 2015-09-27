@@ -33,8 +33,6 @@ namespace AMSLLC.Listener.Bootstrapper
 
             InitOwinHost(app, diAdapter.Kernel);
             InitProfiler();
-
-            ApplicationServicesConfigurator.Configure();
         }
 
         private void InitProfiler()

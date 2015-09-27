@@ -39,18 +39,5 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         protected void SetMemento(IMemento memento)
         {
         }
-
-        /// <summary>
-        /// Process the transaction
-        /// </summary>
-        /// <returns>Task.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        /// <exception cref="NotImplementedException"></exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic",
-            Justification = "Wireframing, cleanup this later")]
-        public Task Process()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

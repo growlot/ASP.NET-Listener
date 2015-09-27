@@ -19,10 +19,8 @@ namespace AMSLLC.Listener.ApiService
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new {id = RouteParameter.Optional}
+                defaults: new { id = RouteParameter.Optional }
                 );
-
-            ApplicationEventManager.Instance.Ensure(typeof(JmsDispatcher));
         }
     }
 }

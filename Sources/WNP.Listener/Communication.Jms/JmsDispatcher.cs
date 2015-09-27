@@ -11,14 +11,14 @@ namespace AMSLLC.Listener.Communication.Jms
     using System.Threading.Tasks;
     using Core;
     using Domain;
-    using Domain.Listener.Transaction.DomainEvent;
+    using Domain.Listener.Transaction;
+    using Newtonsoft.Json;
     using WebLogic.Messaging;
 
     /// <summary>
     /// Jms data dispatcher
     /// </summary>
-    [DomainEventHandler(typeof(JmsDataReady))]
-    public class JmsDispatcher : IDomainHandler
+    public class JmsDispatcher : ICommunicationHandler
     {
         private static string cfName = "weblogic.jms.ConnectionFactory";
 
@@ -26,60 +26,69 @@ namespace AMSLLC.Listener.Communication.Jms
         /// Handles the specified event data.
         /// </summary>
         /// <param name="eventData">The event data.</param>
+        /// <param name="connectionConfiguration">The connection configuration.</param>
         /// <returns>Task.</returns>
-        public Task Handle(object eventData)
+        /// <exception cref="System.ArgumentException">eventData must be of type {0}.FormatWith(typeof(TransactionDataReady).FullName)</exception>
+        public Task Handle(object eventData, IConnectionConfiguration connectionConfiguration)
         {
-            var requestData = eventData as JmsDataReady;
+            var request = eventData as TransactionDataReady;
+            var cfg = connectionConfiguration as JmsConnectionConfiguration;
 
-            if (requestData == null)
+            if (request == null)
             {
-                throw new ArgumentException("eventData must be of type {0}".FormatWith(typeof(JmsDataReady).FullName));
+                throw new ArgumentException("eventData must be of type {0}".FormatWith(typeof(TransactionDataReady).FullName));
             }
 
-            // create properties dictionary
-            IDictionary<string, Object> paramMap = new Dictionary<string, Object>();
+            if (cfg == null)
+            {
+                throw new ArgumentException("connectionConfiguration must be of type {0}".FormatWith(typeof(JmsConnectionConfiguration).FullName));
+            }
 
-            // add necessary properties
-            paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(requestData.Endpoint.Host,
-                requestData.Endpoint.Port);
-            paramMap[Constants.Context.SECURITY_PRINCIPAL] = requestData.Endpoint.UserName;
-            paramMap[Constants.Context.SECURITY_CREDENTIALS] = requestData.Endpoint.Password;
+            return Task.Run(() =>
+            {
+                // create properties dictionary
+                IDictionary<string, Object> paramMap = new Dictionary<string, Object>();
 
-            // get the initial context
-            IContext context = ContextFactory.CreateContext(paramMap);
+                // add necessary properties
+                paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(cfg.Host,
+                   cfg.Port);
+                paramMap[Constants.Context.SECURITY_PRINCIPAL] = cfg.UserName;
+                paramMap[Constants.Context.SECURITY_CREDENTIALS] = cfg.Password;
 
-            // lookup the connection factory
-            IConnectionFactory cf = context.LookupConnectionFactory(cfName);
+                // get the initial context
+                IContext context = ContextFactory.CreateContext(paramMap);
 
-            // lookup the queue
-            IQueue queue = (IQueue)context.LookupDestination(requestData.Endpoint.QueueName);
+                // lookup the connection factory
+                IConnectionFactory cf = context.LookupConnectionFactory(cfName);
 
-            // create a connection
-            IConnection connection = cf.CreateConnection();
+                // lookup the queue
+                IQueue queue = (IQueue)context.LookupDestination(cfg.QueueName);
 
-            // start the connection
-            connection.Start();
+                // create a connection
+                IConnection connection = cf.CreateConnection();
 
-            // create a session
-            ISession session = connection.CreateSession(Constants.SessionMode.AUTO_ACKNOWLEDGE);
+                // start the connection
+                connection.Start();
 
-            // create a message producer
-            IMessageProducer producer = session.CreateProducer(queue);
+                // create a session
+                ISession session = connection.CreateSession(Constants.SessionMode.AUTO_ACKNOWLEDGE);
 
-            producer.DeliveryMode = Constants.DeliveryMode.PERSISTENT;
+                // create a message producer
+                IMessageProducer producer = session.CreateProducer(queue);
 
-            // create a text message
-            ITextMessage textMessage = session.CreateTextMessage(requestData.Message);
+                producer.DeliveryMode = Constants.DeliveryMode.PERSISTENT;
 
-            // send the message
-            producer.Send(textMessage);
+                // create a text message
+                ITextMessage textMessage = session.CreateTextMessage(JsonConvert.SerializeObject(request.Data));
 
-            // CLEAN UP
-            connection.Close();
+                // send the message
+                producer.Send(textMessage);
 
-            context.CloseAll();
+                // CLEAN UP
+                connection.Close();
 
-            return Task.CompletedTask;
+                context.CloseAll();
+            });
         }
     }
 }

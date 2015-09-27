@@ -7,6 +7,8 @@
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
 
     /// <summary>
     /// Transaction execution memento
@@ -14,42 +16,26 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     public class TransactionExecutionMemento : IMemento
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionExecutionMemento"/> class.
+        /// Initializes a new instance of the <see cref="TransactionExecutionMemento" /> class.
         /// </summary>
-        /// <param name="sourceApplicationId">The source application identifier.</param>
-        /// <param name="destinationApplicationId">The destination application identifier.</param>
-        /// <param name="destinationOperationKey">The destination operation key.</param>
-        public TransactionExecutionMemento(string sourceApplicationId, string destinationApplicationId,
-            string destinationOperationKey)
+        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="endpointConfiguration">The endpoint configuration.</param>
+        public TransactionExecutionMemento(string transactionId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration)
         {
-            this.SourceApplicationId = sourceApplicationId;
-            this.DestinationApplicationId = destinationApplicationId;
-            this.DestinationOperationKey = destinationOperationKey;
+            this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
+            this.TransactionId = transactionId;
         }
 
         /// <summary>
-        /// Gets the source application identifier.
+        /// Gets or sets the transaction identifier.
         /// </summary>
-        /// <value>The source application identifier.</value>
-        public string SourceApplicationId { get; private set; }
-
-        /// <summary>
-        /// Gets the destination application identifier.
-        /// </summary>
-        /// <value>The destination application identifier.</value>
-        public string DestinationApplicationId { get; private set; }
-
-        /// <summary>
-        /// Gets the destination operation key.
-        /// </summary>
-        /// <value>The destination operation key.</value>
-        public string DestinationOperationKey { get; private set; }
+        /// <value>The transaction identifier.</value>
+        public string TransactionId { get; set; }
 
         /// <summary>
         /// Gets the endpoint configurations.
         /// </summary>
         /// <value>The endpoint configurations.</value>
-        public IList<IIntegrationEndpointConfiguration> EndpointConfigurations { get; } =
-            new List<IIntegrationEndpointConfiguration>();
+        public ReadOnlyCollection<IntegrationEndpointConfigurationMemento> EndpointConfigurations { get; private set; }
     }
 }

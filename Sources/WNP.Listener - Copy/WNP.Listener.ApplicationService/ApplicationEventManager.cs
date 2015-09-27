@@ -4,7 +4,7 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace AMSLLC.Listener.ApplicationService
+namespace WNP.Listener.ApplicationService
 {
     using System;
     using System.Collections.Generic;

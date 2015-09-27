@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.ApplicationService
         /// </summary>
         /// <typeparam name="TDomainModel">The type of the domain model.</typeparam>
         /// <returns>Domain model.</returns>
-        public TDomainModel Create<TDomainModel>() where TDomainModel : IOriginator, new()
+        public virtual TDomainModel Create<TDomainModel>() where TDomainModel : IOriginator, new()
         {
             return Create<TDomainModel>(null);
         }
@@ -36,6 +36,13 @@ namespace AMSLLC.Listener.ApplicationService
             if (memento != null)
             {
                 ((IOriginator)returnValue).SetMemento(memento);
+            }
+
+            var withDomainBuilder = returnValue as IWithDomainBuilder;
+
+            if (withDomainBuilder != null)
+            {
+                withDomainBuilder.DomainBuilder = this;
             }
 
             return returnValue;

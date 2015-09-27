@@ -33,6 +33,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\AMSLLC.Listener.Common.WNP.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

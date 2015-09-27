@@ -4,7 +4,7 @@
 // // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace AMSLLC.Listener.Communication
+namespace WNP.Listener.Communication
 {
     public class TransactionRequestMessage
     {

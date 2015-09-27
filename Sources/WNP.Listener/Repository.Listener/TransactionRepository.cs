@@ -9,15 +9,26 @@ namespace AMSLLC.Listener.Repository.Listener
     using System;
     using System.Threading.Tasks;
     using Domain;
+    using Domain.Listener.Transaction;
 
     public class TransactionRepository : ITransactionRepository
     {
-        public Task<IMemento> Get(int transactionId)
+        public Task<IMemento> Get(string transactionId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IMemento> Get(string sourceApplicationId, string destinationApplicationId,
+        public Task Create(TransactionExecution transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Update(TransactionExecution transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IMemento> Get(string sourceApplicationId, string companyId,
             string operationKey)
         {
             throw new NotImplementedException();

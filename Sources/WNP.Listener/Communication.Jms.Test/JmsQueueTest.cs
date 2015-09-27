@@ -1,22 +1,23 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿// //-----------------------------------------------------------------------
+// // <copyright file="JmsQueueTest.cs" company="Advanced Metering Services LLC">
+// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// // </copyright>
+// //-----------------------------------------------------------------------
 
-namespace Communication.Jms.Test
+namespace AMSLLC.Listener.Communication.Jms.Test
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AMSLLC.Core;
-    using AMSLLC.Listener.Communication.Jms;
-    using AMSLLC.Listener.Domain.Listener.Transaction.DomainEvent;
-    using AMSLLC.Listener.Domain.Listener.Transaction.Endpoint;
+    using Core;
+    using Domain.Listener.Transaction;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Newtonsoft.Json;
     using WebLogic.Messaging;
 
     [TestClass]
     public class JmsQueueTest
     {
-
-        private static string cfName = "weblogic.jms.ConnectionFactory";
-
         private const string Host = "localhost";
 
         private const int Port = 7001;
@@ -27,6 +28,14 @@ namespace Communication.Jms.Test
 
         private const string Password = "Password1";
 
+        private static string cfName = "weblogic.jms.ConnectionFactory";
+
+        class TestMessage
+        {
+            public string TransactionId { get; set; }
+            public int Value { get; set; }
+        }
+
         [TestMethod]
         public async Task TestPutMessage()
         {
@@ -34,19 +43,18 @@ namespace Communication.Jms.Test
             {
                 JmsDispatcher dispatcher = new JmsDispatcher();
                 var transactionId = Guid.NewGuid().ToString();
-                var eventData = new JmsDataReady
+                var testMessage = new TestMessage { TransactionId = transactionId, Value = (new Random()).Next(9999) };
+                var eventData = new TransactionDataReady {Data = testMessage};
+                var connectionConfiguration = new JmsConnectionConfiguration
                 {
-                    OperationKey = "TestOperation",
-                    TransactionId = transactionId,
-                    Message = "Transaction:{0}".FormatWith(transactionId)
+                    Host = Host,
+                    Password = Password,
+                    UserName = Username,
+                    QueueName = QueueName,
+                    Port = Port
                 };
-                eventData.Endpoint.Host = Host;
-                eventData.Endpoint.Port = Port;
-                eventData.Endpoint.QueueName = QueueName;
-                eventData.Endpoint.UserName = Username;
-                eventData.Endpoint.Password = Password;
-                await dispatcher.Handle(eventData);
-                ReadMessage(eventData.Message, eventData.Endpoint);
+                await dispatcher.Handle(eventData, connectionConfiguration);
+                ReadMessage(JsonConvert.SerializeObject(testMessage), connectionConfiguration);
             }
             catch (MessageException exc)
             {
@@ -54,7 +62,7 @@ namespace Communication.Jms.Test
             }
         }
 
-        private void ReadMessage(string messageBody, JmsEndpointConfiguration config)
+        private void ReadMessage(string messageBody, JmsConnectionConfiguration config)
         {
             // create properties dictionary
             IDictionary<string, Object> paramMap = new Dictionary<string, Object>();
@@ -88,7 +96,6 @@ namespace Communication.Jms.Test
             ITextMessage message;
             while ((message = (ITextMessage)consumer.ReceiveNoWait()) != null)
             {
-
                 found = string.Compare(message.Text, messageBody, StringComparison.InvariantCulture) == 0;
                 if (found)
                 {

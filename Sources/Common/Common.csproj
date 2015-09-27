@@ -34,6 +34,7 @@
     <CodeAnalysisRuleSet>..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\AMSLLC.Listener.Common.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
