@@ -72,7 +72,13 @@ namespace AMSLLC.Listener.MetadataService.Impl
                     // resolve data type from database
                     var dataType = column.DataType;
                     if (dataType.Equals("DateTime", StringComparison.OrdinalIgnoreCase))
+                    {
                         dataType = "DateTimeOffset";
+                    }
+                    if (dataType.Equals("varchar", StringComparison.OrdinalIgnoreCase))
+                    {
+                        dataType = "string";
+                    }
 
                     // resolve if it's primary key from database
                     bool isPrimary = false;
