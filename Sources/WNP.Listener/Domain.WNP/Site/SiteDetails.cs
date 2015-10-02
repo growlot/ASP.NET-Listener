@@ -1,18 +1,16 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Site.cs" company="Advanced Metering Services LLC">
+// <copyright file="SiteDetails.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.Model
+namespace AMSLLC.Listener.Domain.WNP.Site
 {
     using System;
-    using AMSLLC.Listener.Domain.Events;
-    using AMSLLC.Listener.Domain.Mementos;
 
     /// <summary>
     /// Root aggregate for a Site
     /// </summary>
-    public sealed class Site : Entity<int>, IOriginator
+    public sealed class SiteDetails : Entity<int>, IAggregateRoot, IOriginator
     {
         /////// <summary>
         /////// Gets or sets the owner.
