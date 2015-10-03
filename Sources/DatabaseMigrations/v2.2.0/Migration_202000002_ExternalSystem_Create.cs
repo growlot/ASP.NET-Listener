@@ -1,15 +1,11 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="Migration_202000002_ExternalSystem_Create.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
+﻿// //-----------------------------------------------------------------------
+// // <copyright file="Migration_202000002_ExternalSystem_Create.cs" company="Advanced Metering Services LLC">
+// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// // </copyright>
+// //-----------------------------------------------------------------------
+
 namespace AMSLLC.Listener.DatabaseMigrations
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using FluentMigrator;
 
     /// <summary>
@@ -23,7 +19,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            this.Insert.IntoTable("ExternalSystem").Row(new { Name = "WecoMobile", Description = "Weco Mobile application" });
+            this.Insert.IntoTable("ExternalSystem")
+                .Row(new { Name = "WecoMobile", Description = "Weco Mobile application" });
         }
 
         /// <summary>

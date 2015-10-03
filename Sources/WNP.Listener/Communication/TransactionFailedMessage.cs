@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Communication
 {
     public class TransactionFailedMessage
     {
-        public string TransactionId { get; set; }
+        public string TransactionKey { get; set; }
         public string Message { get; set; }
         public string Details { get; set; }
     }

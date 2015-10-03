@@ -81,6 +81,8 @@
     <Compile Include="Transaction\TransactionDataReady.cs" />
     <Compile Include="Transaction\TransactionExecution.cs" />
     <Compile Include="Transaction\TransactionExecutionMemento.cs" />
+    <Compile Include="Transaction\TransactionRegistry.cs" />
+    <Compile Include="Transaction\TransactionRegistryMemento.cs" />
     <Compile Include="Transaction\ValueMapDictionary.cs" />
   </ItemGroup>
   <ItemGroup>

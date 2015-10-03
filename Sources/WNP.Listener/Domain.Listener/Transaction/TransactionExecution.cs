@@ -21,7 +21,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the transaction identifier.
         /// </summary>
         /// <value>The transaction identifier.</value>
-        public string TransactionId { get; private set; }
+        public string TransactionKey { get; private set; }
 
         /// <summary>
         /// Gets the endpoint configurations.
@@ -52,7 +52,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         protected void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionExecutionMemento)memento;
-            this.TransactionId = myMemento.TransactionId;
+            this.TransactionKey = myMemento.TransactionKey;
             this.EndpointConfigurations =
                 new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(
                     cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());

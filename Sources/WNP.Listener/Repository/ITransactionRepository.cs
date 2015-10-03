@@ -7,8 +7,12 @@ namespace AMSLLC.Listener.Repository
 
     public interface ITransactionRepository : IRepository
     {
-        Task<IMemento> Get(string transactionId);
         Task Create(TransactionExecution transaction);
         Task Update(TransactionExecution transaction);
+        Task<IMemento> GetExecutionContext(string transactionKey);
+        Task Create(TransactionRegistry transactionRegistry);
+        Task<IMemento> GetRegistryEntry(string transactionKey);
+        Task Update(TransactionRegistry transactionRegistry);
+        Task<string> GetTransactionData(string transactionKey);
     }
 }

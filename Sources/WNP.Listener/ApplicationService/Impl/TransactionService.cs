@@ -6,42 +6,90 @@
 
 namespace AMSLLC.Listener.ApplicationService.Impl
 {
+    using System;
     using System.Threading.Tasks;
     using Communication;
     using Domain;
     using Domain.Listener.Transaction;
+    using Newtonsoft.Json;
     using Repository;
 
     public class TransactionService : ITransactionService
     {
-        public Task Open(OpenTransactionRequestMessage requestMessage)
+        public async Task<string> Open(OpenTransactionRequestMessage requestMessage)
         {
-            throw new System.NotImplementedException();
+            string returnValue = null;
+            using (var scope = ApplicationServiceScope.Create())
+            {
+                var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
+                var memento = new TransactionRegistryMemento(null, requestMessage.CompanyCode,
+                    requestMessage.SourceApplicationKey, requestMessage.OperationKey, TransactionStatusType.InProgress,
+                    requestMessage.User, scope.ScopeDateTime, null, JsonConvert.SerializeObject(requestMessage.Data), null, null);
+
+                var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
+                ((IOriginator)transactionRegistry).SetMemento(memento);
+
+                transactionRegistry.Create(scope.ScopeDateTime);
+
+                await transactionRepository.Create(transactionRegistry);
+
+                returnValue = transactionRegistry.TransactionKey;
+            }
+            return returnValue;
         }
 
-        public async Task Process(ProcessTransactionRequestMessage requestMessage)
+        public async Task Process<TMessageData>(ProcessTransactionRequestMessage requestMessage)
         {
             using (var scope = ApplicationServiceScope.Create())
             {
                 var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
                 var memento =
                     await
-                        sourceRepository.Get(requestMessage.TransactionId);
+                        sourceRepository.GetExecutionContext(requestMessage.TransactionKey);
+
+                var dataString = await sourceRepository.GetTransactionData(requestMessage.TransactionKey);
                 var transactionExecution =
                     scope.DomainBuilder.Create<TransactionExecution>();
-                ((IOriginator) transactionExecution).SetMemento(memento);
-                await Task.WhenAll(transactionExecution.Process(requestMessage.Data));
+
+                ((IOriginator)transactionExecution).SetMemento(memento);
+                await
+                    Task.WhenAll(
+                        transactionExecution.Process(JsonConvert.DeserializeObject<TMessageData>(dataString)));
             }
         }
 
-        public Task Success(TransactionSuccessMessage transactionSuccessMessage)
+        public async Task Success(TransactionSuccessMessage requestMessage)
         {
-            throw new System.NotImplementedException();
+            using (var scope = ApplicationServiceScope.Create())
+            {
+                var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
+                var memento =
+                    await
+                        sourceRepository.GetRegistryEntry(requestMessage.TransactionKey);
+                var transactionRegistry =
+                    scope.DomainBuilder.Create<TransactionRegistry>();
+                ((IOriginator)transactionRegistry).SetMemento(memento);
+
+                transactionRegistry.Succeed(scope.ScopeDateTime);
+                await sourceRepository.Update(transactionRegistry);
+            }
         }
 
-        public Task Failed(TransactionFailedMessage transactionFailedMessage)
+        public async Task Failed(TransactionFailedMessage requestMessage)
         {
-            throw new System.NotImplementedException();
+            using (var scope = ApplicationServiceScope.Create())
+            {
+                var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
+                var memento =
+                    await
+                        sourceRepository.GetRegistryEntry(requestMessage.TransactionKey);
+                var transactionRegistry =
+                    scope.DomainBuilder.Create<TransactionRegistry>();
+                ((IOriginator)transactionRegistry).SetMemento(memento);
+
+                transactionRegistry.Fail(scope.ScopeDateTime, requestMessage.Message, requestMessage.Details);
+                await sourceRepository.Update(transactionRegistry);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@
 
 namespace AMSLLC.Listener.ApiService
 {
+    using System.Runtime.Remoting.Messaging;
     using System.Threading.Tasks;
     using System.Web.Http;
     using ApplicationService;
@@ -38,7 +39,7 @@ namespace AMSLLC.Listener.ApiService
             return
                 await
                     TryExecuteOperationAsync(
-                        context => this._transactionService.Process(new ProcessTransactionRequestMessage { TransactionId = id }));
+                        context => this._transactionService.Process<object>(new ProcessTransactionRequestMessage { TransactionKey = id }));
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace AMSLLC.Listener.ApiService
             return
                 await
                     TryExecuteOperationAsync(
-                        context => this._transactionService.Success(new TransactionSuccessMessage { TransactionId = id }));
+                        context => this._transactionService.Success(new TransactionSuccessMessage { TransactionKey = id }));
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace AMSLLC.Listener.ApiService
             return
                 await
                     TryExecuteOperationAsync(
-                        context => this._transactionService.Failed(new TransactionFailedMessage { TransactionId = id, Message = message, Details = details }));
+                        context => this._transactionService.Failed(new TransactionFailedMessage { TransactionKey = id, Message = message, Details = details }));
         }
     }
 }

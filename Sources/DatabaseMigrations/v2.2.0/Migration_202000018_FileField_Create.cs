@@ -1,15 +1,11 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="Migration_202000018_FileField_Create.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
+﻿// //-----------------------------------------------------------------------
+// // <copyright file="Migration_202000018_FileField_Create.cs" company="Advanced Metering Services LLC">
+// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// // </copyright>
+// //-----------------------------------------------------------------------
+
 namespace AMSLLC.Listener.DatabaseMigrations
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using FluentMigrator;
 
     /// <summary>
@@ -34,11 +30,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("TrimChars").AsString(10).Nullable()
                 .WithColumn("FileTrimModeId").AsInt32().Nullable()
                 .WithColumn("Description").AsString(250).Nullable()
-
                 .WithColumn("AllignChar").AsString(1).Nullable()
                 .WithColumn("FileAlignModeId").AsInt32().Nullable()
                 .WithColumn("Length").AsInt32().Nullable()
-
                 .WithColumn("IsQuoted").AsBoolean().Nullable()
                 .WithColumn("QuoteChar").AsString(1).Nullable()
                 .WithColumn("FileQuoteModeId").AsInt32().Nullable()

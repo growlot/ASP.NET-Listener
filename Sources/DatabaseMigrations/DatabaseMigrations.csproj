@@ -107,6 +107,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="DatabaseUpdater.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="v2.0.1\Migration_200001014_PopulateCustomerData.cs" />
     <Compile Include="v2.0.1\Migration_200001013_TransactionLog_Indexes.cs" />
     <Compile Include="v2.0.1\Migration_200001010_TransactionType_Recreate.cs" />
@@ -165,11 +166,35 @@
     <Compile Include="v2.2.0\Migration_202000006_FileConverter_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000005_FileConverterKind_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000004_FileConverterKind_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000020_ProtocolType_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000021_ProtocolType_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000022_EndpointTriggerType_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000023_EndpointTriggerType_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000030_ValueMap_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000035_ValueMap_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000040_FieldConfiguration_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000045_FieldConfiguration_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000050_ValueMapEntry_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000055_ValueMapEntry_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000060_FieldConfigurationEntry_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000065_FieldConfigurationEntry_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000070_Application_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000075_Application_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000080_Operation_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000085_Operation_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000090_EnabledOperation_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000095_EnabledOperation_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000100_Endpoint_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000105_Endpoint_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000110_OperationEndpoint_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000115_OperationEndpoint_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000120_TransactionRegistry_Create.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">
       <Link>ConnectionStrings.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="..\Service.Host\Log4net.config">
       <Link>Log4net.config</Link>

@@ -8,7 +8,6 @@ namespace AMSLLC.Listener.Communication
 {
     public class ProcessTransactionRequestMessage
     {
-        public string TransactionId { get; set; }
-        public object Data { get; set; }
+        public string TransactionKey { get; set; }
     }
 }

@@ -8,8 +8,10 @@ namespace AMSLLC.Listener.Communication
 {
     public class OpenTransactionRequestMessage
     {
-        public string SourceApplicationId { get; set; }
+        public string SourceApplicationKey { get; set; }
         public string OperationKey { get; set; }
-        public string CompanyId { get; set; }
+        public string CompanyCode { get; set; }
+        public string User { get; set; }
+        public object Data { get; set; }
     }
 }
