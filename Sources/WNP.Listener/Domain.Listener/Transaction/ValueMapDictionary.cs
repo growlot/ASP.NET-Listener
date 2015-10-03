@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Value map dictionary
     /// </summary>
-    public class ValueMapDictionary : Dictionary<object, object>
+    public class ValueMapDictionary : Dictionary<string, object>
     {
     }
 }

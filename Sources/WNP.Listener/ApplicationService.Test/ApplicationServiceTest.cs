@@ -70,12 +70,12 @@ namespace ApplicationService.Test
             transactionExecutionDomain.As<IWithDomainBuilder>();
             var integrationEndpointConfiguration = new Mock<IntegrationEndpointConfiguration>();
 
-            Dictionary<object, object> integerMap = new Dictionary<object, object>
+            Dictionary<string, object> integerMap = new Dictionary<string, object>
             {
-                { 159, 159000 },
-                { 9713, 9713000 }
+                { "159", 159000 },
+                { "9713", 9713000 }
             };
-            Dictionary<object, object> stringMap = new Dictionary<object, object>
+            Dictionary<string, object> stringMap = new Dictionary<string, object>
             {
                 { "Hey!", "Hi, Bob!" },
                 { "Hi.", "Bye!" }
@@ -104,7 +104,7 @@ namespace ApplicationService.Test
 
             transactionRepositoryMock.Setup(s => s.GetExecutionContext(transactionKey))
                 .Returns(
-                    (string taId) => Task.FromResult((IMemento) memento));
+                    (string taId) => Task.FromResult((IMemento)memento));
 
             transactionRepositoryMock.Setup(s => s.GetTransactionData(transactionKey))
                 .Returns(Task.FromResult(JsonConvert.SerializeObject(testMessageData)));
@@ -129,7 +129,7 @@ namespace ApplicationService.Test
             object commHandlerData = null;
             communicationHandler.Setup(s => s.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>()))
                 .Callback(
-                    (object data, IConnectionConfiguration conn) => commHandlerData = ((TransactionDataReady) data).Data)
+                    (object data, IConnectionConfiguration conn) => commHandlerData = ((TransactionDataReady)data).Data)
                 .Returns(Task.CompletedTask);
 
             di.Initialize(container =>
@@ -157,18 +157,18 @@ namespace ApplicationService.Test
             var service = di.ResolveType<ITransactionService>();
 
             await
-                service.Process<TestMessageData>(new ProcessTransactionRequestMessage
+                service.Process(new ProcessTransactionRequestMessage
                 {
                     TransactionKey = transactionKey
                     //Data = testMessageData
                 });
 
             transactionExecutionDomain.Verify(
-                foo => foo.Process(It.Is<TestMessageData>(data => data.Value == testMessageData.Value)), Times.Once());
+                foo => foo.Process(It.IsAny<object>()), Times.Once());
             jmsConnectionBuilder.Verify(f => f.Create(It.Is<IMemento>(data => data != null)), Times.Once);
             jmsEndpointProcessorMock.Verify(
                 f =>
-                    f.Process(It.Is<TestMessageData>(data => data.Value == testMessageData.Value),
+                    f.Process(It.IsAny<object>(),
                         It.Is<IntegrationEndpointConfiguration>(data => data.Protocol == "jms")), Times.Once);
             const string expectedMessageBodyJson =
                 "{\"ComplexProperty\":{\"NestedData\":{\"NestedData\":null,\"NestedArray\":null},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"},\"ArrayProperty\":[{\"NestedData\":{\"NestedData\":null,\"NestedArray\":[{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000},{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}],\"NestedArrayProperty\":\"EFD\"},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"},{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}";
@@ -179,11 +179,11 @@ namespace ApplicationService.Test
                         It.Is<object>(
                             data =>
                                 string.Compare(
-                                    JsonConvert.SerializeObject(((TransactionDataReady) data).Data, settings),
+                                    JsonConvert.SerializeObject(((TransactionDataReady)data).Data, settings),
                                     expectedMessageBodyJson,
                                     StringComparison.InvariantCulture) == 0),
                         It.IsAny<IConnectionConfiguration>()), Times.Once(),
-                "Handler invoked with data: {0}".FormatWith(JsonConvert.SerializeObject(commHandlerData)));
+                "Handler invoked with unexpected data: {0}".FormatWith(JsonConvert.SerializeObject(commHandlerData)));
         }
 
         [TestMethod]
@@ -229,12 +229,12 @@ namespace ApplicationService.Test
             });
             ApplicationIntegration.SetDependencyInjectionResolver(di);
 
-            Dictionary<object, object> integerMap = new Dictionary<object, object>
+            Dictionary<string, object> integerMap = new Dictionary<string, object>
             {
-                { 159, 159000 },
-                { 9713, 9713000 }
+                { "159", 159000 },
+                { "9713", 9713000 }
             };
-            Dictionary<object, object> stringMap = new Dictionary<object, object>
+            Dictionary<string, object> stringMap = new Dictionary<string, object>
             {
                 { "Hey!", "Hi, Bob!" },
                 { "Hi.", "Bye!" }
@@ -248,7 +248,7 @@ namespace ApplicationService.Test
 
             DefaultEndpointDataProcessor p = new DefaultEndpointDataProcessor();
             IntegrationEndpointConfiguration cfg = new IntegrationEndpointConfiguration();
-            ((IOriginator) cfg).SetMemento(new IntegrationEndpointConfigurationMemento("jms", "",
+            ((IOriginator)cfg).SetMemento(new IntegrationEndpointConfigurationMemento("jms", "",
                 EndpointTriggerType.Undefined, fieldConfigurations));
             var d = p.Process(testMessageData, cfg);
             const string expectedJson =

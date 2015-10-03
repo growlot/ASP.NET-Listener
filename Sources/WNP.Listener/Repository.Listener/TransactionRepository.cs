@@ -41,6 +41,7 @@ namespace AMSLLC.Listener.Repository.Listener
             var protocols = await _dbContext.PageAsync<ProtocolTypeEntity>(0, 1000, "SELECT * FROM ProtocolType");
             var valueMapEntries =
                 await _dbContext.PageAsync<ValueMapEntryEntity>(0, int.MaxValue, "SELECT * FROM ValueMapEntry");
+            var valueMaps = await _dbContext.PageAsync<ValueMapEntity>(0, int.MaxValue, "SELECT * FROM ValueMap");
             var fieldConfigurationEntries = await _dbContext.PageAsync<FieldConfigurationEntryEntity>(0, int.MaxValue, "SELECT * FROM FieldConfigurationEntry");
 
             var endpoints = await _dbContext.FetchAsync<EndpointEntity>(@"SELECT 
@@ -58,7 +59,7 @@ WHERE TR.[TransactionKey] = @0", transactionKey);
                     endpoints.Select(
                         endpoint =>
                             new IntegrationEndpointConfigurationMemento(protocols.Items.Single(s => s.ProtocolTypeId == endpoint.ProtocolTypeId).Key, endpoint.ConnectionCfgJson,
-                                (Communication.EndpointTriggerType)endpoint.EndpointTriggerTypeId, PrepareFieldConfiguration(endpoint.FieldConfigurationId, fieldConfigurationEntries.Items, valueMapEntries.Items))).ToList();
+                                (Communication.EndpointTriggerType)endpoint.EndpointTriggerTypeId, PrepareFieldConfiguration(endpoint.FieldConfigurationId, fieldConfigurationEntries.Items, valueMapEntries.Items, valueMaps.Items))).ToList();
 
                 returnValue = new TransactionExecutionMemento(transactionKey, configurations);
             }
@@ -136,7 +137,7 @@ WHERE TR.[Key] = @0", transactionKey);
             return await _dbContext.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE Key = @0", transactionKey);
         }
 
-        private IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(int? fieldConfigurationId, IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries)
+        private IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(int? fieldConfigurationId, IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)
         {
             if (!fieldConfigurationId.HasValue)
                 return null;
@@ -144,15 +145,21 @@ WHERE TR.[Key] = @0", transactionKey);
             List<FieldConfigurationMemento> returnValue = new List<FieldConfigurationMemento>();
             var fields = fieldConfigurationEntries.Where(s => s.FieldConfigurationId == fieldConfigurationId.Value);
 
+
             foreach (var fieldConfigurationEntry in fields)
             {
-                Dictionary<object, object> valueMap = new Dictionary<object, object>();
+                Dictionary<string, object> valueMap = new Dictionary<string, object>();
                 if (fieldConfigurationEntry.ValueMapId.HasValue)
                 {
                     var map = valueMapEntries.Where(s => s.ValueMapId == fieldConfigurationId.Value);
+                    if (!map.Any())
+                    {
+                        break;
+                    }
+                    var mapType = valueMaps.Single(m => m.ValueMapId == map.First().ValueMapId);
                     foreach (var valueMapEntry in map)
                     {
-                        valueMap.Add(valueMapEntry.Key, valueMapEntry.Value);
+                        valueMap.Add(valueMapEntry.Key ?? string.Empty, ValueConverter.Convert(valueMapEntry.Value, mapType.ValueType));
                     }
                 }
                 returnValue.Add(new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, valueMap));

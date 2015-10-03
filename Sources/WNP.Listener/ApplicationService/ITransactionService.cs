@@ -13,7 +13,7 @@ namespace AMSLLC.Listener.ApplicationService
     public interface ITransactionService
     {
         Task<string> Open(OpenTransactionRequestMessage requestMessage);
-        Task Process<TMessageData>(ProcessTransactionRequestMessage requestMessage);
+        Task Process(ProcessTransactionRequestMessage requestMessage);
         Task Success(TransactionSuccessMessage transactionSuccessMessage);
         Task Failed(TransactionFailedMessage transactionFailedMessage);
     }

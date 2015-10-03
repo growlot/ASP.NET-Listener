@@ -7,6 +7,7 @@
 namespace AMSLLC.Listener.ApplicationService
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Dynamic;
@@ -39,10 +40,11 @@ namespace AMSLLC.Listener.ApplicationService
             {
                 ProcessProperty(data, fieldConfiguration.Name, null, (targetProperty, owner, propRef) =>
                 {
-                    var targetValue = targetProperty.GetValue(owner, null);
-                    if (fieldConfiguration.ValueMap != null && fieldConfiguration.ValueMap.ContainsKey(targetValue))
+                    var targetValue = targetProperty.GetValue(owner);
+                    var targetKey = targetValue?.ToString() ?? string.Empty;
+                    if (fieldConfiguration.ValueMap != null && fieldConfiguration.ValueMap.ContainsKey(targetKey))
                     {
-                        targetValue = fieldConfiguration.ValueMap[targetValue];
+                        targetValue = fieldConfiguration.ValueMap[targetKey];
                     }
 
                     if (fieldConfiguration.IncludeInHash)
@@ -63,8 +65,8 @@ namespace AMSLLC.Listener.ApplicationService
                     }
                     else
                     {
-                        var converter = TypeDescriptor.GetConverter(targetProperty.PropertyType);
-                        targetProperty.SetValue(owner, converter.ConvertFrom(targetValue?.ToString()));
+                        //var converter = TypeDescriptor.GetConverter(targetProperty.PropertyType);
+                        targetProperty.SetValue(owner, targetValue);//converter.ConvertFrom(targetValue?.ToString())
                     }
                 });
             }
@@ -76,7 +78,7 @@ namespace AMSLLC.Listener.ApplicationService
         }
 
         private void ProcessProperty(object data, string name, string propRef,
-            Action<PropertyInfo, object, string> propertyFoundCallback)
+            Action<DataPropertyInfo, object, string> propertyFoundCallback)
         {
             object owner = data;
             string[] namePieces = name.Split('.');
@@ -87,21 +89,37 @@ namespace AMSLLC.Listener.ApplicationService
                 currentRef = currentRef == null ? namePiece : "{0}.{1}".FormatWith(currentRef, namePiece);
                 if (owner == null)
                     break;
-                PropertyInfo property = FindProperty(owner, namePiece);
-                if (property.PropertyType.IsArray)
+                DataPropertyInfo property = FindProperty(owner, namePiece);
+                if (property.IsList)
                 {
-                    var originalArray = (Array) property.GetValue(owner, null);
-                    for (int j = 0; j < originalArray.Length; j++)
+                    var originalList = property.GetValue(owner) as IList<object>;
+                    if (originalList != null)
                     {
-                        var o = originalArray.GetValue(j);
-                        ProcessProperty(o, string.Join(".", namePieces.Skip(i + 1)),
-                            "{0}[{1}]".FormatWith(currentRef, j), propertyFoundCallback);
+                        for (int j = 0; j < originalList.Count(); j++)
+                        {
+                            var o = originalList[j]; //.GetValue(j);
+                            ProcessProperty(o, string.Join(".", namePieces.Skip(i + 1)),
+                                "{0}[{1}]".FormatWith(currentRef, j), propertyFoundCallback);
+                        }
+                    }
+                    else
+                    {
+                        var originalarray = property.GetValue(owner) as Array;
+                        if (originalarray != null)
+                        {
+                            for (int j = 0; j < originalarray.Length; j++)
+                            {
+                                var o = originalarray.GetValue(j);
+                                ProcessProperty(o, string.Join(".", namePieces.Skip(i + 1)),
+                                    "{0}[{1}]".FormatWith(currentRef, j), propertyFoundCallback);
+                            }
+                        }
                     }
                     return;
                 }
                 else
                 {
-                    owner = property.GetValue(owner, null);
+                    owner = property.GetValue(owner);
                 }
             }
             if (owner != null)
@@ -123,16 +141,18 @@ namespace AMSLLC.Listener.ApplicationService
             return d;
         }
 
-        private PropertyInfo FindProperty(object data, string namePiece)
+        private DataPropertyInfo FindProperty(object data, string namePiece)
         {
-            var type = data.GetType();
-
             PropertyInfo prop = null;
-
+            var expandoDictionary = data as IDictionary<string, object>;
+            if (expandoDictionary != null && expandoDictionary.ContainsKey(namePiece))
+            {
+                return new DataPropertyInfo(namePiece, expandoDictionary[namePiece] is IList);
+            }
+            var type = data.GetType();
             prop = type.GetProperty(namePiece);
-
-
-            return prop;
+            return new DataPropertyInfo(prop.Name, prop.PropertyType.IsArray);
+            //return null;
         }
 
         private void AddPropertyAs(dynamic expando, object currentValue, string mapTo, int[] sequence, int pos)
@@ -184,7 +204,7 @@ namespace AMSLLC.Listener.ApplicationService
                 }
                 else
                 {
-                    currentPath = (ExpandoObject) currentPath[source];
+                    currentPath = (ExpandoObject)currentPath[source];
                 }
             }
 
@@ -233,7 +253,7 @@ namespace AMSLLC.Listener.ApplicationService
                 }
                 else
                 {
-                    currentPath = (ExpandoObject) currentPath[source];
+                    currentPath = (ExpandoObject)currentPath[source];
                 }
             }
 

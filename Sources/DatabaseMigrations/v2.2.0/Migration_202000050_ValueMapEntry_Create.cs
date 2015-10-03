@@ -22,7 +22,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Create.Table("ValueMapEntry")
                 .WithColumn("ValueMapEntryId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("ValueMapId").AsInt32().NotNullable()
-                .WithColumn("Key").AsString(100).Nullable()
+                .WithColumn("Key").AsString(100).NotNullable()
                 .WithColumn("Value").AsString(100).Nullable();
 
             this.Create.ForeignKey("FK_ValueMapEntry_ValueMap")

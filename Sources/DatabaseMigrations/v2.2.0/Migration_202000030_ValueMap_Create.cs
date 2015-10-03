@@ -23,6 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("ValueMapId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("CompanyId").AsInt32().NotNullable()
                 .ForeignKey("FK_ValueMap_CompanyId", "Company", "CompanyId")
+                .WithColumn("ValueType").AsString(20).NotNullable()
                 .WithColumn("Name").AsString(50).NotNullable().Unique("IX_ValueMap_Name");
         }
     }

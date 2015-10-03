@@ -50,6 +50,7 @@
     <Compile Include="IDateTimeProvider.cs" />
     <Compile Include="IDependencyInjectionAdapter.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
+    <Compile Include="IValueTypeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatusMessage.cs" />
     <Compile Include="UtcDateTimeProvider.cs" />

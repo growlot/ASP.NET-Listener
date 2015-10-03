@@ -15,8 +15,12 @@ namespace AMSLLC.Listener.ApiService
     using ApplicationService;
     using Newtonsoft.Json;
 
-    public class BaseApiController : ApiController
+    public abstract class BaseApiController : ApiController
     {
+        public string CompanyCode { get; set; }
+        public string ApplicationKey { get; set; }
+
+
         /// <summary>
         /// Executes the specified action.
         /// </summary>
@@ -39,7 +43,7 @@ namespace AMSLLC.Listener.ApiService
             catch
             {
                 return
-                    BuildResponseMessage(HttpStatusCode.InternalServerError, new ApiResponseMessage() {Success = false});
+                    BuildResponseMessage(HttpStatusCode.InternalServerError, new ApiResponseMessage() { Success = false });
             }
         }
 

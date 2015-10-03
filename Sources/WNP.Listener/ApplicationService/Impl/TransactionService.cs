@@ -7,6 +7,7 @@
 namespace AMSLLC.Listener.ApplicationService.Impl
 {
     using System;
+    using System.Dynamic;
     using System.Threading.Tasks;
     using Communication;
     using Domain;
@@ -38,7 +39,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
             return returnValue;
         }
 
-        public async Task Process<TMessageData>(ProcessTransactionRequestMessage requestMessage)
+        public async Task Process(ProcessTransactionRequestMessage requestMessage)
         {
             using (var scope = ApplicationServiceScope.Create())
             {
@@ -54,7 +55,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                 ((IOriginator)transactionExecution).SetMemento(memento);
                 await
                     Task.WhenAll(
-                        transactionExecution.Process(JsonConvert.DeserializeObject<TMessageData>(dataString)));
+                        transactionExecution.Process(JsonConvert.DeserializeObject<ExpandoObject>(dataString)));
             }
         }
 

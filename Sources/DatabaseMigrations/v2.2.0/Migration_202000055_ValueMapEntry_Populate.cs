@@ -26,13 +26,6 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 {
                     ValueMapEntryId = 1,
                     ValueMapId = 1,
-                    Key = (string)null,
-                    Value = "ListenerUser"
-                },
-                new
-                {
-                    ValueMapEntryId = 2,
-                    ValueMapId = 1,
                     Key = string.Empty,
                     Value = "ListenerUser"
                 }

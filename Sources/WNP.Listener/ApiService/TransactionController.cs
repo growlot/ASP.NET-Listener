@@ -26,6 +26,30 @@ namespace AMSLLC.Listener.ApiService
             this._transactionService = transactionService;
         }
 
+        /// <summary>
+        /// Processes the specified transaction.
+        /// </summary>
+        /// <param name="operationKey">The operation key.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
+        [Route("open/{operationKey}")]
+        [HttpPut]
+        public async Task<IHttpActionResult> Open(string operationKey, [FromBody] string data)
+        {
+            return
+                await
+                    TryExecuteOperationAsync(
+                        context =>
+                            this._transactionService.Open(new OpenTransactionRequestMessage
+                            {
+                                CompanyCode = CompanyCode,
+                                OperationKey = operationKey,
+                                SourceApplicationKey = ApplicationKey,
+                                Data = data,
+                                User = User.Identity.Name
+                            }));
+        }
+
 
         /// <summary>
         /// Processes the specified transaction.
@@ -39,7 +63,7 @@ namespace AMSLLC.Listener.ApiService
             return
                 await
                     TryExecuteOperationAsync(
-                        context => this._transactionService.Process<object>(new ProcessTransactionRequestMessage { TransactionKey = id }));
+                        context => this._transactionService.Process(new ProcessTransactionRequestMessage { TransactionKey = id }));
         }
 
         /// <summary>
@@ -48,7 +72,7 @@ namespace AMSLLC.Listener.ApiService
         /// <param name="id">The identifier.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
         [Route("success")]
-        [HttpPut]
+        [HttpPost]
         public async Task<IHttpActionResult> Success(string id)
         {
             return
@@ -64,9 +88,9 @@ namespace AMSLLC.Listener.ApiService
         /// <param name="message">The message.</param>
         /// <param name="details">The details.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
-        [Route("failed")]
-        [HttpPut]
-        public async Task<IHttpActionResult> Confirm(string id, string message, string details)
+        [Route("fail")]
+        [HttpPost]
+        public async Task<IHttpActionResult> Fail(string id, string message, string details)
         {
             return
                 await

@@ -167,82 +167,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("VersionInfo")]
-
-
-	[ExplicitColumns]
-    public partial class VersionInfoEntity : ListenerDB.Record<VersionInfoEntity>  
-    {
-
-
-
-		[Column] public long Version { get; set; }
-
-
-
-
-
-		[Column] public DateTime? AppliedOn { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
-	[TableName("TransactionStatus")]
-
-
-	[PrimaryKey("TransactionStatusId", autoIncrement=false)]
-
-	[ExplicitColumns]
-    public partial class TransactionStatusEntity : ListenerDB.Record<TransactionStatusEntity>  
-    {
-
-
-
-		[Column] public int TransactionStatusId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
-	[TableName("TransactionState")]
-
-
-	[PrimaryKey("TransactionStateId", autoIncrement=false)]
-
-	[ExplicitColumns]
-    public partial class TransactionStateEntity : ListenerDB.Record<TransactionStateEntity>  
-    {
-
-
-
-		[Column] public int TransactionStateId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
 	[TableName("TransactionRegistry")]
 
 
@@ -323,6 +247,82 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 		[Column] public DateTime? UpdatedDateTime { get; set; }
+
+
+
+	}
+
+    
+	[TableName("VersionInfo")]
+
+
+	[ExplicitColumns]
+    public partial class VersionInfoEntity : ListenerDB.Record<VersionInfoEntity>  
+    {
+
+
+
+		[Column] public long Version { get; set; }
+
+
+
+
+
+		[Column] public DateTime? AppliedOn { get; set; }
+
+
+
+
+
+		[Column] public string Description { get; set; }
+
+
+
+	}
+
+    
+	[TableName("TransactionStatus")]
+
+
+	[PrimaryKey("TransactionStatusId", autoIncrement=false)]
+
+	[ExplicitColumns]
+    public partial class TransactionStatusEntity : ListenerDB.Record<TransactionStatusEntity>  
+    {
+
+
+
+		[Column] public int TransactionStatusId { get; set; }
+
+
+
+
+
+		[Column] public string Description { get; set; }
+
+
+
+	}
+
+    
+	[TableName("TransactionState")]
+
+
+	[PrimaryKey("TransactionStateId", autoIncrement=false)]
+
+	[ExplicitColumns]
+    public partial class TransactionStateEntity : ListenerDB.Record<TransactionStateEntity>  
+    {
+
+
+
+		[Column] public int TransactionStateId { get; set; }
+
+
+
+
+
+		[Column] public string Description { get; set; }
 
 
 
@@ -1347,6 +1347,12 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 		[Column] public int CompanyId { get; set; }
+
+
+
+
+
+		[Column] public string ValueType { get; set; }
 
 
 

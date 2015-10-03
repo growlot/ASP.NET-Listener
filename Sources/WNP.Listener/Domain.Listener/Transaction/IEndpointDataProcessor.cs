@@ -6,6 +6,8 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
+    using System.Dynamic;
+
     /// <summary>
     /// Endpoint data processor interface
     /// </summary>

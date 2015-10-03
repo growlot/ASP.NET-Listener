@@ -19,7 +19,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="name">The name.</param>
         /// <param name="mapToName">Name of the map to.</param>
         /// <param name="valueMap">The value map.</param>
-        public FieldConfigurationMemento(string name, string mapToName, Dictionary<object, object> valueMap)
+        public FieldConfigurationMemento(string name, string mapToName, Dictionary<string, object> valueMap)
         {
             this.Name = name;
             this.MapToName = mapToName;
@@ -48,6 +48,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the value map.
         /// </summary>
         /// <value>The value map.</value>
-        public Dictionary<object, object> ValueMap { get; } = new Dictionary<object, object>();
+        public Dictionary<string, object> ValueMap { get; } = new Dictionary<string, object>();
     }
 }
