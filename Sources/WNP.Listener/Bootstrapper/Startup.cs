@@ -17,6 +17,7 @@ namespace AMSLLC.Listener.Bootstrapper
     using ApplicationService;
     using Core;
     using Core.Ninject;
+    using Serilog;
 
     public class Startup
     {
@@ -35,7 +36,9 @@ namespace AMSLLC.Listener.Bootstrapper
             InitOwinHost(app, diAdapter.Kernel);
             InitProfiler();
 
-            
+            var log =
+                new LoggerConfiguration().ReadFrom.AppSettings().CreateLogger();
+            Log.Logger = log;
         }
 
         private void InitProfiler()

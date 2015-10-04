@@ -216,6 +216,18 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
+		[Column] public int? EntityCategoryId { get; set; }
+
+
+
+
+
+		[Column] public string EntityKey { get; set; }
+
+
+
+
+
 		[Column] public string User { get; set; }
 
 
@@ -1321,6 +1333,38 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 		[Column] public string Name { get; set; }
+
+
+
+	}
+
+    
+	[TableName("EntityCategory")]
+
+
+	[PrimaryKey("EntityCategoryId")]
+
+
+
+	[ExplicitColumns]
+    public partial class EntityCategoryEntity : ListenerDB.Record<EntityCategoryEntity>  
+    {
+
+
+
+		[Column] public int EntityCategoryId { get; set; }
+
+
+
+
+
+		[Column] public string Key { get; set; }
+
+
+
+
+
+		[Column] public string DisplayName { get; set; }
 
 
 

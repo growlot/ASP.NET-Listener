@@ -26,6 +26,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("CompanyId").AsInt32().NotNullable()
                 .WithColumn("OperationId").AsInt32().NotNullable()
                 .WithColumn("TransactionStatusId").AsInt32().NotNullable()
+                .WithColumn("EntityCategoryId").AsInt32().Nullable()
+                .WithColumn("EntityKey").AsString(50).Nullable()
                 .WithColumn("User").AsString(100).Nullable()
                 .WithColumn("Data").AsString(int.MaxValue).NotNullable()
                 .WithColumn("Message").AsString(255).Nullable()
@@ -48,6 +50,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Create.ForeignKey("FK_TransactionRegistry_TransactionStatus")
                 .FromTable("TransactionRegistry").ForeignColumn("TransactionStatusId")
                 .ToTable("TransactionStatus").PrimaryColumn("TransactionStatusId");
+
+            this.Create.ForeignKey("FK_TransactionRegistry_EntityCategory")
+                .FromTable("TransactionRegistry").ForeignColumn("EntityCategoryId")
+                .ToTable("EntityCategory").PrimaryColumn("EntityCategoryId");
         }
     }
 }

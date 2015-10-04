@@ -92,6 +92,18 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Details { get; private set; }
 
         /// <summary>
+        /// Gets or sets the entity key.
+        /// </summary>
+        /// <value>The device key.</value>
+        public string EntityKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the entity category.
+        /// </summary>
+        /// <value>The device category.</value>
+        public string EntityCategory { get; private set; }
+
+        /// <summary>
         /// Setup new transaction registry entry
         /// </summary>
         /// <param name="createdDateTime">The created date time.</param>
@@ -150,6 +162,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.OperationKey = myMemento.OperationKey;
             this.Status = myMemento.Status;
             this.UserName = myMemento.UserName;
+            this.EntityCategory = myMemento.EntityCategory;
+            this.EntityKey = myMemento.EntityKey;
             this.CreatedDateTime = myMemento.CreatedDateTime;
             this.UpdatedDateTime = myMemento.UpdatedDateTime;
             this.Data = myMemento.Data;

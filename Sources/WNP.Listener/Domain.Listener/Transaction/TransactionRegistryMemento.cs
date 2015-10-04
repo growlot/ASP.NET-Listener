@@ -23,13 +23,15 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="operationKey">The operation key.</param>
         /// <param name="status">The status.</param>
         /// <param name="userName">Name of the user.</param>
+        /// <param name="entityCategory">The entity category.</param>
+        /// <param name="entityKey">The entity key.</param>
         /// <param name="createdDateTime">The created date time.</param>
         /// <param name="updatedDateTime">The updated date time.</param>
         /// <param name="data">The request data.</param>
         /// <param name="message">The message.</param>
         /// <param name="details">The details.</param>
         public TransactionRegistryMemento(string transactionKey, string companyCode, string applicationKey,
-            string operationKey, TransactionStatusType status, string userName, DateTime createdDateTime,
+            string operationKey, TransactionStatusType status, string userName, string entityCategory, string entityKey, DateTime createdDateTime,
             DateTime? updatedDateTime, string data, string message, string details)
         {
             this.TransactionKey = transactionKey;
@@ -43,7 +45,21 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Data = data;
             this.Message = message;
             this.Details = details;
+            this.EntityCategory = entityCategory;
+            this.EntityKey = entityKey;
         }
+
+        /// <summary>
+        /// Gets or sets the device key.
+        /// </summary>
+        /// <value>The device key.</value>
+        public string EntityKey { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the device category.
+        /// </summary>
+        /// <value>The device category.</value>
+        public string EntityCategory { get; private set; }
 
         /// <summary>
         /// Gets the transaction key.

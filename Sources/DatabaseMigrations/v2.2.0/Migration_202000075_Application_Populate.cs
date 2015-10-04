@@ -25,7 +25,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
             {
                 ApplicationId = 1,
                 Name = "WNP",
-                Key = Guid.NewGuid().ToString("D")
+                Key = "dde3ff6d-e368-4427-b75e-6ec47183f88e"
             };
 
             this.IfSqlServer().Insert.IntoTable("Application").WithIdentityInsert()

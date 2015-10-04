@@ -13,5 +13,7 @@ namespace AMSLLC.Listener.Communication
         public string CompanyCode { get; set; }
         public string User { get; set; }
         public string Data { get; set; }
+        public string EntityKey { get; set; }
+        public string EntityCategory { get; set; }
     }
 }

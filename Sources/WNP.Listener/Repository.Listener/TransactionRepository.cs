@@ -75,6 +75,8 @@ WHERE TR.[Key] = @0", transactionKey);
 
             var company = await _dbContext.SingleAsync<CompanyEntity>("SELECT * FROM Company WHERE ExternalCode = @0", transactionRegistry.CompanyCode);
 
+            var deviceCategory = await _dbContext.SingleOrDefaultAsync<EntityCategoryEntity>("SELECT * FROM EntityCategory WHERE [Key] = @0", transactionRegistry.EntityCategory);
+
             using (var tx = await _dbContext.GetTransactionAsync())
             {
                 await
@@ -86,6 +88,8 @@ WHERE TR.[Key] = @0", transactionKey);
                         Key = transactionRegistry.TransactionKey,
                         OperationId = operation.OperationId,
                         TransactionStatusId = (int)transactionRegistry.Status,
+                        EntityKey = transactionRegistry.EntityKey,
+                        EntityCategoryId = deviceCategory?.EntityCategoryId,
                         Data = transactionRegistry.Data,
                         UpdatedDateTime = transactionRegistry.UpdatedDateTime,
                         User = transactionRegistry.UserName,
@@ -98,18 +102,20 @@ WHERE TR.[Key] = @0", transactionKey);
 
         public async Task<IMemento> GetRegistryEntry(string transactionKey)
         {
-            var registryEntities =
-                await
-                    _dbContext.FetchAsync(
-                        (TransactionRegistryEntity tr, ApplicationEntity app, CompanyEntity cmp, OperationEntity op) =>
-                            new TransactionRegistryMemento(tr.Key, cmp.ExternalCode, app.Key, op.Key,
-                                (TransactionStatusType)tr.TransactionStatusId, tr.User, tr.CreatedDateTime,
-                                tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details),
-                        @"SELECT TR.*, A.*, C.*, O.*
+            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, EntityCategoryEntity, TransactionRegistryMemento> callback = (tr, app,
+                 cmp, op, dc) => new TransactionRegistryMemento(tr.Key, cmp.ExternalCode, app.Key, op.Key,
+                     (TransactionStatusType)tr.TransactionStatusId, tr.User, dc.Key, tr.EntityKey, tr.CreatedDateTime,
+                     tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details);
+
+            var registryEntities = await
+                    _dbContext.FetchAsync<TransactionRegistryMemento>(new Type[] { typeof(TransactionRegistryEntity), typeof(ApplicationEntity), typeof(CompanyEntity), typeof(OperationEntity), typeof(EntityCategoryEntity) },
+                        callback,
+                        @"SELECT TR.*, A.*, C.*, O.*,DC.*
 FROM TransactionRegistry TR 
 INNER JOIN Application A ON TR.ApplicationId = A.ApplicationId 
 INNER JOIN Company C ON TR.CompanyId = C.CompanyId
 INNER JOIN Operation O ON TR.OperationId = O.OperationId
+INNER JOIN EntityCategory DC ON TR.EntityCategoryId = DC.EntityCategoryId
 WHERE TR.[Key] = @0", transactionKey);
 
             return registryEntities.SingleOrDefault();

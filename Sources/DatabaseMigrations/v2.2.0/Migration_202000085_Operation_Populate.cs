@@ -23,8 +23,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
             var record = new
             {
                 OperationId = 1,
-                Key = "InstallMeter",
-                DisplayName = "Install Meter"
+                Key = "Install",
+                DisplayName = "Install Device"
             };
 
             this.IfSqlServer().Insert.IntoTable("Operation").WithIdentityInsert()

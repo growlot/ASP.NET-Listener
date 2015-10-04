@@ -53,7 +53,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
                 HttpResponseMessage response =
                     await
-                        server.CreateRequest("api/transaction/open/InstallMeter")
+                        server.CreateRequest("api/transaction/ElectricMeters('AA-11-XSE')/Install()")
                             .And(
                                 request =>
                                     request.Content =
@@ -62,7 +62,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                             new JsonMediaTypeFormatter(),
                                             new MediaTypeWithQualityHeaderValue("application/json")))
                             .AddHeader("AMS-Company", "CCD")
-                            .AddHeader("AMS-Application", "4a283d01-763b-47aa-bd8e-6e3c37ceb7ac")
+                            .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
                             .SendAsync("PUT");
 
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
@@ -71,8 +71,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 Assert.AreEqual(nextKey, responseMessage.Data);
 
                 HttpResponseMessage processResponse =
-                    await server.CreateRequest($"api/transaction/process/{nextKey}").AddHeader("AMS-Company", "CCD")
-                        .AddHeader("AMS-Application", "4a283d01-763b-47aa-bd8e-6e3c37ceb7ac").PostAsync();
+                    await server.CreateRequest($"api/transaction/Transaction('{nextKey}')/Process()").AddHeader("AMS-Company", "CCD")
+                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
 
                 Assert.AreEqual(HttpStatusCode.OK, processResponse.StatusCode);
                 communicationHandler.Verify(

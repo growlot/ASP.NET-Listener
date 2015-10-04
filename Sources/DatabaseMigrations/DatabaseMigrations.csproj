@@ -170,6 +170,8 @@
     <Compile Include="v2.2.0\Migration_202000021_ProtocolType_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000022_EndpointTriggerType_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000023_EndpointTriggerType_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000024_EntityCategory_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000025_EntityCategory_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000030_ValueMap_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000035_ValueMap_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000040_FieldConfiguration_Create.cs" />

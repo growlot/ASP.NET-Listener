@@ -30,12 +30,13 @@ namespace AMSLLC.Listener.ApiService
         /// <summary>
         /// Processes the specified transaction.
         /// </summary>
+        /// <param name="entityCategory">The entity category.</param>
         /// <param name="operationKey">The operation key.</param>
-        /// <param name="data">The data.</param>
+        /// <param name="entityKey">The entity key.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
-        [Route("open/{operationKey}")]
+        [Route("{entityCategory}('{entityKey}')/{operationKey}()")]
         [HttpPut]
-        public async Task<IHttpActionResult> Open(string operationKey)
+        public async Task<IHttpActionResult> Open(string entityCategory, string operationKey, string entityKey)
         {
             string data = await Request.Content.ReadAsStringAsync();
 
@@ -48,6 +49,8 @@ namespace AMSLLC.Listener.ApiService
                                 CompanyCode = CompanyCode,
                                 OperationKey = operationKey,
                                 SourceApplicationKey = ApplicationKey,
+                                EntityKey = entityKey,
+                                EntityCategory = entityCategory,
                                 Data = data,
                                 User = User?.Identity.Name
                             }));
@@ -59,7 +62,7 @@ namespace AMSLLC.Listener.ApiService
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
-        [Route("process/{id}")]
+        [Route("Transaction('{id}')/Process()")]
         [HttpPost]
         public async Task<IHttpActionResult> Process(string id)
         {
