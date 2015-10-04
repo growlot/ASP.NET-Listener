@@ -38,11 +38,11 @@ namespace AMSLLC.Listener.Repository.Listener
         public async Task<IMemento> GetExecutionContext(string transactionKey)
         {
             TransactionExecutionMemento returnValue = null;
-            var protocols = await _dbContext.PageAsync<ProtocolTypeEntity>(0, 1000, "SELECT * FROM ProtocolType");
+            var protocols = await _dbContext.PageAsync<ProtocolTypeEntity>(1, 1000, "SELECT * FROM ProtocolType");
             var valueMapEntries =
-                await _dbContext.PageAsync<ValueMapEntryEntity>(0, int.MaxValue, "SELECT * FROM ValueMapEntry");
-            var valueMaps = await _dbContext.PageAsync<ValueMapEntity>(0, int.MaxValue, "SELECT * FROM ValueMap");
-            var fieldConfigurationEntries = await _dbContext.PageAsync<FieldConfigurationEntryEntity>(0, int.MaxValue, "SELECT * FROM FieldConfigurationEntry");
+                await _dbContext.PageAsync<ValueMapEntryEntity>(1, int.MaxValue, "SELECT * FROM ValueMapEntry");
+            var valueMaps = await _dbContext.PageAsync<ValueMapEntity>(1, int.MaxValue, "SELECT * FROM ValueMap");
+            var fieldConfigurationEntries = await _dbContext.PageAsync<FieldConfigurationEntryEntity>(1, int.MaxValue, "SELECT * FROM FieldConfigurationEntry");
 
             var endpoints = await _dbContext.FetchAsync<EndpointEntity>(@"SELECT 
 	E.*
@@ -52,7 +52,7 @@ FROM
 	INNER JOIN OperationEndpoint OE ON E.EndpointId = OE.EndpointId
 	INNER JOIN EnabledOperation EO ON OE.EnabledOperationId = EO.EnabledOperationId
 	INNER JOIN TransactionRegistry TR ON TR.CompanyId = EO.CompanyId AND TR.OperationId = EO.OperationId AND TR.ApplicationId = EO.ApplicationId
-WHERE TR.[TransactionKey] = @0", transactionKey);
+WHERE TR.[Key] = @0", transactionKey);
             if (endpoints != null)
             {
                 List<IntegrationEndpointConfigurationMemento> configurations =
@@ -69,16 +69,16 @@ WHERE TR.[TransactionKey] = @0", transactionKey);
         public async Task Create(TransactionRegistry transactionRegistry)
         {
             var application =
-                await _dbContext.SingleAsync<ApplicationEntity>("SELECT * FROM Application WHERE Key = @0", transactionRegistry.ApplicationKey);
+                await _dbContext.SingleAsync<ApplicationEntity>("SELECT * FROM Application WHERE [Key] = @0", transactionRegistry.ApplicationKey);
 
-            var operation = await _dbContext.SingleAsync<OperationEntity>("SELECT * FROM Operation WHERE Key = @0", transactionRegistry.OperationKey);
+            var operation = await _dbContext.SingleAsync<OperationEntity>("SELECT * FROM Operation WHERE [Key] = @0", transactionRegistry.OperationKey);
 
             var company = await _dbContext.SingleAsync<CompanyEntity>("SELECT * FROM Company WHERE ExternalCode = @0", transactionRegistry.CompanyCode);
 
             using (var tx = await _dbContext.GetTransactionAsync())
             {
                 await
-                    _dbContext.InsertAsync(new TransactionRegistryEntity
+                    _dbContext.InsertAsync("TransactionRegistry", "TransactionId", new TransactionRegistryEntity
                     {
                         ApplicationId = application.ApplicationId,
                         CompanyId = company.CompanyId,
@@ -86,6 +86,7 @@ WHERE TR.[TransactionKey] = @0", transactionKey);
                         Key = transactionRegistry.TransactionKey,
                         OperationId = operation.OperationId,
                         TransactionStatusId = (int)transactionRegistry.Status,
+                        Data = transactionRegistry.Data,
                         UpdatedDateTime = transactionRegistry.UpdatedDateTime,
                         User = transactionRegistry.UserName,
                         Message = transactionRegistry.Message,
@@ -134,7 +135,7 @@ WHERE TR.[Key] = @0", transactionKey);
 
         public async Task<string> GetTransactionData(string transactionKey)
         {
-            return await _dbContext.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE Key = @0", transactionKey);
+            return await _dbContext.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE [Key] = @0", transactionKey);
         }
 
         private IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(int? fieldConfigurationId, IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)

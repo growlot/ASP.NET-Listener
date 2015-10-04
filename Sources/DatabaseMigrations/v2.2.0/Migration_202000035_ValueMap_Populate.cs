@@ -20,7 +20,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            var record = new { ValueMapId = 1, CompanyId = 0, ValueType = "integer", Name = "Default [UserName] map" };
+            var record = new { ValueMapId = 1, CompanyId = 0, ValueType = "string", Name = "Default [UserName] map" };
 
             this.IfSqlServer().Insert.IntoTable("ValueMap").WithIdentityInsert()
                 .Row(record);

@@ -20,13 +20,13 @@ namespace AMSLLC.Listener.Repository.Listener
         {
             switch (targetType.ToUpperInvariant())
             {
-                case "integer":
+                case "INTEGER":
                     return int.Parse(value);
-                case "boolean":
+                case "BOOLEAN":
                     return !string.IsNullOrWhiteSpace(value) && (value.ToUpper() == bool.TrueString.ToUpperInvariant() || value == "1");
-                case "float":
+                case "FLOAT":
                     return float.Parse(value);
-                case "string":
+                case "STRING":
                     return value;
                 default:
                     var converter = ApplicationIntegration.DependencyResolver.ResolveNamed<IValueTypeConverter>(

@@ -76,8 +76,6 @@
     <Compile Include="EntityTests.cs" />
     <Compile Include="EventRegisterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PhysicalAddressTests.cs" />
-    <Compile Include="SiteTests.cs" />
     <Compile Include="ValueObjectTests.cs">
       <SubType>Code</SubType>
     </Compile>

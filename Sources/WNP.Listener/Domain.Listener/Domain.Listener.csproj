@@ -76,11 +76,13 @@
     <Compile Include="Transaction\IEndpointDataProcessorResult.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfiguration.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfigurationMemento.cs" />
+    <Compile Include="Transaction\ITransactionKeyBuilder.cs" />
     <Compile Include="Transaction\TransactionConfiguration.cs" />
     <Compile Include="Transaction\TransactionConfigurationMemento.cs" />
     <Compile Include="Transaction\TransactionDataReady.cs" />
     <Compile Include="Transaction\TransactionExecution.cs" />
     <Compile Include="Transaction\TransactionExecutionMemento.cs" />
+    <Compile Include="Transaction\TransactionKeyBuilder.cs" />
     <Compile Include="Transaction\TransactionRegistry.cs" />
     <Compile Include="Transaction\TransactionRegistryMemento.cs" />
     <Compile Include="Transaction\ValueMapDictionary.cs" />

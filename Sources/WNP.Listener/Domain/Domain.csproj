@@ -68,7 +68,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EventsRegister.cs" />
-    <Compile Include="Events\SiteAddressUpdated.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IEntity.cs">
       <SubType>Code</SubType>
@@ -77,11 +76,6 @@
     <Compile Include="IMemento.cs" />
     <Compile Include="IOriginator.cs" />
     <Compile Include="IWithDomainBuilder.cs" />
-    <Compile Include="Mementos\SiteMemento.cs" />
-    <Compile Include="Model\Site.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PhysicalAddress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueObject.cs" />
   </ItemGroup>
@@ -89,7 +83,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\" />
     <Folder Include="Lookup\" />
   </ItemGroup>
   <ItemGroup>

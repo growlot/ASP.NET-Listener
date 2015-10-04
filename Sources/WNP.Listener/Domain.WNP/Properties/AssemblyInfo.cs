@@ -3,6 +3,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+using System;
 using System.Reflection;
 using System.Resources;
 
@@ -15,3 +16,5 @@ using System.Resources;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
+
+[assembly: CLSCompliant(true)]

@@ -6,9 +6,11 @@
 
 namespace AMSLLC.Listener.ApiService
 {
+    using System.Net.Http.Formatting;
     using System.Web.Http;
     using ApplicationService;
     using Communication.Jms;
+    using Serilog;
 
     public class ApiServiceConfigurator
     {
@@ -16,11 +18,15 @@ namespace AMSLLC.Listener.ApiService
         {
             config.MapHttpAttributeRoutes();
 
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-                );
+            var log = new LoggerConfiguration()
+                .WriteTo.ColoredConsole()
+                .CreateLogger();
+
+            Log.Logger = log;
+
+            config.Formatters.Clear();
+            config.Formatters.Add(new JsonMediaTypeFormatter());
+            config.Formatters.Add(new XmlMediaTypeFormatter());
         }
     }
 }

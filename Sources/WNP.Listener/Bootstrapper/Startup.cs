@@ -12,6 +12,7 @@ using StackExchange.Profiling;
 
 namespace AMSLLC.Listener.Bootstrapper
 {
+    using ApiService;
     using ApiService.Properties;
     using ApplicationService;
     using Core;
@@ -33,6 +34,8 @@ namespace AMSLLC.Listener.Bootstrapper
 
             InitOwinHost(app, diAdapter.Kernel);
             InitProfiler();
+
+            
         }
 
         private void InitProfiler()
@@ -47,6 +50,9 @@ namespace AMSLLC.Listener.Bootstrapper
 
             var odataServiceConfigurator = kernel.Get<ODataServiceConfigurator>();
             odataServiceConfigurator.Configure(config);
+
+            var apiServiceConfigurator = kernel.Get<ApiServiceConfigurator>();
+            apiServiceConfigurator.Configure(config);
 
             app.UseRequestScopeContext();
             app.UseErrorPage(ErrorPageOptions.ShowAll);

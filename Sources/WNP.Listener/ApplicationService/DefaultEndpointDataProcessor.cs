@@ -145,9 +145,13 @@ namespace AMSLLC.Listener.ApplicationService
         {
             PropertyInfo prop = null;
             var expandoDictionary = data as IDictionary<string, object>;
-            if (expandoDictionary != null && expandoDictionary.ContainsKey(namePiece))
+            if (expandoDictionary != null)
             {
-                return new DataPropertyInfo(namePiece, expandoDictionary[namePiece] is IList);
+                if (expandoDictionary.ContainsKey(namePiece))
+                {
+                    return new DataPropertyInfo(namePiece, expandoDictionary[namePiece] is IList);
+                }
+                return null;
             }
             var type = data.GetType();
             prop = type.GetProperty(namePiece);

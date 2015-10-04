@@ -16,15 +16,13 @@ namespace AMSLLC.Listener.ApiService
     {
         public static ApiResponseMessage AsApiResponseMessage(this IExecutionContext context)
         {
-            var returnValue = new ApiResponseMessage {Success = context.Valid};
-            returnValue.Messages.AddRange(context.GetErrors());
-            return returnValue;
+            return AsApiResponseMessage(context, null);
         }
 
         public static ApiResponseMessage AsApiResponseMessage(this Exception exc)
         {
-            var returnValue = new ApiResponseMessage {Success = false};
-            returnValue.Messages.Add(new StatusMessage {Message = "An error has occurred"});
+            var returnValue = new ApiResponseMessage { Success = false };
+            returnValue.Messages.Add(new StatusMessage { Message = "An error has occurred" });
             return returnValue;
         }
 
@@ -40,6 +38,13 @@ namespace AMSLLC.Listener.ApiService
                     context.AddError(message, key);
                 }
             }
+        }
+
+        public static ApiResponseMessage AsApiResponseMessage(this IExecutionContext context, object result)
+        {
+            var returnValue = new ApiResponseMessage { Success = context.Valid, Data = result };
+            returnValue.Messages.AddRange(context.GetErrors());
+            return returnValue;
         }
     }
 }

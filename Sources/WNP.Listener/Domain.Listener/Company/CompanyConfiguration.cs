@@ -5,10 +5,6 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Domain.Listener.Company
 {
-    using System;
-    using Events;
-    using Mementos;
-
     /// <summary>
     /// Represents a company in listener transaction bounded context
     /// </summary>

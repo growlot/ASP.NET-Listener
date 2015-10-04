@@ -6,6 +6,7 @@
 
 namespace AMSLLC.Listener.ApiService
 {
+    using System.Collections.Specialized;
     using System.Runtime.Remoting.Messaging;
     using System.Threading.Tasks;
     using System.Web.Http;
@@ -34,8 +35,10 @@ namespace AMSLLC.Listener.ApiService
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
         [Route("open/{operationKey}")]
         [HttpPut]
-        public async Task<IHttpActionResult> Open(string operationKey, [FromBody] string data)
+        public async Task<IHttpActionResult> Open(string operationKey)
         {
+            string data = await Request.Content.ReadAsStringAsync();
+
             return
                 await
                     TryExecuteOperationAsync(
@@ -46,7 +49,7 @@ namespace AMSLLC.Listener.ApiService
                                 OperationKey = operationKey,
                                 SourceApplicationKey = ApplicationKey,
                                 Data = data,
-                                User = User.Identity.Name
+                                User = User?.Identity.Name
                             }));
         }
 
@@ -56,8 +59,8 @@ namespace AMSLLC.Listener.ApiService
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
-        [Route("process")]
-        [HttpPut]
+        [Route("process/{id}")]
+        [HttpPost]
         public async Task<IHttpActionResult> Process(string id)
         {
             return

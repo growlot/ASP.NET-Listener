@@ -6,7 +6,6 @@
 namespace AMSLLC.Listener.Domain.Test
 {
     using System;
-    using AMSLLC.Listener.Domain.Events;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>

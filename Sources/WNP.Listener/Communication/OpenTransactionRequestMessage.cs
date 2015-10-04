@@ -12,6 +12,6 @@ namespace AMSLLC.Listener.Communication
         public string OperationKey { get; set; }
         public string CompanyCode { get; set; }
         public string User { get; set; }
-        public object Data { get; set; }
+        public string Data { get; set; }
     }
 }

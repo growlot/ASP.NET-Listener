@@ -14,3 +14,4 @@ StyleCop.Cache
 !packages/repositories.config
 **/FakesAssemblies/
 *.GhostDoc.xml
+/Sources/WNP.Listener/ModelingProjectLib/

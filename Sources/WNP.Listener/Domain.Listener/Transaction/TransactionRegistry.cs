@@ -8,12 +8,23 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System;
     using Communication;
+    using Core;
 
     /// <summary>
     /// Transaction Registry domain model
     /// </summary>
     public class TransactionRegistry : Entity<int>, IAggregateRoot, IOriginator
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransactionRegistry"/> class.
+        /// </summary>
+        public TransactionRegistry()
+        {
+            this.KeyBuilder = ApplicationIntegration.DependencyResolver.ResolveType<ITransactionKeyBuilder>();
+        }
+
+        private ITransactionKeyBuilder KeyBuilder { get; }
+
         /// <summary>
         /// Gets the transaction identifier.
         /// </summary>
@@ -86,7 +97,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="createdDateTime">The created date time.</param>
         public void Create(DateTime createdDateTime)
         {
-            this.TransactionKey = Guid.NewGuid().ToString("D");
+            this.TransactionKey = this.KeyBuilder.Create();
             this.CreatedDateTime = createdDateTime;
             this.Status = TransactionStatusType.InProgress;
         }
