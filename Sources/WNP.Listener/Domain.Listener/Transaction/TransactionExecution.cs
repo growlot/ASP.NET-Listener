@@ -24,6 +24,18 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string TransactionKey { get; private set; }
 
         /// <summary>
+        /// Gets the entity key.
+        /// </summary>
+        /// <value>The entity key.</value>
+        public string EntityKey { get; private set; }
+
+        /// <summary>
+        /// Gets the entity category.
+        /// </summary>
+        /// <value>The entity category.</value>
+        public string EntityCategory { get; private set; }
+
+        /// <summary>
         /// Gets the endpoint configurations.
         /// </summary>
         /// <value>The endpoint configurations.</value>
@@ -53,6 +65,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             var myMemento = (TransactionExecutionMemento)memento;
             this.TransactionKey = myMemento.TransactionKey;
+            this.EntityKey = myMemento.EntityKey;
+            this.EntityCategory = myMemento.EntityCategory;
             this.EndpointConfigurations =
                 new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(
                     cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
@@ -78,7 +92,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
                 var eventData = new TransactionDataReady
                 {
-                    Data = preparedData.Data
+                    Data = new TransactionMessage { Data = preparedData.Data, EntityCategory = this.EntityCategory, EntityKey = this.EntityKey, TransactionKey = this.TransactionKey },
                 };
                 EventsRegister.Raise(eventData);
                 returnValue[i] = dispatcher.Handle(eventData, cfg.ConnectionConfiguration);

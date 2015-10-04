@@ -37,7 +37,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 string nextKey = Guid.NewGuid().ToString("D");
                 transactionKeyBuilder.Setup(s => s.Create()).Returns(nextKey);
 
-                string expectedMessage = "{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\"}";
+                string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\"}},\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"AA-11-XSE\",\"TransactionKey\":\"{nextKey}\"}}";
                 object receivedData = string.Empty;
 
                 var communicationHandler = new Mock<ICommunicationHandler>();

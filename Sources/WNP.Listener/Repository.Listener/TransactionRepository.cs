@@ -43,7 +43,11 @@ namespace AMSLLC.Listener.Repository.Listener
                 await _dbContext.PageAsync<ValueMapEntryEntity>(1, int.MaxValue, "SELECT * FROM ValueMapEntry");
             var valueMaps = await _dbContext.PageAsync<ValueMapEntity>(1, int.MaxValue, "SELECT * FROM ValueMap");
             var fieldConfigurationEntries = await _dbContext.PageAsync<FieldConfigurationEntryEntity>(1, int.MaxValue, "SELECT * FROM FieldConfigurationEntry");
-
+            var tr = await _dbContext.SingleAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE [Key] = @0", transactionKey);
+            var ecat =
+                await
+                    _dbContext.SingleAsync<EntityCategoryEntity>(
+                        "SELECT * FROM EntityCategory WHERE EntityCategoryId = @0", tr.EntityCategoryId);
             var endpoints = await _dbContext.FetchAsync<EndpointEntity>(@"SELECT 
 	E.*
 FROM 
@@ -61,7 +65,7 @@ WHERE TR.[Key] = @0", transactionKey);
                             new IntegrationEndpointConfigurationMemento(protocols.Items.Single(s => s.ProtocolTypeId == endpoint.ProtocolTypeId).Key, endpoint.ConnectionCfgJson,
                                 (Communication.EndpointTriggerType)endpoint.EndpointTriggerTypeId, PrepareFieldConfiguration(endpoint.FieldConfigurationId, fieldConfigurationEntries.Items, valueMapEntries.Items, valueMaps.Items))).ToList();
 
-                returnValue = new TransactionExecutionMemento(transactionKey, configurations);
+                returnValue = new TransactionExecutionMemento(transactionKey, tr.EntityKey, ecat.Key, configurations);
             }
             return returnValue;
         }

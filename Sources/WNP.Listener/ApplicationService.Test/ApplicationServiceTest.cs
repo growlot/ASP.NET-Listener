@@ -94,7 +94,7 @@ namespace ApplicationService.Test
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value",
                 "ArrayProperty[].NestedData.NestedArray[].DeepValue", integerMap));
 
-            var memento = new TransactionExecutionMemento(transactionKey,
+            var memento = new TransactionExecutionMemento(transactionKey, "AA-SS-DD", "ElectricMeters",
                 new[]
                 {
                     new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Always,
@@ -170,8 +170,8 @@ namespace ApplicationService.Test
                 f =>
                     f.Process(It.IsAny<object>(),
                         It.Is<IntegrationEndpointConfiguration>(data => data.Protocol == "jms")), Times.Once);
-            const string expectedMessageBodyJson =
-                "{\"ComplexProperty\":{\"NestedData\":{\"NestedData\":null,\"NestedArray\":null},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"},\"ArrayProperty\":[{\"NestedData\":{\"NestedData\":null,\"NestedArray\":[{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000},{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}],\"NestedArrayProperty\":\"EFD\"},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"},{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}";
+            string expectedMessageBodyJson =
+                $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}},\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"AA-SS-DD\",\"TransactionKey\":\"{transactionKey}\"}}";
 
             communicationHandler.Verify(
                 foo =>
