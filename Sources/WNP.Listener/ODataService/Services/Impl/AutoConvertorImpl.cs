@@ -48,7 +48,11 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                         return null;
 
                     if (v is DateTime)
-                        return new DateTimeOffset((DateTime) v);
+                    {
+                        DateTime localTime = (DateTime)v;
+                        DateTimeOffset result = new DateTimeOffset(localTime.ToUniversalTime());
+                        return result;
+                    }
 
                     throw new NotImplementedException($"Conversion of {v.GetType()} to DateTimeOffset is not implemented.");
                 }

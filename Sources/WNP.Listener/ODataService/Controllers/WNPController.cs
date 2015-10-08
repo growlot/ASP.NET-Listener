@@ -23,22 +23,22 @@ namespace AMSLLC.Listener.ODataService.Controllers
     [EnableQuery]
     public class WNPController : ODataController
     {
-        private readonly IMetadataService _metadataService;        
-        private readonly IFilterTransformer _filterTransformer;
-        private readonly IAutoConvertor _convertor;
+        protected readonly IMetadataService metadataService;
+        protected readonly IFilterTransformer filterTransformer;
+        protected readonly IAutoConvertor convertor;
 
-        private readonly WNPDBContext _dbContext;
+        private readonly WNPDBContext dbContext;
 
-        private readonly ODataValidationSettings _defaultODataValidationSettings;
+        private readonly ODataValidationSettings defaultODataValidationSettings;
 
         public WNPController(IMetadataService metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor)
         {
-            _metadataService = metadataService;
-            _dbContext = dbContext;
-            _filterTransformer = filterTransformer;
-            _convertor = convertor;
+            this.metadataService = metadataService;
+            this.dbContext = dbContext;
+            this.filterTransformer = filterTransformer;
+            this.convertor = convertor;
 
-            _defaultODataValidationSettings = new ODataValidationSettings()
+            defaultODataValidationSettings = new ODataValidationSettings()
             {
                 AllowedQueryOptions =
                     AllowedQueryOptions.Select | AllowedQueryOptions.Filter | AllowedQueryOptions.Top |
@@ -51,13 +51,13 @@ namespace AMSLLC.Listener.ODataService.Controllers
             // constructing oData options since we're can not using generic return type
             // without first generating Controller dynamically
             var queryOptions = ConstructQueryOptions();
-            queryOptions.Validate(_defaultODataValidationSettings);
+            queryOptions.Validate(defaultODataValidationSettings);
 
             // we can infer model type from the ODataQueryOptions
             // we created earlier
             var oDataModelType = queryOptions.Context.ElementClrType;
 
-            var modelMapping = _metadataService.GetModelMapping(oDataModelType.Name);
+            var modelMapping = metadataService.GetModelMapping(oDataModelType.Name);
 
             var skip = queryOptions.Skip?.Value ?? 0;
             var top = queryOptions.Top?.Value ?? 10;
@@ -69,11 +69,25 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 Sql.Builder.Select(GetDBColumnsList(queryOptions.SelectExpand, modelMapping.ModelToColumnMappings))
                            .From($"{modelMapping.TableName}");
 
-            var sqlWhere = _filterTransformer.TransformFilterQueryOption(queryOptions.Filter);
+            var sqlWhere = filterTransformer.TransformFilterQueryOption(queryOptions.Filter);
+
+            // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
+            for(int i = 0; i < sqlWhere.PositionalParameters.Length; i++)
+            {
+                DateTimeOffset? parameter = sqlWhere.PositionalParameters[i] as DateTimeOffset?;
+
+                if (parameter != null)
+                {
+                    DateTime localTime = new DateTime(parameter.Value.ToLocalTime().Ticks);
+                    DateTime localTimeAsUtc = DateTime.SpecifyKind(localTime, DateTimeKind.Utc);
+                    sqlWhere.PositionalParameters[i] = (DateTimeOffset)localTimeAsUtc;
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(sqlWhere.Clause))
                 sql = sql.Where(sqlWhere.Clause, sqlWhere.PositionalParameters);
 
-            var dbResults = _dbContext.SkipTake<dynamic>(skip, top, sql);
+            var dbResults = dbContext.SkipTake<dynamic>(skip, top, sql);
 
             foreach (var record in dbResults)
             {
@@ -83,7 +97,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                 {
                     var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key.ToLowerInvariant()]);
-                    property.SetValue(entityInstance, _convertor.Convert(rawData[key], property.PropertyType));
+                    property.SetValue(entityInstance, convertor.Convert(rawData[key], property.PropertyType));
                 }
 
                 result.Add(entityInstance);
@@ -145,7 +159,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     throw new ArgumentOutOfRangeException();
             }
 
-            var type = _metadataService.ODataModelAssembly.GetType(modelTypeFullName);
+            var type = metadataService.ODataModelAssembly.GetType(modelTypeFullName);
             var model = oDataProperties.Model;
 
             return new ODataQueryOptions(new ODataQueryContext(model, type, oDataPath), Request);
