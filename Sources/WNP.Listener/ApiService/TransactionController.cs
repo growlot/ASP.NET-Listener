@@ -40,20 +40,24 @@ namespace AMSLLC.Listener.ApiService
         {
             string data = await Request.Content.ReadAsStringAsync();
 
+            var message = new OpenTransactionRequestMessage
+            {
+                CompanyCode = CompanyCode,
+                OperationKey = operationKey,
+                SourceApplicationKey = ApplicationKey,
+                Data = data,
+                User = User?.Identity.Name
+            };
+
+            message.Header.Add("PrimaryCategory", entityCategory);
+            message.Header.Add("PrimaryKey", entityKey);
+            message.Header.Add("Operation", operationKey);
+
             return
                 await
                     TryExecuteOperationAsync(
                         context =>
-                            this._transactionService.Open(new OpenTransactionRequestMessage
-                            {
-                                CompanyCode = CompanyCode,
-                                OperationKey = operationKey,
-                                SourceApplicationKey = ApplicationKey,
-                                EntityKey = entityKey,
-                                EntityCategory = entityCategory,
-                                Data = data,
-                                User = User?.Identity.Name
-                            }));
+                            this._transactionService.Open(message));
         }
 
 

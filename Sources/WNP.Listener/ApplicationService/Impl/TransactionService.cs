@@ -7,13 +7,19 @@
 namespace AMSLLC.Listener.ApplicationService.Impl
 {
     using System;
+    using System.Collections.Generic;
     using System.Dynamic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using System.Xml;
+    using System.Xml.Linq;
     using Communication;
     using Domain;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using Repository;
+    using Utilities;
+    using Formatting = Newtonsoft.Json.Formatting;
 
     public class TransactionService : ITransactionService
     {
@@ -25,7 +31,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                 var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
                 var memento = new TransactionRegistryMemento(null, requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey, requestMessage.OperationKey, TransactionStatusType.InProgress,
-                    requestMessage.User, requestMessage.EntityCategory, requestMessage.EntityKey, scope.ScopeDateTime, null, requestMessage.Data, null, null);
+                    requestMessage.User, requestMessage.Header, scope.ScopeDateTime, null, requestMessage.Data, null, null);
 
                 var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
@@ -49,13 +55,22 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                         sourceRepository.GetExecutionContext(requestMessage.TransactionKey);
 
                 var dataString = await sourceRepository.GetTransactionData(requestMessage.TransactionKey);
+                var headerString = await sourceRepository.GetTransactionHeader(requestMessage.TransactionKey);
                 var transactionExecution =
                     scope.DomainBuilder.Create<TransactionExecution>();
 
                 ((IOriginator)transactionExecution).SetMemento(memento);
+
+
+
+                var newDict = string.IsNullOrWhiteSpace(headerString) ? null : JsonConvert.DeserializeObject<Dictionary<string, object>>(headerString);
+                ExpandoObject data = string.IsNullOrWhiteSpace(dataString) ? null : JsonConvert.DeserializeObject<ExpandoObject>(dataString);
+
                 await
                     Task.WhenAll(
-                        transactionExecution.Process(JsonConvert.DeserializeObject<ExpandoObject>(dataString)));
+                        transactionExecution.Process(data, newDict));
+
+                await sourceRepository.UpdateHash(transactionExecution.Id, transactionExecution.TransactionHash);
             }
         }
 
@@ -89,6 +104,23 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
                 transactionRegistry.Fail(scope.ScopeDateTime, requestMessage.Message, requestMessage.Details);
+                await sourceRepository.Update(transactionRegistry);
+            }
+        }
+
+        public async Task Skipped(TransactionSkippedRequestMessage requestMessage)
+        {
+            using (var scope = ApplicationServiceScope.Create())
+            {
+                var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
+                var memento =
+                    await
+                        sourceRepository.GetRegistryEntry(requestMessage.TransactionKey);
+                var transactionRegistry =
+                    scope.DomainBuilder.Create<TransactionRegistry>();
+                ((IOriginator)transactionRegistry).SetMemento(memento);
+
+                transactionRegistry.Skip(scope.ScopeDateTime);
                 await sourceRepository.Update(transactionRegistry);
             }
         }

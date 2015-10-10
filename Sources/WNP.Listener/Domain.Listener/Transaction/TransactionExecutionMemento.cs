@@ -19,17 +19,15 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Initializes a new instance of the <see cref="TransactionExecutionMemento" /> class.
         /// </summary>
         /// <param name="transactionKey">The transaction key.</param>
-        /// <param name="entityKey">The entity key.</param>
-        /// <param name="entityCategory">The entity category.</param>
+        /// <param name="enabledOperationId">The enabled operation identifier.</param>
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
-        public TransactionExecutionMemento(string transactionKey, string entityKey, string entityCategory,
+        public TransactionExecutionMemento(string transactionKey, int enabledOperationId,
             IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration)
         {
             this.EndpointConfigurations =
                 new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionKey = transactionKey;
-            this.EntityKey = entityKey;
-            this.EntityCategory = entityCategory;
+            this.EnabledOperationId = enabledOperationId;
         }
 
         /// <summary>
@@ -45,15 +43,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public ReadOnlyCollection<IntegrationEndpointConfigurationMemento> EndpointConfigurations { get; private set; }
 
         /// <summary>
-        /// Gets the entity key.
+        /// Gets the enabled operation identifier.
         /// </summary>
-        /// <value>The entity key.</value>
-        public string EntityKey { get; private set; }
-
-        /// <summary>
-        /// Gets the entity category.
-        /// </summary>
-        /// <value>The entity category.</value>
-        public string EntityCategory { get; private set; }
+        /// <value>The enabled operation identifier.</value>
+        public int EnabledOperationId { get; private set; }
     }
 }

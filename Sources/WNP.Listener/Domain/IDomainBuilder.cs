@@ -16,7 +16,7 @@ namespace AMSLLC.Listener.Domain
         /// </summary>
         /// <typeparam name="TDomainModel">The type of the domain model.</typeparam>
         /// <returns>Domain model.</returns>
-        TDomainModel Create<TDomainModel>() where TDomainModel : IOriginator, new();
+        TDomainModel Create<TDomainModel>() where TDomainModel : IOriginator;
 
         /// <summary>
         /// Creates domain model instance.
@@ -24,6 +24,6 @@ namespace AMSLLC.Listener.Domain
         /// <typeparam name="TDomainModel">The type of the domain model.</typeparam>
         /// <param name="memento">The memento.</param>
         /// <returns>Domain model.</returns>
-        TDomainModel Create<TDomainModel>(IMemento memento) where TDomainModel : IOriginator, new();
+        TDomainModel Create<TDomainModel>(IMemento memento) where TDomainModel : IOriginator;
     }
 }

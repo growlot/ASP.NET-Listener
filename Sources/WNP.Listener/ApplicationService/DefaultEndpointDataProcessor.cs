@@ -13,6 +13,8 @@ namespace AMSLLC.Listener.ApplicationService
     using System.Dynamic;
     using System.Linq;
     using System.Reflection;
+    using System.Security.Cryptography;
+    using System.Text;
     using System.Text.RegularExpressions;
     using Core;
     using Domain.Listener.Transaction;
@@ -66,13 +68,25 @@ namespace AMSLLC.Listener.ApplicationService
                     else
                     {
                         //var converter = TypeDescriptor.GetConverter(targetProperty.PropertyType);
-                        targetProperty.SetValue(owner, targetValue);//converter.ConvertFrom(targetValue?.ToString())
+                        targetProperty.SetValue(owner, targetValue); //converter.ConvertFrom(targetValue?.ToString())
                     }
                 });
             }
 
-            //IEnumerable<KeyValuePair<string, object>> hashSorted = hashElements.OrderBy(s => s.Key);
+            List<KeyValuePair<string, object>> hashSorted =
+                hashElements.Where(s => s.Value != null).OrderBy(s => s.Key).ToList();
+            StringBuilder hashSourceBuilder = new StringBuilder();
+            for (int i = 0; i < hashSorted.Count; i++)
+            {
+                var hashElement = hashSorted[i].Value;
+                hashSourceBuilder.AppendFormat("{0}_", JsonConvert.SerializeObject(hashElement));
+            }
 
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(hashSourceBuilder.ToString()));
+                returnValue.Hash = Convert.ToBase64String(hash);
+            }
 
             return returnValue;
         }

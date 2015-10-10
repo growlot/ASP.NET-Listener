@@ -14,5 +14,8 @@ namespace AMSLLC.Listener.Repository
         Task<IMemento> GetRegistryEntry(string transactionKey);
         Task Update(TransactionRegistry transactionRegistry);
         Task<string> GetTransactionData(string transactionKey);
+        Task<int> GetHashCount(int enabledOperationId, string hash);
+        Task UpdateHash(int transactionId, string hash);
+        Task<string> GetTransactionHeader(string transactionKey);
     }
 }

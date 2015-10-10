@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationServiceConfigurator.cs" />
     <Compile Include="ApplicationServiceScope.cs" />
     <Compile Include="DefaultEndpointDataProcessor.cs" />
     <Compile Include="DomainBuilder.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="ITransactionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryManager.cs" />
+    <Compile Include="Validator\UniqueHashValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
@@ -79,6 +81,10 @@
     <ProjectReference Include="..\Communication\Communication.csproj">
       <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
       <Name>Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{CF40FB68-247D-4024-A8E9-3B707973AD11}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

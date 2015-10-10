@@ -13,10 +13,12 @@ namespace ApplicationService.Test
     using AMSLLC.Core.Ninject;
     using AMSLLC.Listener.ApplicationService;
     using AMSLLC.Listener.ApplicationService.Impl;
+    using AMSLLC.Listener.ApplicationService.Validator;
     using AMSLLC.Listener.Communication;
     using AMSLLC.Listener.Domain;
     using AMSLLC.Listener.Domain.Listener.Transaction;
     using AMSLLC.Listener.Repository;
+    using AMSLLC.Listener.Utilities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
@@ -65,7 +67,11 @@ namespace ApplicationService.Test
 
             var transactionRepositoryMock = new Mock<ITransactionRepository>();
 
-            var transactionExecutionDomain = new Mock<TransactionExecution> { CallBase = true };
+            var validatorMock = new Mock<IUniqueHashValidator>();
+            validatorMock.Setup(s => s.ValidateAsync(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            validatorMock.Setup(s => s.Valid).Returns(true);
+
+            var transactionExecutionDomain = new Mock<TransactionExecution>(validatorMock.Object) { CallBase = true };
             transactionExecutionDomain.As<IOriginator>();
             transactionExecutionDomain.As<IWithDomainBuilder>();
             var integrationEndpointConfiguration = new Mock<IntegrationEndpointConfiguration>();
@@ -94,7 +100,7 @@ namespace ApplicationService.Test
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value",
                 "ArrayProperty[].NestedData.NestedArray[].DeepValue", integerMap));
 
-            var memento = new TransactionExecutionMemento(transactionKey, "AA-SS-DD", "ElectricMeters",
+            var memento = new TransactionExecutionMemento(transactionKey, 1,
                 new[]
                 {
                     new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Always,
@@ -105,6 +111,13 @@ namespace ApplicationService.Test
             transactionRepositoryMock.Setup(s => s.GetExecutionContext(transactionKey))
                 .Returns(
                     (string taId) => Task.FromResult((IMemento)memento));
+
+            transactionRepositoryMock.Setup(s => s.GetHashCount(It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(
+                    (int i, string h) => Task.FromResult(0));
+
+
+            //var dn = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(testMessageData));
 
             transactionRepositoryMock.Setup(s => s.GetTransactionData(transactionKey))
                 .Returns(Task.FromResult(JsonConvert.SerializeObject(testMessageData)));
@@ -134,6 +147,7 @@ namespace ApplicationService.Test
 
             di.Initialize(container =>
             {
+                container.Bind<IUniqueHashValidator>().ToConstant(validatorMock.Object);
                 container.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
                 container.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
                 container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
@@ -164,26 +178,29 @@ namespace ApplicationService.Test
                 });
 
             transactionExecutionDomain.Verify(
-                foo => foo.Process(It.IsAny<object>()), Times.Once());
+                foo => foo.Process(It.IsAny<object>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
             jmsConnectionBuilder.Verify(f => f.Create(It.Is<IMemento>(data => data != null)), Times.Once);
             jmsEndpointProcessorMock.Verify(
                 f =>
                     f.Process(It.IsAny<object>(),
                         It.Is<IntegrationEndpointConfiguration>(data => data.Protocol == "jms")), Times.Once);
             string expectedMessageBodyJson =
-                $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}},\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"AA-SS-DD\",\"TransactionKey\":\"{transactionKey}\"}}";
+                $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}},\"TransactionKey\":\"{transactionKey}\"}}";
+
+            communicationHandler.Verify(foo => foo.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>()),
+                Times.Once());
 
             communicationHandler.Verify(
-                foo =>
-                    foo.Handle(
-                        It.Is<object>(
-                            data =>
-                                string.Compare(
-                                    JsonConvert.SerializeObject(((TransactionDataReady)data).Data, settings),
-                                    expectedMessageBodyJson,
-                                    StringComparison.InvariantCulture) == 0),
-                        It.IsAny<IConnectionConfiguration>()), Times.Once(),
-                "Handler invoked with unexpected data: {0}".FormatWith(JsonConvert.SerializeObject(commHandlerData)));
+                 foo =>
+                     foo.Handle(
+                         It.Is<object>(
+                             data =>
+                                 string.Compare(
+                                     JsonConvert.SerializeObject(((TransactionDataReady)data).Data, settings),
+                                     expectedMessageBodyJson,
+                                     StringComparison.InvariantCulture) == 0),
+                         It.IsAny<IConnectionConfiguration>()), Times.Once(),
+                 "Handler invoked with unexpected data: {0}{1}Expected:{2}".FormatWith(JsonConvert.SerializeObject(commHandlerData, settings), Environment.NewLine, expectedMessageBodyJson));
         }
 
         [TestMethod]
@@ -256,14 +273,14 @@ namespace ApplicationService.Test
             Assert.AreEqual(expectedJson, JsonConvert.SerializeObject(d.Data));
         }
 
-        private class TestMessageData
+        public class TestMessageData
         {
             public int Value { get; set; }
             public TestSubData ComplexProperty { get; set; }
             public TestSubData[] ArrayProperty { get; set; }
         }
 
-        private class TestSubData
+        public class TestSubData
         {
             public string AnotherValue { get; set; }
             public TestSubData NestedData { get; set; }

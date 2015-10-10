@@ -1,5 +1,5 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="Migration_202000105_Endpoint_Populate.cs" company="Advanced Metering Services LLC">
+// // <copyright file="Migration_202000088_EntityCategoryOperation_Populate.cs" company="Advanced Metering Services LLC">
 // //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // // </copyright>
 // //-----------------------------------------------------------------------
@@ -12,8 +12,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// <summary>
     /// Database migration step
     /// </summary>
-    [Migration(202000105)]
-    public class Migration_202000105_Endpoint_Populate : Migration
+    [Migration(202000088)]
+    public class Migration_202000088_EntityCategoryOperation_Populate : Migration
     {
         /// <summary>
         /// Perform database upgrade action
@@ -22,18 +22,15 @@ namespace AMSLLC.Listener.DatabaseMigrations
         {
             var record = new
             {
-                EndpointId = 1,
-                Name = "Generic Jms Endpoint",
-                ProtocolTypeId = 1,
-                ConnectionCfgJson = "{\"Host\":\"localhost\", \"Port\":7001, \"QueueName\":\"jms/AMSIntegration\", \"UserName\":\"ams\", \"Password\":\"Password1\"}",
-                FieldConfigurationId = 1,
-                EndpointTriggerTypeId = 2
+                EntityCategoryOperationId = 1,
+                EntityCategoryId = 1,
+                OperationId = 1
             };
 
-            this.IfSqlServer().Insert.IntoTable("Endpoint").WithIdentityInsert()
+            this.IfSqlServer().Insert.IntoTable("EntityCategoryOperation").WithIdentityInsert()
                 .Row(record);
 
-            this.IfOracle().Insert.IntoTable("Endpoint")
+            this.IfOracle().Insert.IntoTable("EntityCategoryOperation")
                 .Row(record);
         }
 
@@ -42,7 +39,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Down()
         {
-            this.Delete.FromTable("Endpoint").AllRows();
+            this.Delete.FromTable("EntityCategoryOperation").AllRows();
         }
     }
 }

@@ -7,6 +7,7 @@
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System;
+    using System.Collections.Generic;
     using Communication;
     using Core;
 
@@ -92,16 +93,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Details { get; private set; }
 
         /// <summary>
-        /// Gets or sets the entity key.
+        /// Gets the header.
         /// </summary>
-        /// <value>The device key.</value>
-        public string EntityKey { get; set; }
+        /// <value>The header.</value>
+        public Dictionary<string, object> Header { get; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets or sets the entity category.
+        /// Gets the summary.
         /// </summary>
-        /// <value>The device category.</value>
-        public string EntityCategory { get; private set; }
+        /// <value>The summary.</value>
+        public Dictionary<string, object> Summary { get; } = new Dictionary<string, object>();
 
         /// <summary>
         /// Setup new transaction registry entry
@@ -112,6 +113,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.TransactionKey = this.KeyBuilder.Create();
             this.CreatedDateTime = createdDateTime;
             this.Status = TransactionStatusType.InProgress;
+
+            foreach (var o in this.Header)
+            {
+                this.Summary.Add(o.Key, o.Value);
+            }
         }
 
         /// <summary>
@@ -123,6 +129,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             this.UpdatedDateTime = scopeDateTime;
             this.Status = TransactionStatusType.Success;
+        }
+
+        /// <summary>
+        /// Skips the current transaction
+        /// </summary>
+        /// <param name="scopeDateTime">The scope date time.</param>
+        public void Skip(DateTime scopeDateTime)
+        {
+            this.UpdatedDateTime = scopeDateTime;
+            this.Status = TransactionStatusType.Skipped;
         }
 
         /// <summary>
@@ -162,13 +178,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.OperationKey = myMemento.OperationKey;
             this.Status = myMemento.Status;
             this.UserName = myMemento.UserName;
-            this.EntityCategory = myMemento.EntityCategory;
-            this.EntityKey = myMemento.EntityKey;
             this.CreatedDateTime = myMemento.CreatedDateTime;
             this.UpdatedDateTime = myMemento.UpdatedDateTime;
             this.Data = myMemento.Data;
             this.Message = myMemento.Message;
             this.Details = myMemento.Details;
+
+            foreach (var o in myMemento.Header)
+            {
+                this.Header.Add(o.Key, o.Value);
+            }
         }
     }
 }

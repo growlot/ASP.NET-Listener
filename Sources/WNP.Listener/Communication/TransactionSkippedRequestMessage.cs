@@ -5,10 +5,12 @@ using System.Text;
 
 namespace AMSLLC.Listener.Communication
 {
-    public class TransactionMessage
+    public class TransactionSkippedRequestMessage
     {
-        public object Data { get; set; }
+        /// <summary>
+        /// Gets or sets the transaction key.
+        /// </summary>
+        /// <value>The transaction key.</value>
         public string TransactionKey { get; set; }
-        public Dictionary<string, object> Header { get; set; }
     }
 }

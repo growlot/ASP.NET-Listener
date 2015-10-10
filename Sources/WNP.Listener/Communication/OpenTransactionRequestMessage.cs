@@ -6,6 +6,8 @@
 
 namespace AMSLLC.Listener.Communication
 {
+    using System.Collections.Generic;
+
     public class OpenTransactionRequestMessage
     {
         public string SourceApplicationKey { get; set; }
@@ -13,7 +15,6 @@ namespace AMSLLC.Listener.Communication
         public string CompanyCode { get; set; }
         public string User { get; set; }
         public string Data { get; set; }
-        public string EntityKey { get; set; }
-        public string EntityCategory { get; set; }
+        public Dictionary<string, object> Header { get; } = new Dictionary<string, object>();
     }
 }

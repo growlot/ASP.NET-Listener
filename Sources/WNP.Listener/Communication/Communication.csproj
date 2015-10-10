@@ -52,6 +52,7 @@
     <Compile Include="ProcessTransactionRequestMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionMessage.cs" />
+    <Compile Include="TransactionSkippedRequestMessage.cs" />
     <Compile Include="TransactionStatusType.cs" />
     <Compile Include="TransactionSuccessMessage.cs" />
   </ItemGroup>

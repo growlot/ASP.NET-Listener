@@ -184,6 +184,8 @@
     <Compile Include="v2.2.0\Migration_202000075_Application_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000080_Operation_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000085_Operation_Populate.cs" />
+    <Compile Include="v2.2.0\Migration_202000087_EntityCategoryOperation_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000088_EntityCategoryOperation_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000090_EnabledOperation_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000095_EnabledOperation_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000100_Endpoint_Create.cs" />

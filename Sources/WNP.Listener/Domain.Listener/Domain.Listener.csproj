@@ -59,7 +59,9 @@
     <Compile Include="Application\ApplicationTransaction.cs" />
     <Compile Include="Application\DeviceTypeDisabledForApplication.cs" />
     <Compile Include="Application\DeviceTypeEnabledForApplication.cs" />
+    <Compile Include="DomainValidatorDictionary.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IDomainValidator.cs" />
     <Compile Include="Lookups\ServiceTypeLookup.cs" />
     <Compile Include="Lookups\DeviceTypeLookup.cs" />
     <Compile Include="Application\ApplicationConfigurationMemento.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Transaction\IConnectionConfigurationBuilder.cs" />
     <Compile Include="Transaction\IEndpointDataProcessor.cs" />
     <Compile Include="Transaction\IEndpointDataProcessorResult.cs" />
+    <Compile Include="Transaction\IUniqueHashValidator.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfiguration.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfigurationMemento.cs" />
     <Compile Include="Transaction\ITransactionKeyBuilder.cs" />
@@ -85,6 +88,7 @@
     <Compile Include="Transaction\TransactionKeyBuilder.cs" />
     <Compile Include="Transaction\TransactionRegistry.cs" />
     <Compile Include="Transaction\TransactionRegistryMemento.cs" />
+    <Compile Include="Transaction\TransactionSkipped.cs" />
     <Compile Include="Transaction\ValueMapDictionary.cs" />
   </ItemGroup>
   <ItemGroup>

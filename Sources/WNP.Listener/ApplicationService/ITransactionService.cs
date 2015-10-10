@@ -16,5 +16,6 @@ namespace AMSLLC.Listener.ApplicationService
         Task Process(ProcessTransactionRequestMessage requestMessage);
         Task Success(TransactionSuccessMessage transactionSuccessMessage);
         Task Failed(TransactionFailedMessage transactionFailedMessage);
+        Task Skipped(TransactionSkippedRequestMessage requestMessage);
     }
 }

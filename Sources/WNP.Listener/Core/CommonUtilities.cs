@@ -9,6 +9,7 @@ namespace AMSLLC.Core
     using System;
     using System.Linq.Expressions;
     using System.Reflection;
+    using System.Text;
 
     /// <summary>
     /// Common utilities

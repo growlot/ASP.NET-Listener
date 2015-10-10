@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.ApiService.Properties
 {
     using ApplicationService;
     using ApplicationService.Impl;
+    using ApplicationService.Validator;
     using Communication;
     using Communication.Jms;
     using Core;
@@ -37,6 +38,10 @@ namespace AMSLLC.Listener.ApiService.Properties
             this.Kernel.Bind<IEndpointDataProcessor>().To<DefaultEndpointDataProcessor>().InSingletonScope();
             this.Kernel.Bind<IConnectionConfigurationBuilder>().To<JmsConnectionConfigurationBuilder>().InSingletonScope().Named("connection-builder-jms");
             this.Kernel.Bind<ICommunicationHandler>().To<JmsDispatcher>().InSingletonScope().Named("communication-jms");
+
+
+            this.Kernel.Bind<IUniqueHashValidator>().To<UniqueHashValidator>();
+             
         }
     }
 }

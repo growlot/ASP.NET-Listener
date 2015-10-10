@@ -27,7 +27,7 @@
 //     Provider:               `System.Data.SqlClient`
 //     Connection String:      `Server=localhost\sqlexpress;Database=ListenerKCPL220;User Id=wndba; password=**zapped**;`
 //     Schema:                 ``
-//     Include Views:          `False`
+//     Include Views:          `True`
 
 
 
@@ -135,6 +135,56 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
     
+	[TableName("Endpoint")]
+
+
+	[PrimaryKey("EndpointId")]
+
+
+
+	[ExplicitColumns]
+    public partial class EndpointEntity : ListenerDB.Record<EndpointEntity>  
+    {
+
+
+
+		[Column] public int EndpointId { get; set; }
+
+
+
+
+
+		[Column] public string Name { get; set; }
+
+
+
+
+
+		[Column] public int ProtocolTypeId { get; set; }
+
+
+
+
+
+		[Column] public string ConnectionCfgJson { get; set; }
+
+
+
+
+
+		[Column] public int? FieldConfigurationId { get; set; }
+
+
+
+
+
+		[Column] public int EndpointTriggerTypeId { get; set; }
+
+
+
+	}
+
+    
 	[TableName("OperationEndpoint")]
 
 
@@ -186,25 +236,19 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
+		[Column] public int? ParentTransactionId { get; set; }
+
+
+
+
+
 		[Column] public string Key { get; set; }
 
 
 
 
 
-		[Column] public int ApplicationId { get; set; }
-
-
-
-
-
-		[Column] public int CompanyId { get; set; }
-
-
-
-
-
-		[Column] public int OperationId { get; set; }
+		[Column] public int EnabledOperationId { get; set; }
 
 
 
@@ -216,13 +260,19 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public int? EntityCategoryId { get; set; }
+		[Column] public string Header { get; set; }
 
 
 
 
 
-		[Column] public string EntityKey { get; set; }
+		[Column] public string Data { get; set; }
+
+
+
+
+
+		[Column] public string Summary { get; set; }
 
 
 
@@ -234,7 +284,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public string Data { get; set; }
+		[Column] public string TransactionHash { get; set; }
 
 
 
@@ -1593,6 +1643,38 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
+	[TableName("EntityCategoryOperation")]
+
+
+	[PrimaryKey("EntityCategoryOperationId")]
+
+
+
+	[ExplicitColumns]
+    public partial class EntityCategoryOperationEntity : ListenerDB.Record<EntityCategoryOperationEntity>  
+    {
+
+
+
+		[Column] public int EntityCategoryOperationId { get; set; }
+
+
+
+
+
+		[Column] public int EntityCategoryId { get; set; }
+
+
+
+
+
+		[Column] public int OperationId { get; set; }
+
+
+
+	}
+
+    
 	[TableName("EnabledOperation")]
 
 
@@ -1625,62 +1707,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 		[Column] public int OperationId { get; set; }
-
-
-
-	}
-
-    
-	[TableName("Endpoint")]
-
-
-	[PrimaryKey("EndpointId")]
-
-
-
-	[ExplicitColumns]
-    public partial class EndpointEntity : ListenerDB.Record<EndpointEntity>  
-    {
-
-
-
-		[Column] public int EndpointId { get; set; }
-
-
-
-
-
-		[Column] public int EnabledOperationId { get; set; }
-
-
-
-
-
-		[Column] public string Name { get; set; }
-
-
-
-
-
-		[Column] public int ProtocolTypeId { get; set; }
-
-
-
-
-
-		[Column] public string ConnectionCfgJson { get; set; }
-
-
-
-
-
-		[Column] public int? FieldConfigurationId { get; set; }
-
-
-
-
-
-		[Column] public int EndpointTriggerTypeId { get; set; }
 
 
 
