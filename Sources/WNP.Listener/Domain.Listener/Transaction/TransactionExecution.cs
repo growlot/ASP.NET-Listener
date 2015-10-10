@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the transaction identifier.
         /// </summary>
         /// <value>The transaction identifier.</value>
-        public int TransactionKey { get; private set; }
+        public string TransactionKey { get; private set; }
 
         /// <summary>
         /// Gets the enabled operation identifier.
