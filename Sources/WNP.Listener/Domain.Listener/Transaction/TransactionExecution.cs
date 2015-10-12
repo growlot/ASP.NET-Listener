@@ -84,6 +84,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             var myMemento = (TransactionExecutionMemento)memento;
             this.TransactionKey = myMemento.TransactionKey;
+            this.Id = myMemento.TransactionId;
             this.EnabledOperationId = myMemento.EnabledOperationId;
             this.EndpointConfigurations =
                 new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(

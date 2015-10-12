@@ -13,7 +13,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
-    using ApiService;
     using Communication;
     using Core;
     using Core.Ninject;
@@ -22,6 +21,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
 
     [TestClass]
     public class IntegrationTest
@@ -50,25 +50,40 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
                 di.Kernel.Rebind<ITransactionKeyBuilder>().ToConstant(transactionKeyBuilder.Object).InSingletonScope();
                 di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
-
+                var settings = new JsonSerializerSettings
+                {
+                    //ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    TypeNameHandling = TypeNameHandling.Auto
+                };
+                var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
+                mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
                 HttpResponseMessage response =
                     await
-                        server.CreateRequest("api/transaction/ElectricMeters('AA-11-XSE')/Install()")
+                        //server.CreateRequest("api/transaction/ElectricMeters('AA-11-XSE')/Install()")
+                        server.CreateRequest("listener/Open")
+                            //(entityCategory=ElectricMeters,operationKey=Install,entityKey=AA-11-XSE)
                             .And(
                                 request =>
                                     request.Content =
                                         new ObjectContent(typeof(InstallMeterRequestMessage),
-                                            new InstallMeterRequestMessage { Test = "A1-S2-D3" },
-                                            new JsonMediaTypeFormatter(),
-                                            new MediaTypeWithQualityHeaderValue("application/json")))
+                                            new InstallMeterRequestMessage
+                                            {
+                                                //Test = "A1-S2-D3",
+                                                EntityCategory = "ElectricMeters",
+                                                OperationKey = "Install",
+                                                EntityKey = "AA-11-XSE"
+                                            },
+                                            new JsonMediaTypeFormatter { SerializerSettings = settings },
+                                            mediaType))
+                            //.AddHeader("Content-Type", "application/json;odata=verbose")
                             .AddHeader("AMS-Company", "CCD")
                             .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
-                            .SendAsync("PUT");
+                            .PostAsync();
 
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
                 string responseBody = await response.Content.ReadAsStringAsync();
-                var responseMessage = JsonConvert.DeserializeObject<ApiResponseMessage>(responseBody);
-                Assert.AreEqual(nextKey, responseMessage.Data);
+                var responseMessage = responseBody;// JsonConvert.DeserializeObject<ApiResponseMessage>(responseBody);
+                Assert.AreEqual(nextKey, responseMessage);
 
                 HttpResponseMessage processResponse =
                     await server.CreateRequest($"api/transaction/Transaction('{nextKey}')/Process()").AddHeader("AMS-Company", "CCD")
@@ -90,6 +105,9 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         {
             public string Test { get; set; }
             public string UserName { get; set; }
+            public string EntityCategory { get; set; }
+            public string EntityKey { get; set; }
+            public string OperationKey { get; set; }
         }
     }
 }

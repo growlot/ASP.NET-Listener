@@ -42,8 +42,20 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AutoMapper.4.0.4\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.OData.Core, Version=6.13.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -149,7 +161,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\WNPController.cs" />
+    <Compile Include="ListenerODataContext.cs" />
+    <Compile Include="ListenerRequestHeaderMap.cs" />
+    <Compile Include="MessageHandlers\ListenerMessageHandler.cs" />
     <Compile Include="ODataServiceConfigurator.cs" />
     <Compile Include="MessageHandlers\MiniProfilerMessageHandler.cs" />
     <Compile Include="Properties\ODataServiceModule.cs" />
@@ -170,11 +186,6 @@
     <Compile Include="WNPGenericRoutingConvention.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\ConnectionStrings.config">
-      <Link>ConnectionStrings.config</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -184,9 +195,21 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationService\ApplicationService.csproj">
+      <Project>{6B540066-84AB-4D63-81A6-9C724AEF039F}</Project>
+      <Name>ApplicationService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Communication\Communication.csproj">
+      <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
+      <Name>Communication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MetadataService\MetadataService.csproj">
       <Project>{702b10d4-57d6-4406-a159-715f658ae54d}</Project>
       <Name>MetadataService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistence.Listener\Persistence.Listener.csproj">
+      <Project>{5A7FEA99-BB93-4BDA-91AE-2DDEC17E3D21}</Project>
+      <Name>Persistence.Listener</Name>
     </ProjectReference>
     <ProjectReference Include="..\Persistence\Persistence.csproj">
       <Project>{993CDFFD-FB9F-4C45-9F10-E4F006F0B8EA}</Project>

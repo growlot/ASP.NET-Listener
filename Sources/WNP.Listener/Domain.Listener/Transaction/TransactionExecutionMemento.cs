@@ -18,17 +18,25 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionExecutionMemento" /> class.
         /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="transactionKey">The transaction key.</param>
         /// <param name="enabledOperationId">The enabled operation identifier.</param>
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
-        public TransactionExecutionMemento(string transactionKey, int enabledOperationId,
+        public TransactionExecutionMemento(int transactionId, string transactionKey, int enabledOperationId,
             IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration)
         {
             this.EndpointConfigurations =
                 new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
+            this.TransactionId = transactionId;
             this.TransactionKey = transactionKey;
             this.EnabledOperationId = enabledOperationId;
         }
+
+        /// <summary>
+        /// Gets or sets the transaction identifier.
+        /// </summary>
+        /// <value>The transaction identifier.</value>
+        public int TransactionId { get; set; }
 
         /// <summary>
         /// Gets or sets the transaction identifier.

@@ -13,6 +13,8 @@ namespace AMSLLC.Listener.ODataService.Properties
     {
         public override void Load()
         {
+            Kernel.Bind<ListenerODataContext>().ToSelf().InRequestScope();
+
             Kernel.Bind<WNPDBContext>()
                 .ToSelf()
                 .InRequestScope()

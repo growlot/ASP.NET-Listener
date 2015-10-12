@@ -100,7 +100,7 @@ namespace ApplicationService.Test
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value",
                 "ArrayProperty[].NestedData.NestedArray[].DeepValue", integerMap));
 
-            var memento = new TransactionExecutionMemento(transactionKey, 1,
+            var memento = new TransactionExecutionMemento(1, transactionKey, 1,
                 new[]
                 {
                     new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Always,

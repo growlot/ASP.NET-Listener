@@ -14,16 +14,17 @@ namespace AMSLLC.Listener.Repository.Listener
     using System.Collections.Generic;
     using System.Linq;
     using Communication;
+    using Core;
     using Newtonsoft.Json;
     using Utilities;
 
     public class TransactionRepository : ITransactionRepository
     {
-        private readonly ListenerDbContext _dbContext;
+        private readonly IPersistenceAdapter _persistence;
 
-        public TransactionRepository(ListenerDbContext dbContext)
+        public TransactionRepository(IPersistenceAdapter persistence)
         {
-            _dbContext = dbContext;
+            _persistence = persistence;
         }
 
         public Task Create(TransactionExecution transaction)
@@ -38,15 +39,16 @@ namespace AMSLLC.Listener.Repository.Listener
 
         public async Task UpdateHash(int transactionId, string hash)
         {
-            using (var tx = await _dbContext.GetTransactionAsync())
-            {
-                await
-                    _dbContext.UpdateAsync("TransactionRegistry", "TransactionId", new TransactionRegistryEntity()
-                    {
-                        TransactionHash = hash
-                    }, new[] { "TransactionHash" });
-                tx.Complete();
-            }
+            //Single update, transaction scope removed
+            //await
+            //    _persistence.UpdateAsync("TransactionRegistry", "TransactionId", new TransactionRegistryEntity()
+            //    {
+            //        TransactionHash = hash
+            //    }, new[] { "TransactionHash" });
+
+            await
+                _persistence.UpdateAsync(new TransactionRegistryEntity { TransactionHash = hash, TransactionId = transactionId },
+                    new[] { "TransactionHash" });
         }
 
 
@@ -54,14 +56,14 @@ namespace AMSLLC.Listener.Repository.Listener
         public async Task<IMemento> GetExecutionContext(string transactionKey)
         {
             TransactionExecutionMemento returnValue = null;
-            var protocols = await _dbContext.PageAsync<ProtocolTypeEntity>(1, 1000, "SELECT * FROM ProtocolType");
+            var protocols = await _persistence.GetListAsync<ProtocolTypeEntity>("SELECT * FROM ProtocolType");
             var valueMapEntries =
-                await _dbContext.PageAsync<ValueMapEntryEntity>(1, int.MaxValue, "SELECT * FROM ValueMapEntry");
-            var valueMaps = await _dbContext.PageAsync<ValueMapEntity>(1, int.MaxValue, "SELECT * FROM ValueMap");
-            var fieldConfigurationEntries = await _dbContext.PageAsync<FieldConfigurationEntryEntity>(1, int.MaxValue, "SELECT * FROM FieldConfigurationEntry");
-            var tr = await _dbContext.SingleAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE [Key] = @0", transactionKey);
-            var endpoints = await _dbContext.FetchAsync<EndpointEntity, OperationEndpointEntity, IntegrationEndpointConfigurationMemento>((ee, oe) => new IntegrationEndpointConfigurationMemento(protocols.Items.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Key, ee.ConnectionCfgJson,
-                                (EndpointTriggerType)ee.EndpointTriggerTypeId, PrepareFieldConfiguration(ee.FieldConfigurationId, fieldConfigurationEntries.Items, valueMapEntries.Items, valueMaps.Items)), @"SELECT 
+                await _persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
+            var valueMaps = await _persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
+            var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
+            var tr = await _persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE [Key] = @0", transactionKey);
+            var endpoints = await _persistence.ProjectionAsync<EndpointEntity, OperationEndpointEntity, IntegrationEndpointConfigurationMemento>((ee, oe) => new IntegrationEndpointConfigurationMemento(protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Key, ee.ConnectionCfgJson,
+                                (EndpointTriggerType)ee.EndpointTriggerTypeId, PrepareFieldConfiguration(ee.FieldConfigurationId, fieldConfigurationEntries, valueMapEntries, valueMaps)), @"SELECT 
 	E.*, OE.*
 FROM 
 	[Endpoint] E 
@@ -72,7 +74,7 @@ FROM
 WHERE TR.[Key] = @0", transactionKey);
             if (endpoints != null)
             {
-                returnValue = new TransactionExecutionMemento(transactionKey, tr.EnabledOperationId, endpoints);
+                returnValue = new TransactionExecutionMemento(tr.TransactionId, transactionKey, tr.EnabledOperationId, endpoints);
             }
             return returnValue;
         }
@@ -82,30 +84,27 @@ WHERE TR.[Key] = @0", transactionKey);
 
             var enabledOperationid =
                 await
-                    _dbContext.ExecuteScalarAsync<int>(
+                    _persistence.ExecuteScalarAsync<int>(
                         "SELECT EO.EnabledOperationId FROM EnabledOperation EO INNER JOIN [Application] A ON A.ApplicationId = EO.ApplicationId INNER JOIN Company C ON C.CompanyId = EO.CompanyId INNER JOIN Operation O ON O.OperationId = EO.OperationId WHERE A.[Key] = @0 AND C.[ExternalCode] = @1 AND O.[Key] = @2",
                         transactionRegistry.ApplicationKey, transactionRegistry.CompanyCode,
                         transactionRegistry.OperationKey);
 
-            using (var tx = await _dbContext.GetTransactionAsync())
-            {
-                await
-                    _dbContext.InsertAsync("TransactionRegistry", "TransactionId", new TransactionRegistryEntity
-                    {
-                        CreatedDateTime = transactionRegistry.CreatedDateTime,
-                        Key = transactionRegistry.TransactionKey,
-                        TransactionStatusId = (int)transactionRegistry.Status,
-                        EnabledOperationId = enabledOperationid,
-                        Header = JsonConvert.SerializeObject(transactionRegistry.Header),
-                        Data = transactionRegistry.Data,
-                        UpdatedDateTime = transactionRegistry.UpdatedDateTime,
-                        User = transactionRegistry.UserName,
-                        Message = transactionRegistry.Message,
-                        Details = transactionRegistry.Details,
-                        Summary = SerializationUtilities.DictionaryToXml(transactionRegistry.Summary)
-                    });
-                tx.Complete();
-            }
+            //Single insert, transaction scope removed
+            await
+                _persistence.InsertAsync(new TransactionRegistryEntity //"TransactionRegistry", "TransactionId", 
+                {
+                    CreatedDateTime = transactionRegistry.CreatedDateTime,
+                    Key = transactionRegistry.TransactionKey,
+                    TransactionStatusId = (int)transactionRegistry.Status,
+                    EnabledOperationId = enabledOperationid,
+                    Header = JsonConvert.SerializeObject(transactionRegistry.Header),
+                    Data = transactionRegistry.Data,
+                    UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                    User = transactionRegistry.UserName,
+                    Message = transactionRegistry.Message,
+                    Details = transactionRegistry.Details,
+                    Summary = SerializationUtilities.DictionaryToXml(transactionRegistry.Summary)
+                });
         }
 
         public async Task<IMemento> GetRegistryEntry(string transactionKey)
@@ -116,8 +115,7 @@ WHERE TR.[Key] = @0", transactionKey);
                      tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details);
 
             var registryEntities = await
-                    _dbContext.FetchAsync<TransactionRegistryMemento>(new Type[] { typeof(TransactionRegistryEntity), typeof(ApplicationEntity), typeof(CompanyEntity), typeof(OperationEntity), typeof(EntityCategoryEntity) },
-                        callback,
+                    _persistence.ProjectionAsync(callback,
                         @"SELECT TR.*, A.*, C.*, O.*
 FROM TransactionRegistry TR 
 INNER JOIN Application A ON TR.ApplicationId = A.ApplicationId 
@@ -131,35 +129,32 @@ WHERE TR.[Key] = @0", transactionKey);
 
         public async Task Update(TransactionRegistry transactionRegistry)
         {
-            using (var tx = await _dbContext.GetTransactionAsync())
-            {
-                await
-                    _dbContext.UpdateAsync(new TransactionRegistryEntity
-                    {
-                        TransactionId = transactionRegistry.Id,
-                        TransactionStatusId = (int)transactionRegistry.Status,
-                        UpdatedDateTime = transactionRegistry.UpdatedDateTime,
-                        User = transactionRegistry.UserName,
-                        Message = transactionRegistry.Message,
-                        Details = transactionRegistry.Details
-                    });
-                tx.Complete();
-            }
+            //Single update, transaction scope removed
+            await
+                _persistence.UpdateAsync(new TransactionRegistryEntity
+                {
+                    TransactionId = transactionRegistry.Id,
+                    TransactionStatusId = (int)transactionRegistry.Status,
+                    UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                    User = transactionRegistry.UserName,
+                    Message = transactionRegistry.Message,
+                    Details = transactionRegistry.Details
+                });
         }
 
         public Task<string> GetTransactionData(string transactionKey)
         {
-            return _dbContext.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE [Key] = @0", transactionKey);
+            return _persistence.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE [Key] = @0", transactionKey);
         }
 
         public Task<string> GetTransactionHeader(string transactionKey)
         {
-            return _dbContext.ExecuteScalarAsync<string>("SELECT Header FROM TransactionRegistry WHERE [Key] = @0", transactionKey);
+            return _persistence.ExecuteScalarAsync<string>("SELECT Header FROM TransactionRegistry WHERE [Key] = @0", transactionKey);
         }
 
         public Task<int> GetHashCount(int enabledOperationId, string hash)
         {
-            return _dbContext.ExecuteScalarAsync<int>("SELECT COUNT(TransactionHash) FROM TransactionRegistry WHERE [EnabledOperationId] = @0 AND [TransactionHash] = @1", enabledOperationId, hash);
+            return _persistence.ExecuteScalarAsync<int>("SELECT COUNT(TransactionHash) FROM TransactionRegistry WHERE [EnabledOperationId] = @0 AND [TransactionHash] = @1", enabledOperationId, hash);
         }
 
         private IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(int? fieldConfigurationId, IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)

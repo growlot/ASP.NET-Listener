@@ -135,10 +135,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
     
-	[TableName("Endpoint")]
+	[AsyncPoco.TableName("Endpoint")]
 
 
-	[PrimaryKey("EndpointId")]
+	[AsyncPoco.PrimaryKey("EndpointId")]
 
 
 
@@ -185,10 +185,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("OperationEndpoint")]
+	[AsyncPoco.TableName("OperationEndpoint")]
 
 
-	[PrimaryKey("OperationEndpointId")]
+	[AsyncPoco.PrimaryKey("OperationEndpointId")]
 
 
 
@@ -217,10 +217,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionRegistry")]
+	[AsyncPoco.TableName("TransactionRegistry")]
 
 
-	[PrimaryKey("TransactionId")]
+	[AsyncPoco.PrimaryKey("TransactionId")]
 
 
 
@@ -315,7 +315,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("VersionInfo")]
+	[AsyncPoco.TableName("VersionInfo")]
 
 
 	[ExplicitColumns]
@@ -343,7 +343,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionStatus")]
+	[AsyncPoco.TableName("TransactionStatus")]
 
 
 	[PrimaryKey("TransactionStatusId", autoIncrement=false)]
@@ -367,7 +367,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionState")]
+	[AsyncPoco.TableName("TransactionState")]
 
 
 	[PrimaryKey("TransactionStateId", autoIncrement=false)]
@@ -391,7 +391,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionSource")]
+	[AsyncPoco.TableName("TransactionSource")]
 
 
 	[PrimaryKey("TransactionSourceId", autoIncrement=false)]
@@ -415,7 +415,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("ServiceType")]
+	[AsyncPoco.TableName("ServiceType")]
 
 
 	[PrimaryKey("ServiceTypeId", autoIncrement=false)]
@@ -451,7 +451,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("Company")]
+	[AsyncPoco.TableName("Company")]
 
 
 	[PrimaryKey("CompanyId", autoIncrement=false)]
@@ -487,7 +487,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("EquipmentType")]
+	[AsyncPoco.TableName("EquipmentType")]
 
 
 	[PrimaryKey("EquipmentTypeId", autoIncrement=false)]
@@ -529,10 +529,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("Device")]
+	[AsyncPoco.TableName("Device")]
 
 
-	[PrimaryKey("DeviceId")]
+	[AsyncPoco.PrimaryKey("DeviceId")]
 
 
 
@@ -573,10 +573,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("DeviceTest")]
+	[AsyncPoco.TableName("DeviceTest")]
 
 
-	[PrimaryKey("DeviceTestId")]
+	[AsyncPoco.PrimaryKey("DeviceTestId")]
 
 
 
@@ -611,10 +611,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("Batch")]
+	[AsyncPoco.TableName("Batch")]
 
 
-	[PrimaryKey("BatchId")]
+	[AsyncPoco.PrimaryKey("BatchId")]
 
 
 
@@ -643,10 +643,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionLog")]
+	[AsyncPoco.TableName("TransactionLog")]
 
 
-	[PrimaryKey("TransactionLogId")]
+	[AsyncPoco.PrimaryKey("TransactionLogId")]
 
 
 
@@ -735,10 +735,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionLogState")]
+	[AsyncPoco.TableName("TransactionLogState")]
 
 
-	[PrimaryKey("TransactionLogStateId")]
+	[AsyncPoco.PrimaryKey("TransactionLogStateId")]
 
 
 
@@ -773,7 +773,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionData")]
+	[AsyncPoco.TableName("TransactionData")]
 
 
 	[PrimaryKey("TransactionDataId", autoIncrement=false)]
@@ -797,7 +797,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionDirection")]
+	[AsyncPoco.TableName("TransactionDirection")]
 
 
 	[PrimaryKey("TransactionDirectionId", autoIncrement=false)]
@@ -821,10 +821,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("ExternalSystem")]
+	[AsyncPoco.TableName("ExternalSystem")]
 
 
-	[PrimaryKey("ExternalSystemId")]
+	[AsyncPoco.PrimaryKey("ExternalSystemId")]
 
 
 
@@ -853,7 +853,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionCompletion")]
+	[AsyncPoco.TableName("TransactionCompletion")]
 
 
 	[PrimaryKey("TransactionCompletionId", autoIncrement=false)]
@@ -877,10 +877,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("DeviceBatch")]
+	[AsyncPoco.TableName("DeviceBatch")]
 
 
-	[PrimaryKey("DeviceBatchId")]
+	[AsyncPoco.PrimaryKey("DeviceBatchId")]
 
 
 
@@ -909,10 +909,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("TransactionType")]
+	[AsyncPoco.TableName("TransactionType")]
 
 
-	[PrimaryKey("TransactionTypeId")]
+	[AsyncPoco.PrimaryKey("TransactionTypeId")]
 
 
 
@@ -971,7 +971,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FileConverterKind")]
+	[AsyncPoco.TableName("FileConverterKind")]
 
 
 	[PrimaryKey("FileConverterKindId", autoIncrement=false)]
@@ -995,10 +995,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FileConverter")]
+	[AsyncPoco.TableName("FileConverter")]
 
 
-	[PrimaryKey("FileConverterId")]
+	[AsyncPoco.PrimaryKey("FileConverterId")]
 
 
 
@@ -1039,7 +1039,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FileTrimMode")]
+	[AsyncPoco.TableName("FileTrimMode")]
 
 
 	[PrimaryKey("FileTrimModeId", autoIncrement=false)]
@@ -1063,7 +1063,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FileQuoteMode")]
+	[AsyncPoco.TableName("FileQuoteMode")]
 
 
 	[PrimaryKey("FileQuoteModeId", autoIncrement=false)]
@@ -1087,7 +1087,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FileQuoteMultiline")]
+	[AsyncPoco.TableName("FileQuoteMultiline")]
 
 
 	[PrimaryKey("FileQuoteMultilineId", autoIncrement=false)]
@@ -1111,7 +1111,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FileAlignMode")]
+	[AsyncPoco.TableName("FileAlignMode")]
 
 
 	[PrimaryKey("FileAlignModeId", autoIncrement=false)]
@@ -1135,7 +1135,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FileFixedMode")]
+	[AsyncPoco.TableName("FileFixedMode")]
 
 
 	[PrimaryKey("FileFixedModeId", autoIncrement=false)]
@@ -1159,10 +1159,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("File")]
+	[AsyncPoco.TableName("File")]
 
 
-	[PrimaryKey("FileId")]
+	[AsyncPoco.PrimaryKey("FileId")]
 
 
 
@@ -1209,10 +1209,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FileField")]
+	[AsyncPoco.TableName("FileField")]
 
 
-	[PrimaryKey("FileFieldId")]
+	[AsyncPoco.PrimaryKey("FileFieldId")]
 
 
 
@@ -1325,10 +1325,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("ProtocolType")]
+	[AsyncPoco.TableName("ProtocolType")]
 
 
-	[PrimaryKey("ProtocolTypeId")]
+	[AsyncPoco.PrimaryKey("ProtocolTypeId")]
 
 
 
@@ -1357,10 +1357,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("EndpointTriggerType")]
+	[AsyncPoco.TableName("EndpointTriggerType")]
 
 
-	[PrimaryKey("EndpointTriggerTypeId")]
+	[AsyncPoco.PrimaryKey("EndpointTriggerTypeId")]
 
 
 
@@ -1389,10 +1389,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("EntityCategory")]
+	[AsyncPoco.TableName("EntityCategory")]
 
 
-	[PrimaryKey("EntityCategoryId")]
+	[AsyncPoco.PrimaryKey("EntityCategoryId")]
 
 
 
@@ -1421,10 +1421,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("ValueMap")]
+	[AsyncPoco.TableName("ValueMap")]
 
 
-	[PrimaryKey("ValueMapId")]
+	[AsyncPoco.PrimaryKey("ValueMapId")]
 
 
 
@@ -1459,10 +1459,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FieldConfiguration")]
+	[AsyncPoco.TableName("FieldConfiguration")]
 
 
-	[PrimaryKey("FieldConfigurationId")]
+	[AsyncPoco.PrimaryKey("FieldConfigurationId")]
 
 
 
@@ -1491,10 +1491,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("ValueMapEntry")]
+	[AsyncPoco.TableName("ValueMapEntry")]
 
 
-	[PrimaryKey("ValueMapEntryId")]
+	[AsyncPoco.PrimaryKey("ValueMapEntryId")]
 
 
 
@@ -1529,10 +1529,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("FieldConfigurationEntry")]
+	[AsyncPoco.TableName("FieldConfigurationEntry")]
 
 
-	[PrimaryKey("FieldConfigurationEntryId")]
+	[AsyncPoco.PrimaryKey("FieldConfigurationEntryId")]
 
 
 
@@ -1579,10 +1579,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("Application")]
+	[AsyncPoco.TableName("Application")]
 
 
-	[PrimaryKey("ApplicationId")]
+	[AsyncPoco.PrimaryKey("ApplicationId")]
 
 
 
@@ -1611,10 +1611,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("Operation")]
+	[AsyncPoco.TableName("Operation")]
 
 
-	[PrimaryKey("OperationId")]
+	[AsyncPoco.PrimaryKey("OperationId")]
 
 
 
@@ -1643,10 +1643,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("EntityCategoryOperation")]
+	[AsyncPoco.TableName("EntityCategoryOperation")]
 
 
-	[PrimaryKey("EntityCategoryOperationId")]
+	[AsyncPoco.PrimaryKey("EntityCategoryOperationId")]
 
 
 
@@ -1675,10 +1675,10 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[TableName("EnabledOperation")]
+	[AsyncPoco.TableName("EnabledOperation")]
 
 
-	[PrimaryKey("EnabledOperationId")]
+	[AsyncPoco.PrimaryKey("EnabledOperationId")]
 
 
 

@@ -25,6 +25,9 @@ namespace AMSLLC.Listener.ApiService.Properties
         public override void Load()
         {
             Kernel.Bind<ListenerDbContext>().ToSelf().InRequestScope().WithConstructorArgument("connectionStringName", "ListenerDB");
+            //Kernel.Bind<ListenerODataContext>().ToSelf().InRequestScope();
+
+            Kernel.Bind<IPersistenceAdapter>().To<PocoCachedAdapter>().InRequestScope();
 
             this.Kernel.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
             this.Kernel.Bind<ApiServiceConfigurator>().ToSelf().InSingletonScope();
@@ -41,7 +44,7 @@ namespace AMSLLC.Listener.ApiService.Properties
 
 
             this.Kernel.Bind<IUniqueHashValidator>().To<UniqueHashValidator>();
-             
+
         }
     }
 }

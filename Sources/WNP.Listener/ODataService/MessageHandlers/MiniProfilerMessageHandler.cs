@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             MiniProfiler.Start();
+            //request.Content.
             var response = await base.SendAsync(request, cancellationToken);
             MiniProfiler.Stop();
 
