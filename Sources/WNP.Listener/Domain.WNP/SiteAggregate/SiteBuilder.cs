@@ -3,10 +3,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
+namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
-    using WNP.SiteAgregate;
-
     /// <summary>
     /// Provides fluent interface for building site object
     /// </summary>
@@ -26,11 +24,28 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </returns>
         public static implicit operator Site(SiteBuilder siteBuilder)
         {
-            return Site.CreateSite(
-                siteBuilder.description,
-                siteBuilder.premiseNumber,
-                siteBuilder.address,
-                siteBuilder.account);
+            return ToSite(siteBuilder);
+        }
+
+        /// <summary>
+        /// Performs a conversion from <see cref="SiteBuilder"/> to <see cref="Site"/>.
+        /// </summary>
+        /// <param name="siteBuilder">The site builder.</param>
+        /// <returns>
+        /// The site.
+        /// </returns>
+        public static Site ToSite(SiteBuilder siteBuilder)
+        {
+            if (siteBuilder != null)
+            {
+                return Site.CreateSite(
+                    siteBuilder.description,
+                    siteBuilder.premiseNumber,
+                    siteBuilder.address,
+                    siteBuilder.account);
+            }
+
+            return null;
         }
 
         /// <summary>

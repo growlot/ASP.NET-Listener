@@ -3,7 +3,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
+namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
     using System;
 
@@ -26,14 +26,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
             this.Account = account;
             this.Address = address;
         }
-
-        /// <summary>
-        /// Gets the owner.
-        /// </summary>
-        /// <value>
-        /// The owner.
-        /// </value>
-        public int Owner { get; private set; }
 
         /// <summary>
         /// Gets the description.

@@ -3,7 +3,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
+namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
     using System;
     using System.Globalization;
@@ -70,7 +70,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </returns>
         public override string ToString()
         {
-            return ((FormattableString)$"Account (name={this.name}, number={this.number})").ToString(CultureInfo.InvariantCulture);
+            string result = string.Format(CultureInfo.InvariantCulture, "Account(name = {0}, number = {1})", this.name, this.number);
+            return result;
         }
     }
 }

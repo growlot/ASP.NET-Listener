@@ -25,7 +25,6 @@ namespace AMSLLC.Listener.ODataService
     using Persistence.Listener;
     using Services;
     using MetadataService;
-    using Services;
 
     public class ODataServiceConfigurator
     {

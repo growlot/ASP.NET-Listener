@@ -3,10 +3,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
+namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
-    using WNP.SiteAgregate;
-
     /// <summary>
     /// Provides fluent interface for building physical address object
     /// </summary>
@@ -51,13 +49,30 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </returns>
         public static implicit operator PhysicalAddress(PhysicalAddressBuilder addressBuilder)
         {
-            return new PhysicalAddress(
-                addressBuilder.country,
-                addressBuilder.state,
-                addressBuilder.city,
-                addressBuilder.address1,
-                addressBuilder.address2,
-                addressBuilder.zip);
+            return ToPhysicalAddress(addressBuilder);
+        }
+
+        /// <summary>
+        /// Performs a conversion from <see cref="PhysicalAddressBuilder"/> to <see cref="PhysicalAddress"/>.
+        /// </summary>
+        /// <param name="addressBuilder">The address builder.</param>
+        /// <returns>
+        /// The physical address.
+        /// </returns>
+        public static PhysicalAddress ToPhysicalAddress(PhysicalAddressBuilder addressBuilder)
+        {
+            if (addressBuilder != null)
+            {
+                return new PhysicalAddress(
+                    addressBuilder.country,
+                    addressBuilder.state,
+                    addressBuilder.city,
+                    addressBuilder.address1,
+                    addressBuilder.address2,
+                    addressBuilder.zip);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -74,6 +89,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </summary>
         /// <param name="country">The country.</param>
         /// <returns>The physical address bulder object.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "country", Justification = "Short method in Builder class.")]
         public PhysicalAddressBuilder WithCountry(string country)
         {
             this.country = country;
@@ -85,6 +101,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </summary>
         /// <param name="state">The state.</param>
         /// <returns>The physical address bulder object.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "state", Justification = "Short method in Builder class.")]
         public PhysicalAddressBuilder WithState(string state)
         {
             this.state = state;
@@ -96,6 +113,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </summary>
         /// <param name="city">The city.</param>
         /// <returns>The physical address bulder object.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "city", Justification = "Short method in Builder class.")]
         public PhysicalAddressBuilder WithCity(string city)
         {
             this.city = city;
@@ -107,6 +125,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </summary>
         /// <param name="address1">The first address line.</param>
         /// <returns>The physical address bulder object.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "address1", Justification = "Short method in Builder class.")]
         public PhysicalAddressBuilder WithAddressLine1(string address1)
         {
             this.address1 = address1;
@@ -118,6 +137,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </summary>
         /// <param name="address2">The second address line.</param>
         /// <returns>The physical address bulder object.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "address2", Justification = "Short method in Builder class.")]
         public PhysicalAddressBuilder WithAddressLine2(string address2)
         {
             this.address2 = address2;
@@ -129,6 +149,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
         /// </summary>
         /// <param name="zip">The zip code.</param>
         /// <returns>The physical address bulder object.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "zip", Justification = "Short method in Builder class.")]
         public PhysicalAddressBuilder WithZipCode(string zip)
         {
             this.zip = zip;

@@ -49,8 +49,6 @@
     <Compile Include="ApplicationIntegration.cs" />
     <Compile Include="CommonUtilities.cs" />
     <Compile Include="FailFast.cs" />
-    <Compile Include="FormattableString.cs" />
-    <Compile Include="FormattableStringFactory.cs" />
     <Compile Include="IDateTimeProvider.cs" />
     <Compile Include="IDependencyInjectionAdapter.cs" />
     <Compile Include="IEnumerableExtensions.cs" />

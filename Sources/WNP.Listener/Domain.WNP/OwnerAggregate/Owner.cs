@@ -3,11 +3,11 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.WNP.OwnerAgregate
+namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using SiteAgregate;
+    using SiteAggregate;
 
     /// <summary>
     /// Handling Sites for specific owner

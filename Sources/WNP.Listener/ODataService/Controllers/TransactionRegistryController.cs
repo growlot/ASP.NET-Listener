@@ -14,7 +14,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Web.OData.Routing;
     using ApplicationService;
     using Communication;
-    using Newtonsoft.Json;
     using Persistence.Listener;
 
     [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]

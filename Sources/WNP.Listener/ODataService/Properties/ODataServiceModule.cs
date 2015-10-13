@@ -1,13 +1,4 @@
-﻿using AMSLLC.Listener.MetadataService;
-using AMSLLC.Listener.MetadataService.Impl;
-using AMSLLC.Listener.ODataService.Services;
-using AMSLLC.Listener.ODataService.Services.FilterTransformer;
-using AMSLLC.Listener.ODataService.Services.Impl;
-using AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer;
-using Ninject.Modules;
-using Ninject.Web.Common;
-
-namespace AMSLLC.Listener.ODataService.Properties
+﻿namespace AMSLLC.Listener.ODataService.Properties
 {
     using ApplicationService;
     using ApplicationService.Impl;
@@ -17,9 +8,15 @@ namespace AMSLLC.Listener.ODataService.Properties
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
+    using Ninject.Modules;
+    using Ninject.Web.Common;
     using Persistence.Listener;
     using Repository;
     using Repository.Listener;
+    using Services;
+    using Services.FilterTransformer;
+    using Services.Impl;
+    using Services.Impl.FilterTransformer;
 
     public class ODataServiceModule : NinjectModule
     {

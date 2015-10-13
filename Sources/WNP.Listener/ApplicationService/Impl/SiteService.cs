@@ -2,8 +2,8 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Domain.WNP.OwnerAgregate;
-    using Domain.WNP.SiteAgregate;
+    using Domain.WNP.OwnerAggregate;
+    using Domain.WNP.SiteAggregate;
     using Domain;
     using Messages;
     using Repository.WNP;
