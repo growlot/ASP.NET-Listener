@@ -53,11 +53,15 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
-    <Compile Include="Site\PhysicalAddress.cs" />
+    <Compile Include="OwnerAgregate\Owner.cs" />
+    <Compile Include="SiteAgregate\BillingAccount.cs" />
+    <Compile Include="SiteAgregate\PhysicalAddress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Site\SiteDetails.cs" />
-    <Compile Include="Site\SiteAddressUpdated.cs" />
-    <Compile Include="Site\SiteMemento.cs" />
+    <Compile Include="SiteAgregate\PhysicalAddressBuilder.cs" />
+    <Compile Include="SiteAgregate\SiteBuilder.cs" />
+    <Compile Include="SiteAgregate\Site.cs" />
+    <Compile Include="SiteAgregate\SiteAddressUpdated.cs" />
+    <Compile Include="SiteAgregate\SiteMemento.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta003\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
@@ -67,6 +71,10 @@
     <Folder Include="Meter\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{b650a448-fc3b-4c43-a59a-b1ad3500abd2}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{7937eb80-3944-4ab3-96e3-4745cfc5e21a}</Project>
       <Name>Domain</Name>

@@ -3,7 +3,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.WNP.Site
+namespace AMSLLC.Listener.Domain.WNP.SiteAgregate
 {
     /// <summary>
     /// Memento class for site aggregate root

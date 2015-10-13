@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</ProjectGuid>
+    <ProjectGuid>{2643C152-D7B8-4633-A540-8EE3A1DB8E45}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AMSLLC.Core</RootNamespace>
-    <AssemblyName>AMSLLC.Core</AssemblyName>
+    <RootNamespace>AMSLLC.Listener.Repository.WNP</RootNamespace>
+    <AssemblyName>AMSLLC.Listener.Repository.WNP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -24,8 +24,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\AMSLLC.Listener.Repository.WNP.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,31 +36,39 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\AMSLLC.Listener.Repository.WNP.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>1234.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\1234.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <None Include="1234.snk" />
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{7937eb80-3944-4ab3-96e3-4745cfc5e21a}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Repository.csproj">
+      <Project>{72e29f3f-e27a-4224-9f7b-59c2497d3bf3}</Project>
+      <Name>Repository</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationIntegration.cs" />
-    <Compile Include="CommonUtilities.cs" />
-    <Compile Include="FailFast.cs" />
-    <Compile Include="FormattableString.cs" />
-    <Compile Include="FormattableStringFactory.cs" />
-    <Compile Include="IDateTimeProvider.cs" />
-    <Compile Include="IDependencyInjectionAdapter.cs" />
-    <Compile Include="IEnumerableExtensions.cs" />
-    <Compile Include="IPersistenceAdapter.cs" />
-    <Compile Include="IValueTypeConverter.cs" />
+    <Compile Include="..\..\AssemblyInfoCommon.cs">
+      <Link>Properties\AssemblyInfoCommon.cs</Link>
+    </Compile>
+    <Compile Include="IOwnerSitesRepository.cs" />
+    <Compile Include="IOwnerRepository.cs" />
+    <Compile Include="ISiteRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StatusMessage.cs" />
-    <Compile Include="UtcDateTimeProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\..\FxCopRuleSets\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
