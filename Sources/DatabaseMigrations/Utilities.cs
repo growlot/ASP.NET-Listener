@@ -6,10 +6,9 @@
 
 namespace AMSLLC.Listener.DatabaseMigrations
 {
+    using System;
     using FluentMigrator;
     using FluentMigrator.Builders.IfDatabase;
-    using FluentMigrator.Builders.Insert;
-    using FluentMigrator.Runner.Extensions;
 
     /// <summary>
     /// DB migration utilities
@@ -23,6 +22,11 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// <returns>IIfDatabaseExpressionRoot.</returns>
         public static IIfDatabaseExpressionRoot IfSqlServer(this MigrationBase migrationBase)
         {
+            if (migrationBase == null)
+            {
+                throw new ArgumentNullException("migrationBase", "Can not check if database is MS SQL, becasue migration is not provided.");
+            }
+
             return migrationBase.IfDatabase("sqlserver");
         }
 
@@ -33,6 +37,11 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// <returns>IIfDatabaseExpressionRoot.</returns>
         public static IIfDatabaseExpressionRoot IfOracle(this MigrationBase migrationBase)
         {
+            if (migrationBase == null)
+            {
+                throw new ArgumentNullException("migrationBase", "Can not check if database is Oracle, becasue migration is not provided.");
+            }
+
             return migrationBase.IfDatabase("oracle");
         }
     }
