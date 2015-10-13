@@ -1,14 +1,22 @@
-﻿using System.Linq;
-using System.Net.Http;
-using System.Web.Http.Controllers;
-using System.Web.OData.Routing;
-using System.Web.OData.Routing.Conventions;
-using Microsoft.OData.Edm;
-
-namespace AMSLLC.Listener.ODataService
+﻿namespace AMSLLC.Listener.ODataService
 {
+    using System.Linq;
+    using System.Net.Http;
+    using System.Web.Http.Controllers;
+    using System.Web.OData.Routing;
+    using System.Web.OData.Routing.Conventions;
+    using Microsoft.OData.Edm;
+    using MetadataService;
+
     public class WNPGenericRoutingConvention : IODataRoutingConvention
     {
+        private readonly IMetadataService metadataService;
+
+        public WNPGenericRoutingConvention(IMetadataService metadataService)
+        {
+            this.metadataService = metadataService;
+        }
+
         public string SelectAction(ODataPath odataPath, HttpControllerContext controllerContext, ILookup<string, HttpActionDescriptor> actionMap)
         {
             if (controllerContext.Request.Method == HttpMethod.Get &&
@@ -37,10 +45,39 @@ namespace AMSLLC.Listener.ODataService
 
         public string SelectController(ODataPath odataPath, HttpRequestMessage request)
         {
-            if (request.Method != HttpMethod.Get || odataPath.PathTemplate != "~/entityset")
-                return null;
+            if (request.Method == HttpMethod.Get && odataPath.PathTemplate == "~/entityset")
+            {
+                EntitySetPathSegment entitySetSegment = odataPath.Segments[0] as EntitySetPathSegment;
+                MetadataModel metadataModel = metadataService.GetModelMapping(entitySetSegment.EntitySetName);
+                string controllerName;
 
-            return "WNP";
+                if (metadataModel != null)
+                {
+                    switch (metadataModel.TableName)
+                    {
+                        //case "TSECURITY_USERS":
+                        //    controllerName = "Users";
+                        //    break;
+                        //case "TEQP_METER":
+                        //    controllerName = "Meters";
+                        //    break;
+                        //case "TMETER_TEST_RESULTS":
+                        //    controllerName = "MeterTests";
+                        //    break;
+                        default:
+                            controllerName = "WNP";
+                            break;
+                    }
+                }
+                else
+                {
+                    controllerName = entitySetSegment.EntitySetName;
+                }
+
+                return controllerName;
+            }
+
+            return null;
         }
     }
 }

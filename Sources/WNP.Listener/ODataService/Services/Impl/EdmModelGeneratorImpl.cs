@@ -23,9 +23,16 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
             var builder = new ODataConventionModelBuilder
             {
-                Namespace = _metadataService.ODataModelNamespace,
+                Namespace = "AMSLLC.Listener",
                 ContainerName = "AMSLLC.Listener"
             };
+
+            builder.EntitySet<TestEntity>("TestEntities");
+            ActionConfiguration actionConfig = builder.EntityType<TestEntity>().Action("Action");
+            ParameterConfiguration parameter = actionConfig.Parameter<string>("Value");
+            parameter.OptionalParameter = false;
+            parameter = actionConfig.Parameter<string>("Value2");
+            parameter.OptionalParameter = true;
 
             var method = typeof(ODataConventionModelBuilder).GetMethod("EntitySet");
             var generatedModels =

@@ -24,8 +24,16 @@ namespace AMSLLC.Listener.MetadataService.Impl
 
         public Assembly ODataModelAssembly => odataModelAssembly;
 
-        public MetadataModel GetModelMapping(string clrModelName) =>
-            oDataModelMappings[$"{ODataModelNamespace}.{clrModelName}"];
+        public MetadataModel GetModelMapping(string clrModelName)
+        {
+            string fullClrType = $"{ODataModelNamespace}.{clrModelName}";
+            if (oDataModelMappings.ContainsKey(fullClrType))
+            {
+                return oDataModelMappings[fullClrType];
+            }
+
+            return null;
+        }
 
         public MetadataServiceImpl(MetadataDbContext dbContext)
         {

@@ -24,14 +24,18 @@ namespace AMSLLC.Listener.ODataService
     using Persistence;
     using Persistence.Listener;
     using Services;
+    using MetadataService;
+    using Services;
 
     public class ODataServiceConfigurator
     {
-        private readonly IEdmModelGenerator _modelGenerator;
+        private readonly IEdmModelGenerator modelGenerator;
+        private readonly IMetadataService metadataService;
 
-        public ODataServiceConfigurator(IEdmModelGenerator modelGenerator)
+        public ODataServiceConfigurator(IEdmModelGenerator modelGenerator, IMetadataService metadataService)
         {
-            _modelGenerator = modelGenerator;
+            this.modelGenerator = modelGenerator;
+            this.metadataService = metadataService;
         }
 
         public void Configure(HttpConfiguration config)
@@ -40,7 +44,7 @@ namespace AMSLLC.Listener.ODataService
             config.MessageHandlers.Add(new MiniProfilerMessageHandler());
 
             var conventions = ODataRoutingConventions.CreateDefault();
-            conventions.Insert(0, new WNPGenericRoutingConvention());
+            conventions.Insert(0, new WNPGenericRoutingConvention(metadataService));
 
 
             config.MapODataServiceRoute(
@@ -48,7 +52,7 @@ namespace AMSLLC.Listener.ODataService
                 routePrefix: null,
                 routingConventions: conventions,
                 pathHandler: new DefaultODataPathHandler(),
-                model: _modelGenerator.GenerateODataModel());
+                model: this.modelGenerator.GenerateODataModel());
 
 
             ODataModelBuilder builder = new ODataConventionModelBuilder();

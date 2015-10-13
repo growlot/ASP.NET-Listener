@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\TransactionRegistryController.cs" />
+    <Compile Include="Controllers\TestEntitiesController.cs" />
     <Compile Include="Controllers\WNPController.cs" />
     <Compile Include="ListenerODataContext.cs" />
     <Compile Include="ListenerRequestHeaderMap.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="Services\Impl\FilterTransformer\ODataFunctionToSqlConvertorGenericImpl.cs" />
     <Compile Include="Services\Impl\FilterTransformer\ODataFunctionToSqlConvertorSqlServerImpl.cs" />
     <Compile Include="Services\FilterTransformer\IODataFunctionToSqlConvertor.cs" />
+    <Compile Include="Services\Impl\TestEntity.cs" />
     <Compile Include="Services\IODataRouteManager.cs" />
     <Compile Include="Services\Impl\ODataRouteManagerImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
