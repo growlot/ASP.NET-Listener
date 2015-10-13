@@ -13,6 +13,7 @@ namespace AMSLLC.Listener.ODataService
             Add("EntityCategory", typeof(string));
             Add("EntityKey", typeof(string));
             Add("OperationKey", typeof(string));
+            Add("TransactionKey", typeof(string));
         }
 
         public static ListenerRequestHeaderMap Instance { get; } = new ListenerRequestHeaderMap();

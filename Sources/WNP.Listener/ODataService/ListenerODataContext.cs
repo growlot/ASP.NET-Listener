@@ -4,6 +4,7 @@
     using System.Data.Entity;
     using System.Linq.Expressions;
     using System.Reflection;
+    using System.Web.OData.Builder;
     using Persistence.Listener;
 
     public class ListenerODataContext : DbContext
@@ -19,23 +20,24 @@
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            MapPetaPocoEntity<TransactionRegistryEntity, int>(modelBuilder, a => a.TransactionId);
+            MapPetaPocoEntity<TransactionRegistryEntity, string>(modelBuilder, a => a.Key);
+            
 
             base.OnModelCreating(modelBuilder);
         }
 
-        private void MapPetaPocoEntity<T, TKey>(DbModelBuilder modelBuilder,
+        private System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<T> MapPetaPocoEntity<T, TKey>(DbModelBuilder modelBuilder,
             Expression<Func<T, TKey>> primaryKeySelector) where T : class
         {
             var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
-            var primaryKeyAttribute = typeof(T).GetCustomAttribute<AsyncPoco.PrimaryKeyAttribute>();
-            var keyPropertyName = GetPropertyName(primaryKeySelector);
-            if (string.Compare(primaryKeyAttribute.Value, keyPropertyName, StringComparison.InvariantCulture) != 0)
-            {
-                throw new InvalidOperationException(
-                    $"Specified {keyPropertyName} as primary key, {primaryKeyAttribute.Value} expected");
-            }
-            modelBuilder.Entity<T>().HasKey(primaryKeySelector).ToTable(tableNameAttribute.Value);
+            //var primaryKeyAttribute = typeof(T).GetCustomAttribute<AsyncPoco.PrimaryKeyAttribute>();
+            //var keyPropertyName = GetPropertyName(primaryKeySelector);
+            //if (string.Compare(primaryKeyAttribute.Value, keyPropertyName, StringComparison.InvariantCulture) != 0)
+            //{
+            //    throw new InvalidOperationException(
+            //        $"Specified {keyPropertyName} as primary key, {primaryKeyAttribute.Value} expected");
+            //}
+            return modelBuilder.Entity<T>().HasKey(primaryKeySelector).ToTable(tableNameAttribute.Value);
 
             //tps.HasIdLink((ctxt) => ctxt.Url.CreateODataLink(new EntitySetPathSegment("Products"), new KeyValuePathSegment("id")), false);
         }

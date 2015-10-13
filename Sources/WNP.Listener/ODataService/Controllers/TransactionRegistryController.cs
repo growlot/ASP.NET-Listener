@@ -17,7 +17,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Newtonsoft.Json;
     using Persistence.Listener;
 
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All)]
+    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]
     public class TransactionRegistryController : ODataController
     {
         private readonly ListenerODataContext _dbContext;
@@ -39,12 +39,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
         public IQueryable<TransactionRegistryEntity> Get()
         {
-            return _dbContext.TransactionRegistry;
+            return _dbContext.TransactionRegistry.AsQueryable();
         }
 
-        public IHttpActionResult Get([FromODataUri] int key)
+        public IHttpActionResult Get([FromODataUri] string key)
         {
-            var result = _dbContext.TransactionRegistry.Where(s => s.TransactionId == key);
+            var result = _dbContext.TransactionRegistry.Where(s => s.Key == key);
             return Ok(result);
         }
 
@@ -68,6 +68,49 @@ namespace AMSLLC.Listener.ODataService.Controllers
             message.Header.Add("Operation", parameters["OperationKey"]?.ToString());
 
             return Ok(await this._transactionService.Open(message));
+        }
+
+        /// <summary>
+        /// Processes the specified transaction.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> Process([FromODataUri] string key)
+        {
+            await this._transactionService.Process(new ProcessTransactionRequestMessage { TransactionKey = key });
+            return Ok();
+        }
+
+        /// <summary>
+        /// Processes the specified transaction.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> Succeed([FromODataUri] string key)
+        {
+            await this._transactionService.Success(new TransactionSuccessMessage() { TransactionKey = key });
+            return Ok();
+        }
+
+        /// <summary>
+        /// Processes the specified transaction.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> Fail([FromODataUri] string key, ODataActionParameters parameters)
+        {
+            await
+                this._transactionService.Failed(new TransactionFailedMessage()
+                {
+                    TransactionKey = key,
+                    Details = parameters.ContainsKey("details") ? parameters["details"].ToString() : null,
+                    Message = parameters.ContainsKey("message") ? parameters["message"].ToString() : null
+                });
+            return Ok();
         }
     }
 }

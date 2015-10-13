@@ -12,8 +12,7 @@ using StackExchange.Profiling;
 
 namespace AMSLLC.Listener.Bootstrapper
 {
-    using ApiService;
-    using ApiService.Properties;
+
     using ApplicationService;
     using Core;
     using Core.Ninject;
@@ -28,7 +27,6 @@ namespace AMSLLC.Listener.Bootstrapper
             {
                 container.Load<ODataServiceModule>();
                 container.Load<MetadataServiceModule>();
-                container.Load<ApiServiceModule>();
             });
 
             ApplicationIntegration.SetDependencyInjectionResolver(diAdapter);
@@ -54,8 +52,7 @@ namespace AMSLLC.Listener.Bootstrapper
             var odataServiceConfigurator = kernel.Get<ODataServiceConfigurator>();
             odataServiceConfigurator.Configure(config);
 
-            var apiServiceConfigurator = kernel.Get<ApiServiceConfigurator>();
-            apiServiceConfigurator.Configure(config);
+           
 
             app.UseRequestScopeContext();
             app.UseErrorPage(ErrorPageOptions.ShowAll);

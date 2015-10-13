@@ -52,10 +52,24 @@ namespace AMSLLC.Listener.ODataService
 
 
             ODataModelBuilder builder = new ODataConventionModelBuilder();
-            MapPetaPocoEntity<TransactionRegistryEntity, int>(builder, a => a.TransactionId);
+            var set = MapPetaPocoEntity<TransactionRegistryEntity, string>(builder, a => a.Key);
+
+            var pAction = set.Action("Process");
+            pAction.Namespace = "Transaction";
+
+            var sAction = set.Action("Succeed");
+            sAction.Namespace = "Transaction";
+
+            var fAction = set.Action("Fail");
+            fAction.Namespace = "Transaction";
+            fAction.Parameter<string>("Message");
+            fAction.Parameter<string>("Details");
+
             var action = builder.Action("Open");
             ConfigureHeader(action, builder);
             action.Returns<string>();
+
+
 
 
             DelegatingHandler[] handlers = new DelegatingHandler[]
@@ -67,10 +81,14 @@ namespace AMSLLC.Listener.ODataService
             var routeHandlers = HttpClientFactory.CreatePipeline(
                 new HttpControllerDispatcher(config), handlers);
 
-            var cfg = config.MapODataServiceRoute(
+
+            config.MapODataServiceRoute(
                 routeName: "listener",
                 routePrefix: "listener",
-                model: builder.GetEdmModel(), defaultHandler: routeHandlers);
+                model: builder.GetEdmModel(), 
+                defaultHandler: routeHandlers);
+
+
 
 
 
@@ -89,13 +107,13 @@ namespace AMSLLC.Listener.ODataService
             Expression<Func<T, TKey>> primaryKeySelector) where T : class
         {
             var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
-            var primaryKeyAttribute = typeof(T).GetCustomAttribute<AsyncPoco.PrimaryKeyAttribute>();
-            var keyPropertyName = GetPropertyName(primaryKeySelector);
-            if (string.Compare(primaryKeyAttribute.Value, keyPropertyName, StringComparison.InvariantCulture) != 0)
-            {
-                throw new InvalidOperationException(
-                    $"Specified {keyPropertyName} as primary key, {primaryKeyAttribute.Value} expected");
-            }
+            //var primaryKeyAttribute = typeof(T).GetCustomAttribute<AsyncPoco.PrimaryKeyAttribute>();
+            //var keyPropertyName = GetPropertyName(primaryKeySelector);
+            //if (string.Compare(primaryKeyAttribute.Value, keyPropertyName, StringComparison.InvariantCulture) != 0)
+            //{
+            //    throw new InvalidOperationException(
+            //        $"Specified {keyPropertyName} as primary key, {primaryKeyAttribute.Value} expected");
+            //}
             var tps = modelBuilder.EntitySet<T>(tableNameAttribute.Value);
             var tp = tps.EntityType;
             return tp.HasKey(primaryKeySelector);

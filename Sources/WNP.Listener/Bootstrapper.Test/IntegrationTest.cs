@@ -7,6 +7,8 @@
 namespace AMSLLC.Listener.Bootstrapper.Test
 {
     using System;
+    using System.Collections.Generic;
+    using System.Dynamic;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Formatting;
@@ -68,7 +70,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         new ObjectContent(typeof(InstallMeterRequestMessage),
                                             new InstallMeterRequestMessage
                                             {
-                                                //Test = "A1-S2-D3",
+                                                Test = "A1-S2-D3",
                                                 EntityCategory = "ElectricMeters",
                                                 OperationKey = "Install",
                                                 EntityKey = "AA-11-XSE"
@@ -82,11 +84,12 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
                 string responseBody = await response.Content.ReadAsStringAsync();
-                var responseMessage = responseBody;// JsonConvert.DeserializeObject<ApiResponseMessage>(responseBody);
+                var expando = JsonConvert.DeserializeObject<ExpandoObject>(responseBody) as IDictionary<string, object>;
+                var responseMessage = expando["value"].ToString();
                 Assert.AreEqual(nextKey, responseMessage);
 
                 HttpResponseMessage processResponse =
-                    await server.CreateRequest($"api/transaction/Transaction('{nextKey}')/Process()").AddHeader("AMS-Company", "CCD")
+                    await server.CreateRequest($"listener/TransactionRegistry('{nextKey}')/Transaction.Process()").AddHeader("AMS-Company", "CCD")
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
 
                 Assert.AreEqual(HttpStatusCode.OK, processResponse.StatusCode);

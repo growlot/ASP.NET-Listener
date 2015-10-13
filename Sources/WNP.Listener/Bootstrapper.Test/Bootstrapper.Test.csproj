@@ -111,10 +111,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ApiService\ApiService.csproj">
-      <Project>{ADBEBC77-2CDB-4A62-912A-138539F736EB}</Project>
-      <Name>ApiService</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ApplicationService\ApplicationService.csproj">
       <Project>{6B540066-84AB-4D63-81A6-9C724AEF039F}</Project>
       <Name>ApplicationService</Name>
