@@ -53,6 +53,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             var myMemento = (FieldConfigurationMemento)memento;
             this.Name = myMemento.Name;
             this.MapToName = myMemento.MapToName;
+            this.IncludeInHash = myMemento.IncludeInHash;
             if (myMemento.ValueMap != null)
             {
                 foreach (var valueMap in myMemento.ValueMap)

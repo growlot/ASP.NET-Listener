@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
             using (var scope = ApplicationServiceScope.Create())
             {
                 var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
-                var memento = new TransactionRegistryMemento(null, requestMessage.CompanyCode,
+                var memento = new TransactionRegistryMemento(0, null, requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey, requestMessage.OperationKey, TransactionStatusType.InProgress,
                     requestMessage.User, requestMessage.Header, scope.ScopeDateTime, null, requestMessage.Data, null, null);
 

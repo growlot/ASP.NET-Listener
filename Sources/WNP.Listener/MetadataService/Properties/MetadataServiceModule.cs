@@ -7,6 +7,10 @@ using Ninject.Web.Common;
 
 namespace AMSLLC.Listener.MetadataService.Properties
 {
+    using System;
+    using Serilog;
+
+
     public class MetadataServiceModule : NinjectModule
     {
         public override void Load()
@@ -17,7 +21,15 @@ namespace AMSLLC.Listener.MetadataService.Properties
             Kernel.Bind<IMetadataService>().To<MetadataServiceImpl>().
                 InTransientScope();
 
-            Mappers.Register(typeof(WNPMetadataEntry), new WNPMetadataMapping());
+            try
+            {
+                Mappers.Register(typeof(WNPMetadataEntry), new WNPMetadataMapping());
+            }
+            catch (ArgumentException)
+            {
+                Log.Error("Mapper Error (possible duplicate registration). No Rethrow");
+            }
+
         }
     }
 }

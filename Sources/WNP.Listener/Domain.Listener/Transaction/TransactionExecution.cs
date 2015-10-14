@@ -103,7 +103,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 {
                     if (!this.HashValidator.Valid && cfg.Trigger == EndpointTriggerType.Changed)
                     {
-                        return Task.Factory.ContinueWhenAll(EventsRegister.RaiseAsync(new TransactionSkipped(this.TransactionKey)), (tt) => tt);
+                        var tasks = EventsRegister.RaiseAsync(new TransactionSkipped(this.TransactionKey));
+                        if (tasks.Any())
+                        {
+                            return Task.Factory.ContinueWhenAll(tasks, (tt) => tt);
+                        }
+                        return Task.Factory.StartNew(() => { });
                     }
 
                     var dispatcher =

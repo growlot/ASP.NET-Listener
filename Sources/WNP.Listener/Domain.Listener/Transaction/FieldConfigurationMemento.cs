@@ -18,11 +18,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="mapToName">Name of the map to.</param>
+        /// <param name="includeInHash">if set to <c>true</c> [include in hash].</param>
         /// <param name="valueMap">The value map.</param>
-        public FieldConfigurationMemento(string name, string mapToName, Dictionary<string, object> valueMap)
+        public FieldConfigurationMemento(string name, string mapToName, bool includeInHash, Dictionary<string, object> valueMap)
         {
             this.Name = name;
             this.MapToName = mapToName;
+            this.IncludeInHash = includeInHash;
             if (valueMap != null)
             {
                 foreach (var o in valueMap)
@@ -49,5 +51,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The value map.</value>
         public Dictionary<string, object> ValueMap { get; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Gets or sets the include in hash.
+        /// </summary>
+        /// <value>The include in hash.</value>
+        public bool IncludeInHash { get; set; }
     }
 }

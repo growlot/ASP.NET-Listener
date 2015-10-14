@@ -36,8 +36,8 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
         /// </summary>
         DateTime Timestamp { get; }
     }
-
-    public class OwinRequestScopeContext : IOwinRequestScopeContext
+    [Serializable]
+    public class OwinRequestScopeContext : MarshalByRefObject, IOwinRequestScopeContext
     {
         private const string CallContextKey = "owin.rscopectx";
 
@@ -46,7 +46,7 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
         /// </summary>
         public static IOwinRequestScopeContext Current
         {
-            get { return (IOwinRequestScopeContext) CallContext.LogicalGetData(CallContextKey); }
+            get { return (IOwinRequestScopeContext)CallContext.LogicalGetData(CallContextKey); }
             set { CallContext.LogicalSetData(CallContextKey, value); }
         }
 

@@ -47,7 +47,7 @@ namespace AMSLLC.Listener.Repository.Listener
             //    }, new[] { "TransactionHash" });
 
             await
-                _persistence.UpdateAsync(new TransactionRegistryEntity { TransactionHash = hash, TransactionId = transactionId },
+                _persistence.UpdateAsync(new TransactionRegistryEntity { TransactionHash = hash, TransactionId = transactionId }, transactionId,
                     new[] { "TransactionHash" });
         }
 
@@ -110,18 +110,18 @@ WHERE TR.[Key] = @0", transactionKey);
         public async Task<IMemento> GetRegistryEntry(string transactionKey)
         {
             Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app,
-                 cmp, op) => new TransactionRegistryMemento(tr.Key, cmp.ExternalCode, app.Key, op.Key,
-                     (TransactionStatusType)tr.TransactionStatusId, tr.User, null/*tr.EntityKey*/, tr.CreatedDateTime,
+                 cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.Key, cmp.ExternalCode, app.Key, op.Key,
+                     (TransactionStatusType)tr.TransactionStatusId, tr.User, JsonConvert.DeserializeObject<Dictionary<string, object>>(tr.Header), tr.CreatedDateTime,
                      tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details);
 
             var registryEntities = await
                     _persistence.ProjectionAsync(callback,
                         @"SELECT TR.*, A.*, C.*, O.*
 FROM TransactionRegistry TR 
-INNER JOIN Application A ON TR.ApplicationId = A.ApplicationId 
-INNER JOIN Company C ON TR.CompanyId = C.CompanyId
-INNER JOIN Operation O ON TR.OperationId = O.OperationId
-INNER JOIN EntityCategory DC ON TR.EntityCategoryId = DC.EntityCategoryId
+INNER JOIN EnabledOperation EO ON TR.EnabledOperationId = EO.EnabledOperationId
+INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
+INNER JOIN Company C ON EO.CompanyId = C.CompanyId
+INNER JOIN Operation O ON EO.OperationId = O.OperationId
 WHERE TR.[Key] = @0", transactionKey);
 
             return registryEntities.SingleOrDefault();
@@ -129,7 +129,6 @@ WHERE TR.[Key] = @0", transactionKey);
 
         public async Task Update(TransactionRegistry transactionRegistry)
         {
-            //Single update, transaction scope removed
             await
                 _persistence.UpdateAsync(new TransactionRegistryEntity
                 {
@@ -139,7 +138,8 @@ WHERE TR.[Key] = @0", transactionKey);
                     User = transactionRegistry.UserName,
                     Message = transactionRegistry.Message,
                     Details = transactionRegistry.Details
-                });
+                }, transactionRegistry.Id,
+                    new[] { "TransactionStatusId", "UpdatedDateTime", "User", "Message", "Details" });
         }
 
         public Task<string> GetTransactionData(string transactionKey)
@@ -182,7 +182,7 @@ WHERE TR.[Key] = @0", transactionKey);
                         valueMap.Add(valueMapEntry.Key ?? string.Empty, ValueConverter.Convert(valueMapEntry.Value, mapType.ValueType));
                     }
                 }
-                returnValue.Add(new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, valueMap));
+                returnValue.Add(new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.IncludeInHash, valueMap));
             }
 
             return returnValue;

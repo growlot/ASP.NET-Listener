@@ -22,7 +22,7 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            
+
             var content = await request.Content.ReadAsStringAsync();
             if (IsJson(content))
             {
@@ -37,10 +37,7 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
                         {
                             header.Add(o.Key, o.Value);
                         }
-                        else
-                        {
-                            body.Add(o.Key, o.Value);
-                        }
+                        body.Add(o.Key, o.Value);
                     }
                     request.Properties["ListenerRequestBody"] = JsonConvert.SerializeObject(body);
 

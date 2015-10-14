@@ -16,7 +16,7 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
             var response = await base.SendAsync(request, cancellationToken);
             MiniProfiler.Stop();
 
-            if (response.Content != null)
+            if (response.Content != null)// && response.Content is ObjectContent<string>
             {
                 var responseMessage = await response.Content.ReadAsStringAsync();
                 if (IsJson(responseMessage))

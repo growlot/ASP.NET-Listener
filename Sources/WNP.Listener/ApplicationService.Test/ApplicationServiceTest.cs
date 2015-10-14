@@ -88,17 +88,17 @@ namespace ApplicationService.Test
             };
 
             var fieldConfigurations = new List<FieldConfigurationMemento>();
-            fieldConfigurations.Add(new FieldConfigurationMemento("Value", "Value1", null));
+            fieldConfigurations.Add(new FieldConfigurationMemento("Value", "Value1", false, null));
             fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.AnotherValue",
-                "ComplexProperty.CorrectValue", null));
-            fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.NestedData.AnotherValue", "Flatten",
+                "ComplexProperty.CorrectValue", false, null));
+            fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.NestedData.AnotherValue", "Flatten", false,
                 stringMap));
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.AnotherValue",
-                "ArrayProperty[].SimpleArrayProperty", null));
+                "ArrayProperty[].SimpleArrayProperty", false, null));
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.AnotherValue",
-                "ArrayProperty[].NestedData.NestedArrayProperty", null));
+                "ArrayProperty[].NestedData.NestedArrayProperty", false, null));
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value",
-                "ArrayProperty[].NestedData.NestedArray[].DeepValue", integerMap));
+                "ArrayProperty[].NestedData.NestedArray[].DeepValue", false, integerMap));
 
             var memento = new TransactionExecutionMemento(1, transactionKey, 1,
                 new[]
@@ -258,9 +258,9 @@ namespace ApplicationService.Test
             };
 
             var fieldConfigurations = new List<FieldConfigurationMemento>();
-            fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.NestedData.AnotherValue", null,
+            fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.NestedData.AnotherValue", null, false,
                 stringMap));
-            fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value", null,
+            fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value", null, false,
                 integerMap));
 
             DefaultEndpointDataProcessor p = new DefaultEndpointDataProcessor();

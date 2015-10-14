@@ -19,6 +19,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRegistryMemento" /> class.
         /// </summary>
+        /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="transactionKey">The transaction key.</param>
         /// <param name="companyCode">The company code.</param>
         /// <param name="applicationKey">The application key.</param>
@@ -31,7 +32,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="data">The request data.</param>
         /// <param name="message">The message.</param>
         /// <param name="details">The details.</param>
-        public TransactionRegistryMemento(string transactionKey, string companyCode, string applicationKey,
+        public TransactionRegistryMemento(int transactionId, string transactionKey, string companyCode, string applicationKey,
             string operationKey, TransactionStatusType status, string userName, Dictionary<string, object> header, DateTime createdDateTime,
             DateTime? updatedDateTime, string data, string message, string details)
         {
@@ -40,6 +41,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 throw new ArgumentNullException(nameof(header));
             }
 
+            this.TransactionId = transactionId;
             this.TransactionKey = transactionKey;
             this.CompanyCode = companyCode;
             this.ApplicationKey = applicationKey;
@@ -56,6 +58,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 this.Header.Add(o.Key, o.Value);
             }
         }
+
+        /// <summary>
+        /// Gets or sets the transaction identifier.
+        /// </summary>
+        /// <value>The transaction identifier.</value>
+        public int TransactionId { get; set; }
 
         /// <summary>
         /// Gets the header.

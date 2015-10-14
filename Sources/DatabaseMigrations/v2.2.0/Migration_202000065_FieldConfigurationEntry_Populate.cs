@@ -35,7 +35,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 {
                     FieldConfigurationEntryId = 2,
                     FieldConfigurationId = 1,
-                    FieldName = "EquipmentNumber",
+                    FieldName = "EntityKey",
                     ValueMapId = (int?)null,
                     IncludeInHash = true,
                     MapToName = (string)null

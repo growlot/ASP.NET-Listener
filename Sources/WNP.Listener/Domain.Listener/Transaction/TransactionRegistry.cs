@@ -174,6 +174,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Data = myMemento.Data;
             this.Message = myMemento.Message;
             this.Details = myMemento.Details;
+            this.Id = myMemento.TransactionId;
 
             foreach (var o in myMemento.Header)
             {

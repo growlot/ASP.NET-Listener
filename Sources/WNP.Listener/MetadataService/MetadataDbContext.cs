@@ -2,16 +2,15 @@
 using System.Data;
 using System.Data.Common;
 using AMSLLC.Listener.Persistence;
-using NLog;
 using StackExchange.Profiling;
 using StackExchange.Profiling.Data;
 
 namespace AMSLLC.Listener.MetadataService
 {
+    
+
     public class MetadataDbContext : Database
     {
-        private readonly Logger _log = LogManager.GetCurrentClassLogger();
-
         public MetadataDbContext(string connectionStringName)
             : base(connectionStringName) { }
 
@@ -45,12 +44,12 @@ namespace AMSLLC.Listener.MetadataService
 
         public override void OnBeginTransaction()
         {
-            _log.Trace(() => "Transaction Begin");
+            //Log.Verbose("Transaction Begin");
         }
 
         public override void OnEndTransaction()
         {
-            _log.Trace(() => "Transaction End");
+            //Log.Verbose("Transaction End");
         }
     }   
 }

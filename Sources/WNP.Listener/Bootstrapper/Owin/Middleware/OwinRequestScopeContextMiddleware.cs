@@ -6,6 +6,8 @@ using Owin;
 
 namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 {
+    using Serilog;
+
     public class OwinRequestScopeContextMiddleware : OwinMiddleware
     {
         readonly OwinMiddleware next;

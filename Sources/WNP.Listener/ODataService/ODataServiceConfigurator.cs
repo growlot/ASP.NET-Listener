@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.ODataService
 
             var conventions = ODataRoutingConventions.CreateDefault();
             conventions.Insert(0, new WNPGenericRoutingConvention(metadataService));
-
+            config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
 
             config.MapODataServiceRoute(
                 routeName: "WNPODataRoute",
@@ -72,7 +72,7 @@ namespace AMSLLC.Listener.ODataService
             var openAction = builder.Action("Open");
             ConfigureHeader(openAction, builder);
             openAction.Returns<string>();
-            
+
             DelegatingHandler[] handlers = new DelegatingHandler[]
             {
                 new ListenerMessageHandler()

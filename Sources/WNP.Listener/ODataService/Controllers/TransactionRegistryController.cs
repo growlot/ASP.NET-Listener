@@ -6,6 +6,7 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Http;
@@ -15,8 +16,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using ApplicationService;
     using Communication;
     using Persistence.Listener;
+    using Serilog;
 
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]
+    [CustomEnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]
     public class TransactionRegistryController : ODataController
     {
         private readonly ListenerODataContext _dbContext;
@@ -38,35 +40,59 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
         public IQueryable<TransactionRegistryEntity> Get()
         {
-            return _dbContext.TransactionRegistry.AsQueryable();
+            try
+            {
+                return _dbContext.TransactionRegistry.AsQueryable();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
         }
 
         public IHttpActionResult Get([FromODataUri] string key)
         {
-            var result = _dbContext.TransactionRegistry.Where(s => s.Key == key);
-            return Ok(result);
+            try
+            {
+                var result = _dbContext.TransactionRegistry.Where(s => s.Key == key);
+                return Ok(result);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
         }
 
         [HttpPost]
         [ODataRoute("Open")]//(entityCategory={entityCategory},operationKey={operationKey},entityKey={entityKey})
         public async Task<IHttpActionResult> Open(ODataActionParameters parameters)//[FromODataUri]string entityCategory, [FromODataUri]string operationKey, [FromODataUri]string entityKey
         {
-            string data = (string)Request.Properties["ListenerRequestBody"];
-
-            var message = new OpenTransactionRequestMessage
+            try
             {
-                CompanyCode = CompanyCode,
-                OperationKey = parameters["OperationKey"]?.ToString(),
-                SourceApplicationKey = ApplicationKey,
-                Data = data,
-                User = User?.Identity.Name
-            };
+                string data = (string)Request.Properties["ListenerRequestBody"];
 
-            message.Header.Add("PrimaryCategory", parameters["EntityCategory"]?.ToString());
-            message.Header.Add("PrimaryKey", parameters["EntityKey"]?.ToString());
-            message.Header.Add("Operation", parameters["OperationKey"]?.ToString());
+                var message = new OpenTransactionRequestMessage
+                {
+                    CompanyCode = CompanyCode,
+                    OperationKey = parameters["OperationKey"]?.ToString(),
+                    SourceApplicationKey = ApplicationKey,
+                    Data = data,
+                    User = User?.Identity.Name
+                };
 
-            return Ok(await this._transactionService.Open(message));
+                message.Header.Add("PrimaryCategory", parameters["EntityCategory"]?.ToString());
+                message.Header.Add("PrimaryKey", parameters["EntityKey"]?.ToString());
+                message.Header.Add("Operation", parameters["OperationKey"]?.ToString());
+
+                return Ok(await this._transactionService.Open(message));
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
         }
 
         /// <summary>
@@ -77,8 +103,16 @@ namespace AMSLLC.Listener.ODataService.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Process([FromODataUri] string key)
         {
-            await this._transactionService.Process(new ProcessTransactionRequestMessage { TransactionKey = key });
-            return Ok();
+            try
+            {
+                await this._transactionService.Process(new ProcessTransactionRequestMessage { TransactionKey = key });
+                return Ok();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
         }
 
         /// <summary>
@@ -89,8 +123,16 @@ namespace AMSLLC.Listener.ODataService.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Succeed([FromODataUri] string key)
         {
-            await this._transactionService.Success(new TransactionSuccessMessage() { TransactionKey = key });
-            return Ok();
+            try
+            {
+                await this._transactionService.Success(new TransactionSuccessMessage() { TransactionKey = key });
+                return Ok();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
         }
 
         /// <summary>
@@ -102,14 +144,22 @@ namespace AMSLLC.Listener.ODataService.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Fail([FromODataUri] string key, ODataActionParameters parameters)
         {
-            await
-                this._transactionService.Failed(new TransactionFailedMessage()
-                {
-                    TransactionKey = key,
-                    Details = parameters.ContainsKey("details") ? parameters["details"].ToString() : null,
-                    Message = parameters.ContainsKey("message") ? parameters["message"].ToString() : null
-                });
-            return Ok();
+            try
+            {
+                await
+                    this._transactionService.Failed(new TransactionFailedMessage()
+                    {
+                        TransactionKey = key,
+                        Details = parameters.ContainsKey("details") ? parameters["details"].ToString() : null,
+                        Message = parameters.ContainsKey("message") ? parameters["message"].ToString() : null
+                    });
+                return Ok();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
         }
     }
 }

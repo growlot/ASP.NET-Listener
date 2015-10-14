@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System.Data.Common;
     using System.Threading.Tasks;
     using AsyncPoco;
+    using Serilog;
 
     public class ListenerDbContext : Database
     {
@@ -27,6 +28,12 @@ namespace AMSLLC.Listener.Persistence.Listener
 
         public ListenerDbContext(string connectionStringName) : base(connectionStringName)
         {
+        }
+
+        public override void OnExecutingCommand(IDbCommand cmd)
+        {
+            Log.Information(cmd.CommandText);
+            base.OnExecutingCommand(cmd);
         }
     }
 }
