@@ -5,13 +5,14 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Domain.Listener.Application
 {
+    using System;
     using System.Collections.Generic;
     using Lookups;
 
     /// <summary>
     /// Transaction supported by specific application
     /// </summary>
-    public sealed class ApplicationTransaction : Entity<int>, IEntity<int>, IOriginator
+    public class ApplicationTransaction : Entity<int>
     {
         /// <summary>
         /// The device types supported by this transaction type.
@@ -40,7 +41,7 @@ namespace AMSLLC.Listener.Domain.Listener.Application
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        void IOriginator.SetMemento(IMemento memento)
+        protected override void SetMemento(IMemento memento)
         {
             var applicationTransactionMemento = (ApplicationTransactionMemento)memento;
             this.Id = applicationTransactionMemento.Id;

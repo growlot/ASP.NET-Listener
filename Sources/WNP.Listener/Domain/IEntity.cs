@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.Domain
     /// Interface that ensures that all entities have the identity.
     /// </summary>
     /// <typeparam name="T">The type of identity.</typeparam>
-    public interface IEntity<T>
+    public interface IEntity<T> : IOriginator
     {
         /// <summary>
         /// Gets the entity identifier.

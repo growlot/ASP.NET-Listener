@@ -17,7 +17,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction execution
     /// </summary>
-    public class TransactionExecution : Entity<int>, IWithDomainBuilder, IAggregateRoot, IOriginator
+    public class TransactionExecution : Entity<int>, IWithDomainBuilder, IAggregateRoot
     {
         private readonly DomainValidatorDictionary validatorRegistry = new DomainValidatorDictionary();
 
@@ -71,16 +71,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Sets the memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        void IOriginator.SetMemento(IMemento memento)
-        {
-            this.SetMemento(memento);
-        }
-
-        /// <summary>
-        /// Sets the memento.
-        /// </summary>
-        /// <param name="memento">The memento.</param>
-        protected void SetMemento(IMemento memento)
+        protected override void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionExecutionMemento)memento;
             this.TransactionKey = myMemento.TransactionKey;

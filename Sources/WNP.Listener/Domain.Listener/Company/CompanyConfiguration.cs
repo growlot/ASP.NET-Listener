@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Domain.Listener.Company
     /// <summary>
     /// Represents a company in listener transaction bounded context
     /// </summary>
-    public sealed class CompanyConfiguration : Entity<int>, IOriginator
+    public class CompanyConfiguration : Entity<int>
     {
         ////public void AddDevice(string equipmentNumber, int deviceTypeId)
         ////{
@@ -19,7 +19,7 @@ namespace AMSLLC.Listener.Domain.Listener.Company
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        void IOriginator.SetMemento(IMemento memento)
+        protected override void SetMemento(IMemento memento)
         {
             var companyConfigurationMemento = (CompanyConfigurationMemento)memento;
             this.Id = companyConfigurationMemento.Id;

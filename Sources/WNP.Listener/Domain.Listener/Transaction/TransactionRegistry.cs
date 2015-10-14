@@ -14,7 +14,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction Registry domain model
     /// </summary>
-    public class TransactionRegistry : Entity<int>, IAggregateRoot, IOriginator
+    public class TransactionRegistry : Entity<int>, IAggregateRoot
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRegistry"/> class.
@@ -160,16 +160,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="memento">The memento.</param>
         /// <exception cref="NotImplementedException"></exception>
-        void IOriginator.SetMemento(IMemento memento)
-        {
-            this.SetMemento(memento);
-        }
-
-        /// <summary>
-        /// Sets the memento.
-        /// </summary>
-        /// <param name="memento">The memento.</param>
-        protected void SetMemento(IMemento memento)
+        protected override void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionRegistryMemento)memento;
             this.TransactionKey = myMemento.TransactionKey;

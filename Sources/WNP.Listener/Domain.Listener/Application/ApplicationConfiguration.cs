@@ -14,7 +14,7 @@ namespace AMSLLC.Listener.Domain.Listener.Application
     /// <summary>
     /// Represents application configuration in listener transaction bounded context
     /// </summary>
-    public sealed class ApplicationConfiguration : Entity<int>, IEntity<int>, IAggregateRoot, IOriginator
+    public class ApplicationConfiguration : Entity<int>, IAggregateRoot
     {
         /// <summary>
         /// The device types that are supported by this application.
@@ -94,7 +94,7 @@ namespace AMSLLC.Listener.Domain.Listener.Application
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        void IOriginator.SetMemento(IMemento memento)
+        protected override void SetMemento(IMemento memento)
         {
             var applicationConfigurationMemento = (ApplicationConfigurationMemento)memento;
             this.Id = applicationConfigurationMemento.Id;

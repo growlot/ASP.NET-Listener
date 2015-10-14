@@ -11,32 +11,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction configuration
     /// </summary>
-    public class TransactionConfiguration : Entity<int>, IAggregateRoot, IOriginator
+    public class TransactionConfiguration : Entity<int>, IAggregateRoot
     {
         /// <summary>
-        /// Sets the memento.
+        /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        /// <exception cref="NotImplementedException"></exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters",
-            MessageId = "memento", Justification = "Wireframing, cleanup this later")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic",
-            Justification = "Wireframing, cleanup this later")]
-        void IOriginator.SetMemento(IMemento memento)
+        /// <exception cref="System.NotImplementedException"></exception>
+        protected override void SetMemento(IMemento memento)
         {
-            this.SetMemento(memento);
-        }
-
-        /// <summary>
-        /// Sets the memento.
-        /// </summary>
-        /// <param name="memento">The memento.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters",
-            MessageId = "memento", Justification = "Wireframing, cleanup this later")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic",
-            Justification = "Wireframing, cleanup this later")]
-        protected void SetMemento(IMemento memento)
-        {
+            throw new NotImplementedException();
         }
     }
 }

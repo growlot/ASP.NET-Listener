@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using SiteAggregate;
@@ -12,7 +13,7 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
     /// <summary>
     /// Handling Sites for specific owner
     /// </summary>
-    public sealed class Owner : Entity<int>, IAggregateRoot, IOriginator
+    public class Owner : Entity<int>, IAggregateRoot
     {
         private IList<Site> sites = new List<Site>();
 
@@ -33,8 +34,9 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        void IOriginator.SetMemento(IMemento memento)
+        protected override void SetMemento(IMemento memento)
         {
+            throw new NotImplementedException();
         }
     }
 }

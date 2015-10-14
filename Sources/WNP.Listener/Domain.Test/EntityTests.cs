@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Domain.Test
 {
+    using System;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
@@ -181,6 +182,16 @@ namespace AMSLLC.Listener.Domain.Test
             /// </value>
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "It's just an imitation of how real entity would be set up.")]
             public string Field { get; private set; }
+
+            /// <summary>
+            /// Restores objects state from provided memento.
+            /// </summary>
+            /// <param name="memento">The memento.</param>
+            /// <exception cref="System.NotImplementedException"></exception>
+            protected override void SetMemento(IMemento memento)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

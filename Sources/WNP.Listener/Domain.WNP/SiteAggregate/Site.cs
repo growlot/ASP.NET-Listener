@@ -10,7 +10,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
     /// <summary>
     /// Root aggregate for a Site
     /// </summary>
-    public sealed class Site : Entity<int>, IAggregateRoot, IOriginator
+    public class Site : Entity<int>, IAggregateRoot
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Site"/> class.
@@ -99,7 +99,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        void IOriginator.SetMemento(IMemento memento)
+        protected override void SetMemento(IMemento memento)
         {
             var siteMemento = (SiteMemento)memento;
             this.Id = siteMemento.Id;

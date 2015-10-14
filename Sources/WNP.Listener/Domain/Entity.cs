@@ -86,5 +86,20 @@ namespace AMSLLC.Listener.Domain
             // For persisted instances only compare identities
             return this.Id.Equals(other.Id);
         }
+
+        /// <summary>
+        /// Restores objects state from provided memento.
+        /// </summary>
+        /// <param name="memento">The memento.</param>
+        protected abstract void SetMemento(IMemento memento);
+
+        /// <summary>
+        /// Restores objects state from provided memento.
+        /// </summary>
+        /// <param name="memento">The memento.</param>
+        void IOriginator.SetMemento(IMemento memento)
+        {
+            this.SetMemento(memento);
+        }
     }
 }
