@@ -82,13 +82,28 @@ namespace AMSLLC.Listener.ApplicationService
                 hashSourceBuilder.AppendFormat("{0}_", JsonConvert.SerializeObject(hashElement));
             }
 
-            using (MD5 md5 = MD5.Create())
-            {
-                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(hashSourceBuilder.ToString()));
-                returnValue.Hash = Convert.ToBase64String(hash);
-            }
+            returnValue.Hash = GetHash(hashSourceBuilder.ToString());
 
             return returnValue;
+        }
+
+        /// <summary>
+        /// Gets the SHA-1 hash.
+        /// </summary>
+        /// <param name="data">The data that needs to be hashed.</param>
+        /// <returns>The has of the data</returns>
+        public static string GetHash(string data)
+        {
+            string result;
+            byte[] hash;
+
+            using (SHA1 sha = new SHA1CryptoServiceProvider())
+            {
+                hash = sha.ComputeHash(Encoding.UTF8.GetBytes(data));
+            }
+
+            result = BitConverter.ToString(hash).Replace("-", string.Empty);
+            return result;
         }
 
         private void ProcessProperty(object data, string name, string propRef,
