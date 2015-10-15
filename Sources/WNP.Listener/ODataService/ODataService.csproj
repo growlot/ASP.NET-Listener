@@ -168,7 +168,6 @@
     <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\TestEntitiesController.cs" />
     <Compile Include="Controllers\WNPController.cs" />
-    <Compile Include="CustomEnableQuery.cs" />
     <Compile Include="ListenerODataContext.cs" />
     <Compile Include="ListenerRequestHeaderMap.cs" />
     <Compile Include="MessageHandlers\ListenerMessageHandler.cs" />

@@ -96,7 +96,7 @@ namespace AMSLLC.Listener.Domain
                 throw new ArgumentNullException(nameof(eventData), "Event must be specified in order to raise it.");
             }
 
-            if (Handlers.ContainsKey(eventData.GetType()))
+            if (AsyncHandlers.ContainsKey(eventData.GetType()))
             {
                 var handlers = AsyncHandlers[eventData.GetType()];
                 Task[] returnValue = new Task[handlers.Count];

@@ -52,7 +52,8 @@ namespace AMSLLC.Listener.Bootstrapper
             var odataServiceConfigurator = kernel.Get<ODataServiceConfigurator>();
             odataServiceConfigurator.Configure(config);
 
-           
+            var appConfigurator = kernel.Get<ApplicationServiceConfigurator>();
+            appConfigurator.Configure();
 
             app.UseRequestScopeContext();
             app.UseErrorPage(ErrorPageOptions.ShowAll);

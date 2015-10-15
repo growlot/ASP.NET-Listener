@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.Listener;
     using Serilog;
 
-    [CustomEnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]
+    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]
     public class TransactionRegistryController : ODataController
     {
         private readonly ListenerODataContext _dbContext;
@@ -142,6 +142,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="parameters">The parameters.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
         [HttpPost]
+        //[ODataRoute("(Message={message},Details={details})")]
         public async Task<IHttpActionResult> Fail([FromODataUri] string key, ODataActionParameters parameters)
         {
             try
@@ -150,8 +151,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     this._transactionService.Failed(new TransactionFailedMessage()
                     {
                         TransactionKey = key,
-                        Details = parameters.ContainsKey("details") ? parameters["details"].ToString() : null,
-                        Message = parameters.ContainsKey("message") ? parameters["message"].ToString() : null
+                        Details = parameters.ContainsKey("Details") ? parameters["Details"].ToString() : null,
+                        Message = parameters.ContainsKey("Message") ? parameters["Message"].ToString() : null
                     });
                 return Ok();
             }

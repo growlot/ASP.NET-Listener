@@ -30,6 +30,7 @@
                 .WithConstructorArgument("connectionStringName", "WNPDatabase");
 
             Kernel.Bind<ODataServiceConfigurator>().ToSelf().InSingletonScope();
+            Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
 
             Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();            
             Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();

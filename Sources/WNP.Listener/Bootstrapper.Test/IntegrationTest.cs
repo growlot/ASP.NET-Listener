@@ -82,16 +82,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             }
         }
 
-        private static async Task SucceedTransaction(TestServer server, string nextKey)
-        {
-            HttpResponseMessage succeedResponse =
-                await
-                    server.CreateRequest($"listener/TransactionRegistry('{nextKey}')/AMSLLC.Listener.Succeed()")
-                        .AddHeader("AMS-Company", "CCD")
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
 
-            Assert.AreEqual(HttpStatusCode.OK, succeedResponse.StatusCode);
-        }
 
         [TestMethod]
         public async Task OpenAndSkipTransactionTest()
@@ -119,13 +110,84 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 await SucceedTransaction(server, transactionKey1);
 
                 var transactionStatusId1 = await GetTransactionStatus(server, transactionKey1);
-                Assert.AreEqual(0L, transactionStatusId1);
+                Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId1);
 
                 var transactionStatusId2 = await GetTransactionStatus(server, transactionKey2);
-                Assert.AreEqual(3L, transactionStatusId2);
+                Assert.AreEqual((long)TransactionStatusType.Skipped, transactionStatusId2);
 
                 communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()), Times.Once);
             }
+        }
+
+        [TestMethod]
+        public async Task OpenAndFailTransactionTest()
+        {
+            using (var server = TestServer.Create<Startup>())
+            {
+                var di = ((NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver);
+                var transactionKeyBuilder = new Mock<ITransactionKeyBuilder>();
+                transactionKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
+                var entityKey = Guid.NewGuid().ToString("D");
+                var communicationHandler = new Mock<ICommunicationHandler>();
+                communicationHandler.Setup(
+                    s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()))
+                    .Returns(Task.CompletedTask);
+
+                di.Kernel.Rebind<ITransactionKeyBuilder>().ToConstant(transactionKeyBuilder.Object).InSingletonScope();
+                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
+
+                var transactionKey = await OpenTransaction(server, entityKey);
+
+                await ProcessTransaction(server, transactionKey);
+
+                await FailTransaction(server, transactionKey, "Test Failure Message", "Test Failure Details");
+
+                var transactionStatusId1 = await GetTransactionStatus(server, transactionKey);
+                Assert.AreEqual((long)TransactionStatusType.Failed, transactionStatusId1);
+
+
+                communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()), Times.Once);
+            }
+        }
+
+        private static async Task SucceedTransaction(TestServer server, string nextKey)
+        {
+            HttpResponseMessage succeedResponse =
+                await
+                    server.CreateRequest($"listener/TransactionRegistry('{nextKey}')/AMSLLC.Listener.Succeed()")
+                        .AddHeader("AMS-Company", "CCD")
+                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
+
+            Assert.AreEqual(HttpStatusCode.OK, succeedResponse.StatusCode);
+        }
+
+        private static async Task FailTransaction(TestServer server, string nextKey, string message, string details)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+
+            var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
+            mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
+
+            HttpResponseMessage failResponse =
+                await
+                    server.CreateRequest($"listener/TransactionRegistry('{nextKey}')/AMSLLC.Listener.Fail()").And(
+                            request =>
+                                request.Content =
+                                    new ObjectContent(typeof(FailureData),
+                                        new FailureData()
+                                        {
+                                            Message = "Test Failure Message",
+                                            Details = "Test Failure Details"
+                                        },
+                                        new JsonMediaTypeFormatter { SerializerSettings = settings },
+                                        mediaType))
+                        .AddHeader("AMS-Company", "CCD")
+                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
+
+            Assert.AreEqual(HttpStatusCode.OK, failResponse.StatusCode);
         }
 
 
@@ -201,6 +263,12 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             public string EntityCategory { get; set; }
             public string EntityKey { get; set; }
             public string OperationKey { get; set; }
+        }
+
+        private class FailureData
+        {
+            public string Message { get; set; }
+            public string Details { get; set; }
         }
     }
 }
