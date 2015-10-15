@@ -19,33 +19,43 @@
 
         public string SelectAction(ODataPath odataPath, HttpControllerContext controllerContext, ILookup<string, HttpActionDescriptor> actionMap)
         {
-            if (controllerContext.Request.Method == HttpMethod.Get &&
-                odataPath.PathTemplate == "~/entityset/key/navigation/key")
+            if (controllerContext.Request.Method == HttpMethod.Get)
             {
-                NavigationPathSegment navigationSegment = odataPath.Segments[2] as NavigationPathSegment;
-                IEdmNavigationProperty navigationProperty = navigationSegment.NavigationProperty.Partner;
-                IEdmEntityType declaringType = navigationProperty.DeclaringType as IEdmEntityType;
+                switch (odataPath.PathTemplate)
+                {
+                    case "~/entityset/key/navigation/key":
+                        var navigationSegment = odataPath.Segments[2] as NavigationPathSegment;
+                        var navigationProperty = navigationSegment.NavigationProperty.Partner;
+                        var declaringType = navigationProperty.DeclaringType as IEdmEntityType;
 
-                string actionName = "Get" + declaringType.Name;
+                        var actionName = "Get" + declaringType.Name;
                 if (actionMap.Contains(actionName))
                 {
                     // Add keys to route data, so they will bind to action parameters.
-                    KeyValuePathSegment keyValueSegment = odataPath.Segments[1] as KeyValuePathSegment;
+                            var keyValueSegment = odataPath.Segments[1] as KeyValuePathSegment;
                     controllerContext.RouteData.Values[ODataRouteConstants.Key] = keyValueSegment.Value;
 
-                    KeyValuePathSegment relatedKeySegment = odataPath.Segments[3] as KeyValuePathSegment;
+                            var relatedKeySegment = odataPath.Segments[3] as KeyValuePathSegment;
                     controllerContext.RouteData.Values[ODataRouteConstants.RelatedKey] = relatedKeySegment.Value;
 
                     return actionName;
                 }
+                        break;
+                    case "~/entityset/key":
+                        break;
+                    case "~/entityset/key/action":
+
+                        break;
+                }
             }
+
             // Not a match.
             return null;
         }
 
         public string SelectController(ODataPath odataPath, HttpRequestMessage request)
         {
-            if (request.Method == HttpMethod.Get && odataPath.PathTemplate == "~/entityset")
+ if (request.Method == HttpMethod.Get && odataPath.PathTemplate == "~/entityset")
             {
                 EntitySetPathSegment entitySetSegment = odataPath.Segments[0] as EntitySetPathSegment;
                 MetadataModel metadataModel = metadataService.GetModelMapping(entitySetSegment.EntitySetName);
@@ -77,7 +87,6 @@
                 return controllerName;
             }
 
-            return null;
-        }
+            return null;        }
     }
 }

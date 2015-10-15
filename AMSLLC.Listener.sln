@@ -57,7 +57,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationService.Test", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.Listener", "Sources\WNP.Listener\Persistence.Listener\Persistence.Listener.csproj", "{5A7FEA99-BB93-4BDA-91AE-2DDEC17E3D21}"
 EndProject
+<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.WNP", "Sources\WNP.Listener\Repository.WNP\Repository.WNP.csproj", "{2643C152-D7B8-4633-A540-8EE3A1DB8E45}"
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataService.Actions", "Sources\WNP.Listener\ODataService.Actions\ODataService.Actions.csproj", "{F2279F58-4D34-48CE-893F-D5CF596220DD}"
+>>>>>>> LIS-282: OData actions can now be defined in container classes. Not yet functional.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -149,10 +153,17 @@ Global
 		{5A7FEA99-BB93-4BDA-91AE-2DDEC17E3D21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A7FEA99-BB93-4BDA-91AE-2DDEC17E3D21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A7FEA99-BB93-4BDA-91AE-2DDEC17E3D21}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{2643C152-D7B8-4633-A540-8EE3A1DB8E45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2643C152-D7B8-4633-A540-8EE3A1DB8E45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2643C152-D7B8-4633-A540-8EE3A1DB8E45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2643C152-D7B8-4633-A540-8EE3A1DB8E45}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{F2279F58-4D34-48CE-893F-D5CF596220DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2279F58-4D34-48CE-893F-D5CF596220DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2279F58-4D34-48CE-893F-D5CF596220DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2279F58-4D34-48CE-893F-D5CF596220DD}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> LIS-282: OData actions can now be defined in container classes. Not yet functional.
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,6 +188,10 @@ Global
 		{C18A16BA-0F09-435B-9BF8-CD3C676C727C} = {8C0D6EAD-4A1B-4247-9F61-32F99423BA5B}
 		{E484D671-EB70-42AE-ADAA-2CCF16FF60EF} = {C4BE66D0-2301-4028-A593-2F8DFA817E01}
 		{5A7FEA99-BB93-4BDA-91AE-2DDEC17E3D21} = {8C0D6EAD-4A1B-4247-9F61-32F99423BA5B}
+<<<<<<< HEAD
 		{2643C152-D7B8-4633-A540-8EE3A1DB8E45} = {8021E4C2-62DB-4866-9EF7-771D4F3468B2}
+=======
+		{F2279F58-4D34-48CE-893F-D5CF596220DD} = {14C451DA-8F37-467E-9B71-C5F7E679FC7B}
+>>>>>>> LIS-282: OData actions can now be defined in container classes. Not yet functional.
 	EndGlobalSection
 EndGlobal

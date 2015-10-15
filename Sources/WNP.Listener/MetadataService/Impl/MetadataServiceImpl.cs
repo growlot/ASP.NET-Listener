@@ -17,10 +17,12 @@ namespace AMSLLC.Listener.MetadataService.Impl
     public class MetadataServiceImpl : IMetadataService
     {
         private readonly MetadataDbContext dbContext;
+        private readonly IEntityActionConfigurator _actionConfigurator;
+
         private static Assembly odataModelAssembly;
         private static Dictionary<string, MetadataModel> oDataModelMappings;
 
-        public string ODataModelNamespace => "AMSLLC.Listener.ODataService.ODataModel";
+        public string ODataModelNamespace => "Listener"; //AMSLLC.Listener.ODataService.ODataModel
 
         public Assembly ODataModelAssembly => odataModelAssembly;
 
@@ -35,18 +37,19 @@ namespace AMSLLC.Listener.MetadataService.Impl
             return null;
         }
 
-        public MetadataServiceImpl(MetadataDbContext dbContext)
+        public MetadataModel GetModelMapping(Type clrModel) =>
+            oDataModelMappings[clrModel.FullName];
+
+        public MetadataServiceImpl(MetadataDbContext dbContext, IEntityActionConfigurator actionConfigurator)
         {
             this.dbContext = dbContext;
+            _actionConfigurator = actionConfigurator;
+
             if (oDataModelMappings == null)
-            {
                 this.PrepareModel();
-            }
 
             if (odataModelAssembly == null)
-            {
                 this.GenerateODataAssembly();
-            }
         }
 
         private void PrepareModel()
@@ -83,17 +86,13 @@ namespace AMSLLC.Listener.MetadataService.Impl
                     {
                         dataType = "DateTimeOffset";
                     }
-                    if (dataType.Equals("varchar", StringComparison.OrdinalIgnoreCase))
+                    else if (dataType.Equals("varchar", StringComparison.OrdinalIgnoreCase))
                     {
                         dataType = "string";
                     }
 
                     // resolve if it's primary key from database
-                    bool isPrimary = false;
-                    if (column.IsPrimaryKey.Equals("Y", StringComparison.OrdinalIgnoreCase))
-                    {
-                        isPrimary = true;
-                    }
+                    var isPrimary = column.IsPrimaryKey.Equals("Y", StringComparison.OrdinalIgnoreCase);
 
                     var fieldInfo = new MetadataFieldInfo()
                     {
@@ -106,7 +105,11 @@ namespace AMSLLC.Listener.MetadataService.Impl
                     columnToModelMappings.Add(column.ColumnName, customerLabel);
                 }
 
-                var oDataModelMapping = new MetadataModel($"wndba.{tableName}", modelClassName, modelToColumnMappings, columnToModelMappings, fieldsInfo);
+                Type actionsContainer = null;
+                if (_actionConfigurator.IsEntityActionsContainerAvailable(tableName))
+                    actionsContainer = _actionConfigurator.GetEntityActionContainer(tableName);
+
+                var oDataModelMapping = new MetadataModel($"wndba.{tableName}", modelClassName, modelToColumnMappings, columnToModelMappings, fieldsInfo, actionsContainer);
                 oDataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}", oDataModelMapping);
             }
         }

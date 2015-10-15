@@ -15,11 +15,15 @@ namespace AMSLLC.Listener.MetadataService.Properties
     {
         public override void Load()
         {
-            Kernel.Bind<MetadataDbContext>().ToSelf().
-                InRequestScope().WithConstructorArgument("connectionStringName", "WNPDatabase");
+            Kernel.Bind<MetadataDbContext>().ToSelf()
+                .InRequestScope()
+                .WithConstructorArgument("connectionStringName", "WNPDatabase");
 
-            Kernel.Bind<IMetadataService>().To<MetadataServiceImpl>().
-                InTransientScope();
+            Kernel.Bind<IMetadataService>().To<MetadataServiceImpl>()
+                .InTransientScope();
+
+            Kernel.Bind<IEntityActionConfigurator>().To<EntityActionConfiguratorImpl>()
+                .InSingletonScope();
 
             try
             {

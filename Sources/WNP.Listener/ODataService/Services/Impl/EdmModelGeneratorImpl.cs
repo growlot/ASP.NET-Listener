@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Web.OData.Builder;
 using AMSLLC.Listener.MetadataService;
 using Microsoft.OData.Edm;
+using Microsoft.OData.Edm.Library;
 using Ninject.Infrastructure.Language;
 
 namespace AMSLLC.Listener.ODataService.Services.Impl
@@ -39,7 +42,31 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                 _metadataService.ODataModelAssembly.GetTypes()
                     .Where(type => typeof(IODataEntity).IsAssignableFrom(type));
 
-            generatedModels.Map(type => method.MakeGenericMethod(type).Invoke(builder, new object[] { $"{type.Name}s" }));
+            generatedModels.Map(type =>
+            {
+                entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] {$"{type.Name}s"});
+
+                var actionsContainer = _metadataService.GetModelMapping(type).ActionsContainer;
+                if (actionsContainer != null)
+                {
+                    var entityTypeConfiguration = entityTypeMethod.MakeGenericMethod(type).Invoke(builder, new object[0]);
+
+                    var actionMethodsList = actionsContainer.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                    actionMethodsList.Map(info =>
+                    {
+                        var parameters = info.GetParameters();
+
+                        // we got an action here
+                        if (info.ReturnType == typeof (void))
+                        {
+                            var etcType = entityTypeConfiguration.GetType();
+                            var actionMethodInfo = etcType.GetMethod("Action");
+
+                            var actionConfiguration = actionMethodInfo.Invoke(entityTypeConfiguration, new[] { info.Name });
+                        }
+                    });
+                }
+            });
 
             return _model = builder.GetEdmModel();
         }

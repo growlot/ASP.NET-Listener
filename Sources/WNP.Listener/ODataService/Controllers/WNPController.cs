@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.Caching;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.OData;
 using System.Web.OData.Extensions;
@@ -44,6 +46,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     AllowedQueryOptions.Select | AllowedQueryOptions.Filter | AllowedQueryOptions.Top |
                     AllowedQueryOptions.Skip,
             };
+        }
+
+        public SingleResult Single()
+        {
+            return new SingleResult<object>(null);
         }
 
         public IHttpActionResult Get()
