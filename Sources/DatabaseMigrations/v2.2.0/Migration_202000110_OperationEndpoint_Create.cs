@@ -24,11 +24,11 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("EnabledOperationId")
                 .AsInt32()
                 .NotNullable()
-                .ForeignKey("FK_OperationEndpoint_EnabledOperationId", "EnabledOperation", "EnabledOperationId")
+                .ForeignKey("FK_OperEndp_EnabOper", "EnabledOperation", "EnabledOperationId")
                 .WithColumn("EndpointId")
                 .AsInt32()
                 .NotNullable()
-                .ForeignKey("FK_OperationEndpoint_EndpointId", "Endpoint", "EndpointId");
+                .ForeignKey("FK_OperEndp_Endp", "Endpoint", "EndpointId");
         }
     }
 }

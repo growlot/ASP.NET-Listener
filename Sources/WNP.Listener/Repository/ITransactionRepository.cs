@@ -11,17 +11,17 @@ namespace AMSLLC.Listener.Repository
 
         Task Update(TransactionExecution transaction);
 
-        Task<IMemento> GetExecutionContext(string transactionKey);
+        Task<IMemento> GetExecutionContext(string recordKey);
 
         Task Create(TransactionRegistry transactionRegistry);
 
-        Task<IMemento> GetRegistryEntry(string transactionKey);
+        Task<IMemento> GetRegistryEntry(string recordKey);
 
         Task Update(TransactionRegistry transactionRegistry);
 
-        Task<string> GetTransactionData(string transactionKey);
+        Task<string> GetTransactionData(string recordKey);
         Task<int> GetHashCount(int enabledOperationId, string hash);
         Task UpdateHash(int transactionId, string hash);
-        Task<string> GetTransactionHeader(string transactionKey);
+        Task<string> GetTransactionHeader(string recordKey);
     }
 }

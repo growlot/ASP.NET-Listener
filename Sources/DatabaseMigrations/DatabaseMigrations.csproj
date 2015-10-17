@@ -104,10 +104,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Oracle.DataAccess, Version=2.112.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Oracle.DataAccess.x86.2.112.1.0\lib\Oracle.DataAccess.dll</HintPath>
-    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=4.112.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -165,22 +162,6 @@
     <Compile Include="v2.0.1\Migration_200001008_DeviceBatch_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000001_TransactionData_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000002_ExternalSystem_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000003_TransactionType_Populate.cs" />
-    <Compile Include="v2.2.0\Migration_202000015_FileFixedMode_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000016_FileFixedMode_Populate.cs" />
-    <Compile Include="v2.2.0\Migration_202000017_File_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000018_FileField_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000014_FileAlignMode_Populate.cs" />
-    <Compile Include="v2.2.0\Migration_202000013_FileAlignMode_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000012_FileQuoteMultiline_Populate.cs" />
-    <Compile Include="v2.2.0\Migration_202000011_FileQuoteMultiline_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000010_FileQuoteMode_Populate.cs" />
-    <Compile Include="v2.2.0\Migration_202000009_FileQuoteMode_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000008_FileTrimMode_Populate.cs" />
-    <Compile Include="v2.2.0\Migration_202000007_FileTrimMode_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000006_FileConverter_Create.cs" />
-    <Compile Include="v2.2.0\Migration_202000005_FileConverterKind_Populate.cs" />
-    <Compile Include="v2.2.0\Migration_202000004_FileConverterKind_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000020_ProtocolType_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000021_ProtocolType_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000022_EndpointTriggerType_Create.cs" />

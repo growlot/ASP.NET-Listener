@@ -25,19 +25,19 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("CompanyId").AsInt32().NotNullable()
                 .WithColumn("OperationId").AsInt32().NotNullable();
 
-            this.Create.ForeignKey("FK_EnabledOperation_Application")
+            this.Create.ForeignKey("FK_EnabOper_Appl")
                 .FromTable("EnabledOperation").ForeignColumn("ApplicationId")
                 .ToTable("Application").PrimaryColumn("ApplicationId");
 
-            this.Create.ForeignKey("FK_EnabledOperation_Company")
+            this.Create.ForeignKey("FK_EnabOper_Comp")
                 .FromTable("EnabledOperation").ForeignColumn("CompanyId")
                 .ToTable("Company").PrimaryColumn("CompanyId");
 
-            this.Create.ForeignKey("FK_EnabledOperation_Operation")
+            this.Create.ForeignKey("FK_EnabOper_Oper")
                 .FromTable("EnabledOperation").ForeignColumn("OperationId")
                 .ToTable("Operation").PrimaryColumn("OperationId");
 
-            this.Create.UniqueConstraint("UX_EnabledOperation")
+            this.Create.UniqueConstraint("UX_EnabOper")
                 .OnTable("EnabledOperation").Columns("ApplicationId", "CompanyId", "OperationId");
         }
     }

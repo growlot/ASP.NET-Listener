@@ -47,10 +47,11 @@
   <ItemGroup>
     <Compile Include="ApplicationServiceConfigurator.cs" />
     <Compile Include="ApplicationServiceScope.cs" />
+    <Compile Include="DataPropertyInfo.cs" />
     <Compile Include="DefaultEndpointDataProcessor.cs" />
     <Compile Include="DomainBuilder.cs" />
+    <Compile Include="DynamicUtilities.cs" />
     <Compile Include="ExecutionContext.cs" />
-    <Compile Include="DataPropertyInfo.cs" />
     <Compile Include="IApplicationConfigurationService.cs" />
     <Compile Include="IApplicationServiceScope.cs" />
     <Compile Include="IExecutionContext.cs" />

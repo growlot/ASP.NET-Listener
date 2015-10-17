@@ -53,7 +53,7 @@
             this.Kernel.Bind<IDomainBuilder>().To<DomainBuilder>().InSingletonScope();
             this.Kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
             this.Kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
-            this.Kernel.Bind<ITransactionKeyBuilder>().To<TransactionKeyBuilder>().InSingletonScope();
+            this.Kernel.Bind<IRecordKeyBuilder>().To<RecordKeyBuilder>().InSingletonScope();
             this.Kernel.Bind<IEndpointDataProcessor>().To<DefaultEndpointDataProcessor>().InSingletonScope();
             this.Kernel.Bind<IConnectionConfigurationBuilder>().To<JmsConnectionConfigurationBuilder>().InSingletonScope().Named("connection-builder-jms");
             this.Kernel.Bind<ICommunicationHandler>().To<JmsDispatcher>().InSingletonScope().Named("communication-jms");

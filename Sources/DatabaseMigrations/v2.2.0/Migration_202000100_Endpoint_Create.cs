@@ -22,10 +22,11 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Create.Table("Endpoint")
                 .WithColumn("EndpointId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("Name").AsString().NotNullable()
-                .WithColumn("ProtocolTypeId").AsInt32().NotNullable().ForeignKey("FK_Endpoint_ProtocolTypeId", "ProtocolType", "ProtocolTypeId")
-                .WithColumn("ConnectionCfgJson").AsString().NotNullable()
-                .WithColumn("FieldConfigurationId").AsInt32().Nullable().ForeignKey("FK_Endpoint_FieldConfigurationId", "FieldConfiguration", "FieldConfigurationId")
-                .WithColumn("EndpointTriggerTypeId").AsInt32().NotNullable().ForeignKey("FK_Endpoint_EndpointTriggerTypeId", "EndpointTriggerType", "EndpointTriggerTypeId");
+                .WithColumn("ProtocolTypeId").AsInt32().NotNullable().ForeignKey("FK_Endp_ProtType", "ProtocolType", "ProtocolTypeId")
+                .WithColumn("ConnectionConfiguration").AsString().NotNullable()
+                .WithColumn("AdapterConfiguration").AsString().Nullable()
+                .WithColumn("FieldConfigurationId").AsInt32().Nullable().ForeignKey("FK_Endp_FielConf", "FieldConfiguration", "FieldConfigurationId")
+                .WithColumn("EndpointTriggerTypeId").AsInt32().NotNullable().ForeignKey("FK_Endp_EndpTrigType", "EndpointTriggerType", "EndpointTriggerTypeId");
         }
     }
 }

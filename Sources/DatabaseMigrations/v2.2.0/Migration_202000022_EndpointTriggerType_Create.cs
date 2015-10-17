@@ -20,9 +20,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
         public override void Up()
         {
             this.Create.Table("EndpointTriggerType")
-               .WithColumn("EndpointTriggerTypeId").AsInt32().NotNullable().PrimaryKey().Identity()
-               .WithColumn("Key").AsString(15).NotNullable().Unique("UX_EndpointTriggerType_Key")
-               .WithColumn("Name").AsString(100).NotNullable();
+               .WithColumn("EndpointTriggerTypeId").AsInt32().NotNullable().PrimaryKey()
+               .WithColumn("Name").AsString(15).NotNullable().Unique("UX_EndpTrigType_Key")
+               .WithColumn("Description").AsString(100).NotNullable();
         }
     }
 }

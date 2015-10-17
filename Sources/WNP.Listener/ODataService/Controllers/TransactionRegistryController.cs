@@ -55,7 +55,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                var result = _dbContext.TransactionRegistry.Where(s => s.Key == key);
+                var result = _dbContext.TransactionRegistry.Where(s => s.RecordKey == key);
                 return Ok(result);
             }
             catch (Exception exc)
@@ -105,7 +105,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                await this._transactionService.Process(new ProcessTransactionRequestMessage { TransactionKey = key });
+                await this._transactionService.Process(new ProcessTransactionRequestMessage { RecordKey = key });
                 return Ok();
             }
             catch (Exception exc)
@@ -125,7 +125,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                await this._transactionService.Success(new TransactionSuccessMessage() { TransactionKey = key });
+                await this._transactionService.Success(new TransactionSuccessMessage() { RecordKey = key });
                 return Ok();
             }
             catch (Exception exc)
@@ -150,7 +150,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 await
                     this._transactionService.Failed(new TransactionFailedMessage()
                     {
-                        TransactionKey = key,
+                        RecordKey = key,
                         Details = parameters.ContainsKey("Details") ? parameters["Details"].ToString() : null,
                         Message = parameters.ContainsKey("Message") ? parameters["Message"].ToString() : null
                     });

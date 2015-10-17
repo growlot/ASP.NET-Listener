@@ -20,29 +20,23 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Initializes a new instance of the <see cref="TransactionRegistryMemento" /> class.
         /// </summary>
         /// <param name="transactionId">The transaction identifier.</param>
-        /// <param name="transactionKey">The transaction key.</param>
+        /// <param name="recordKey">The record key.</param>
         /// <param name="companyCode">The company code.</param>
         /// <param name="applicationKey">The application key.</param>
         /// <param name="operationKey">The operation key.</param>
         /// <param name="status">The status.</param>
         /// <param name="userName">Name of the user.</param>
-        /// <param name="header">The header.</param>
         /// <param name="createdDateTime">The created date time.</param>
         /// <param name="updatedDateTime">The updated date time.</param>
         /// <param name="data">The request data.</param>
         /// <param name="message">The message.</param>
         /// <param name="details">The details.</param>
-        public TransactionRegistryMemento(int transactionId, string transactionKey, string companyCode, string applicationKey,
-            string operationKey, TransactionStatusType status, string userName, Dictionary<string, object> header, DateTime createdDateTime,
+        public TransactionRegistryMemento(int transactionId, string recordKey, string companyCode, string applicationKey,
+            string operationKey, TransactionStatusType status, string userName, DateTime createdDateTime,
             DateTime? updatedDateTime, string data, string message, string details)
         {
-            if (header == null)
-            {
-                throw new ArgumentNullException(nameof(header));
-            }
-
             this.TransactionId = transactionId;
-            this.TransactionKey = transactionKey;
+            this.RecordKey = recordKey;
             this.CompanyCode = companyCode;
             this.ApplicationKey = applicationKey;
             this.OperationKey = operationKey;
@@ -53,10 +47,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Data = data;
             this.Message = message;
             this.Details = details;
-            foreach (var o in header)
-            {
-                this.Header.Add(o.Key, o.Value);
-            }
         }
 
         /// <summary>
@@ -66,16 +56,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public int TransactionId { get; set; }
 
         /// <summary>
-        /// Gets the header.
+        /// Gets the record key.
         /// </summary>
-        /// <value>The header.</value>
-        public Dictionary<string, object> Header { get; } = new Dictionary<string, object>();
-
-        /// <summary>
-        /// Gets the transaction key.
-        /// </summary>
-        /// <value>The transaction key.</value>
-        public string TransactionKey { get; private set; }
+        /// <value>The record key.</value>
+        public string RecordKey { get; private set; }
 
         /// <summary>
         /// Gets the company code.

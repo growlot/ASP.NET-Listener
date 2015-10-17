@@ -22,14 +22,14 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Create.Table("ValueMapEntry")
                 .WithColumn("ValueMapEntryId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("ValueMapId").AsInt32().NotNullable()
-                .WithColumn("Key").AsString(100).NotNullable()
+                .WithColumn("RecordKey").AsString(100).NotNullable()
                 .WithColumn("Value").AsString(100).Nullable();
 
-            this.Create.ForeignKey("FK_ValueMapEntry_ValueMap")
+            this.Create.ForeignKey("FK_ValuMapEntr_ValuMap")
                 .FromTable("ValueMapEntry").ForeignColumn("ValueMapId")
                 .ToTable("ValueMap").PrimaryColumn("ValueMapId");
 
-            this.Create.UniqueConstraint("IX_ValueMapEntry_Key").OnTable("ValueMapEntry").Columns("ValueMapId", "Key");
+            this.Create.UniqueConstraint("IX_ValuMapEntr_Key").OnTable("ValueMapEntry").Columns("ValueMapId", "RecordKey");
         }
     }
 }

@@ -6,7 +6,10 @@
 
 namespace AMSLLC.Listener.DatabaseMigrations
 {
+    using System.Data;
     using FluentMigrator;
+    using FluentMigrator.Expressions;
+    using FluentMigrator.Model;
 
     /// <summary>
     /// Database migration step
@@ -21,8 +24,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
         {
             this.Create.Table("ProtocolType")
                .WithColumn("ProtocolTypeId").AsInt32().NotNullable().PrimaryKey().Identity()
-               .WithColumn("Key").AsString(10).NotNullable().Unique("UX_ProtocolType_Key")
-               .WithColumn("Name").AsString(100).NotNullable();
+               .WithColumn("Name").AsString(10).NotNullable().Unique("UX_ProtType_Key")
+               .WithColumn("Description").AsString(100).NotNullable();
         }
     }
 }

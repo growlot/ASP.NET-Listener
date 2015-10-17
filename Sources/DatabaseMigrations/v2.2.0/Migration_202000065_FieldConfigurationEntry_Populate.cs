@@ -29,6 +29,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     FieldName = "UserName",
                     ValueMapId = 1,
                     IncludeInHash = true,
+                    IncludeInSummary = true,
+                    IncludeInKey = false,
                     MapToName = (string)null
                 },
                 new
@@ -38,6 +40,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     FieldName = "EntityKey",
                     ValueMapId = (int?)null,
                     IncludeInHash = true,
+                    IncludeInSummary = false,
+                    IncludeInKey = true,
                     MapToName = (string)null
                 }
             };

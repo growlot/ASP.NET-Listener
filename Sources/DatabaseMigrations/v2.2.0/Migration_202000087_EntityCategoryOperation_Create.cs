@@ -21,8 +21,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
         {
             this.Create.Table("EntityCategoryOperation")
                 .WithColumn("EntityCategoryOperationId").AsInt32().NotNullable().PrimaryKey().Identity()
-                .WithColumn("EntityCategoryId").AsInt32().NotNullable().ForeignKey("FK_EntityCategoryOperation_EntityCategory", "EntityCategory", "EntityCategoryId")
-                .WithColumn("OperationId").AsInt32().NotNullable().ForeignKey("FK_EntityCategoryOperation_Operation", "Operation", "OperationId");
+                .WithColumn("EntityCategoryId").AsInt32().NotNullable().ForeignKey("FK_EntiCateOper_EntiCate", "EntityCategory", "EntityCategoryId")
+                .WithColumn("OperationId").AsInt32().NotNullable().ForeignKey("FK_EntiCateOper_Oper", "Operation", "OperationId");
         }
     }
 }

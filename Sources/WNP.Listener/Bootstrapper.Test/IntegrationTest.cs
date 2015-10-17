@@ -42,11 +42,11 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             using (var server = TestServer.Create<Startup>())
             {
                 var di = ((NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver);
-                var transactionKeyBuilder = new Mock<ITransactionKeyBuilder>();
+                var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
                 string nextKey = Guid.NewGuid().ToString("D");
-                transactionKeyBuilder.Setup(s => s.Create()).Returns(nextKey);
+                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey);
                 var entityKey = Guid.NewGuid().ToString("D");
-                string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}},\"TransactionKey\":\"{nextKey}\",\"Header\":{{\"PrimaryCategory\":\"ElectricMeters\",\"PrimaryKey\":\"{entityKey}\",\"Operation\":\"Install\"}}}}";
+                string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}},\"RecordKey\":\"{nextKey}\",\"Header\":{{\"PrimaryCategory\":\"ElectricMeters\",\"PrimaryKey\":\"{entityKey}\",\"Operation\":\"Install\"}}}}";
                 object receivedData = string.Empty;
 
                 var communicationHandler = new Mock<ICommunicationHandler>();
@@ -57,7 +57,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                         (object data, IConnectionConfiguration conn) =>
                             receivedData = ((TransactionDataReady)data).Data);
 
-                di.Kernel.Rebind<ITransactionKeyBuilder>().ToConstant(transactionKeyBuilder.Object).InSingletonScope();
+                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
                 di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
                 var responseMessage = await OpenTransaction(server, entityKey);
                 Assert.AreEqual(nextKey, responseMessage);
@@ -90,29 +90,29 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             using (var server = TestServer.Create<Startup>())
             {
                 var di = ((NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver);
-                var transactionKeyBuilder = new Mock<ITransactionKeyBuilder>();
-                transactionKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
+                var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
                 var entityKey = Guid.NewGuid().ToString("D");
                 var communicationHandler = new Mock<ICommunicationHandler>();
                 communicationHandler.Setup(
                     s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()))
                     .Returns(Task.CompletedTask);
 
-                di.Kernel.Rebind<ITransactionKeyBuilder>().ToConstant(transactionKeyBuilder.Object).InSingletonScope();
+                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
                 di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
 
-                var transactionKey1 = await OpenTransaction(server, entityKey);
-                var transactionKey2 = await OpenTransaction(server, entityKey);
+                var transactionRecordKey1 = await OpenTransaction(server, entityKey);
+                var transactionRecordKey2 = await OpenTransaction(server, entityKey);
 
-                await ProcessTransaction(server, transactionKey1);
-                await ProcessTransaction(server, transactionKey2);
+                await ProcessTransaction(server, transactionRecordKey1);
+                await ProcessTransaction(server, transactionRecordKey2);
 
-                await SucceedTransaction(server, transactionKey1);
+                await SucceedTransaction(server, transactionRecordKey1);
 
-                var transactionStatusId1 = await GetTransactionStatus(server, transactionKey1);
+                var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKey1);
                 Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId1);
 
-                var transactionStatusId2 = await GetTransactionStatus(server, transactionKey2);
+                var transactionStatusId2 = await GetTransactionStatus(server, transactionRecordKey2);
                 Assert.AreEqual((long)TransactionStatusType.Skipped, transactionStatusId2);
 
                 communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()), Times.Once);
@@ -125,24 +125,24 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             using (var server = TestServer.Create<Startup>())
             {
                 var di = ((NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver);
-                var transactionKeyBuilder = new Mock<ITransactionKeyBuilder>();
-                transactionKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
+                var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
                 var entityKey = Guid.NewGuid().ToString("D");
                 var communicationHandler = new Mock<ICommunicationHandler>();
                 communicationHandler.Setup(
                     s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()))
                     .Returns(Task.CompletedTask);
 
-                di.Kernel.Rebind<ITransactionKeyBuilder>().ToConstant(transactionKeyBuilder.Object).InSingletonScope();
+                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
                 di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
 
-                var transactionKey = await OpenTransaction(server, entityKey);
+                var recordKey = await OpenTransaction(server, entityKey);
 
-                await ProcessTransaction(server, transactionKey);
+                await ProcessTransaction(server, recordKey);
 
-                await FailTransaction(server, transactionKey, "Test Failure Message", "Test Failure Details");
+                await FailTransaction(server, recordKey, "Test Failure Message", "Test Failure Details");
 
-                var transactionStatusId1 = await GetTransactionStatus(server, transactionKey);
+                var transactionStatusId1 = await GetTransactionStatus(server, recordKey);
                 Assert.AreEqual((long)TransactionStatusType.Failed, transactionStatusId1);
 
 
@@ -242,7 +242,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         {
             HttpResponseMessage registryEntry =
                 await
-                    server.CreateRequest($"listener/TransactionRegistry?$filter=Key%20eq%20%27{nextKey}%27")
+                    server.CreateRequest($"listener/TransactionRegistry?$filter=RecordKey%20eq%20%27{nextKey}%27")
                         .AddHeader("AMS-Company", "CCD")
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
             string rstr = await registryEntry.Content.ReadAsStringAsync();

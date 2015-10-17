@@ -24,8 +24,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("CompanyId")
                 .AsInt32()
                 .NotNullable()
-                .ForeignKey("FK_FieldConfiguration_CompanyId", "Company", "CompanyId")
-                .WithColumn("Name").AsString(50).NotNullable().Unique("IX_FieldConfiguration_Name");
+                .ForeignKey("FK_FielConf_Comp", "Company", "CompanyId")
+                .WithColumn("Name").AsString(50).NotNullable().Unique("IX_FielConf_Name");
         }
     }
 }

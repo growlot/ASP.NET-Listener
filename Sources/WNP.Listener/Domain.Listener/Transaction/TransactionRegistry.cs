@@ -21,16 +21,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         public TransactionRegistry()
         {
-            this.KeyBuilder = ApplicationIntegration.DependencyResolver.ResolveType<ITransactionKeyBuilder>();
+            this.KeyBuilder = ApplicationIntegration.DependencyResolver.ResolveType<IRecordKeyBuilder>();
         }
 
-        private ITransactionKeyBuilder KeyBuilder { get; }
+        private IRecordKeyBuilder KeyBuilder { get; }
 
         /// <summary>
-        /// Gets the transaction identifier.
+        /// Gets the transaction record key.
         /// </summary>
         /// <value>The transaction identifier.</value>
-        public string TransactionKey { get; private set; }
+        public string RecordKey { get; private set; }
 
         /// <summary>
         /// Gets the company code.
@@ -93,12 +93,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Details { get; private set; }
 
         /// <summary>
-        /// Gets the header.
-        /// </summary>
-        /// <value>The header.</value>
-        public Dictionary<string, object> Header { get; } = new Dictionary<string, object>();
-
-        /// <summary>
         /// Gets the summary.
         /// </summary>
         /// <value>The summary.</value>
@@ -110,14 +104,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="createdDateTime">The created date time.</param>
         public void Create(DateTime createdDateTime)
         {
-            this.TransactionKey = this.KeyBuilder.Create();
+            this.RecordKey = this.KeyBuilder.Create();
             this.CreatedDateTime = createdDateTime;
             this.Status = TransactionStatusType.InProgress;
-
-            foreach (var o in this.Header)
-            {
-                this.Summary.Add(o.Key, o.Value);
-            }
         }
 
         /// <summary>
@@ -163,7 +152,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         protected override void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionRegistryMemento)memento;
-            this.TransactionKey = myMemento.TransactionKey;
+            this.RecordKey = myMemento.RecordKey;
             this.CompanyCode = myMemento.CompanyCode;
             this.ApplicationKey = myMemento.ApplicationKey;
             this.OperationKey = myMemento.OperationKey;
@@ -175,11 +164,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Message = myMemento.Message;
             this.Details = myMemento.Details;
             this.Id = myMemento.TransactionId;
-
-            foreach (var o in myMemento.Header)
-            {
-                this.Header.Add(o.Key, o.Value);
-            }
         }
     }
 }

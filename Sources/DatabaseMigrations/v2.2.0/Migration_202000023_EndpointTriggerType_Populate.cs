@@ -25,26 +25,26 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 new
                 {
                     EndpointTriggerTypeId = 1,
-                    Key = "Always",
-                    Name = "Trigger Always"
+                    Name = "Always",
+                    Description = "Trigger Always"
                 },
                 new
                 {
                     EndpointTriggerTypeId = 2,
-                    Key = "Changed",
-                    Name = "When Changed"
+                    Name = "Changed",
+                    Description = "When Changed"
                 },
                 new
                 {
                     EndpointTriggerTypeId = 3,
-                    Key = "Unchanged",
-                    Name = "When Unchanged"
+                    Name = "Unchanged",
+                    Description = "When Unchanged"
                 }
             };
 
             foreach (var record in records)
             {
-                this.IfSqlServer().Insert.IntoTable("EndpointTriggerType").WithIdentityInsert()
+                this.IfSqlServer().Insert.IntoTable("EndpointTriggerType")
                     .Row(record);
 
                 this.IfOracle().Insert.IntoTable("EndpointTriggerType")

@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// //-----------------------------------------------------------------------
+// // <copyright file="SerializationUtilities.cs" company="Advanced Metering Services LLC">
+// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// // </copyright>
+// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Utilities
 {
+    using System.Collections.Generic;
     using System.Dynamic;
     using System.IO;
-    using System.Runtime.Serialization;
+    using System.Linq;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Serialization;
@@ -34,7 +36,7 @@ namespace AMSLLC.Listener.Utilities
 
         public static string ToXml<TModel>(TModel data)
         {
-            XmlSerializer xsSubmit = new XmlSerializer(typeof(TModel));
+            XmlSerializer xsSubmit = new XmlSerializer(typeof (TModel));
             using (StringWriter sww = new StringWriter())
             using (XmlWriter writer = XmlWriter.Create(sww))
             {
@@ -46,7 +48,7 @@ namespace AMSLLC.Listener.Utilities
         public static string ToX<TModel>(TModel data)
         {
             XDocument target = new XDocument();
-            XmlSerializer s = new XmlSerializer(typeof(TModel));
+            XmlSerializer s = new XmlSerializer(typeof (TModel));
             using (XmlWriter writer = target.CreateWriter())
             {
                 s.Serialize(writer, data);
@@ -67,7 +69,8 @@ namespace AMSLLC.Listener.Utilities
 
             foreach (var xElement in elements)
             {
-                returnValue.Add(xElement.Name.ToString(), xElement.HasElements ? CreateExpando(xElement) : xElement.Value);
+                returnValue.Add(xElement.Name.ToString(),
+                    xElement.HasElements ? CreateExpando(xElement) : xElement.Value);
             }
 
             return returnValue;
@@ -95,14 +98,15 @@ namespace AMSLLC.Listener.Utilities
             return result;
         }
 
-        //public static XDocument JsonToXml(ExpandoObject expando)
-        //{
-        //    XDocument document = new XDocument();
+        //    }
+        //        document.
+        //    {
 
         //    foreach (var o in expando)
-        //    {
-        //        document.
-        //    }
+        //    XDocument document = new XDocument();
+        //{
+
+        //public static XDocument JsonToXml(ExpandoObject expando)
 
         //    return document;
         //}

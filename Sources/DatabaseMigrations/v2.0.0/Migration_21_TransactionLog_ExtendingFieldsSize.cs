@@ -26,7 +26,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Delete.Column("DebugInfo").FromTable("TransactionLog");
 
             this.Alter.Table("TransactionLog")
-                .AlterColumn("Message").AsString(1000).Nullable()
+
+            // .AlterColumn("Message").AsString(1000).Nullable() //Oracle does not allow ALTER to NULLABLE
                 .AddColumn("DebugInfo").AsString(int.MaxValue).Nullable();
         }
 

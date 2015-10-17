@@ -20,30 +20,30 @@ namespace AMSLLC.Listener.DatabaseMigrations
         public override void Up()
         {
             this.Create.Table("TransactionRegistry")
-                .WithColumn("TransactionId").AsInt32().NotNullable().PrimaryKey().Identity()
+                .WithColumn("TransactionId").AsInt32().NotNullable().PrimaryKey().Identity().Indexed()
                 .WithColumn("ParentTransactionId").AsInt32().Nullable()
-                .WithColumn("Key").AsString(60).NotNullable()
+                .WithColumn("RecordKey").AsString(60).NotNullable().Indexed()
                 .WithColumn("EnabledOperationId").AsInt32().NotNullable()
                 .WithColumn("TransactionStatusId").AsInt32().NotNullable()
-                .WithColumn("Header").AsString(int.MaxValue).Nullable()
-                .WithColumn("Data").AsString(int.MaxValue).Nullable()
+                .WithColumn("TransactionKey").AsString(255).NotNullable().Indexed()
+                .WithColumn("Data").AsString(int.MaxValue).NotNullable()
                 .WithColumn("Summary").AsXml().Nullable()
-                .WithColumn("User").AsString(100).Nullable()
-                .WithColumn("TransactionHash").AsString(50).Nullable()
+                .WithColumn("AppUser").AsString(100).Nullable()
+                .WithColumn("TransactionHash").AsString(50).Nullable().Indexed()
                 .WithColumn("Message").AsString(255).Nullable()
                 .WithColumn("Details").AsString(int.MaxValue).Nullable()
                 .WithColumn("CreatedDateTime").AsDateTime().NotNullable()
                 .WithColumn("UpdatedDateTime").AsDateTime().Nullable();
 
-            this.Create.ForeignKey("FK_TransactionRegistry_TransactionStatus")
+            this.Create.ForeignKey("FK_TranRegi_TranStat")
                 .FromTable("TransactionRegistry").ForeignColumn("TransactionStatusId")
                 .ToTable("TransactionStatus").PrimaryColumn("TransactionStatusId");
 
-            this.Create.ForeignKey("FK_TransactionRegistry_EnabledOperation")
+            this.Create.ForeignKey("FK_TranRegi_EnabOper")
                 .FromTable("TransactionRegistry").ForeignColumn("EnabledOperationId")
                 .ToTable("EnabledOperation").PrimaryColumn("EnabledOperationId");
 
-            this.Create.ForeignKey("FK_TransactionRegistry_Parent")
+            this.Create.ForeignKey("FK_TranRegi_Pare")
                 .FromTable("TransactionRegistry").ForeignColumn("ParentTransactionId")
                 .ToTable("TransactionRegistry").PrimaryColumn("TransactionId");
         }

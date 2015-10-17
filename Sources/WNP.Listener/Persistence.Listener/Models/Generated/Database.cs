@@ -135,186 +135,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
     
-	[AsyncPoco.TableName("Endpoint")]
-
-
-	[AsyncPoco.PrimaryKey("EndpointId")]
-
-
-
-	[ExplicitColumns]
-    public partial class EndpointEntity : ListenerDB.Record<EndpointEntity>  
-    {
-
-
-
-		[Column] public int EndpointId { get; set; }
-
-
-
-
-
-		[Column] public string Name { get; set; }
-
-
-
-
-
-		[Column] public int ProtocolTypeId { get; set; }
-
-
-
-
-
-		[Column] public string ConnectionCfgJson { get; set; }
-
-
-
-
-
-		[Column] public int? FieldConfigurationId { get; set; }
-
-
-
-
-
-		[Column] public int EndpointTriggerTypeId { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("OperationEndpoint")]
-
-
-	[AsyncPoco.PrimaryKey("OperationEndpointId")]
-
-
-
-	[ExplicitColumns]
-    public partial class OperationEndpointEntity : ListenerDB.Record<OperationEndpointEntity>  
-    {
-
-
-
-		[Column] public int OperationEndpointId { get; set; }
-
-
-
-
-
-		[Column] public int EnabledOperationId { get; set; }
-
-
-
-
-
-		[Column] public int EndpointId { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("TransactionRegistry")]
-
-
-	[AsyncPoco.PrimaryKey("TransactionId")]
-
-
-
-	[ExplicitColumns]
-    public partial class TransactionRegistryEntity : ListenerDB.Record<TransactionRegistryEntity>  
-    {
-
-
-
-		[Column] public int TransactionId { get; set; }
-
-
-
-
-
-		[Column] public int? ParentTransactionId { get; set; }
-
-
-
-
-
-		[Column] public string Key { get; set; }
-
-
-
-
-
-		[Column] public int EnabledOperationId { get; set; }
-
-
-
-
-
-		[Column] public int TransactionStatusId { get; set; }
-
-
-
-
-
-		[Column] public string Header { get; set; }
-
-
-
-
-
-		[Column] public string Data { get; set; }
-
-
-
-
-
-		[Column] public string Summary { get; set; }
-
-
-
-
-
-		[Column] public string User { get; set; }
-
-
-
-
-
-		[Column] public string TransactionHash { get; set; }
-
-
-
-
-
-		[Column] public string Message { get; set; }
-
-
-
-
-
-		[Column] public string Details { get; set; }
-
-
-
-
-
-		[Column] public DateTime CreatedDateTime { get; set; }
-
-
-
-
-
-		[Column] public DateTime? UpdatedDateTime { get; set; }
-
-
-
-	}
-
-    
 	[AsyncPoco.TableName("VersionInfo")]
 
 
@@ -971,360 +791,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 
     
-	[AsyncPoco.TableName("FileConverterKind")]
-
-
-	[PrimaryKey("FileConverterKindId", autoIncrement=false)]
-
-	[ExplicitColumns]
-    public partial class FileConverterKindEntity : ListenerDB.Record<FileConverterKindEntity>  
-    {
-
-
-
-		[Column] public int FileConverterKindId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("FileConverter")]
-
-
-	[AsyncPoco.PrimaryKey("FileConverterId")]
-
-
-
-	[ExplicitColumns]
-    public partial class FileConverterEntity : ListenerDB.Record<FileConverterEntity>  
-    {
-
-
-
-		[Column] public int FileConverterId { get; set; }
-
-
-
-
-
-		[Column] public string Argument1 { get; set; }
-
-
-
-
-
-		[Column] public string Argument2 { get; set; }
-
-
-
-
-
-		[Column] public string Argument3 { get; set; }
-
-
-
-
-
-		[Column] public int FileConverterKindId { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("FileTrimMode")]
-
-
-	[PrimaryKey("FileTrimModeId", autoIncrement=false)]
-
-	[ExplicitColumns]
-    public partial class FileTrimModeEntity : ListenerDB.Record<FileTrimModeEntity>  
-    {
-
-
-
-		[Column] public int FileTrimModeId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("FileQuoteMode")]
-
-
-	[PrimaryKey("FileQuoteModeId", autoIncrement=false)]
-
-	[ExplicitColumns]
-    public partial class FileQuoteModeEntity : ListenerDB.Record<FileQuoteModeEntity>  
-    {
-
-
-
-		[Column] public int FileQuoteModeId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("FileQuoteMultiline")]
-
-
-	[PrimaryKey("FileQuoteMultilineId", autoIncrement=false)]
-
-	[ExplicitColumns]
-    public partial class FileQuoteMultilineEntity : ListenerDB.Record<FileQuoteMultilineEntity>  
-    {
-
-
-
-		[Column] public int FileQuoteMultilineId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("FileAlignMode")]
-
-
-	[PrimaryKey("FileAlignModeId", autoIncrement=false)]
-
-	[ExplicitColumns]
-    public partial class FileAlignModeEntity : ListenerDB.Record<FileAlignModeEntity>  
-    {
-
-
-
-		[Column] public int FileAlignModeId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("FileFixedMode")]
-
-
-	[PrimaryKey("FileFixedModeId", autoIncrement=false)]
-
-	[ExplicitColumns]
-    public partial class FileFixedModeEntity : ListenerDB.Record<FileFixedModeEntity>  
-    {
-
-
-
-		[Column] public int FileFixedModeId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("File")]
-
-
-	[AsyncPoco.PrimaryKey("FileId")]
-
-
-
-	[ExplicitColumns]
-    public partial class FileEntity : ListenerDB.Record<FileEntity>  
-    {
-
-
-
-		[Column] public int FileId { get; set; }
-
-
-
-
-
-		[Column] public int ExternalSystemId { get; set; }
-
-
-
-
-
-		[Column] public string Name { get; set; }
-
-
-
-
-
-		[Column] public int? FileFixedModeId { get; set; }
-
-
-
-
-
-		[Column] public string Delimiter { get; set; }
-
-
-
-
-
-		[Column] public bool System { get; set; }
-
-
-
-	}
-
-    
-	[AsyncPoco.TableName("FileField")]
-
-
-	[AsyncPoco.PrimaryKey("FileFieldId")]
-
-
-
-	[ExplicitColumns]
-    public partial class FileFieldEntity : ListenerDB.Record<FileFieldEntity>  
-    {
-
-
-
-		[Column] public int FileFieldId { get; set; }
-
-
-
-
-
-		[Column] public int FileId { get; set; }
-
-
-
-
-
-		[Column] public string Name { get; set; }
-
-
-
-
-
-		[Column] public int Index { get; set; }
-
-
-
-
-
-		[Column] public string FieldType { get; set; }
-
-
-
-
-
-		[Column] public int? FileConverterId { get; set; }
-
-
-
-
-
-		[Column] public string NullValue { get; set; }
-
-
-
-
-
-		[Column] public string TrimChars { get; set; }
-
-
-
-
-
-		[Column] public int? FileTrimModeId { get; set; }
-
-
-
-
-
-		[Column] public string Description { get; set; }
-
-
-
-
-
-		[Column] public string AllignChar { get; set; }
-
-
-
-
-
-		[Column] public int? FileAlignModeId { get; set; }
-
-
-
-
-
-		[Column] public int? Length { get; set; }
-
-
-
-
-
-		[Column] public bool? IsQuoted { get; set; }
-
-
-
-
-
-		[Column] public string QuoteChar { get; set; }
-
-
-
-
-
-		[Column] public int? FileQuoteModeId { get; set; }
-
-
-
-
-
-		[Column] public int? FileQuoteMultilineId { get; set; }
-
-
-
-	}
-
-    
 	[AsyncPoco.TableName("ProtocolType")]
 
 
@@ -1344,13 +810,13 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public string Key { get; set; }
-
-
-
-
-
 		[Column] public string Name { get; set; }
+
+
+
+
+
+		[Column] public string Description { get; set; }
 
 
 
@@ -1360,9 +826,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 	[AsyncPoco.TableName("EndpointTriggerType")]
 
 
-	[AsyncPoco.PrimaryKey("EndpointTriggerTypeId")]
-
-
+	[PrimaryKey("EndpointTriggerTypeId", autoIncrement=false)]
 
 	[ExplicitColumns]
     public partial class EndpointTriggerTypeEntity : ListenerDB.Record<EndpointTriggerTypeEntity>  
@@ -1376,13 +840,13 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public string Key { get; set; }
-
-
-
-
-
 		[Column] public string Name { get; set; }
+
+
+
+
+
+		[Column] public string Description { get; set; }
 
 
 
@@ -1408,7 +872,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public string Key { get; set; }
+		[Column] public string Name { get; set; }
 
 
 
@@ -1516,7 +980,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public string Key { get; set; }
+		[Column] public string RecordKey { get; set; }
 
 
 
@@ -1572,6 +1036,18 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
+		[Column] public bool IncludeInKey { get; set; }
+
+
+
+
+
+		[Column] public bool IncludeInSummary { get; set; }
+
+
+
+
+
 		[Column] public string MapToName { get; set; }
 
 
@@ -1604,7 +1080,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public string Key { get; set; }
+		[Column] public string RecordKey { get; set; }
 
 
 
@@ -1630,7 +1106,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public string Key { get; set; }
+		[Column] public string Name { get; set; }
 
 
 
@@ -1707,6 +1183,192 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 		[Column] public int OperationId { get; set; }
+
+
+
+	}
+
+    
+	[AsyncPoco.TableName("Endpoint")]
+
+
+	[AsyncPoco.PrimaryKey("EndpointId")]
+
+
+
+	[ExplicitColumns]
+    public partial class EndpointEntity : ListenerDB.Record<EndpointEntity>  
+    {
+
+
+
+		[Column] public int EndpointId { get; set; }
+
+
+
+
+
+		[Column] public string Name { get; set; }
+
+
+
+
+
+		[Column] public int ProtocolTypeId { get; set; }
+
+
+
+
+
+		[Column] public string ConnectionConfiguration { get; set; }
+
+
+
+
+
+		[Column] public string AdapterConfiguration { get; set; }
+
+
+
+
+
+		[Column] public int? FieldConfigurationId { get; set; }
+
+
+
+
+
+		[Column] public int EndpointTriggerTypeId { get; set; }
+
+
+
+	}
+
+    
+	[AsyncPoco.TableName("OperationEndpoint")]
+
+
+	[AsyncPoco.PrimaryKey("OperationEndpointId")]
+
+
+
+	[ExplicitColumns]
+    public partial class OperationEndpointEntity : ListenerDB.Record<OperationEndpointEntity>  
+    {
+
+
+
+		[Column] public int OperationEndpointId { get; set; }
+
+
+
+
+
+		[Column] public int EnabledOperationId { get; set; }
+
+
+
+
+
+		[Column] public int EndpointId { get; set; }
+
+
+
+	}
+
+    
+	[AsyncPoco.TableName("TransactionRegistry")]
+
+
+	[AsyncPoco.PrimaryKey("TransactionId")]
+
+
+
+	[ExplicitColumns]
+    public partial class TransactionRegistryEntity : ListenerDB.Record<TransactionRegistryEntity>  
+    {
+
+
+
+		[Column] public int TransactionId { get; set; }
+
+
+
+
+
+		[Column] public int? ParentTransactionId { get; set; }
+
+
+
+
+
+		[Column] public string RecordKey { get; set; }
+
+
+
+
+
+		[Column] public int EnabledOperationId { get; set; }
+
+
+
+
+
+		[Column] public int TransactionStatusId { get; set; }
+
+
+
+
+
+		[Column] public string TransactionKey { get; set; }
+
+
+
+
+
+		[Column] public string Data { get; set; }
+
+
+
+
+
+		[Column] public string Summary { get; set; }
+
+
+
+
+
+		[Column] public string AppUser { get; set; }
+
+
+
+
+
+		[Column] public string TransactionHash { get; set; }
+
+
+
+
+
+		[Column] public string Message { get; set; }
+
+
+
+
+
+		[Column] public string Details { get; set; }
+
+
+
+
+
+		[Column] public DateTime CreatedDateTime { get; set; }
+
+
+
+
+
+		[Column] public DateTime? UpdatedDateTime { get; set; }
 
 
 

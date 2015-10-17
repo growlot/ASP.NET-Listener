@@ -14,16 +14,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionSkipped" /> class.
         /// </summary>
-        /// <param name="transactionKey">The transaction key.</param>
-        public TransactionSkipped(string transactionKey)
+        /// <param name="recordKey">The record key.</param>
+        public TransactionSkipped(string recordKey)
         {
-            this.TransactionKey = transactionKey;
+            this.RecordKey = recordKey;
         }
 
         /// <summary>
         /// Gets the transaction key.
         /// </summary>
         /// <value>The transaction key.</value>
-        public string TransactionKey { get; }
+        public string RecordKey { get; }
     }
 }

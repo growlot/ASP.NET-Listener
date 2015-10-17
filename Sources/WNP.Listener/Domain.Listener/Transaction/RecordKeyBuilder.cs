@@ -1,5 +1,5 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="TransactionKeyBuilder.cs" company="Advanced Metering Services LLC">
+// // <copyright file="RecordKeyBuilder.cs" company="Advanced Metering Services LLC">
 // //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // // </copyright>
 // //-----------------------------------------------------------------------
@@ -9,12 +9,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System;
 
     /// <summary>
-    /// Transaction key builder
+    /// Transaction record key builder
     /// </summary>
-    public class TransactionKeyBuilder : ITransactionKeyBuilder
+    public class RecordKeyBuilder : IRecordKeyBuilder
     {
         /// <summary>
-        /// Create new transaction key
+        /// Create new transaction record key
         /// </summary>
         /// <returns>System.String.</returns>
         public string Create()

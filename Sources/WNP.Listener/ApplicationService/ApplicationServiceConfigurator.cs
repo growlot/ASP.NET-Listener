@@ -17,7 +17,7 @@ namespace AMSLLC.Listener.ApplicationService
         {
             EventsRegister.RegisterAsync<TransactionSkipped>(
                 msg => ApplicationIntegration.DependencyResolver.ResolveType<ITransactionService>()
-                        .Skipped(new TransactionSkippedRequestMessage { TransactionKey = msg.TransactionKey }));
+                        .Skipped(new TransactionSkippedRequestMessage { RecordKey = msg.RecordKey }));
         }
     }
 }

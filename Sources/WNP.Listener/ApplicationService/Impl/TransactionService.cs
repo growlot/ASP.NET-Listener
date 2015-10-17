@@ -31,7 +31,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                 var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
                 var memento = new TransactionRegistryMemento(0, null, requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey, requestMessage.OperationKey, TransactionStatusType.InProgress,
-                    requestMessage.User, requestMessage.Header, scope.ScopeDateTime, null, requestMessage.Data, null, null);
+                    requestMessage.User,scope.ScopeDateTime, null, requestMessage.Data, null, null);
 
                 var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
 
                 await transactionRepository.Create(transactionRegistry);
 
-                returnValue = transactionRegistry.TransactionKey;
+                returnValue = transactionRegistry.RecordKey;
             }
             return returnValue;
         }
@@ -52,10 +52,10 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                 var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
                 var memento =
                     await
-                        sourceRepository.GetExecutionContext(requestMessage.TransactionKey);
+                        sourceRepository.GetExecutionContext(requestMessage.RecordKey);
 
-                var dataString = await sourceRepository.GetTransactionData(requestMessage.TransactionKey);
-                var headerString = await sourceRepository.GetTransactionHeader(requestMessage.TransactionKey);
+                var dataString = await sourceRepository.GetTransactionData(requestMessage.RecordKey);
+                var headerString = await sourceRepository.GetTransactionHeader(requestMessage.RecordKey);
                 var transactionExecution =
                     scope.DomainBuilder.Create<TransactionExecution>();
 
@@ -81,7 +81,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                 var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
                 var memento =
                     await
-                        sourceRepository.GetRegistryEntry(requestMessage.TransactionKey);
+                        sourceRepository.GetRegistryEntry(requestMessage.RecordKey);
                 var transactionRegistry =
                     scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
@@ -98,7 +98,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                 var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
                 var memento =
                     await
-                        sourceRepository.GetRegistryEntry(requestMessage.TransactionKey);
+                        sourceRepository.GetRegistryEntry(requestMessage.RecordKey);
                 var transactionRegistry =
                     scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
@@ -115,7 +115,7 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                 var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
                 var memento =
                     await
-                        sourceRepository.GetRegistryEntry(requestMessage.TransactionKey);
+                        sourceRepository.GetRegistryEntry(requestMessage.RecordKey);
                 var transactionRegistry =
                     scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);

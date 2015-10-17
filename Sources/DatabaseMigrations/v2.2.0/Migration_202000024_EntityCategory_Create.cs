@@ -21,7 +21,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         {
             this.Create.Table("EntityCategory")
                 .WithColumn("EntityCategoryId").AsInt32().NotNullable().PrimaryKey().Identity()
-                .WithColumn("Key").AsString(50).NotNullable().Unique("UX_EntityCategory_Key")
+                .WithColumn("Name").AsString(50).NotNullable().Unique("UX_EntiCate_Key")
                 .WithColumn("DisplayName").AsString(100).NotNullable();
         }
     }

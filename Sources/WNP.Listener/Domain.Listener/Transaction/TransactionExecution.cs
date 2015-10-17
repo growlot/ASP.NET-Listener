@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the transaction identifier.
         /// </summary>
         /// <value>The transaction identifier.</value>
-        public string TransactionKey { get; private set; }
+        public string RecordKey { get; private set; }
 
         /// <summary>
         /// Gets the enabled operation identifier.
@@ -74,7 +74,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         protected override void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionExecutionMemento)memento;
-            this.TransactionKey = myMemento.TransactionKey;
+            this.RecordKey = myMemento.RecordKey;
             this.Id = myMemento.TransactionId;
             this.EnabledOperationId = myMemento.EnabledOperationId;
             this.EndpointConfigurations =
@@ -103,7 +103,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 {
                     if (!this.HashValidator.Valid && cfg.Trigger == EndpointTriggerType.Changed)
                     {
-                        var tasks = EventsRegister.RaiseAsync(new TransactionSkipped(this.TransactionKey));
+                        var tasks = EventsRegister.RaiseAsync(new TransactionSkipped(this.RecordKey));
                         if (tasks.Any())
                         {
                             return Task.Factory.ContinueWhenAll(tasks, (tt) => tt);
@@ -117,7 +117,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
                     var eventData = new TransactionDataReady
                     {
-                        Data = new TransactionMessage { Data = preparedData.Data, Header = header, TransactionKey = this.TransactionKey },
+                        Data = new TransactionMessage { Data = preparedData.Data, Header = header, RecordKey = this.RecordKey },
                     };
                     EventsRegister.Raise(eventData);
 

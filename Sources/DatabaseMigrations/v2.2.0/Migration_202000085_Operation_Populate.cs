@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
             var record = new
             {
                 OperationId = 1,
-                Key = "Install",
+                Name = "Install",
                 DisplayName = "Install Device"
             };
 

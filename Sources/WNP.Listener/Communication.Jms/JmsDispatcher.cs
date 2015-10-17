@@ -82,6 +82,7 @@ namespace AMSLLC.Listener.Communication.Jms
 
                 // create a text message
                 ITextMessage textMessage = session.CreateTextMessage(JsonConvert.SerializeObject(request.Data));
+                //textMessage.JMSType = request.
 
                 // send the message
                 producer.Send(textMessage);

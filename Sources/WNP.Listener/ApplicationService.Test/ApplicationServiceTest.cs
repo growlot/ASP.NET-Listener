@@ -29,7 +29,7 @@ namespace ApplicationService.Test
         [TestMethod]
         public async Task TestEndpointFlow()
         {
-            const string transactionKey = "{70754941-6156-4C79-8F17-0C6BB5A85D9E}";
+            const string recordKey = "{70754941-6156-4C79-8F17-0C6BB5A85D9E}";
 
             var testMessageData = new TestMessageData()
             {
@@ -100,7 +100,7 @@ namespace ApplicationService.Test
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value",
                 "ArrayProperty[].NestedData.NestedArray[].DeepValue", false, integerMap));
 
-            var memento = new TransactionExecutionMemento(1, transactionKey, 1,
+            var memento = new TransactionExecutionMemento(1, recordKey, 1,
                 new[]
                 {
                     new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Always,
@@ -108,7 +108,7 @@ namespace ApplicationService.Test
                 });
 
 
-            transactionRepositoryMock.Setup(s => s.GetExecutionContext(transactionKey))
+            transactionRepositoryMock.Setup(s => s.GetExecutionContext(recordKey))
                 .Returns(
                     (string taId) => Task.FromResult((IMemento)memento));
 
@@ -119,7 +119,7 @@ namespace ApplicationService.Test
 
             //var dn = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(testMessageData));
 
-            transactionRepositoryMock.Setup(s => s.GetTransactionData(transactionKey))
+            transactionRepositoryMock.Setup(s => s.GetTransactionData(recordKey))
                 .Returns(Task.FromResult(JsonConvert.SerializeObject(testMessageData)));
 
 
@@ -173,7 +173,7 @@ namespace ApplicationService.Test
             await
                 service.Process(new ProcessTransactionRequestMessage
                 {
-                    TransactionKey = transactionKey
+                    RecordKey = recordKey
                     //Data = testMessageData
                 });
 
@@ -185,7 +185,7 @@ namespace ApplicationService.Test
                     f.Process(It.IsAny<object>(),
                         It.Is<IntegrationEndpointConfiguration>(data => data.Protocol == "jms")), Times.Once);
             string expectedMessageBodyJson =
-                $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}},\"TransactionKey\":\"{transactionKey}\"}}";
+                $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}},\"RecordKey\":\"{recordKey}\"}}";
 
             communicationHandler.Verify(foo => foo.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>()),
                 Times.Once());

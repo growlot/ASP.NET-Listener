@@ -25,31 +25,31 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 new
                 {
                     EntityCategoryId = 1,
-                    Key = "ElectricMeters",
+                    Name = "ElectricMeters",
                     DisplayName = "Electric Meters"
                 },
                 new
                 {
                     EntityCategoryId = 2,
-                    Key = "Circuits",
+                    Name = "Circuits",
                     DisplayName = "Circuits"
                 },
                 new
                 {
                     EntityCategoryId = 3,
-                    Key = "Sites",
+                    Name = "Sites",
                     DisplayName = "Sites"
                 },
                 new
                 {
                     EntityCategoryId = 4,
-                    Key = "Users",
+                    Name = "Users",
                     DisplayName = "Users"
                 },
                 new
                 {
                     EntityCategoryId = 5,
-                    Key = "Vehicles",
+                    Name = "Vehicles",
                     DisplayName = "Vehicles"
                 }
             };

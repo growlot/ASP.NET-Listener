@@ -26,7 +26,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 {
                     ValueMapEntryId = 1,
                     ValueMapId = 1,
-                    Key = string.Empty,
+                    RecordKey = string.Empty,
                     Value = "ListenerUser"
                 }
             };

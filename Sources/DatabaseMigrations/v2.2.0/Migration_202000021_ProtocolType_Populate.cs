@@ -25,8 +25,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 new
                 {
                     ProtocolTypeId = 1,
-                    Key = "jms",
-                    Name = "Java Message Service"
+                    Name = "jms",
+                    Description = "Java Message Service"
                 }
              };
 

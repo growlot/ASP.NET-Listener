@@ -42,7 +42,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 throw new ArgumentNullException("migrationBase", "Can not check if database is Oracle, becasue migration is not provided.");
             }
 
-            return migrationBase.IfDatabase("oracle");
+            return migrationBase.IfDatabase("oracle", "Oracle12c");
         }
     }
 }

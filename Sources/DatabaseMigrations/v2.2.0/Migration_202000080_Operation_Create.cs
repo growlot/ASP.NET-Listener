@@ -21,7 +21,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         {
             this.Create.Table("Operation")
                 .WithColumn("OperationId").AsInt32().NotNullable().PrimaryKey().Identity()
-                .WithColumn("Key").AsString(50).NotNullable()
+                .WithColumn("Name").AsString(50).NotNullable()
                 .WithColumn("DisplayName").AsString(100).NotNullable();
         }
     }

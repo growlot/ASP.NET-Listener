@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AMSLLC.Listener.ApplicationService
+﻿namespace AMSLLC.Listener.ApplicationService
 {
-    using System.Dynamic;
+    using System.Collections.Generic;
 
     public class DataPropertyInfo
     {
-        private string _property;
+        private readonly string _property;
 
         public DataPropertyInfo(string property, bool isList)
         {

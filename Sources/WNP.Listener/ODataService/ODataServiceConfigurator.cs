@@ -56,7 +56,7 @@ namespace AMSLLC.Listener.ODataService
                 ContainerName = "AMSLLC.Listener"
             };
 
-            MapPetaPocoEntity<TransactionRegistryEntity, string>(builder, a => a.Key);
+            MapPetaPocoEntity<TransactionRegistryEntity, string>(builder, a => a.RecordKey);
 
             var transactionRegistry = builder.EntityType<TransactionRegistryEntity>();
 
