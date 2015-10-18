@@ -165,6 +165,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\TransactionController.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TransactionController.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\TestEntitiesController.cs" />
     <Compile Include="Controllers\WNPController.cs" />
@@ -250,7 +255,13 @@
       <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Controllers\TransactionController.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TransactionController.cs</LastGenOutput>
+    </Content>
+    <None Include="Controllers\TransactionController.ttinclude" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

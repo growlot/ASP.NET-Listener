@@ -14,19 +14,19 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Web.Http;
-    using System.Web.OData.Batch;
     using Newtonsoft.Json;
+    using Serilog;
 
     public class ListenerMessageHandler : DelegatingHandler
     {
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
-
             var content = await request.Content.ReadAsStringAsync();
             if (IsJson(content))
             {
-                var contentAsExpando = JsonConvert.DeserializeObject<ExpandoObject>(content) as IDictionary<string, object>;
+                var contentAsExpando =
+                    JsonConvert.DeserializeObject<ExpandoObject>(content) as IDictionary<string, object>;
                 if (contentAsExpando != null)
                 {
                     Dictionary<string, object> header = new Dictionary<string, object>();
@@ -43,9 +43,9 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
 
                     var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
                     mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
-                    request.Content = new ObjectContent(typeof(Dictionary<string, object>), header, new JsonMediaTypeFormatter(), mediaType);
+                    request.Content = new ObjectContent(typeof (Dictionary<string, object>), header,
+                        new JsonMediaTypeFormatter(), mediaType);
                 }
-
             }
             HttpResponseMessage response = null;
             try
@@ -54,7 +54,8 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
             }
             catch (Exception exc)
             {
-                throw exc;
+                Log.Error(exc, "Listener message handler failed");
+                throw;
             }
 
             return response;
