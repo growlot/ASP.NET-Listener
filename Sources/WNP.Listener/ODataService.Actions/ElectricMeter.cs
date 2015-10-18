@@ -1,9 +1,12 @@
 ﻿using System;
+using AMSLLC.Listener.Persistence.Metadata;
 
-namespace ODataService.Actions
+namespace AMSLLC.Listener.ODataService.Actions
 {
-    public class ElectricMeterActionContainer
+    public class ElectricMeter : IActionsContainer
     {
+        public string GetTableName() => DBMetadata.EqpMeter.RealTableName;
+
         /*
          * EquipmentNumber - string - electric meter equipment number used as a key parameter to select specific meter
          * SiteId - int - site where equipment will be installed
@@ -16,6 +19,11 @@ namespace ODataService.Actions
         public void Install(string equipmentNumber, int siteId, int circuitIndex, string userName, DateTime installationDate)
         {
             // link to command layer
+        }
+
+        public string Test(string mystr)
+        {
+            return mystr;
         }
     }
 }

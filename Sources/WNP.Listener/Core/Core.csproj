@@ -54,6 +54,7 @@
     <Compile Include="IEnumerableExtensions.cs" />
     <Compile Include="IPersistenceAdapter.cs" />
     <Compile Include="IValueTypeConverter.cs" />
+    <Compile Include="MethodBaseExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatusMessage.cs" />
     <Compile Include="UtcDateTimeProvider.cs" />

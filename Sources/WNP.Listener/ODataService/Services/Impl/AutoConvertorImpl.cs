@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Configuration;
 
 namespace AMSLLC.Listener.ODataService.Services.Impl
 {
@@ -60,6 +61,6 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
         };
 
         public object Convert(object rawData, Type targetType) =>
-            Conversions.ContainsKey(targetType) ? Conversions[targetType](rawData) : rawData;
+            Conversions.ContainsKey(targetType) ? Conversions[targetType](rawData) : System.Convert.ChangeType(rawData, targetType);
     }
 }

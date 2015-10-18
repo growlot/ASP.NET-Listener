@@ -11,6 +11,9 @@ namespace AMSLLC.Listener.MetadataService
         string ODataModelNamespace { get; }
         Assembly ODataModelAssembly { get; }
 
+        Type GetEntityType(string typeName);
+        Type GetEntityTypeBySetName(string entitySetName);
+
         MetadataModel GetModelMapping(string clrModelName);
         MetadataModel GetModelMapping(Type clrModel);
     }

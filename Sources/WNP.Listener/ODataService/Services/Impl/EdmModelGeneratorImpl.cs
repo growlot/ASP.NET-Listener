@@ -37,7 +37,10 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             parameter = actionConfig.Parameter<string>("Value2");
             parameter.OptionalParameter = true;
 
-            var method = typeof(ODataConventionModelBuilder).GetMethod("EntitySet");
+            var entitySetMethod = typeof(ODataConventionModelBuilder).GetMethod("EntitySet");
+            var entityTypeMethod = typeof(ODataConventionModelBuilder).GetMethod("EntityType");
+            var actionConfigurationType = typeof(ActionConfiguration);
+
             var generatedModels =
                 _metadataService.ODataModelAssembly.GetTypes()
                     .Where(type => typeof(IODataEntity).IsAssignableFrom(type));
@@ -56,13 +59,23 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                     {
                         var parameters = info.GetParameters();
 
-                        // we got an action here
-                        if (info.ReturnType == typeof (void))
-                        {
-                            var etcType = entityTypeConfiguration.GetType();
-                            var actionMethodInfo = etcType.GetMethod("Action");
+                        var etcType = entityTypeConfiguration.GetType();
+                        var actionMethodInfo = etcType.GetMethod("Action");
 
-                            var actionConfiguration = actionMethodInfo.Invoke(entityTypeConfiguration, new[] { info.Name });
+                        var actionConfiguration = actionMethodInfo.Invoke(entityTypeConfiguration, new[] { $"{actionsContainer.Name}_{info.Name}" });
+
+                        parameters.Map(parameterInfo =>
+                        {
+                            actionConfigurationType.GetMethod("Parameter")
+                                .MakeGenericMethod(parameterInfo.ParameterType)
+                                .Invoke(actionConfiguration, new object[] { parameterInfo.Name });
+                        });
+
+                        if (info.ReturnType != typeof (void))
+                        {
+                            actionConfigurationType.GetMethod("Returns")
+                                .MakeGenericMethod(info.ReturnType)
+                                .Invoke(actionConfiguration, new object[0]);
                         }
                     });
                 }

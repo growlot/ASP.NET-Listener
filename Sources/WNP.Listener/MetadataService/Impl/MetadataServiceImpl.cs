@@ -26,6 +26,12 @@ namespace AMSLLC.Listener.MetadataService.Impl
 
         public Assembly ODataModelAssembly => odataModelAssembly;
 
+        public Type GetEntityType(string typeName) => 
+            ODataModelAssembly.GetType(typeName);
+
+        public Type GetEntityTypeBySetName(string entitySetName) => 
+            ODataModelAssembly.GetType(entitySetName.Substring(0, entitySetName.Length - 1));
+
         public MetadataModel GetModelMapping(string clrModelName)
         {
             string fullClrType = $"{ODataModelNamespace}.{clrModelName}";

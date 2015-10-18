@@ -99,6 +99,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ODataService.Actions\ODataService.Actions.csproj">
       <Project>{F2279F58-4D34-48CE-893F-D5CF596220DD}</Project>
       <Name>ODataService.Actions</Name>

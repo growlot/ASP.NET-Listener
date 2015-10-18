@@ -234,6 +234,10 @@
       <Project>{702b10d4-57d6-4406-a159-715f658ae54d}</Project>
       <Name>MetadataService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ODataService.Actions\ODataService.Actions.csproj">
+      <Project>{f2279f58-4d34-48ce-893f-d5cf596220dd}</Project>
+      <Name>ODataService.Actions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Persistence.Listener\Persistence.Listener.csproj">
       <Project>{5A7FEA99-BB93-4BDA-91AE-2DDEC17E3D21}</Project>
       <Name>Persistence.Listener</Name>

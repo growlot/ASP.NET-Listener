@@ -1,13 +1,13 @@
-﻿namespace AMSLLC.Listener.ODataService
-{
-    using System.Linq;
-    using System.Net.Http;
-    using System.Web.Http.Controllers;
-    using System.Web.OData.Routing;
-    using System.Web.OData.Routing.Conventions;
-    using Microsoft.OData.Edm;
-    using MetadataService;
+﻿using System.Linq;
+using System.Net.Http;
+using System.Web.Http.Controllers;
+using System.Web.OData.Routing;
+using System.Web.OData.Routing.Conventions;
+using AMSLLC.Listener.MetadataService;
+using Microsoft.OData.Edm;
 
+namespace AMSLLC.Listener.ODataService
+{
     public class WNPGenericRoutingConvention : IODataRoutingConvention
     {
         private readonly IMetadataService metadataService;
@@ -29,23 +29,30 @@
                         var declaringType = navigationProperty.DeclaringType as IEdmEntityType;
 
                         var actionName = "Get" + declaringType.Name;
-                if (actionMap.Contains(actionName))
-                {
-                    // Add keys to route data, so they will bind to action parameters.
+                        if (actionMap.Contains(actionName))
+                        {
+                            // Add keys to route data, so they will bind to action parameters.
                             var keyValueSegment = odataPath.Segments[1] as KeyValuePathSegment;
-                    controllerContext.RouteData.Values[ODataRouteConstants.Key] = keyValueSegment.Value;
+                            controllerContext.RouteData.Values[ODataRouteConstants.Key] = keyValueSegment.Value;
 
                             var relatedKeySegment = odataPath.Segments[3] as KeyValuePathSegment;
-                    controllerContext.RouteData.Values[ODataRouteConstants.RelatedKey] = relatedKeySegment.Value;
+                            controllerContext.RouteData.Values[ODataRouteConstants.RelatedKey] = relatedKeySegment.Value;
 
-                    return actionName;
-                }
+                            return actionName;
+                        }
                         break;
                     case "~/entityset/key":
                         break;
+                }
+            }
+            else if (controllerContext.Request.Method == HttpMethod.Post)
+            {
+                switch (odataPath.PathTemplate)
+                {
                     case "~/entityset/key/action":
-
-                        break;
+                        return "EntityActionHandler";
+                    case "~/entityset/key/unboundaction":
+                        return "UnboundActionHandler";
                 }
             }
 
@@ -55,38 +62,54 @@
 
         public string SelectController(ODataPath odataPath, HttpRequestMessage request)
         {
- if (request.Method == HttpMethod.Get && odataPath.PathTemplate == "~/entityset")
+            if (request.Method == HttpMethod.Get && odataPath.PathTemplate != "~" && odataPath.PathTemplate != "~/$metadata")
             {
-                EntitySetPathSegment entitySetSegment = odataPath.Segments[0] as EntitySetPathSegment;
-                MetadataModel metadataModel = metadataService.GetModelMapping(entitySetSegment.EntitySetName);
-                string controllerName;
-
-                if (metadataModel != null)
+                if (odataPath.EdmType?.TypeKind == EdmTypeKind.Collection)
                 {
-                    switch (metadataModel.TableName)
+                    var entitySetSegment = odataPath.Segments[0] as EntitySetPathSegment;
+
+                    // TODO: this method of getting type name is obnoxious, should be replaced with something better
+                    var shortQualifiedName = ((IEdmCollectionType) odataPath.EdmType).ElementType.ShortQualifiedName();
+                    var clrModelName = shortQualifiedName.Substring(shortQualifiedName.LastIndexOf('.') + 1);
+
+                    var metadataModel = metadataService.GetModelMapping(clrModelName);
+                    string controllerName;
+
+                    if (metadataModel != null)
                     {
-                        //case "TSECURITY_USERS":
-                        //    controllerName = "Users";
-                        //    break;
-                        //case "TEQP_METER":
-                        //    controllerName = "Meters";
-                        //    break;
-                        //case "TMETER_TEST_RESULTS":
-                        //    controllerName = "MeterTests";
-                        //    break;
-                        default:
-                            controllerName = "WNP";
-                            break;
+                        switch (metadataModel.TableName)
+                        {
+                            //case "TSECURITY_USERS":
+                            //    controllerName = "Users";
+                            //    break;
+                            //case "TEQP_METER":
+                            //    controllerName = "Meters";
+                            //    break;
+                            //case "TMETER_TEST_RESULTS":
+                            //    controllerName = "MeterTests";
+                            //    break;
+                            default:
+                                controllerName = "WNP";
+                                break;
+                        }
                     }
+                    else
+                    {
+                        controllerName = entitySetSegment.EntitySetName;
+                    }
+
+                    return controllerName;
                 }
                 else
                 {
-                    controllerName = entitySetSegment.EntitySetName;
+                    return "WNP";
                 }
-
-                return controllerName;
+            } else if (request.Method == HttpMethod.Post)
+            {
+                return "WNP";
             }
 
-            return null;        }
+            return null;
+        }
     }
 }

@@ -12,6 +12,11 @@
             return this.Kernel.Get<TType>();
         }
 
+        public object ResolveType(Type type)
+        {
+            return this.Kernel.Get(type);
+        }
+
         public TType ResolveNamed<TType>(string name)
         {
             return this.Kernel.Get<TType>(name);

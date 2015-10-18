@@ -2,6 +2,7 @@
 using AMSLLC.Listener.Bootstrapper.Owin.Middleware;
 using AMSLLC.Listener.MetadataService.Properties;
 using AMSLLC.Listener.ODataService;
+using AMSLLC.Listener.ODataService.Actions.Properties;
 using AMSLLC.Listener.ODataService.Properties;
 using Microsoft.Owin.Diagnostics;
 using Ninject;
@@ -26,6 +27,8 @@ namespace AMSLLC.Listener.Bootstrapper
             diAdapter.Initialize(container =>
             {
                 container.Load<ODataServiceModule>();
+                // TODO: is there a better way to initialize ODataService.Actions assembly?
+                container.Load<ODataServiceActionsModule>();
                 container.Load<MetadataServiceModule>();
             });
 

@@ -8,6 +8,7 @@ namespace AMSLLC.Core
     public interface IDependencyInjectionAdapter
     {
         TType ResolveType<TType>();
+        object ResolveType(Type type);
         TType ResolveNamed<TType>(string name);
     }
 }
