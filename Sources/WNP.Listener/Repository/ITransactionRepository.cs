@@ -22,6 +22,6 @@ namespace AMSLLC.Listener.Repository
         Task<string> GetTransactionData(string recordKey);
         Task<int> GetHashCount(int enabledOperationId, string hash);
         Task UpdateHash(int transactionId, string hash);
-        Task<string> GetTransactionHeader(string recordKey);
+        Task<int> GetEnabledOperation(string companyCode, string sourceApplicationKey, string operationKey);
     }
 }

@@ -29,9 +29,13 @@ namespace AMSLLC.Listener.ApplicationService.Impl
             using (var scope = ApplicationServiceScope.Create())
             {
                 var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
-                var memento = new TransactionRegistryMemento(0, null, requestMessage.CompanyCode,
+
+                var enabledOperationId = await transactionRepository.GetEnabledOperation(requestMessage.CompanyCode,
+                    requestMessage.SourceApplicationKey, requestMessage.OperationKey);
+
+                var memento = new TransactionRegistryMemento(0, null, null, requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey, requestMessage.OperationKey, TransactionStatusType.InProgress,
-                    requestMessage.User,scope.ScopeDateTime, null, requestMessage.Data, null, null);
+                    requestMessage.User, scope.ScopeDateTime, null, requestMessage.Data, null, null, enabledOperationId);
 
                 var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
@@ -55,20 +59,17 @@ namespace AMSLLC.Listener.ApplicationService.Impl
                         sourceRepository.GetExecutionContext(requestMessage.RecordKey);
 
                 var dataString = await sourceRepository.GetTransactionData(requestMessage.RecordKey);
-                var headerString = await sourceRepository.GetTransactionHeader(requestMessage.RecordKey);
                 var transactionExecution =
                     scope.DomainBuilder.Create<TransactionExecution>();
 
                 ((IOriginator)transactionExecution).SetMemento(memento);
 
 
-
-                var newDict = string.IsNullOrWhiteSpace(headerString) ? null : JsonConvert.DeserializeObject<Dictionary<string, object>>(headerString);
                 ExpandoObject data = string.IsNullOrWhiteSpace(dataString) ? null : JsonConvert.DeserializeObject<ExpandoObject>(dataString);
 
                 await
                     Task.WhenAll(
-                        transactionExecution.Process(data, newDict));
+                        transactionExecution.Process(data));
 
                 await sourceRepository.UpdateHash(transactionExecution.Id, transactionExecution.TransactionHash);
             }

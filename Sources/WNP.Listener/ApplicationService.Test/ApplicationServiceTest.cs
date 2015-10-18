@@ -8,6 +8,7 @@ namespace ApplicationService.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AMSLLC.Core;
     using AMSLLC.Core.Ninject;
@@ -88,24 +89,23 @@ namespace ApplicationService.Test
             };
 
             var fieldConfigurations = new List<FieldConfigurationMemento>();
-            fieldConfigurations.Add(new FieldConfigurationMemento("Value", "Value1", false, null));
+            fieldConfigurations.Add(new FieldConfigurationMemento("Value", "Value1", null, null, null));
             fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.AnotherValue",
-                "ComplexProperty.CorrectValue", false, null));
-            fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.NestedData.AnotherValue", "Flatten", false,
+                "ComplexProperty.CorrectValue", null, null, null));
+            fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.NestedData.AnotherValue", "Flatten", null, null,
                 stringMap));
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.AnotherValue",
-                "ArrayProperty[].SimpleArrayProperty", false, null));
+                "ArrayProperty[].SimpleArrayProperty", null, null, null));
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.AnotherValue",
-                "ArrayProperty[].NestedData.NestedArrayProperty", false, null));
+                "ArrayProperty[].NestedData.NestedArrayProperty", null, null, null));
             fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value",
-                "ArrayProperty[].NestedData.NestedArray[].DeepValue", false, integerMap));
+                "ArrayProperty[].NestedData.NestedArray[].DeepValue", null, null, integerMap));
 
             var memento = new TransactionExecutionMemento(1, recordKey, 1,
                 new[]
                 {
-                    new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Always,
-                        fieldConfigurations)
-                });
+                    new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Always)
+                }, fieldConfigurations);
 
 
             transactionRepositoryMock.Setup(s => s.GetExecutionContext(recordKey))
@@ -134,7 +134,7 @@ namespace ApplicationService.Test
             jmsEndpointProcessorMock.Setup(
                 e =>
                     e.Process(It.IsAny<object>(),
-                        It.IsAny<IntegrationEndpointConfiguration>())).CallBase();
+                        It.IsAny<IList<FieldConfiguration>>())).CallBase();
             var jmsConnectionBuilder = new Mock<IConnectionConfigurationBuilder>();
 
 
@@ -178,12 +178,12 @@ namespace ApplicationService.Test
                 });
 
             transactionExecutionDomain.Verify(
-                foo => foo.Process(It.IsAny<object>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
+                foo => foo.Process(It.IsAny<object>()), Times.Once());
             jmsConnectionBuilder.Verify(f => f.Create(It.Is<IMemento>(data => data != null)), Times.Once);
             jmsEndpointProcessorMock.Verify(
                 f =>
                     f.Process(It.IsAny<object>(),
-                        It.Is<IntegrationEndpointConfiguration>(data => data.Protocol == "jms")), Times.Once);
+                        It.IsAny<IList<FieldConfiguration>>()), Times.Once);
             string expectedMessageBodyJson =
                 $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}},\"RecordKey\":\"{recordKey}\"}}";
 
@@ -258,16 +258,22 @@ namespace ApplicationService.Test
             };
 
             var fieldConfigurations = new List<FieldConfigurationMemento>();
-            fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.NestedData.AnotherValue", null, false,
+            fieldConfigurations.Add(new FieldConfigurationMemento("ComplexProperty.NestedData.AnotherValue", null, null, null,
                 stringMap));
-            fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value", null, false,
+            fieldConfigurations.Add(new FieldConfigurationMemento("ArrayProperty.NestedData.NestedArray.Value", null, null, null,
                 integerMap));
 
             DefaultEndpointDataProcessor p = new DefaultEndpointDataProcessor();
             IntegrationEndpointConfiguration cfg = new IntegrationEndpointConfiguration();
             ((IOriginator)cfg).SetMemento(new IntegrationEndpointConfigurationMemento("jms", "",
-                EndpointTriggerType.Undefined, fieldConfigurations));
-            var d = p.Process(testMessageData, cfg);
+                EndpointTriggerType.Undefined));
+            var d = p.Process(testMessageData, fieldConfigurations.Select(
+                    s =>
+                    {
+                        var itm = new FieldConfiguration();
+                        ((IOriginator)itm).SetMemento(s);
+                        return itm;
+                    }).ToList());
             const string expectedJson =
                 "{\"Value\":987,\"ComplexProperty\":{\"AnotherValue\":\"Hello, World!\",\"NestedData\":{\"AnotherValue\":\"Hi, Bob!\",\"NestedData\":null,\"NestedArray\":null},\"NestedArray\":null},\"ArrayProperty\":[{\"AnotherValue\":\"ABC\",\"NestedData\":{\"AnotherValue\":\"EFD\",\"NestedData\":null,\"NestedArray\":[{\"Value\":159000,\"ComplexProperty\":null,\"ArrayProperty\":null},{\"Value\":9713000,\"ComplexProperty\":null,\"ArrayProperty\":null}]},\"NestedArray\":null},{\"AnotherValue\":\"F-1\",\"NestedData\":null,\"NestedArray\":null}]}";
             Assert.AreEqual(expectedJson, JsonConvert.SerializeObject(d.Data));

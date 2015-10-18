@@ -46,7 +46,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 string nextKey = Guid.NewGuid().ToString("D");
                 transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey);
                 var entityKey = Guid.NewGuid().ToString("D");
-                string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}},\"RecordKey\":\"{nextKey}\",\"Header\":{{\"PrimaryCategory\":\"ElectricMeters\",\"PrimaryKey\":\"{entityKey}\",\"Operation\":\"Install\"}}}}";
+                string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}},\"RecordKey\":\"{nextKey}\"}}";
                 object receivedData = string.Empty;
 
                 var communicationHandler = new Mock<ICommunicationHandler>();

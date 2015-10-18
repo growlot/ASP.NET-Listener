@@ -103,8 +103,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     processor = factoryOracle.Create(connectionString, announcer, options);
                     break;
                 case "AMSLLC.Listener.Common.NHibernateOracle12c":
-                    Oracle12cProcessorFactory factoryOracle12 = new Oracle12cProcessorFactory();
-                    processor = factoryOracle12.Create(connectionString, announcer, options);
+                    // Oracle12cProcessorFactory factoryOracle12 = new Oracle12cProcessorFactory();
+                    // processor = factoryOracle12.Create(connectionString, announcer, options);
                     break;
                 default:
                     string message = string.Format(CultureInfo.CurrentCulture, "Can not perform migrations for unknown database {0}", database);

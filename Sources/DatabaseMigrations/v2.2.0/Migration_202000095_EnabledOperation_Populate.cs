@@ -25,7 +25,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 EnabledOperationId = 1,
                 ApplicationId = 1,
                 CompanyId = 0,
-                OperationId = 1
+                OperationId = 1,
+                FieldConfigurationId = 1
             };
 
             this.IfSqlServer().Insert.IntoTable("EnabledOperation").WithIdentityInsert()

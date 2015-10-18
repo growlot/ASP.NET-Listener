@@ -25,7 +25,6 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("ProtocolTypeId").AsInt32().NotNullable().ForeignKey("FK_Endp_ProtType", "ProtocolType", "ProtocolTypeId")
                 .WithColumn("ConnectionConfiguration").AsString().NotNullable()
                 .WithColumn("AdapterConfiguration").AsString().Nullable()
-                .WithColumn("FieldConfigurationId").AsInt32().Nullable().ForeignKey("FK_Endp_FielConf", "FieldConfiguration", "FieldConfigurationId")
                 .WithColumn("EndpointTriggerTypeId").AsInt32().NotNullable().ForeignKey("FK_Endp_EndpTrigType", "EndpointTriggerType", "EndpointTriggerTypeId");
         }
     }

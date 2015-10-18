@@ -28,9 +28,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     FieldConfigurationId = 1,
                     FieldName = "UserName",
                     ValueMapId = 1,
-                    IncludeInHash = true,
+                    HashSequence = 1,
                     IncludeInSummary = true,
-                    IncludeInKey = false,
+                    KeySequence = (short?)null,
                     MapToName = (string)null
                 },
                 new
@@ -39,9 +39,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     FieldConfigurationId = 1,
                     FieldName = "EntityKey",
                     ValueMapId = (int?)null,
-                    IncludeInHash = true,
-                    IncludeInSummary = false,
-                    IncludeInKey = true,
+                    HashSequence = 2,
+                    IncludeInSummary = true,
+                    KeySequence = 2,
                     MapToName = (string)null
                 }
             };

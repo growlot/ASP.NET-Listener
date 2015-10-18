@@ -32,7 +32,7 @@
             Kernel.Bind<ODataServiceConfigurator>().ToSelf().InSingletonScope();
             Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
 
-            Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();            
+            Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();
             Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();
 
             Kernel.Bind<IAutoConvertor>().To<AutoConvertorImpl>();
@@ -46,7 +46,7 @@
             Kernel.Bind<IPersistenceAdapter>().To<PocoCachedAdapter>().InRequestScope();
 
             this.Kernel.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
-            
+
 
             this.Kernel.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
             this.Kernel.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
@@ -54,6 +54,7 @@
             this.Kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
             this.Kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
             this.Kernel.Bind<IRecordKeyBuilder>().To<RecordKeyBuilder>().InSingletonScope();
+            this.Kernel.Bind<ITransactionKeyBuilder>().To<TransactionKeyBuilder>().InSingletonScope();
             this.Kernel.Bind<IEndpointDataProcessor>().To<DefaultEndpointDataProcessor>().InSingletonScope();
             this.Kernel.Bind<IConnectionConfigurationBuilder>().To<JmsConnectionConfigurationBuilder>().InSingletonScope().Named("connection-builder-jms");
             this.Kernel.Bind<ICommunicationHandler>().To<JmsDispatcher>().InSingletonScope().Named("communication-jms");

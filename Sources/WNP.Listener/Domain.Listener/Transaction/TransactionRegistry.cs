@@ -17,14 +17,19 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     public class TransactionRegistry : Entity<int>, IAggregateRoot
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionRegistry"/> class.
+        /// Initializes a new instance of the <see cref="TransactionRegistry" /> class.
         /// </summary>
-        public TransactionRegistry()
+        /// <param name="keyBuilder">The key builder.</param>
+        /// <param name="transactionKeyBuilder">The transaction key builder.</param>
+        public TransactionRegistry(IRecordKeyBuilder keyBuilder, ITransactionKeyBuilder transactionKeyBuilder)
         {
-            this.KeyBuilder = ApplicationIntegration.DependencyResolver.ResolveType<IRecordKeyBuilder>();
+            this.KeyBuilder = keyBuilder;
+            this.TransactionKeyBuilder = transactionKeyBuilder;
         }
 
         private IRecordKeyBuilder KeyBuilder { get; }
+
+        private ITransactionKeyBuilder TransactionKeyBuilder { get; }
 
         /// <summary>
         /// Gets the transaction record key.
@@ -93,10 +98,22 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Details { get; private set; }
 
         /// <summary>
+        /// Gets or sets the transaction key.
+        /// </summary>
+        /// <value>The transaction key.</value>
+        public string TransactionKey { get; private set; }
+
+        /// <summary>
         /// Gets the summary.
         /// </summary>
         /// <value>The summary.</value>
         public Dictionary<string, object> Summary { get; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Gets the enabled operation identifier.
+        /// </summary>
+        /// <value>The enabled operation identifier.</value>
+        public int? EnabledOperationId { get; private set; }
 
         /// <summary>
         /// Setup new transaction registry entry
@@ -104,13 +121,19 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="createdDateTime">The created date time.</param>
         public void Create(DateTime createdDateTime)
         {
+            if (!this.EnabledOperationId.HasValue)
+            {
+                throw new InvalidOperationException("Operation is not enabled.");
+            }
+
             this.RecordKey = this.KeyBuilder.Create();
             this.CreatedDateTime = createdDateTime;
+            this.TransactionKey = this.TransactionKeyBuilder.Create(this.EnabledOperationId.Value, this.Data);
             this.Status = TransactionStatusType.InProgress;
         }
 
         /// <summary>
-        /// Succeeed the current transaction
+        /// Succeed the current transaction
         /// </summary>
         /// <param name="scopeDateTime">The scope date time.</param>
         /// <exception cref="System.NotImplementedException"></exception>
@@ -164,6 +187,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Message = myMemento.Message;
             this.Details = myMemento.Details;
             this.Id = myMemento.TransactionId;
+            this.TransactionKey = myMemento.TransactionKey;
+            this.EnabledOperationId = myMemento.EnabledOperationId;
         }
     }
 }

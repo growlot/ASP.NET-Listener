@@ -6,6 +6,7 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
+    using System.Collections.Generic;
     using System.Dynamic;
 
     /// <summary>
@@ -17,8 +18,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Prepare data for the endpoint.
         /// </summary>
         /// <param name="data">The data.</param>
-        /// <param name="configuration">The endpoint configuration.</param>
+        /// <param name="fieldConfigurations">The field configurations.</param>
         /// <returns>IEndpointDataProcessorResult.</returns>
-        IEndpointDataProcessorResult Process(object data, IntegrationEndpointConfiguration configuration);
+        IEndpointDataProcessorResult Process(object data, IList<FieldConfiguration> fieldConfigurations);
     }
 }

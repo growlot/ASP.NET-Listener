@@ -89,6 +89,12 @@ namespace AMSLLC.Listener.Persistence.Listener
             return _dbContext.FetchAsync(func, query, args);
         }
 
+        public Task<List<T3>> ProjectionAsync<T, T1, T2, T3>(Func<T, T1, T2, T3> func, string query, params object[] args)
+        {
+            return _dbContext.FetchAsync<T3>(new[] { typeof(T), typeof(T1), typeof(T2) },
+                func, query, args);
+        }
+
         public Task<List<T4>> ProjectionAsync<T, T1, T2, T3, T4>(Func<T, T1, T2, T3, T4> func, string query,
             params object[] args)
         {

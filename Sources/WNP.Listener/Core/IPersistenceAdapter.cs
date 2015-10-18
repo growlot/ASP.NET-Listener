@@ -18,6 +18,7 @@ namespace AMSLLC.Core
         Task InsertAsync<TEntity>(TEntity entity);
         Task<TValue> ExecuteScalarAsync<TValue>(string query, params object[] args);
         Task<List<T2>> ProjectionAsync<T, T1, T2>(Func<T, T1, T2> func, string query, params object[] args);
+        Task<List<T3>> ProjectionAsync<T, T1, T2, T3>(Func<T, T1, T2, T3> func, string query, params object[] args);
         Task<List<T4>> ProjectionAsync<T, T1, T2, T3, T4>(Func<T, T1, T2, T3, T4> func, string query, params object[] args);
     }
 }

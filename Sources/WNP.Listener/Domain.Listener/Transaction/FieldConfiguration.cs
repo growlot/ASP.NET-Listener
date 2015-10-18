@@ -24,16 +24,22 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string MapToName { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this field should be included in the hash calculation.
-        /// </summary>
-        /// <value><c>true</c> if the field needs to be included in hash calculation; otherwise, <c>false</c>.</value>
-        public bool IncludeInHash { get; set; }
-
-        /// <summary>
         /// Gets or sets the value map.
         /// </summary>
         /// <value>The value map.</value>
         public ValueMapDictionary ValueMap { get; } = new ValueMapDictionary();
+
+        /// <summary>
+        /// Gets or sets the key sequence.
+        /// </summary>
+        /// <value>The key sequence.</value>
+        public short? KeySequence { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hash sequence.
+        /// </summary>
+        /// <value>The hash sequence.</value>
+        public short? HashSequence { get; set; }
 
         /// <summary>
         /// Sets the memento.
@@ -53,7 +59,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             var myMemento = (FieldConfigurationMemento)memento;
             this.Name = myMemento.Name;
             this.MapToName = myMemento.MapToName;
-            this.IncludeInHash = myMemento.IncludeInHash;
+            this.HashSequence = myMemento.HashSequence;
+            this.KeySequence = myMemento.KeySequence;
             if (myMemento.ValueMap != null)
             {
                 foreach (var valueMap in myMemento.ValueMap)

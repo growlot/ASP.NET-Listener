@@ -22,18 +22,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="protocol">The protocol.</param>
         /// <param name="connectionDetails">The connection details.</param>
         /// <param name="triggerType">Type of the trigger.</param>
-        /// <param name="fieldConfiguration">The field configuration.</param>
         public IntegrationEndpointConfigurationMemento(string protocol, string connectionDetails,
-            EndpointTriggerType triggerType,
-            IEnumerable<FieldConfigurationMemento> fieldConfiguration)
+            EndpointTriggerType triggerType)
         {
             this.Protocol = protocol;
             this.ConnectionDetails = connectionDetails;
             this.Trigger = triggerType;
-            if (fieldConfiguration != null)
-            {
-                this.FieldConfigurations = new ReadOnlyCollection<FieldConfigurationMemento>(fieldConfiguration.ToList());
-            }
         }
 
         /// <summary>
@@ -47,13 +41,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The connection details.</value>
         public string ConnectionDetails { get; private set; }
-
-        /// <summary>
-        /// Gets the field configurations.
-        /// </summary>
-        /// <value>The field configurations.</value>
-        public ReadOnlyCollection<FieldConfigurationMemento> FieldConfigurations { get; private set; } =
-            new ReadOnlyCollection<FieldConfigurationMemento>(new List<FieldConfigurationMemento>());
 
         /// <summary>
         /// Gets or sets the trigger.

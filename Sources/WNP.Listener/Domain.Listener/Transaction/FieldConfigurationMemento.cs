@@ -18,13 +18,15 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="mapToName">Name of the map to.</param>
-        /// <param name="includeInHash">if set to <c>true</c> [include in hash].</param>
+        /// <param name="hashSequence">The hash sequence.</param>
+        /// <param name="keySequence">The key sequence.</param>
         /// <param name="valueMap">The value map.</param>
-        public FieldConfigurationMemento(string name, string mapToName, bool includeInHash, Dictionary<string, object> valueMap)
+        public FieldConfigurationMemento(string name, string mapToName, short? hashSequence, short? keySequence, Dictionary<string, object> valueMap)
         {
             this.Name = name;
             this.MapToName = mapToName;
-            this.IncludeInHash = includeInHash;
+            this.HashSequence = hashSequence;
+            this.KeySequence = keySequence;
             if (valueMap != null)
             {
                 foreach (var o in valueMap)
@@ -33,6 +35,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the key sequence.
+        /// </summary>
+        /// <value>The key sequence.</value>
+        public short? KeySequence { get; private set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -56,6 +64,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the include in hash.
         /// </summary>
         /// <value>The include in hash.</value>
-        public bool IncludeInHash { get; set; }
+        public short? HashSequence { get; private set; }
     }
 }

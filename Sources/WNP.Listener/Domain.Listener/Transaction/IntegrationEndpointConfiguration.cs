@@ -34,13 +34,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public EndpointTriggerType Trigger { get; set; }
 
         /// <summary>
-        /// Gets the field configurations.
-        /// </summary>
-        /// <value>The field configurations.</value>
-        public ReadOnlyCollection<FieldConfiguration> FieldConfigurations { get; private set; } =
-            new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>());
-
-        /// <summary>
         /// Sets the memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
@@ -59,16 +52,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Protocol = myMemento.Protocol;
             this.Trigger = myMemento.Trigger;
             this.ConnectionConfiguration = ConnectionConfigurationFactory.Create(myMemento.Protocol, myMemento);
-
-            List<FieldConfiguration> configurations = new List<FieldConfiguration>();
-            foreach (var fieldConfiguration in myMemento.FieldConfigurations)
-            {
-                var cfg = new FieldConfiguration();
-                ((IOriginator)cfg).SetMemento(fieldConfiguration);
-                configurations.Add(cfg);
-            }
-
-            this.FieldConfigurations = new ReadOnlyCollection<FieldConfiguration>(configurations);
         }
     }
 }

@@ -1030,13 +1030,13 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
-		[Column] public bool IncludeInHash { get; set; }
+		[Column] public short? HashSequence { get; set; }
 
 
 
 
 
-		[Column] public bool IncludeInKey { get; set; }
+		[Column] public short? KeySequence { get; set; }
 
 
 
@@ -1186,6 +1186,12 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 
+
+
+		[Column] public int? FieldConfigurationId { get; set; }
+
+
+
 	}
 
     
@@ -1227,12 +1233,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 
 
 		[Column] public string AdapterConfiguration { get; set; }
-
-
-
-
-
-		[Column] public int? FieldConfigurationId { get; set; }
 
 
 

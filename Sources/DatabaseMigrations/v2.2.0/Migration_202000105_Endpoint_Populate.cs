@@ -26,7 +26,6 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 Name = "Generic Jms Endpoint",
                 ProtocolTypeId = 1,
                 ConnectionConfiguration = "{\"Host\":\"localhost\", \"Port\":7001, \"QueueName\":\"jms/AMSIntegration\", \"UserName\":\"ams\", \"Password\":\"Password1\"}",
-                FieldConfigurationId = 1,
                 EndpointTriggerTypeId = 2
             };
 

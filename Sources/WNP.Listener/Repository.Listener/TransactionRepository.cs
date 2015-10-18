@@ -51,6 +51,13 @@ namespace AMSLLC.Listener.Repository.Listener
                     new[] { "TransactionHash" });
         }
 
+        public Task<int> GetEnabledOperation(string companyCode, string sourceApplicationKey, string operationKey)
+        {
+            return _persistence.ExecuteScalarAsync<int>(@"SELECT EO.EnabledOperationId FROM EnabledOperation EO
+INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId
+INNER JOIN Company C ON EO.CompanyId = C.CompanyId
+INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2", companyCode, sourceApplicationKey, operationKey);
+        }
 
 
         public async Task<IMemento> GetExecutionContext(string recordKey)
@@ -60,21 +67,29 @@ namespace AMSLLC.Listener.Repository.Listener
             var valueMapEntries =
                 await _persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
             var valueMaps = await _persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
-            var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
+            //var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
             var tr = await _persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
-            var endpoints = await _persistence.ProjectionAsync<EndpointEntity, OperationEndpointEntity, IntegrationEndpointConfigurationMemento>((ee, oe) => new IntegrationEndpointConfigurationMemento(protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name, ee.ConnectionConfiguration,
-                                (EndpointTriggerType)ee.EndpointTriggerTypeId, PrepareFieldConfiguration(ee.FieldConfigurationId, fieldConfigurationEntries, valueMapEntries, valueMaps)), @"SELECT 
-	E.*, OE.*
+            //
+            var endpoints = await _persistence.ProjectionAsync<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IntegrationEndpointConfigurationMemento>((ee, oe, eo) => new IntegrationEndpointConfigurationMemento(protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name, ee.ConnectionConfiguration,
+                                 (EndpointTriggerType)ee.EndpointTriggerTypeId), @"SELECT 
+	E.*, OE.*, EO.*
 FROM 
 	Endpoint E 
-	LEFT JOIN FieldConfiguration FC ON E.FieldConfigurationId = FC.FieldConfigurationId 
 	INNER JOIN OperationEndpoint OE ON E.EndpointId = OE.EndpointId
 	INNER JOIN EnabledOperation EO ON OE.EnabledOperationId = EO.EnabledOperationId
 	INNER JOIN TransactionRegistry TR ON TR.EnabledOperationId = EO.EnabledOperationId
+    LEFT JOIN FieldConfiguration FC ON EO.FieldConfigurationId = FC.FieldConfigurationId 
 WHERE TR.RecordKey = @0", recordKey);
+
+
+            var fieldConfigurationEntries =
+                await
+                    _persistence.GetListAsync<FieldConfigurationEntryEntity>(
+                        "SELECT FCE.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId WHERE EO.EnabledOperationId = @0", tr.EnabledOperationId);
+
             if (endpoints != null)
             {
-                returnValue = new TransactionExecutionMemento(tr.TransactionId, recordKey, tr.EnabledOperationId, endpoints);
+                returnValue = new TransactionExecutionMemento(tr.TransactionId, recordKey, tr.EnabledOperationId, endpoints, PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps));
             }
             return returnValue;
         }
@@ -102,6 +117,7 @@ WHERE TR.RecordKey = @0", recordKey);
                     AppUser = transactionRegistry.UserName,
                     Message = transactionRegistry.Message,
                     Details = transactionRegistry.Details,
+                    TransactionKey = transactionRegistry.TransactionKey,
                     Summary = SerializationUtilities.DictionaryToXml(transactionRegistry.Summary)
                 });
         }
@@ -109,9 +125,9 @@ WHERE TR.RecordKey = @0", recordKey);
         public async Task<IMemento> GetRegistryEntry(string recordKey)
         {
             Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app,
-                 cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, cmp.ExternalCode, app.RecordKey, op.Name,
+                 cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, tr.TransactionKey, cmp.ExternalCode, app.RecordKey, op.Name,
                      (TransactionStatusType)tr.TransactionStatusId, tr.AppUser, tr.CreatedDateTime,
-                     tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details);
+                     tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details, tr.EnabledOperationId);
 
             var registryEntities = await
                     _persistence.ProjectionAsync(callback,
@@ -146,31 +162,24 @@ WHERE TR.RecordKey = @0", recordKey);
             return _persistence.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
         }
 
-        public Task<string> GetTransactionHeader(string recordKey)
-        {
-            return _persistence.ExecuteScalarAsync<string>("SELECT Header FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
-        }
-
         public Task<int> GetHashCount(int enabledOperationId, string hash)
         {
             return _persistence.ExecuteScalarAsync<int>("SELECT COUNT(TransactionHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND TransactionHash = @1", enabledOperationId, hash);
         }
 
-        private IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(int? fieldConfigurationId, IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)
+        private IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)
         {
-            if (!fieldConfigurationId.HasValue)
-                return null;
 
             List<FieldConfigurationMemento> returnValue = new List<FieldConfigurationMemento>();
-            var fields = fieldConfigurationEntries.Where(s => s.FieldConfigurationId == fieldConfigurationId.Value);
 
 
-            foreach (var fieldConfigurationEntry in fields)
+
+            foreach (var fieldConfigurationEntry in fieldConfigurationEntries)
             {
                 Dictionary<string, object> valueMap = new Dictionary<string, object>();
                 if (fieldConfigurationEntry.ValueMapId.HasValue)
                 {
-                    var map = valueMapEntries.Where(s => s.ValueMapId == fieldConfigurationId.Value);
+                    var map = valueMapEntries.Where(s => s.ValueMapId == fieldConfigurationEntry.ValueMapId);
                     if (!map.Any())
                     {
                         break;
@@ -181,7 +190,7 @@ WHERE TR.RecordKey = @0", recordKey);
                         valueMap.Add(valueMapEntry.RecordKey ?? string.Empty, ValueConverter.Convert(valueMapEntry.Value, mapType.ValueType));
                     }
                 }
-                returnValue.Add(new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.IncludeInHash, valueMap));
+                returnValue.Add(new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.HashSequence, fieldConfigurationEntry.KeySequence, valueMap));
             }
 
             return returnValue;

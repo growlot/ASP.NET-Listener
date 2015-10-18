@@ -22,14 +22,15 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="recordKey">The transaction key.</param>
         /// <param name="enabledOperationId">The enabled operation identifier.</param>
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
-        public TransactionExecutionMemento(int transactionId, string recordKey, int enabledOperationId,
-            IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration)
+        /// <param name="fieldConfigurations">The field configurations.</param>
+        public TransactionExecutionMemento(int transactionId, string recordKey, int enabledOperationId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration, IEnumerable<FieldConfigurationMemento> fieldConfigurations)
         {
             this.EndpointConfigurations =
                 new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
             this.RecordKey = recordKey;
             this.EnabledOperationId = enabledOperationId;
+            this.FieldConfigurations = new ReadOnlyCollection<FieldConfigurationMemento>(new List<FieldConfigurationMemento>(fieldConfigurations));
         }
 
         /// <summary>
@@ -55,5 +56,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The enabled operation identifier.</value>
         public int EnabledOperationId { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the field configurations.
+        /// </summary>
+        /// <value>The field configurations.</value>
+        public ReadOnlyCollection<FieldConfigurationMemento> FieldConfigurations { get; private set; }
     }
 }

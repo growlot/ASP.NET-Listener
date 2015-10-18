@@ -62,6 +62,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             new ReadOnlyCollection<IntegrationEndpointConfiguration>(new IntegrationEndpointConfiguration[0]);
 
         /// <summary>
+        /// Gets the field configurations.
+        /// </summary>
+        /// <value>The field configurations.</value>
+        public ReadOnlyCollection<FieldConfiguration> FieldConfigurations { get; private set; } =
+                    new ReadOnlyCollection<FieldConfiguration>(new FieldConfiguration[0]);
+
+        /// <summary>
         /// Gets or sets the domain builder.
         /// </summary>
         /// <value>The domain builder.</value>
@@ -80,24 +87,32 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.EndpointConfigurations =
                 new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(
                     cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
+
+            this.FieldConfigurations =
+                new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(
+                    s =>
+                    {
+                        var itm = new FieldConfiguration();
+                        ((IOriginator)itm).SetMemento(s);
+                        return itm;
+                    })));
         }
 
         /// <summary>
         /// Processes the specified transaction.
         /// </summary>
         /// <param name="data">The data.</param>
-        /// <param name="header">The header.</param>
         /// <returns>Task.</returns>
-        public virtual Task[] Process(object data, Dictionary<string, object> header)
+        public virtual Task[] Process(object data)
         {
             var returnValue = new Task[this.EndpointConfigurations.Count];
             var processor =
                 ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
 
+            var preparedData = processor.Process(data, this.FieldConfigurations);
             for (int i = 0; i < this.EndpointConfigurations.Count; i++)
             {
                 var cfg = this.EndpointConfigurations[i];
-                var preparedData = processor.Process(data, cfg);
                 this.TransactionHash = preparedData.Hash;
                 returnValue[i] = this.HashValidator.ValidateAsync(this.EnabledOperationId, preparedData.Hash).ContinueWith(t =>
                 {
@@ -117,7 +132,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
                     var eventData = new TransactionDataReady
                     {
-                        Data = new TransactionMessage { Data = preparedData.Data, Header = header, RecordKey = this.RecordKey },
+                        Data = new TransactionMessage { Data = preparedData.Data, RecordKey = this.RecordKey },
                     };
                     EventsRegister.Raise(eventData);
 

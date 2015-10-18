@@ -25,15 +25,15 @@ namespace AMSLLC.Listener.ApplicationService
         /// Prepare data for the endpoint.
         /// </summary>
         /// <param name="data">The data.</param>
-        /// <param name="configuration">The endpoint configuration.</param>
+        /// <param name="fieldConfigurations">The field configurations.</param>
         /// <returns>Task.</returns>
-        public virtual IEndpointDataProcessorResult Process(object data, IntegrationEndpointConfiguration configuration)
+        public virtual IEndpointDataProcessorResult Process(object data, IList<FieldConfiguration> fieldConfigurations)
         {
             IEndpointDataProcessorResult returnValue = new EndpointDataProcessorResult();
-            bool remap = configuration.FieldConfigurations.Any(f => !string.IsNullOrWhiteSpace(f.MapToName));
+            bool remap = fieldConfigurations.Any(f => !string.IsNullOrWhiteSpace(f.MapToName));
             returnValue.Data = remap ? DynamicUtilities.ConvertToDynamic(data) : data;
-            Dictionary<string, object> hashElements = new Dictionary<string, object>();
-            foreach (var fieldConfiguration in configuration.FieldConfigurations)
+            Dictionary<short, object> hashElements = new Dictionary<short, object>();
+            foreach (var fieldConfiguration in fieldConfigurations)
             {
                 DynamicUtilities.ProcessProperty(data, fieldConfiguration.Name, null,
                     (targetProperty, owner, propRef) =>
@@ -45,9 +45,9 @@ namespace AMSLLC.Listener.ApplicationService
                             targetValue = fieldConfiguration.ValueMap[targetKey];
                         }
 
-                        if (fieldConfiguration.IncludeInHash)
+                        if (fieldConfiguration.HashSequence.HasValue)
                         {
-                            hashElements.Add(propRef, targetValue);
+                            hashElements.Add(fieldConfiguration.HashSequence.Value, targetValue);
                         }
 
                         if (remap)
@@ -66,12 +66,12 @@ namespace AMSLLC.Listener.ApplicationService
                         {
                             //var converter = TypeDescriptor.GetConverter(targetProperty.PropertyType);
                             targetProperty.SetValue(owner, targetValue);
-                                //converter.ConvertFrom(targetValue?.ToString())
+                            //converter.ConvertFrom(targetValue?.ToString())
                         }
                     });
             }
 
-            List<KeyValuePair<string, object>> hashSorted =
+            List<KeyValuePair<short, object>> hashSorted =
                 hashElements.Where(s => s.Value != null).OrderBy(s => s.Key).ToList();
             StringBuilder hashSourceBuilder = new StringBuilder();
             for (int i = 0; i < hashSorted.Count; i++)

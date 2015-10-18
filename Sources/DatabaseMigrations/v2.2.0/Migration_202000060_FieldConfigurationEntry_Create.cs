@@ -24,8 +24,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("FieldConfigurationId").AsInt32().NotNullable()
                 .WithColumn("FieldName").AsString(100).NotNullable()
                 .WithColumn("ValueMapId").AsInt32().Nullable()
-                .WithColumn("IncludeInHash").AsBoolean().NotNullable()
-                .WithColumn("IncludeInKey").AsBoolean().NotNullable()
+                .WithColumn("HashSequence").AsInt16().Nullable()
+                .WithColumn("KeySequence").AsInt16().Nullable()
                 .WithColumn("IncludeInSummary").AsBoolean().NotNullable()
                 .WithColumn("MapToName").AsString(100).Nullable();
 
