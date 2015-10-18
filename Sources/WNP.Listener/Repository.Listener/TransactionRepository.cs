@@ -51,13 +51,32 @@ namespace AMSLLC.Listener.Repository.Listener
                     new[] { "TransactionHash" });
         }
 
-        public Task<int> GetEnabledOperation(string companyCode, string sourceApplicationKey, string operationKey)
+        /// <summary>
+        /// Gets the field configurations.
+        /// </summary>
+        /// <param name="companyCode">The company code.</param>
+        /// <param name="sourceApplicationKey">The source application key.</param>
+        /// <param name="operationKey">The operation key.</param>
+        /// <returns>Task&lt;IEnumerable&lt;IMemento&gt;&gt;.</returns>
+        public async Task<IEnumerable<IMemento>> GetFieldConfigurations(string companyCode, string sourceApplicationKey, string operationKey)
         {
-            return _persistence.ExecuteScalarAsync<int>(@"SELECT EO.EnabledOperationId FROM EnabledOperation EO
-INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId
+            var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>(
+                       @"SELECT FCE.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
 INNER JOIN Company C ON EO.CompanyId = C.CompanyId
 INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2", companyCode, sourceApplicationKey, operationKey);
+            var valueMapEntries = await _persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
+            var valueMaps = await _persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
+
+           return PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps);
         }
+
+        //        public Task<int> GetEnabledOperation(string companyCode, string sourceApplicationKey, string operationKey)
+        //        {
+        //            return _persistence.ExecuteScalarAsync<int>(@"SELECT EO.EnabledOperationId FROM EnabledOperation EO
+        //INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId
+        //INNER JOIN Company C ON EO.CompanyId = C.CompanyId
+        //INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2", companyCode, sourceApplicationKey, operationKey);
+        //        }
 
 
         public async Task<IMemento> GetExecutionContext(string recordKey)
@@ -127,7 +146,7 @@ WHERE TR.RecordKey = @0", recordKey);
             Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app,
                  cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, tr.TransactionKey, cmp.ExternalCode, app.RecordKey, op.Name,
                      (TransactionStatusType)tr.TransactionStatusId, tr.AppUser, tr.CreatedDateTime,
-                     tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details, tr.EnabledOperationId);
+                     tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details);
 
             var registryEntities = await
                     _persistence.ProjectionAsync(callback,

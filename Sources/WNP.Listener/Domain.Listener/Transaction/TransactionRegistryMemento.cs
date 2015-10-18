@@ -32,10 +32,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="data">The request data.</param>
         /// <param name="message">The message.</param>
         /// <param name="details">The details.</param>
-        /// <param name="enabledOperationId">The enabled operation identifier.</param>
         public TransactionRegistryMemento(int transactionId, string recordKey, string transactionKey, string companyCode, string applicationKey,
             string operationKey, TransactionStatusType status, string userName, DateTime createdDateTime,
-            DateTime? updatedDateTime, string data, string message, string details, int enabledOperationId)
+            DateTime? updatedDateTime, string data, string message, string details)
         {
             this.TransactionId = transactionId;
             this.RecordKey = recordKey;
@@ -50,7 +49,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Message = message;
             this.Details = details;
             this.TransactionKey = transactionKey;
-            this.EnabledOperationId = enabledOperationId;
         }
 
         /// <summary>
@@ -130,11 +128,5 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The details.</value>
         public string Details { get; private set; }
-
-        /// <summary>
-        /// Gets the enabled operation identifier.
-        /// </summary>
-        /// <value>The enabled operation identifier.</value>
-        public int EnabledOperationId { get; private set; }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace AMSLLC.Listener.Repository
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Domain;
 
@@ -22,6 +23,7 @@ namespace AMSLLC.Listener.Repository
         Task<string> GetTransactionData(string recordKey);
         Task<int> GetHashCount(int enabledOperationId, string hash);
         Task UpdateHash(int transactionId, string hash);
-        Task<int> GetEnabledOperation(string companyCode, string sourceApplicationKey, string operationKey);
+        //Task<int> GetEnabledOperation(string companyCode, string sourceApplicationKey, string operationKey);
+        Task<IEnumerable<IMemento>> GetFieldConfigurations(string companyCode, string sourceApplicationKey, string operationKey);
     }
 }

@@ -76,6 +76,7 @@
     <Compile Include="Transaction\IConnectionConfigurationBuilder.cs" />
     <Compile Include="Transaction\IEndpointDataProcessor.cs" />
     <Compile Include="Transaction\IEndpointDataProcessorResult.cs" />
+    <Compile Include="Transaction\ISummaryBuilder.cs" />
     <Compile Include="Transaction\ITransactionKeyBuilder.cs" />
     <Compile Include="Transaction\IUniqueHashValidator.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfiguration.cs" />

@@ -21,15 +21,19 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="keyBuilder">The key builder.</param>
         /// <param name="transactionKeyBuilder">The transaction key builder.</param>
-        public TransactionRegistry(IRecordKeyBuilder keyBuilder, ITransactionKeyBuilder transactionKeyBuilder)
+        /// <param name="summaryBuilder">The summary builder.</param>
+        public TransactionRegistry(IRecordKeyBuilder keyBuilder, ITransactionKeyBuilder transactionKeyBuilder, ISummaryBuilder summaryBuilder)
         {
             this.KeyBuilder = keyBuilder;
             this.TransactionKeyBuilder = transactionKeyBuilder;
+            this.SummaryBuilder = summaryBuilder;
         }
 
         private IRecordKeyBuilder KeyBuilder { get; }
 
         private ITransactionKeyBuilder TransactionKeyBuilder { get; }
+
+        private ISummaryBuilder SummaryBuilder { get; }
 
         /// <summary>
         /// Gets the transaction record key.
@@ -110,26 +114,17 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public Dictionary<string, object> Summary { get; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets the enabled operation identifier.
-        /// </summary>
-        /// <value>The enabled operation identifier.</value>
-        public int? EnabledOperationId { get; private set; }
-
-        /// <summary>
         /// Setup new transaction registry entry
         /// </summary>
         /// <param name="createdDateTime">The created date time.</param>
-        public void Create(DateTime createdDateTime)
+        /// <param name="fieldConfigurations">The field configurations.</param>
+        public void Create(DateTime createdDateTime, IEnumerable<FieldConfiguration> fieldConfigurations)
         {
-            if (!this.EnabledOperationId.HasValue)
-            {
-                throw new InvalidOperationException("Operation is not enabled.");
-            }
-
             this.RecordKey = this.KeyBuilder.Create();
             this.CreatedDateTime = createdDateTime;
-            this.TransactionKey = this.TransactionKeyBuilder.Create(this.EnabledOperationId.Value, this.Data);
+            this.TransactionKey = this.TransactionKeyBuilder.Create(this.Data, fieldConfigurations);
             this.Status = TransactionStatusType.InProgress;
+            this.SummaryBuilder.Build(this.Data, this.Summary, fieldConfigurations);
         }
 
         /// <summary>
@@ -188,7 +183,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Details = myMemento.Details;
             this.Id = myMemento.TransactionId;
             this.TransactionKey = myMemento.TransactionKey;
-            this.EnabledOperationId = myMemento.EnabledOperationId;
         }
     }
 }

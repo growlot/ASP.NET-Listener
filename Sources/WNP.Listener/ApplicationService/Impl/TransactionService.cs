@@ -30,17 +30,26 @@ namespace AMSLLC.Listener.ApplicationService.Impl
             {
                 var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
 
-                var enabledOperationId = await transactionRepository.GetEnabledOperation(requestMessage.CompanyCode,
+                //var enabledOperationId = await transactionRepository.GetEnabledOperation(requestMessage.CompanyCode,
+                //    requestMessage.SourceApplicationKey, requestMessage.OperationKey);
+
+                var fieldConfigurationMemento = await transactionRepository.GetFieldConfigurations(requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey, requestMessage.OperationKey);
 
                 var memento = new TransactionRegistryMemento(0, null, null, requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey, requestMessage.OperationKey, TransactionStatusType.InProgress,
-                    requestMessage.User, scope.ScopeDateTime, null, requestMessage.Data, null, null, enabledOperationId);
+                    requestMessage.User, scope.ScopeDateTime, null, requestMessage.Data, null, null);
 
                 var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
-                transactionRegistry.Create(scope.ScopeDateTime);
+                transactionRegistry.Create(scope.ScopeDateTime, new List<FieldConfiguration>(fieldConfigurationMemento.Select(
+                    s =>
+                    {
+                        var itm = new FieldConfiguration();
+                        ((IOriginator)itm).SetMemento(s);
+                        return itm;
+                    })));
 
                 await transactionRepository.Create(transactionRegistry);
 

@@ -6,6 +6,8 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Transaction key builder
     /// </summary>
@@ -14,9 +16,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <summary>
         /// Creates the transaction key
         /// </summary>
-        /// <param name="enabledOperationId">The enabled operation identifier.</param>
         /// <param name="data">The data.</param>
+        /// <param name="fieldConfigurations">The field configurations.</param>
         /// <returns>Transaction key</returns>
-        string Create(int enabledOperationId, object data);
+        string Create(object data, IEnumerable<FieldConfiguration> fieldConfigurations);
     }
 }
