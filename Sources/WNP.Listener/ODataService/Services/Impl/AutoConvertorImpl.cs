@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Configuration;
+using Serilog;
 
 namespace AMSLLC.Listener.ODataService.Services.Impl
 {
@@ -60,7 +61,26 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             }
         };
 
-        public object Convert(object rawData, Type targetType) =>
-            Conversions.ContainsKey(targetType) ? Conversions[targetType](rawData) : System.Convert.ChangeType(rawData, targetType);
+        public object Convert(object rawData, Type targetType)
+        {
+            if (Conversions.ContainsKey(targetType))
+            {
+                return Conversions[targetType](rawData);
+            }
+            else
+            {
+                try
+                {
+                    return System.Convert.ChangeType(rawData, targetType);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e, "Invalid cast from {RawDataType} to {TargetType}", rawData?.GetType(), targetType);
+                }
+            }
+
+            return rawData;
+        }
+            
     }
 }

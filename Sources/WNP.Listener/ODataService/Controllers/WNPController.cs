@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -23,6 +24,7 @@ using Microsoft.OData.Core;
 using Microsoft.OData.Edm;
 using Microsoft.OData.Edm.Library;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
@@ -32,17 +34,19 @@ namespace AMSLLC.Listener.ODataService.Controllers
         protected readonly IMetadataService metadataService;
         protected readonly IFilterTransformer filterTransformer;
         protected readonly IAutoConvertor convertor;
+        protected readonly IActionConfigurator actionConfigurator;
 
         private readonly WNPDBContext dbContext;
 
         private readonly ODataValidationSettings defaultODataValidationSettings;
 
-        public WNPController(IMetadataService metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor)
+        public WNPController(IMetadataService metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
         {
             this.metadataService = metadataService;
             this.dbContext = dbContext;
             this.filterTransformer = filterTransformer;
             this.convertor = convertor;
+            this.actionConfigurator = actionConfigurator;
 
             defaultODataValidationSettings = new ODataValidationSettings()
             {
@@ -52,76 +56,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
             };
         }
 
-        public async Task<IHttpActionResult> EntityActionHandler()
-        {
-            return await ActionHandler(true);
-        }
-
-        public async Task<IHttpActionResult> UnboundActionHandler()
-        {
-            return await ActionHandler(false);
-        }
-
-        private async Task<IHttpActionResult> ActionHandler(bool isBound)
-        {
-            var queryOptions = ConstructQueryOptions();
-
-            var entitySetSegment = queryOptions.Context.Path.Segments[0] as EntitySetPathSegment;
-            var entityName = ((IEdmCollectionType) entitySetSegment.GetEdmType(null)).ElementType.ShortQualifiedName();
-
-            var actionSegment = queryOptions.Context.Path.Segments[2] as BoundActionPathSegment;
-            var fqnActionName = actionSegment?.ActionName;
-            var actionName = fqnActionName.Substring(fqnActionName.IndexOf("_") + 1);
-
-            var actionsContainerType = metadataService.GetModelMapping(metadataService.GetEntityType(entityName)).ActionsContainer;
-            if (actionsContainerType == null)
-                return NotFound();
-
-            // create action container instance with all dependencies resolved
-            var compositionRoot = ApplicationIntegration.DependencyResolver;
-            var actionsContainer = compositionRoot.ResolveType(actionsContainerType);
-
-            var jsonParameters =
-                JsonConvert.DeserializeObject<Dictionary<string, object>>(await Request.Content.ReadAsStringAsync());
-
-            var methodInfo = actionsContainerType.GetMethod(actionName);
-            if (methodInfo == null)
-                return NotFound();
-
-            var parametersInfo = methodInfo.GetParameters();
-            if (parametersInfo.Length != jsonParameters.Count)
-                return
-                    BadRequest($"Invalid number of parameters. Expected: {parametersInfo.Length}. Got: {jsonParameters.Count}.");
-
-            if (isBound)
-            {
-                var keySegment = queryOptions.Context.Path.Segments[1] as KeyValuePathSegment;
-                var keyValue = keySegment?.Value;
-            }
-
-            try
-            {
-                // adjust parameters types
-                jsonParameters = jsonParameters.ToDictionary(kvp => kvp.Key,
-                    kvp =>
-                        convertor.Convert(kvp.Value, parametersInfo.First(info => info.Name == kvp.Key).ParameterType));
-
-                var result = methodInfo.InvokeWithNamedParameters(actionsContainer, jsonParameters);
-
-                if (methodInfo.ReturnType != typeof (void))
-                    return CreateSimpleOkResponse(methodInfo.ReturnType, result);
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
-
         public IHttpActionResult Get()
         {
-            // constructing oData options since we're can not using generic return type
+            // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
             var queryOptions = ConstructQueryOptions();
             queryOptions.Validate(defaultODataValidationSettings);
@@ -179,6 +116,106 @@ namespace AMSLLC.Listener.ODataService.Controllers
             return CreateOkResponse(oDataModelType, result);
         }
 
+        public async Task<IHttpActionResult> EntityActionHandler()
+        {
+            var queryOptions = ConstructQueryOptions();
+            var oDataPath = queryOptions.Context.Path;
+
+            var isCollectionWide = oDataPath.PathTemplate == "~/entityset/action";
+
+            var entitySetSegment = oDataPath.Segments[0] as EntitySetPathSegment;
+
+            Debug.Assert(entitySetSegment != null, "entitySetSegment != null");
+            var entityName = ((IEdmCollectionType)entitySetSegment.GetEdmType(null)).ElementType.ShortQualifiedName();
+
+            var actionSegment = oDataPath.Segments[isCollectionWide ? 1 : 2] as BoundActionPathSegment;
+            var fqnActionName = actionSegment?.ActionName;
+
+            Debug.Assert(fqnActionName != null, "fqnActionName != null");
+            var actionName = fqnActionName.Substring(fqnActionName.IndexOf("_", StringComparison.Ordinal) + 1);
+
+            var actionsContainerType = metadataService.GetModelMapping(metadataService.GetEntityType(entityName)).ActionsContainer;
+            if (actionsContainerType == null)
+                return NotFound();
+
+            return await InvokeAction(actionsContainerType, actionName);
+        }
+
+        public async Task<IHttpActionResult> UnboundActionHandler()
+        {
+            var oDataProperties = Request.ODataProperties();
+            var oDataPath = oDataProperties.Path;
+
+            var actionSegment = oDataPath.Segments[0] as UnboundActionPathSegment;
+            var fqnActionName = actionSegment?.ActionName;
+
+            Debug.Assert(fqnActionName != null, "fqnActionName != null");
+
+            var underscorePosition = fqnActionName.IndexOf("_", StringComparison.Ordinal);
+            var containerTypeName = fqnActionName.Substring(0, underscorePosition);
+            var actionName = fqnActionName.Substring(underscorePosition + 1);
+
+            return await InvokeAction(actionConfigurator.GetUnboundActionContainer(containerTypeName), actionName);
+        }
+
+        private async Task<IHttpActionResult> InvokeAction(Type actionsContainerType, string actionName, KeyValuePathSegment keySegment = null)
+        {
+            // create action container instance with all dependencies resolved
+            var compositionRoot = ApplicationIntegration.DependencyResolver;
+            var actionsContainer = compositionRoot.ResolveType(actionsContainerType);
+
+            // get the action parameters
+            var jsonParameters =
+                JsonConvert.DeserializeObject<Dictionary<string, object>>(await Request.Content.ReadAsStringAsync());
+
+            var methodInfo = actionsContainerType.GetMethod(actionName);
+            if (methodInfo == null)
+                return NotFound();
+
+            // check the number of parameters
+            var parametersInfo = methodInfo.GetParameters();
+            if (parametersInfo.Count(info => !info.IsOptional) > jsonParameters.Count)
+                return
+                    BadRequest(
+                        $"Invalid number of non-optional parameters. Expected: {parametersInfo.Length}. Got: {jsonParameters.Count}.");
+
+            var missingParameter =
+                parametersInfo.FirstOrDefault(
+                    parameterInfo => !jsonParameters.ContainsKey(parameterInfo.Name) && !parameterInfo.IsOptional);
+
+            if (missingParameter != null)
+                return BadRequest($"Non-optional parameter {missingParameter.Name} not found in request body.");
+
+            // if we have a key, we can optionally bind it to the appropriate action parameter
+            if (keySegment != null)
+            {
+                var keyValue = JsonConvert.DeserializeObject(keySegment.Value);
+                // TODO: implement this
+            }
+
+            try
+            {
+                // adjust parameters types
+                jsonParameters = jsonParameters.ToDictionary(kvp => kvp.Key,
+                    kvp =>
+                        convertor.Convert(kvp.Value, parametersInfo.First(info => info.Name == kvp.Key).ParameterType));
+
+                var result = methodInfo.InvokeWithNamedParameters(actionsContainer, jsonParameters);
+
+                if (methodInfo.ReturnType != typeof(void))
+                    return CreateSimpleOkResponse(methodInfo.ReturnType, result);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Action {ActionName} in container {ContainerType} failed to execute.", actionName,
+                    actionsContainerType.FullName);
+
+                return InternalServerError(ex);
+            }
+        }
+
         private string[] GetDBColumnsList(SelectExpandQueryOption queryOptions,
             Dictionary<string, string> mapping)
             => queryOptions?.RawSelect.Split(',').Select(item => mapping[item]).ToArray() ?? mapping.Values.ToArray();
@@ -219,7 +256,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var oDataPath = oDataProperties.Path;
             var model = oDataProperties.Model;
 
-            if (oDataProperties.Path.PathTemplate == "~/entityset/key/action")
+            if (oDataProperties.Path.PathTemplate == "~/entityset/key/action" || oDataProperties.Path.PathTemplate == "~/entityset/action")
             {
                 var entitySetName = oDataProperties.Path.Segments[0] as EntitySetPathSegment;
                 var edmType = entitySetName.GetEdmType(null);

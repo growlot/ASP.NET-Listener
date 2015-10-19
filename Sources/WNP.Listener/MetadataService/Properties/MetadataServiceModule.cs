@@ -22,7 +22,7 @@ namespace AMSLLC.Listener.MetadataService.Properties
             Kernel.Bind<IMetadataService>().To<MetadataServiceImpl>()
                 .InTransientScope();
 
-            Kernel.Bind<IEntityActionConfigurator>().To<EntityActionConfiguratorImpl>()
+            Kernel.Bind<IActionConfigurator>().To<ActionConfiguratorImpl>()
                 .InSingletonScope();
 
             try

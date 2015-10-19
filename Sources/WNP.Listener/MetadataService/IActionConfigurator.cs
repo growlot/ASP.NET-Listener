@@ -2,9 +2,10 @@
 
 namespace AMSLLC.Listener.MetadataService
 {
-    public interface IEntityActionConfigurator
+    public interface IActionConfigurator
     {
         Type GetEntityActionContainer(string tableName);
         bool IsEntityActionsContainerAvailable(string tableName);
+        Type GetUnboundActionContainer(string containerName);
     }
 }

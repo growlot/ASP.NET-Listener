@@ -74,14 +74,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IMetadataService.cs" />
-    <Compile Include="Impl\EntityActionConfiguratorImpl.cs" />
+    <Compile Include="Impl\ActionConfiguratorImpl.cs" />
     <Compile Include="Impl\MetadataServiceImpl.cs" />
     <Compile Include="IODataEntity.cs" />
     <Compile Include="Mapping\WNPMetadataMapping.cs" />
     <Compile Include="MetadataDbContext.cs" />
     <Compile Include="MetadataFieldInfo.cs" />
     <Compile Include="MetadataModel.cs" />
-    <Compile Include="IEntityActionConfigurator.cs" />
+    <Compile Include="IActionConfigurator.cs" />
     <Compile Include="Properties\MetadataServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\WNPMetadataEntry.cs" />

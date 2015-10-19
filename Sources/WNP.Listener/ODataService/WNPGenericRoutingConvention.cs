@@ -50,8 +50,9 @@ namespace AMSLLC.Listener.ODataService
                 switch (odataPath.PathTemplate)
                 {
                     case "~/entityset/key/action":
+                    case "~/entityset/action":
                         return "EntityActionHandler";
-                    case "~/entityset/key/unboundaction":
+                    case "~/unboundaction":
                         return "UnboundActionHandler";
                 }
             }

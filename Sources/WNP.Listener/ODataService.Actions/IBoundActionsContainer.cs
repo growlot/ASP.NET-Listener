@@ -1,6 +1,6 @@
 ﻿namespace AMSLLC.Listener.ODataService.Actions
 {
-    public interface IActionsContainer
+    public interface IBoundActionsContainer
     {
         string GetTableName();
     }

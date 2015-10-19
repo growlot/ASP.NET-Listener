@@ -17,7 +17,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
     public class MetadataServiceImpl : IMetadataService
     {
         private readonly MetadataDbContext dbContext;
-        private readonly IEntityActionConfigurator _actionConfigurator;
+        private readonly IActionConfigurator _actionConfigurator;
 
         private static Assembly odataModelAssembly;
         private static Dictionary<string, MetadataModel> oDataModelMappings;
@@ -46,7 +46,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
         public MetadataModel GetModelMapping(Type clrModel) =>
             oDataModelMappings[clrModel.FullName];
 
-        public MetadataServiceImpl(MetadataDbContext dbContext, IEntityActionConfigurator actionConfigurator)
+        public MetadataServiceImpl(MetadataDbContext dbContext, IActionConfigurator actionConfigurator)
         {
             this.dbContext = dbContext;
             _actionConfigurator = actionConfigurator;
