@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.ODataService
     using System.Reflection;
     using System.Web.Http;
     using System.Web.Http.Dispatcher;
+    using System.Web.OData.Batch;
     using System.Web.OData.Builder;
     using System.Web.OData.Extensions;
     using System.Web.OData.Routing;
@@ -36,7 +37,7 @@ namespace AMSLLC.Listener.ODataService
         public void Configure(HttpConfiguration config)
         {
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
-            config.MessageHandlers.Add(new MiniProfilerMessageHandler());
+            // config.MessageHandlers.Add(new MiniProfilerMessageHandler());
 
             var conventions = ODataRoutingConventions.CreateDefault();
             conventions.Insert(0, new WNPGenericRoutingConvention(metadataService));
@@ -45,9 +46,10 @@ namespace AMSLLC.Listener.ODataService
             config.MapODataServiceRoute(
                 routeName: "WNPODataRoute",
                 routePrefix: null,
-                routingConventions: conventions,
+                model: this.modelGenerator.GenerateODataModel(),
                 pathHandler: new DefaultODataPathHandler(),
-                model: this.modelGenerator.GenerateODataModel());
+                routingConventions: conventions,
+                defaultHandler: new DefaultODataBatchHandler(new HttpServer(config)));
 
             // separate OData endpoint for Listener API
             var builder = new ODataConventionModelBuilder
