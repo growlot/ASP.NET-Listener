@@ -21,13 +21,13 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
         /// Adds the site. Application Service layer is responsible to check if site already exists before trying to add it.
         /// </summary>
         /// <param name="siteBuilder">The site builder.</param>
-        /// <returns>The task that creates the site.</returns>
-        public Task<Site> AddSite(SiteBuilder siteBuilder)
+        /// <returns>The site.</returns>
+        public Site AddSite(SiteBuilder siteBuilder)
         {
             Site site = siteBuilder;
             this.sites.Add(site);
 
-            return Task.Factory.StartNew(() => (Site)siteBuilder);
+            return (Site)siteBuilder;
         }
 
         /// <summary>

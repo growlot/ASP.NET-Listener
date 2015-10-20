@@ -54,7 +54,9 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="OwnerAggregate\CreateSiteCommand.cs" />
     <Compile Include="OwnerAggregate\Owner.cs" />
+    <Compile Include="OwnerAggregate\OwnerMemento.cs" />
     <Compile Include="SiteAggregate\BillingAccount.cs" />
     <Compile Include="SiteAggregate\PhysicalAddress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

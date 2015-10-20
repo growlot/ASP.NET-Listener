@@ -1,5 +1,6 @@
 ﻿namespace AMSLLC.Listener.ODataService.Properties
 {
+    using Persistence;
     using ApplicationService;
     using ApplicationService.Impl;
     using ApplicationService.Validator;

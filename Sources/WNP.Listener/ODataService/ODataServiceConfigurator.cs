@@ -68,7 +68,7 @@ namespace AMSLLC.Listener.ODataService
 
             var failAction = transactionRegistry.Action("Fail");
             failAction.Parameter<string>("Message");
-            failAction.Parameter<string>("Details");
+            failAction.Parameter<string>("Details").OptionalParameter = true;
 
             // unbound actions
             var openAction = builder.Action("Open");
@@ -87,7 +87,7 @@ namespace AMSLLC.Listener.ODataService
             config.MapODataServiceRoute(
                 routeName: "listener",
                 routePrefix: "listener",
-                model: builder.GetEdmModel(), 
+                model: builder.GetEdmModel(),
                 defaultHandler: routeHandlers);
         }
 

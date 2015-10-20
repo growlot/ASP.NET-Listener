@@ -60,9 +60,9 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
-    <Compile Include="IOwnerSitesRepository.cs" />
     <Compile Include="IOwnerRepository.cs" />
     <Compile Include="ISiteRepository.cs" />
+    <Compile Include="IWNPUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

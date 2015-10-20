@@ -1,13 +1,11 @@
-﻿using System;
-using System.Data;
-using System.Data.Common;
-using AMSLLC.Listener.Persistence;
-using StackExchange.Profiling;
-using StackExchange.Profiling.Data;
-
-namespace AMSLLC.Listener.ODataService
+﻿namespace AMSLLC.Listener.Persistence
 {
+    using System;
+    using System.Data;
+    using System.Data.Common;
     using Serilog;
+    using StackExchange.Profiling;
+    using StackExchange.Profiling.Data;
 
     public class WNPDBContext : Database
     {

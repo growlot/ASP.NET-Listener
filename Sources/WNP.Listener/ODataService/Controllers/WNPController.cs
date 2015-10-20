@@ -1,33 +1,29 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Runtime.Caching;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.OData;
-using System.Web.OData.Extensions;
-using System.Web.OData.Query;
-using System.Web.OData.Routing;
-using AMSLLC.Core;
-using AMSLLC.Listener.MetadataService;
-using AMSLLC.Listener.MetadataService.Impl;
-using AMSLLC.Listener.ODataService.Services;
-using AMSLLC.Listener.ODataService.Services.FilterTransformer;
-using AMSLLC.Listener.Persistence;
-using AMSLLC.Listener.Persistence.Metadata;
-using AMSLLC.Listener.Utilities;
-using Microsoft.OData.Core;
-using Microsoft.OData.Edm;
-using Microsoft.OData.Edm.Library;
-using Newtonsoft.Json;
-using Serilog;
-
-namespace AMSLLC.Listener.ODataService.Controllers
+﻿namespace AMSLLC.Listener.ODataService.Controllers
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.Caching;
+    using System.Threading.Tasks;
+    using System.Web.Http;
+    using System.Web.OData;
+    using System.Web.OData.Extensions;
+    using System.Web.OData.Query;
+    using System.Web.OData.Routing;
+    using Core;
+    using MetadataService;
+    using Services;
+    using Services.FilterTransformer;
+    using Persistence;
+    using Utilities;
+    using Microsoft.OData.Edm;
+    using Microsoft.OData.Edm.Library;
+    using Newtonsoft.Json;
+    using Serilog;
+
     [EnableQuery]
     public class WNPController : ODataController
     {
@@ -73,7 +69,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var top = queryOptions.Top?.Value ?? 10;
 
             // create actual result object we will be sending over the wire
-            var result = CreateResultList(oDataModelType);
+            var result = this.CreateResultList(oDataModelType);
 
             var sql =
                 Sql.Builder.Select(GetDBColumnsList(queryOptions.SelectExpand, modelMapping.ModelToColumnMappings))
@@ -101,7 +97,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             foreach (var record in dbResults)
             {
-                var entityInstance = Activator.CreateInstance(oDataModelType);
+                var entityInstance = this.CreateResult(oDataModelType);
 
                 var rawData = (IDictionary<string, object>)record;
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
@@ -234,23 +230,36 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
         private IHttpActionResult CreateOkResponse(Type oDataModelType, object result)
             => (IHttpActionResult) GetOkMethod(oDataModelType).Invoke(this, new[] {result});
-    
+
         private IList CreateResultList(Type oDataModelType)
-            => (IList) Activator.CreateInstance(GetResultType(oDataModelType));
+            => (IList)Activator.CreateInstance(GetGenericListType(oDataModelType));
 
+        protected object CreateResult(Type oDataModelType)
+            => Activator.CreateInstance(oDataModelType);
+
+        /// <summary>
+        /// Gets the OK method for specified OData model type and adds ti to the cash for faster future retrieval.
+        /// </summary>
+        /// <param name="oDataModelType">Type of the OData model.</param>
+        /// <returns>The OK method for specified OData model type.</returns>
         private MethodInfo GetOkMethod(Type oDataModelType)
-            => MemoryCache.Default.GetOrAddExisting($"WNPController.OkMethod<{oDataModelType.FullName}>",
-                    () =>
-                        GetType()
-                            .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                            .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
-                            .MakeGenericMethod(GetResultType(oDataModelType)));
+                    => MemoryCache.Default.GetOrAddExisting($"WNPController.OkMethod<{oDataModelType.FullName}>",
+                            () =>
+                                GetType()
+                                    .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                                    .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
+                                    .MakeGenericMethod(GetGenericListType(oDataModelType)));
 
-        private Type GetResultType(Type oDataModelType)
-            => MemoryCache.Default.GetOrAddExisting($"WNPController.List<{oDataModelType.FullName}>",
-                    () => typeof (List<>).MakeGenericType(oDataModelType));
+        /// <summary>
+        /// Gets the list type for specified OData model type and adds it to the cash for faster future retrieval.
+        /// </summary>
+        /// <param name="oDataModelType">Type of the OData model.</param>
+        /// <returns>The list type for specified OData model type.</returns>
+        private Type GetGenericListType(Type oDataModelType)
+                    => MemoryCache.Default.GetOrAddExisting($"WNPController.List<{oDataModelType.FullName}>",
+                            () => typeof(List<>).MakeGenericType(oDataModelType));
 
-        private ODataQueryOptions ConstructQueryOptions()
+        protected ODataQueryOptions ConstructQueryOptions()
         {
             var oDataProperties = Request.ODataProperties();
             var oDataPath = oDataProperties.Path;
@@ -274,12 +283,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     case EdmTypeKind.Primitive:
                         throw new NotSupportedException("EdmTypeKind.Primitive not yet supported");
                     case EdmTypeKind.Entity:
-                        throw new NotSupportedException("EdmTypeKind.Entity not yet supported");
+                        modelTypeFullName = ((EdmEntityType)oDataProperties.Path.EdmType).FullName();
+                        break;
                     case EdmTypeKind.Complex:
                         throw new NotSupportedException("EdmTypeKind.Complex not yet supported");
                     case EdmTypeKind.Collection:
-                        modelTypeFullName =
-                            ((EdmCollectionType)oDataProperties.Path.EdmType).ElementType.FullName();
+                        modelTypeFullName = ((EdmCollectionType)oDataProperties.Path.EdmType).ElementType.FullName();
                         break;
                     case EdmTypeKind.EntityReference:
                         throw new NotSupportedException("EdmTypeKind.EntityReference not yet supported");
