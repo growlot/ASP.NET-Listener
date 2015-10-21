@@ -16,7 +16,6 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
         public OwinRequestScopeContextMiddleware(OwinMiddleware next)
             : this(next, threadSafeItem: false)
         {
-
         }
 
         public OwinRequestScopeContextMiddleware(OwinMiddleware next, bool threadSafeItem) : base(next)
@@ -27,12 +26,12 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 
         public async override Task Invoke(IOwinContext context)
         {
-            var scopeContext = new OwinRequestScopeContext(context, threadSafeItem);
+            var scopeContext = new OwinRequestScopeContext(context, this.threadSafeItem);
             OwinRequestScopeContext.Current = scopeContext;
 
             try
             {
-                await next.Invoke(context);
+                await this.next.Invoke(context);
             }
             finally
             {

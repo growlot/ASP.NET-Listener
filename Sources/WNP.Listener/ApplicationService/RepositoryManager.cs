@@ -24,10 +24,9 @@ namespace AMSLLC.Listener.ApplicationService
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-
 
         /// <summary>
         /// Finalizes an instance of the <see cref="RepositoryManager" /> class.
@@ -35,7 +34,7 @@ namespace AMSLLC.Listener.ApplicationService
         ~RepositoryManager()
         {
             // Finalizer calls Dispose(false)
-            Dispose(false);
+            this.Dispose(false);
         }
 
         /// <summary>

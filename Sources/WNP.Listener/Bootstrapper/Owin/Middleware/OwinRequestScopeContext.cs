@@ -65,7 +65,7 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 
         public DateTime Timestamp
         {
-            get { return utcTimestamp.ToLocalTime(); }
+            get { return this.utcTimestamp.ToLocalTime(); }
         }
 
         public OwinRequestScopeContext(IOwinContext context, bool threadSafeItem)
@@ -91,13 +91,13 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
             if (target == null) throw new ArgumentNullException("target");
 
             var token = new UnsubscribeDisposable(target);
-            if (disposables != null)
+            if (this.disposables != null)
             {
-                disposables.Add(token);
+                this.disposables.Add(token);
             }
             else
             {
-                disposablesThreadsafeQueue.Enqueue(token);
+                this.disposablesThreadsafeQueue.Enqueue(token);
             }
             return token;
         }
@@ -107,9 +107,9 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
             var exceptions = new List<Exception>();
             try
             {
-                if (disposables != null)
+                if (this.disposables != null)
                 {
-                    foreach (var item in disposables)
+                    foreach (var item in this.disposables)
                     {
                         item.CallTargetDispose();
                     }
@@ -117,7 +117,7 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
                 else
                 {
                     UnsubscribeDisposable target;
-                    while (disposablesThreadsafeQueue.TryDequeue(out target))
+                    while (this.disposablesThreadsafeQueue.TryDequeue(out target))
                     {
                         target.CallTargetDispose();
                     }

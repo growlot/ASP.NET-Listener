@@ -36,7 +36,7 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         /// </returns>
         public async Task Handle(CreateSiteCommand command)
         {
-            IMemento ownerMemento = await (unitOfWork.OwnerRepository).GetOwner(command.Owner);
+            IMemento ownerMemento = await (this.unitOfWork.OwnerRepository).GetOwner(command.Owner);
             Owner owner = new Owner();
             ((IOriginator)owner).SetMemento(ownerMemento);
 

@@ -23,31 +23,29 @@
     {
         public override void Load()
         {
-            Kernel.Bind<ListenerODataContext>().ToSelf().InRequestScope();
+            this.Kernel.Bind<ListenerODataContext>().ToSelf().InRequestScope();
 
-            Kernel.Bind<WNPDBContext>()
+            this.Kernel.Bind<WNPDBContext>()
                 .ToSelf()
                 .InRequestScope()
                 .WithConstructorArgument("connectionStringName", "WNPDatabase");
 
-            Kernel.Bind<ODataServiceConfigurator>().ToSelf().InSingletonScope();
-            Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
+            this.Kernel.Bind<ODataServiceConfigurator>().ToSelf().InSingletonScope();
+            this.Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
 
-            Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();
-            Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();
+            this.Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();
+            this.Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();
 
-            Kernel.Bind<IAutoConvertor>().To<AutoConvertorImpl>();
-            Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
-            Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
+            this.Kernel.Bind<IAutoConvertor>().To<AutoConvertorImpl>();
+            this.Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
+            this.Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
 
-
-            Kernel.Bind<ListenerDbContext>().ToSelf().InRequestScope().WithConstructorArgument("connectionStringName", "ListenerDB");
+            this.Kernel.Bind<ListenerDbContext>().ToSelf().InRequestScope().WithConstructorArgument("connectionStringName", "ListenerDB");
             //Kernel.Bind<ListenerODataContext>().ToSelf().InRequestScope();
 
-            Kernel.Bind<IPersistenceAdapter>().To<PocoCachedAdapter>().InRequestScope();
+            this.Kernel.Bind<IPersistenceAdapter>().To<PocoCachedAdapter>().InRequestScope();
 
             this.Kernel.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
-
 
             this.Kernel.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
             this.Kernel.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
@@ -60,7 +58,6 @@
             this.Kernel.Bind<IEndpointDataProcessor>().To<DefaultEndpointDataProcessor>().InSingletonScope();
             this.Kernel.Bind<IConnectionConfigurationBuilder>().To<JmsConnectionConfigurationBuilder>().InSingletonScope().Named("connection-builder-jms");
             this.Kernel.Bind<ICommunicationHandler>().To<JmsDispatcher>().InSingletonScope().Named("communication-jms");
-
 
             this.Kernel.Bind<IUniqueHashValidator>().To<UniqueHashValidator>();
         }

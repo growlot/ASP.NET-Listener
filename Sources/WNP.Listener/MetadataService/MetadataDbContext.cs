@@ -7,7 +7,6 @@ using StackExchange.Profiling.Data;
 
 namespace AMSLLC.Listener.MetadataService
 {
-    
 
     public class MetadataDbContext : Database
     {
@@ -51,5 +50,5 @@ namespace AMSLLC.Listener.MetadataService
         {
             //Log.Verbose("Transaction End");
         }
-    }   
+    }
 }

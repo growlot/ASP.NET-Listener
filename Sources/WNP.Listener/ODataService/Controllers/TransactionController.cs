@@ -15,11 +15,11 @@ using System;
     [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]
     public class TransactionController : ODataController
     {
-		private readonly ListenerODataContext _dbContext;
+        private readonly ListenerODataContext _dbContext;
         private readonly ITransactionService _transactionService;
 
-        public string CompanyCode => Request.Headers.GetValues("AMS-Company").FirstOrDefault();
-        public string ApplicationKey => Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+        public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
+        public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionController" /> class.
@@ -28,15 +28,15 @@ using System;
         /// <param name="transactionService">The transaction service.</param>
         public TransactionController(ListenerODataContext dbctx, ITransactionService transactionService)
         {
-            _dbContext = dbctx;
+            this._dbContext = dbctx;
             this._transactionService = transactionService;
         }
 
-		public IQueryable<TransactionRegistryEntity> Get()
+        public IQueryable<TransactionRegistryEntity> Get()
         {
             try
             {
-                return _dbContext.TransactionRegistry.AsQueryable();
+                return this._dbContext.TransactionRegistry.AsQueryable();
             }
             catch (Exception exc)
             {
@@ -49,7 +49,7 @@ using System;
         {
             try
             {
-                var result = _dbContext.TransactionRegistry.Where(s => s.RecordKey == key);
+                var result = this._dbContext.TransactionRegistry.Where(s => s.RecordKey == key);
                 return Ok(result);
             }
             catch (Exception exc)
@@ -59,7 +59,7 @@ using System;
             }
         }
 
-		/// <summary>
+        /// <summary>
         /// Processes the specified transaction.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -70,7 +70,7 @@ using System;
             try
             {
                 await this._transactionService.Process(new ProcessTransactionRequestMessage { RecordKey = key });
-                return Ok();
+                return this.Ok();
             }
             catch (Exception exc)
             {
@@ -90,7 +90,7 @@ using System;
             try
             {
                 await this._transactionService.Success(new TransactionSuccessMessage() { RecordKey = key });
-                return Ok();
+                return this.Ok();
             }
             catch (Exception exc)
             {
@@ -118,7 +118,7 @@ using System;
                         Details = parameters.ContainsKey("Details") ? parameters["Details"].ToString() : null,
                         Message = parameters.ContainsKey("Message") ? parameters["Message"].ToString() : null
                     });
-                return Ok();
+                return this.Ok();
             }
             catch (Exception exc)
             {
@@ -126,5 +126,5 @@ using System;
                 throw;
             }
         }
-	}
+    }
 }

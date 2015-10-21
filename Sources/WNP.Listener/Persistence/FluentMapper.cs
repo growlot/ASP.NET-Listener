@@ -16,9 +16,9 @@ namespace AMSLLC.Listener.Persistence
         public FluentColumnMap(ColumnInfo columnInfo, Func<object, object> fromDbConverter) : this(columnInfo, fromDbConverter, null) { }
         public FluentColumnMap(ColumnInfo columnInfo, Func<object, object> fromDbConverter, Func<object, object> toDbConverter)
         {
-            ColumnInfo = columnInfo;
-            FromDbConverter = fromDbConverter;
-            ToDbConverter = toDbConverter;
+            this.ColumnInfo = columnInfo;
+            this.FromDbConverter = fromDbConverter;
+            this.ToDbConverter = toDbConverter;
         }
     }
 
@@ -29,24 +29,24 @@ namespace AMSLLC.Listener.Persistence
 
         protected FluentMapper(string tableName)
         {
-            TableInfo.TableName = tableName;
+            this.TableInfo.TableName = tableName;
         }
 
         protected FluentMapper(string tableName, string primaryKey)
         {
-            TableInfo.TableName = tableName;
-            TableInfo.PrimaryKey = primaryKey;
+            this.TableInfo.TableName = tableName;
+            this.TableInfo.PrimaryKey = primaryKey;
         }
 
         public TableInfo GetTableInfo(Type pocoType)
         {
-            return TableInfo;
+            return this.TableInfo;
         }
 
         public ColumnInfo GetColumnInfo(PropertyInfo pocoProperty)
         {
             var fluentMap = default(FluentColumnMap);
-            if (Mappings.TryGetValue(pocoProperty.Name, out fluentMap))
+            if (this.Mappings.TryGetValue(pocoProperty.Name, out fluentMap))
                 return fluentMap.ColumnInfo;
             return null;
         }
@@ -54,7 +54,7 @@ namespace AMSLLC.Listener.Persistence
         public Func<object, object> GetFromDbConverter(PropertyInfo TargetProperty, Type SourceType)
         {
             var fluentMap = default(FluentColumnMap);
-            if (Mappings.TryGetValue(TargetProperty.Name, out fluentMap))
+            if (this.Mappings.TryGetValue(TargetProperty.Name, out fluentMap))
                 return fluentMap.FromDbConverter;
             return null;
         }
@@ -62,7 +62,7 @@ namespace AMSLLC.Listener.Persistence
         public Func<object, object> GetToDbConverter(PropertyInfo SourceProperty)
         {
             var fluentMap = default(FluentColumnMap);
-            if (Mappings.TryGetValue(SourceProperty.Name, out fluentMap))
+            if (this.Mappings.TryGetValue(SourceProperty.Name, out fluentMap))
                 return fluentMap.ToDbConverter;
             return null;
         }

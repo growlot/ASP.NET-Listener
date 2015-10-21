@@ -21,7 +21,7 @@ namespace AMSLLC.Listener.ApplicationService
         /// <returns>Domain model.</returns>
         public virtual TDomainModel Create<TDomainModel>() where TDomainModel : IOriginator
         {
-            return Create<TDomainModel>(null);
+            return this.Create<TDomainModel>(null);
         }
 
         /// <summary>

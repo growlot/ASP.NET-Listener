@@ -10,12 +10,12 @@ namespace AMSLLC.Listener.ODataService
     {
         private ListenerRequestHeaderMap()
         {
-            Add("EntityCategory", typeof(string));
-            Add("EntityKey", typeof(string));
-            Add("OperationKey", typeof(string));
-            Add("RecordKey", typeof(string));
-            Add("Details", typeof(string));
-            Add("Message", typeof(string));
+            this.Add("EntityCategory", typeof(string));
+            this.Add("EntityKey", typeof(string));
+            this.Add("OperationKey", typeof(string));
+            this.Add("RecordKey", typeof(string));
+            this.Add("Details", typeof(string));
+            this.Add("Message", typeof(string));
         }
 
         public static ListenerRequestHeaderMap Instance { get; } = new ListenerRequestHeaderMap();

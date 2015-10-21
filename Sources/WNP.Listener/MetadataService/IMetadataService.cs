@@ -16,5 +16,6 @@ namespace AMSLLC.Listener.MetadataService
 
         MetadataModel GetModelMapping(string clrModelName);
         MetadataModel GetModelMapping(Type clrModel);
+        MetadataModel GetModelMappingByTableName(string tableName);
     }
 }

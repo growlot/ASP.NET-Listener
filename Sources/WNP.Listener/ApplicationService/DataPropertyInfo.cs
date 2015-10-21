@@ -8,8 +8,8 @@
 
         public DataPropertyInfo(string property, bool isList)
         {
-            _property = property;
-            IsList = isList;
+            this._property = property;
+            this.IsList = isList;
         }
 
         public bool IsList { get; }
@@ -19,11 +19,11 @@
             var expandoDictionary = owner as IDictionary<string, object>;
             if (expandoDictionary != null)
             {
-                return expandoDictionary[_property];
+                return expandoDictionary[this._property];
             }
             else
             {
-                var propInfo = owner.GetType().GetProperty(_property);
+                var propInfo = owner.GetType().GetProperty(this._property);
                 return propInfo.GetValue(owner);
             }
             // throw new InvalidOperationException($"Cannot find property {_property} or owner is not dynamic");
@@ -34,11 +34,11 @@
             var expandoDictionary = owner as IDictionary<string, object>;
             if (expandoDictionary != null)
             {
-                expandoDictionary[_property] = value;
+                expandoDictionary[this._property] = value;
             }
             else
             {
-                var propInfo = owner.GetType().GetProperty(_property);
+                var propInfo = owner.GetType().GetProperty(this._property);
                 propInfo.SetValue(owner, value); ;
                 //throw new InvalidOperationException($"Cannot find property {_property} or owner is not dynamic");
             }

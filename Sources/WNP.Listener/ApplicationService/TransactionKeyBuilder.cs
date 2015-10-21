@@ -23,7 +23,6 @@ namespace AMSLLC.Listener.ApplicationService
                 workData = JsonConvert.DeserializeObject<ExpandoObject>(value);
             }
 
-
             Dictionary<short, object> keyElements = new Dictionary<short, object>();
             foreach (var fieldConfiguration in fieldConfigurations)
             {

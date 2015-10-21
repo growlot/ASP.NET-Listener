@@ -17,20 +17,20 @@ namespace AMSLLC.Listener.Bootstrapper
 
         public ListenerBoostrapper(string protocol, string hostName, int port, bool isDebug)
         {
-            _protocol = protocol;
-            _hostName = hostName;
-            _port = port;
-            _isDebug = isDebug;
+            this._protocol = protocol;
+            this._hostName = hostName;
+            this._port = port;
+            this._isDebug = isDebug;
         }
 
         public bool Start(HostControl hostControl)
         {
-            string baseAddress = $"{_protocol}://{_hostName}:{_port}";
+            string baseAddress = $"{this._protocol}://{this._hostName}:{this._port}";
             var startOptions = new StartOptions(baseAddress) { ServerFactory = "Microsoft.Owin.Host.HttpListener" };
 
-            _owinHost = WebApp.Start<Startup>(startOptions);
+            this._owinHost = WebApp.Start<Startup>(startOptions);
 
-            if (!_isDebug)
+            if (!this._isDebug)
                 return true;
 
             var chromeCanaryPath = @"C:\Users\Fen\AppData\Local\Google\Chrome SxS\Application\chrome.exe";
@@ -42,7 +42,7 @@ namespace AMSLLC.Listener.Bootstrapper
 
         public bool Stop(HostControl hostControl)
         {
-            _owinHost.Dispose();
+            this._owinHost.Dispose();
             return true;
         }
     }

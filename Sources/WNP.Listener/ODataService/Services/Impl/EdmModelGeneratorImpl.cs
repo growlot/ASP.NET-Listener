@@ -20,7 +20,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
         public EdmModelGeneratorImpl(IMetadataService metadataService)
         {
-            _metadataService = metadataService;
+            this._metadataService = metadataService;
         }
 
         public IEdmModel GenerateODataModel() {
@@ -34,12 +34,12 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             };
 
             var generatedModels =
-                _metadataService.ODataModelAssembly.GetTypes()
+                this._metadataService.ODataModelAssembly.GetTypes()
                     .Where(type => typeof(IODataEntity).IsAssignableFrom(type));
 
-            generatedModels.Map(type => GenerateBoundActions(type, builder));
+            generatedModels.Map(type => this.GenerateBoundActions(type, builder));
 
-            GenerateUnboundActions(builder);
+            this.GenerateUnboundActions(builder);
 
             return _model = builder.GetEdmModel();
         }
@@ -69,7 +69,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                 {
                     var actionConfiguration = builder.Action($"{actionPrefix}_{info.Name}");
                     CreateActionParameters(info, actionConfiguration);
-                });                
+                });
             });
         }
 
@@ -80,7 +80,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
             entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] {$"{type.Name}s"});
 
-            var actionsContainer = _metadataService.GetModelMapping(type).ActionsContainer;
+            var actionsContainer = this._metadataService.GetModelMapping(type).ActionsContainer;
             if (actionsContainer != null)
             {
                 var entityTypeConfiguration = entityTypeMethod.MakeGenericMethod(type).Invoke(builder, new object[0]);

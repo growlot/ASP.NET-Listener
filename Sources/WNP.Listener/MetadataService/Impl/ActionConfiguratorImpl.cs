@@ -31,7 +31,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
                 .Where(type => typeof (IUnboundActionsContainer).IsAssignableFrom(type));
             
             boundActionContainers.Map(
-                type => _boundActionContainers.Add(((IBoundActionsContainer)FormatterServices.GetUninitializedObject(type)).GetEntityTableName(), type));
+                type => this._boundActionContainers.Add(((IBoundActionsContainer)FormatterServices.GetUninitializedObject(type)).GetEntityTableName(), type));
 
             unboundActionContainers.Map(type =>
             {
@@ -42,26 +42,26 @@ namespace AMSLLC.Listener.MetadataService.Impl
                 if (actionPrefixAttribute != null)
                     containerName = actionPrefixAttribute.Prefix;
 
-                _unboundActionContainers.Add(containerName, type);
+                this._unboundActionContainers.Add(containerName, type);
             });
         }
 
         public bool IsEntityActionsContainerAvailable(string tableName) =>
-            _boundActionContainers.ContainsKey(tableName);
+            this._boundActionContainers.ContainsKey(tableName);
 
         public Type GetUnboundActionContainer(string containerName)
         {
-            if (_unboundActionContainers.ContainsKey(containerName))
-                return _unboundActionContainers[containerName];
+            if (this._unboundActionContainers.ContainsKey(containerName))
+                return this._unboundActionContainers[containerName];
 
             throw new ArgumentException("Invalid container name");
         }
 
         public Type GetEntityActionContainer(string tableName)
         {
-            if (_boundActionContainers.ContainsKey(tableName))
-                return _boundActionContainers[tableName];
-            
+            if (this._boundActionContainers.ContainsKey(tableName))
+                return this._boundActionContainers[tableName];
+
             throw new ArgumentException("Invalid table name");
         }
     }

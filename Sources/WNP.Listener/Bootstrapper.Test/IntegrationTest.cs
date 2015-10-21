@@ -72,17 +72,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         StringComparison.InvariantCulture) == 0), It.IsAny<IConnectionConfiguration>()),
                     Times.Once, "Received unexpected {0}{1}Expected: {2}".FormatWith(JsonConvert.SerializeObject(receivedData), Environment.NewLine, expectedMessage));
 
-
                 await SucceedTransaction(server, nextKey);
 
                 var transactionStatusId = await GetTransactionStatus(server, nextKey);
 
-
                 Assert.AreEqual(0L, transactionStatusId);
             }
         }
-
-
 
         [TestMethod]
         public async Task OpenAndSkipTransactionTest()
@@ -145,7 +141,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 var transactionStatusId1 = await GetTransactionStatus(server, recordKey);
                 Assert.AreEqual((long)TransactionStatusType.Failed, transactionStatusId1);
 
-
                 communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()), Times.Once);
             }
         }
@@ -189,7 +184,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             Assert.AreEqual(HttpStatusCode.OK, failResponse.StatusCode);
         }
-
 
         private static async Task<string> OpenTransaction(TestServer server, string entityKey)
         {
@@ -253,7 +247,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 (long)(((ex["value"] as List<object>).Single() as IDictionary<string, object>)["TransactionStatusId"]);
             return transactionStatusId;
         }
-
 
         private class
             InstallMeterRequestMessage

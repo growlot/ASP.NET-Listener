@@ -61,7 +61,6 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
             return response;
         }
 
-
         private static bool IsJson(string input)
         {
             input = input.Trim();

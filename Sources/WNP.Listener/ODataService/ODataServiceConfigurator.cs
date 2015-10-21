@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.ODataService
             // config.MessageHandlers.Add(new MiniProfilerMessageHandler());
 
             var conventions = ODataRoutingConventions.CreateDefault();
-            conventions.Insert(0, new WNPGenericRoutingConvention(metadataService));
+            conventions.Insert(0, new WNPGenericRoutingConvention(this.metadataService));
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
 
             config.MapODataServiceRoute(
@@ -72,7 +72,7 @@ namespace AMSLLC.Listener.ODataService
 
             // unbound actions
             var openAction = builder.Action("Open");
-            ConfigureHeader(openAction, builder);
+            this.ConfigureHeader(openAction, builder);
             openAction.Returns<string>();
 
             DelegatingHandler[] handlers = new DelegatingHandler[]
@@ -109,9 +109,4 @@ namespace AMSLLC.Listener.ODataService
             modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
         }
     }
-
-
-
-
-
 }

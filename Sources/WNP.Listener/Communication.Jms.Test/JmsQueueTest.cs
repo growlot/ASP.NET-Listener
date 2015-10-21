@@ -48,7 +48,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
                     Port = Port
                 };
                 await dispatcher.Handle(eventData, connectionConfiguration);
-                ReadMessage(JsonConvert.SerializeObject(testMessage), connectionConfiguration);
+                this.ReadMessage(JsonConvert.SerializeObject(testMessage), connectionConfiguration);
             }
             catch (MessageException exc)
             {

@@ -14,15 +14,15 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 
         public void CallTargetDispose()
         {
-            if (!unsubscribe)
+            if (!this.unsubscribe)
             {
-                target.Dispose();
+                this.target.Dispose();
             }
         }
 
         public void Dispose()
         {
-            unsubscribe = true;
+            this.unsubscribe = true;
         }
     }
 }

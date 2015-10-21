@@ -10,19 +10,18 @@ namespace AMSLLC.Listener.MetadataService.Properties
     using System;
     using Serilog;
 
-
     public class MetadataServiceModule : NinjectModule
     {
         public override void Load()
         {
-            Kernel.Bind<MetadataDbContext>().ToSelf()
+            this.Kernel.Bind<MetadataDbContext>().ToSelf()
                 .InRequestScope()
                 .WithConstructorArgument("connectionStringName", "WNPDatabase");
 
-            Kernel.Bind<IMetadataService>().To<MetadataServiceImpl>()
+            this.Kernel.Bind<IMetadataService>().To<MetadataServiceImpl>()
                 .InTransientScope();
 
-            Kernel.Bind<IActionConfigurator>().To<ActionConfiguratorImpl>()
+            this.Kernel.Bind<IActionConfigurator>().To<ActionConfiguratorImpl>()
                 .InSingletonScope();
 
             try
@@ -33,7 +32,6 @@ namespace AMSLLC.Listener.MetadataService.Properties
             {
                 Log.Error("Mapper Error (possible duplicate registration). No Rethrow");
             }
-
         }
     }
 }

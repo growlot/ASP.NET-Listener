@@ -26,15 +26,15 @@ namespace AMSLLC.Listener.MetadataService.Impl
 
         public Assembly ODataModelAssembly => odataModelAssembly;
 
-        public Type GetEntityType(string typeName) => 
-            ODataModelAssembly.GetType(typeName);
+        public Type GetEntityType(string typeName) =>
+            this.ODataModelAssembly.GetType(typeName);
 
-        public Type GetEntityTypeBySetName(string entitySetName) => 
-            ODataModelAssembly.GetType(entitySetName.Substring(0, entitySetName.Length - 1));
+        public Type GetEntityTypeBySetName(string entitySetName) =>
+            this.ODataModelAssembly.GetType(entitySetName.Substring(0, entitySetName.Length - 1));
 
         public MetadataModel GetModelMapping(string clrModelName)
         {
-            string fullClrType = $"{ODataModelNamespace}.{clrModelName}";
+            string fullClrType = $"{this.ODataModelNamespace}.{clrModelName}";
             if (oDataModelMappings.ContainsKey(fullClrType))
             {
                 return oDataModelMappings[fullClrType];
@@ -46,10 +46,13 @@ namespace AMSLLC.Listener.MetadataService.Impl
         public MetadataModel GetModelMapping(Type clrModel) =>
             oDataModelMappings[clrModel.FullName];
 
+        public MetadataModel GetModelMappingByTableName(string tableName) =>
+            oDataModelMappings.First(modelMappings => modelMappings.Value.TableName == tableName).Value;
+
         public MetadataServiceImpl(MetadataDbContext dbContext, IActionConfigurator actionConfigurator)
         {
             this.dbContext = dbContext;
-            _actionConfigurator = actionConfigurator;
+            this._actionConfigurator = actionConfigurator;
 
             if (oDataModelMappings == null)
                 this.PrepareModel();
@@ -62,7 +65,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
         {
             oDataModelMappings = new Dictionary<string, MetadataModel>();
 
-            var RawMetadata = dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata));
+            var RawMetadata = this.dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata));
             foreach (var metadataEntry in RawMetadata)
             {
                 metadataEntry.TableName = metadataEntry.TableName.ToLowerInvariant();
@@ -112,11 +115,11 @@ namespace AMSLLC.Listener.MetadataService.Impl
                 }
 
                 Type actionsContainer = null;
-                if (_actionConfigurator.IsEntityActionsContainerAvailable($"wndba.{tableName}"))
-                    actionsContainer = _actionConfigurator.GetEntityActionContainer($"wndba.{tableName}");
+                if (this._actionConfigurator.IsEntityActionsContainerAvailable($"wndba.{tableName}"))
+                    actionsContainer = this._actionConfigurator.GetEntityActionContainer($"wndba.{tableName}");
 
                 var oDataModelMapping = new MetadataModel($"wndba.{tableName}", modelClassName, modelToColumnMappings, columnToModelMappings, fieldsInfo, actionsContainer);
-                oDataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}", oDataModelMapping);
+                oDataModelMappings.Add($"{this.ODataModelNamespace}.{modelClassName}", oDataModelMapping);
             }
         }
 
@@ -124,7 +127,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
         {
             var codeUnit = new CodeCompileUnit();
 
-            var codeNamespace = new CodeNamespace(ODataModelNamespace);
+            var codeNamespace = new CodeNamespace(this.ODataModelNamespace);
             codeNamespace.Imports.Add(new CodeNamespaceImport("System"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
 
@@ -134,7 +137,7 @@ namespace AMSLLC.Listener.MetadataService.Impl
 
             // only tables defined in metadata with INFO as column name and IsUsed flag will be exposed in oData
             foreach (var table in oDataModelMappings.Values)
-            { 
+            {
                 // if there is a redefine in Metadata, use CustomerLabel inst
                 var modelClassName = table.ClassName;
 
@@ -165,9 +168,9 @@ namespace AMSLLC.Listener.MetadataService.Impl
             var compilerParameters = new CompilerParameters
             {
                 GenerateExecutable = false,
-                GenerateInMemory = true,                
+                GenerateInMemory = true,
             };
-            
+
             var codeStringWriter = new StringWriter();
             var codeGenerator = codeProvider.CreateGenerator(codeStringWriter);
 

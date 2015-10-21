@@ -21,7 +21,7 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
         }
 
         /// <summary>
-        /// Executes the batch request and associates a <see cref="WNPDBContext"/> instance with all the requests of 
+        /// Executes the batch request and associates a <see cref="WNPDBContext"/> instance with all the requests of
         /// a single changeset and wraps the execution of the whole changeset within a transaction.
         /// </summary>
         /// <param name="requests">The <see cref="ODataBatchRequestItem"/> instances of this batch request.</param>
@@ -46,11 +46,11 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
                     var changeSet = request as ChangeSetRequestItem;
                     if (changeSet != null)
                     {
-                        await ExecuteChangeSet(changeSet, responses, cancellationToken);
+                        await this.ExecuteChangeSet(changeSet, responses, cancellationToken);
                     }
                     else
                     {
-                        responses.Add(await request.SendRequestAsync(Invoker, cancellationToken));
+                        responses.Add(await request.SendRequestAsync(this.Invoker, cancellationToken));
                     }
                 }
             }
@@ -94,7 +94,7 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
 
             ////    using (DbContextTransaction transaction = context.Database.BeginTransaction())
             ////    {
-                    changeSetResponse = (ChangeSetResponseItem)await changeSet.SendRequestAsync(Invoker, cancellation);
+                    changeSetResponse = (ChangeSetResponseItem)await changeSet.SendRequestAsync(this.Invoker, cancellation);
                     responses.Add(changeSetResponse);
 
                 ////    if (changeSetResponse.Responses.All(r => r.IsSuccessStatusCode))

@@ -107,7 +107,6 @@ namespace ApplicationService.Test
                     new IntegrationEndpointConfigurationMemento("jms", "", EndpointTriggerType.Always)
                 }, fieldConfigurations);
 
-
             transactionRepositoryMock.Setup(s => s.GetExecutionContext(recordKey))
                 .Returns(
                     (string taId) => Task.FromResult((IMemento)memento));
@@ -116,12 +115,10 @@ namespace ApplicationService.Test
                 .Returns(
                     (int i, string h) => Task.FromResult(0));
 
-
             //var dn = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(testMessageData));
 
             transactionRepositoryMock.Setup(s => s.GetTransactionData(recordKey))
                 .Returns(Task.FromResult(JsonConvert.SerializeObject(testMessageData)));
-
 
             var domainBuilderMock = new Mock<DomainBuilder>() { CallBase = true };
             transactionExecutionDomain.Setup(t => t.DomainBuilder).Returns(domainBuilderMock.Object);
@@ -136,7 +133,6 @@ namespace ApplicationService.Test
                     e.Process(It.IsAny<object>(),
                         It.IsAny<IList<FieldConfiguration>>())).CallBase();
             var jmsConnectionBuilder = new Mock<IConnectionConfigurationBuilder>();
-
 
             var communicationHandler = new Mock<ICommunicationHandler>();
             object commHandlerData = null;
@@ -164,7 +160,6 @@ namespace ApplicationService.Test
                     .InSingletonScope()
                     .Named("communication-jms");
             });
-
 
             ApplicationIntegration.SetDependencyInjectionResolver(di);
 

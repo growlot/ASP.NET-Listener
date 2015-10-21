@@ -73,7 +73,6 @@ namespace AMSLLC.Listener.ApplicationService.Impl
 
                 ((IOriginator)transactionExecution).SetMemento(memento);
 
-
                 ExpandoObject data = string.IsNullOrWhiteSpace(dataString) ? null : JsonConvert.DeserializeObject<ExpandoObject>(dataString);
 
                 await

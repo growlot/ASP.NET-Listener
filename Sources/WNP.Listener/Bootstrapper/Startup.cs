@@ -34,8 +34,8 @@ namespace AMSLLC.Listener.Bootstrapper
 
             ApplicationIntegration.SetDependencyInjectionResolver(diAdapter);
 
-            InitOwinHost(app, diAdapter.Kernel);
-            InitProfiler();
+            this.InitOwinHost(app, diAdapter.Kernel);
+            this.InitProfiler();
 
             var log =
                 new LoggerConfiguration().ReadFrom.AppSettings().CreateLogger();

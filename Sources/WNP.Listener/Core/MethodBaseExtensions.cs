@@ -7,7 +7,7 @@ namespace AMSLLC.Core
 {
     public static class MethodBaseExtensions
     {
-        public static object InvokeWithNamedParameters(this MethodBase methodBase, object obj, IDictionary<string, object> parameters) => 
+        public static object InvokeWithNamedParameters(this MethodBase methodBase, object obj, IDictionary<string, object> parameters) =>
             methodBase.Invoke(obj, ConstructParameters(methodBase, parameters));
 
         private static object[] ConstructParameters(MethodBase methodBase, IDictionary<string, object> parameters)

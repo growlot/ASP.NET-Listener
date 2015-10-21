@@ -14,7 +14,7 @@ namespace AMSLLC.Listener.Bootstrapper
 
         /// <summary>
         /// Gets the currently running MiniProfiler for the current HttpContext; null if no MiniProfiler was <see cref="M:StackExchange.Profiling.WebRequestProfilerProvider.Start(System.String)"/>ed.
-        /// 
+        ///
         /// </summary>
         private MiniProfiler Current
         {
@@ -25,16 +25,15 @@ namespace AMSLLC.Listener.Bootstrapper
         /// <summary>
         /// Initialises a new instance of the <see cref="T:StackExchange.Profiling.WebRequestProfilerProvider"/> class.
         ///             Public constructor.  This also registers any UI routes needed to display results
-        /// 
+        ///
         /// </summary>
         public OwinRequestProfilerProvider()
         {
-            
         }
 
         /// <summary>
         /// Starts a new MiniProfiler and associates it with the current <see cref="P:System.Web.HttpContext.Current"/>.
-        /// 
+        ///
         /// </summary>
         public override MiniProfiler Start(string sessionName = null)
         {
@@ -65,7 +64,7 @@ namespace AMSLLC.Listener.Bootstrapper
 
         /// <summary>
         /// Starts a new MiniProfiler and associates it with the current <see cref="P:System.Web.HttpContext.Current"/>.
-        /// 
+        ///
         /// </summary>
         [Obsolete("Please use the Start(string sessionName) overload instead of this one. ProfileLevel is going away.")]
         public override MiniProfiler Start(ProfileLevel level, string sessionName = null)
@@ -97,7 +96,7 @@ namespace AMSLLC.Listener.Bootstrapper
 
         /// <summary>
         /// Ends the current profiling session, if one exists.
-        /// 
+        ///
         /// </summary>
         /// <param name="discardResults">When true, clears the <see cref="P:StackExchange.Profiling.MiniProfiler.Current"/> for this HttpContext, allowing profiling to
         ///             be prematurely stopped and discarded. Useful for when a specific route does not need to be profiled.
@@ -142,7 +141,7 @@ namespace AMSLLC.Listener.Bootstrapper
 
         /// <summary>
         /// Makes sure 'profiler' has a Name, pulling it from route data or url.
-        /// 
+        ///
         /// </summary>
         private static void EnsureName(MiniProfiler profiler, IOwinRequest request)
         {
@@ -158,7 +157,7 @@ namespace AMSLLC.Listener.Bootstrapper
 
         /// <summary>
         /// Returns the current profiler
-        /// 
+        ///
         /// </summary>
         public override MiniProfiler GetCurrentProfiler()
         {
@@ -167,7 +166,7 @@ namespace AMSLLC.Listener.Bootstrapper
 
         /// <summary>
         /// WebRequestProfilerProvider specific configurations
-        /// 
+        ///
         /// </summary>
         public static class Settings
         {
@@ -175,7 +174,7 @@ namespace AMSLLC.Listener.Bootstrapper
 
             /// <summary>
             /// Provides user identification for a given profiling request.
-            /// 
+            ///
             /// </summary>
             public static IUserProvider UserProvider
             {

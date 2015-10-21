@@ -81,6 +81,5 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
             return rawData;
         }
-            
     }
 }

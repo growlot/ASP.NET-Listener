@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.Repository.Listener
 
         public TransactionRepository(IPersistenceAdapter persistence)
         {
-            _persistence = persistence;
+            this._persistence = persistence;
         }
 
         public Task Create(TransactionExecution transaction)
@@ -47,7 +47,7 @@ namespace AMSLLC.Listener.Repository.Listener
             //    }, new[] { "TransactionHash" });
 
             await
-                _persistence.UpdateAsync(new TransactionRegistryEntity { TransactionHash = hash, TransactionId = transactionId }, transactionId,
+                this._persistence.UpdateAsync(new TransactionRegistryEntity { TransactionHash = hash, TransactionId = transactionId }, transactionId,
                     new[] { "TransactionHash" });
         }
 
@@ -60,14 +60,14 @@ namespace AMSLLC.Listener.Repository.Listener
         /// <returns>Task&lt;IEnumerable&lt;IMemento&gt;&gt;.</returns>
         public async Task<IEnumerable<IMemento>> GetFieldConfigurations(string companyCode, string sourceApplicationKey, string operationKey)
         {
-            var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>(
+            var fieldConfigurationEntries = await this._persistence.GetListAsync<FieldConfigurationEntryEntity>(
                        @"SELECT FCE.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
 INNER JOIN Company C ON EO.CompanyId = C.CompanyId
 INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2", companyCode, sourceApplicationKey, operationKey);
-            var valueMapEntries = await _persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
-            var valueMaps = await _persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
+            var valueMapEntries = await this._persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
+            var valueMaps = await this._persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
 
-           return PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps);
+           return this.PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps);
         }
 
         //        public Task<int> GetEnabledOperation(string companyCode, string sourceApplicationKey, string operationKey)
@@ -78,18 +78,17 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
         //INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2", companyCode, sourceApplicationKey, operationKey);
         //        }
 
-
         public async Task<IMemento> GetExecutionContext(string recordKey)
         {
             TransactionExecutionMemento returnValue = null;
-            var protocols = await _persistence.GetListAsync<ProtocolTypeEntity>("SELECT * FROM ProtocolType");
+            var protocols = await this._persistence.GetListAsync<ProtocolTypeEntity>("SELECT * FROM ProtocolType");
             var valueMapEntries =
-                await _persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
-            var valueMaps = await _persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
+                await this._persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
+            var valueMaps = await this._persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
             //var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
-            var tr = await _persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
+            var tr = await this._persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
             //
-            var endpoints = await _persistence.ProjectionAsync<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IntegrationEndpointConfigurationMemento>((ee, oe, eo) => new IntegrationEndpointConfigurationMemento(protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name, ee.ConnectionConfiguration,
+            var endpoints = await this._persistence.ProjectionAsync<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IntegrationEndpointConfigurationMemento>((ee, oe, eo) => new IntegrationEndpointConfigurationMemento(protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name, ee.ConnectionConfiguration,
                                  (EndpointTriggerType)ee.EndpointTriggerTypeId), @"SELECT 
 	E.*, OE.*, EO.*
 FROM 
@@ -100,15 +99,14 @@ FROM
     LEFT JOIN FieldConfiguration FC ON EO.FieldConfigurationId = FC.FieldConfigurationId 
 WHERE TR.RecordKey = @0", recordKey);
 
-
             var fieldConfigurationEntries =
                 await
-                    _persistence.GetListAsync<FieldConfigurationEntryEntity>(
+                    this._persistence.GetListAsync<FieldConfigurationEntryEntity>(
                         "SELECT FCE.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId WHERE EO.EnabledOperationId = @0", tr.EnabledOperationId);
 
             if (endpoints != null)
             {
-                returnValue = new TransactionExecutionMemento(tr.TransactionId, recordKey, tr.EnabledOperationId, endpoints, PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps));
+                returnValue = new TransactionExecutionMemento(tr.TransactionId, recordKey, tr.EnabledOperationId, endpoints, this.PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps));
             }
             return returnValue;
         }
@@ -118,14 +116,14 @@ WHERE TR.RecordKey = @0", recordKey);
 
             var enabledOperationid =
                 await
-                    _persistence.ExecuteScalarAsync<int>(
+                    this._persistence.ExecuteScalarAsync<int>(
                         "SELECT EO.EnabledOperationId FROM EnabledOperation EO INNER JOIN Application A ON A.ApplicationId = EO.ApplicationId INNER JOIN Company C ON C.CompanyId = EO.CompanyId INNER JOIN Operation O ON O.OperationId = EO.OperationId WHERE A.RecordKey = @0 AND C.ExternalCode = @1 AND O.Name = @2",
                         transactionRegistry.ApplicationKey, transactionRegistry.CompanyCode,
                         transactionRegistry.OperationKey);
 
             //Single insert, transaction scope removed
             await
-                _persistence.InsertAsync(new TransactionRegistryEntity //"TransactionRegistry", "TransactionId", 
+                this._persistence.InsertAsync(new TransactionRegistryEntity //"TransactionRegistry", "TransactionId",
                 {
                     CreatedDateTime = transactionRegistry.CreatedDateTime,
                     RecordKey = transactionRegistry.RecordKey,
@@ -149,7 +147,7 @@ WHERE TR.RecordKey = @0", recordKey);
                      tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details);
 
             var registryEntities = await
-                    _persistence.ProjectionAsync(callback,
+                    this._persistence.ProjectionAsync(callback,
                         @"SELECT TR.*, A.*, C.*, O.*
 FROM TransactionRegistry TR 
 INNER JOIN EnabledOperation EO ON TR.EnabledOperationId = EO.EnabledOperationId
@@ -164,7 +162,7 @@ WHERE TR.RecordKey = @0", recordKey);
         public async Task Update(TransactionRegistry transactionRegistry)
         {
             await
-                _persistence.UpdateAsync(new TransactionRegistryEntity
+                this._persistence.UpdateAsync(new TransactionRegistryEntity
                 {
                     TransactionId = transactionRegistry.Id,
                     TransactionStatusId = (int)transactionRegistry.Status,
@@ -178,20 +176,18 @@ WHERE TR.RecordKey = @0", recordKey);
 
         public Task<string> GetTransactionData(string recordKey)
         {
-            return _persistence.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
+            return this._persistence.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
         }
 
         public Task<int> GetHashCount(int enabledOperationId, string hash)
         {
-            return _persistence.ExecuteScalarAsync<int>("SELECT COUNT(TransactionHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND TransactionHash = @1", enabledOperationId, hash);
+            return this._persistence.ExecuteScalarAsync<int>("SELECT COUNT(TransactionHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND TransactionHash = @1", enabledOperationId, hash);
         }
 
         private IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)
         {
 
             List<FieldConfigurationMemento> returnValue = new List<FieldConfigurationMemento>();
-
-
 
             foreach (var fieldConfigurationEntry in fieldConfigurationEntries)
             {
@@ -215,15 +211,11 @@ WHERE TR.RecordKey = @0", recordKey);
             return returnValue;
         }
 
-
-
-
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-
 
         /// <summary>
         /// Finalizes an instance of the <see cref="TransactionRepository" /> class.
@@ -231,7 +223,7 @@ WHERE TR.RecordKey = @0", recordKey);
         ~TransactionRepository()
         {
             // Finalizer calls Dispose(false)
-            Dispose(false);
+            this.Dispose(false);
         }
 
         /// <summary>

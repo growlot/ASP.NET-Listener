@@ -49,7 +49,7 @@
         /// The address1.
         /// </value>
         public string Address1 { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the address2.
         /// </summary>
@@ -57,7 +57,7 @@
         /// The address2.
         /// </value>
         public string Address2 { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the zip.
         /// </summary>

@@ -13,25 +13,25 @@
 
         public TestEntitiesController()
         {
-            key = 1;
-            value = "ONE";
+            this.key = 1;
+            this.value = "ONE";
         }
 
         public IHttpActionResult Get()
         {
             TestEntity result = new TestEntity();
-            result.key = key;
-            result.value = value;
+            result.key = this.key;
+            result.value = this.value;
 
-            return Ok(result);
+            return this.Ok(result);
         }
 
         [HttpPost]
         public Task<IHttpActionResult> Action([FromODataUri] int key, ODataActionParameters parameters)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return Task.FromResult<IHttpActionResult>(BadRequest());
+                return Task.FromResult<IHttpActionResult>(this.BadRequest());
             }
 
             string value = null;
@@ -49,7 +49,7 @@
                 value = "ONE";
             }
 
-            return Task.FromResult<IHttpActionResult>(StatusCode(HttpStatusCode.NoContent));
+            return Task.FromResult<IHttpActionResult>(this.StatusCode(HttpStatusCode.NoContent));
         }
     }
 }

@@ -30,30 +30,29 @@ namespace AMSLLC.Listener.Persistence.Listener
         /// <param name="dbContext">The database context.</param>
         public PocoCachedAdapter(ListenerDbContext dbContext)
         {
-            _dbContext = dbContext;
+            this._dbContext = dbContext;
         }
-
 
         public Task<List<TEntity>> GetListAsync<TEntity>(string query, params object[] args)
         {
-            return ReadOrAdd((db, a) => a == null ? db.FetchAsync<TEntity>(query) : db.FetchAsync<TEntity>(query, a),
+            return this.ReadOrAdd((db, a) => a == null ? db.FetchAsync<TEntity>(query) : db.FetchAsync<TEntity>(query, a),
                 args);
         }
 
         public Task<TEntity> GetAsync<TEntity>(string query, params object[] args)
         {
-            return ReadOrAdd((db, a) => a == null ? db.SingleAsync<TEntity>(query) : db.SingleAsync<TEntity>(query, a),
+            return this.ReadOrAdd((db, a) => a == null ? db.SingleAsync<TEntity>(query) : db.SingleAsync<TEntity>(query, a),
                 args);
         }
 
         public Task UpdateAsync<TEntity>(TEntity entity)
         {
-            return _dbContext.UpdateAsync(entity);
+            return this._dbContext.UpdateAsync(entity);
         }
 
         public Task UpdateAsync<TEntity, TKey>(TEntity entity, TKey primaryKeyValue)
         {
-            return _dbContext.UpdateAsync(entity, primaryKeyValue);
+            return this._dbContext.UpdateAsync(entity, primaryKeyValue);
         }
 
         public Task UpdateAsync<TEntity>(TEntity entity, IEnumerable<string> columnsToUpdate)
@@ -62,7 +61,7 @@ namespace AMSLLC.Listener.Persistence.Listener
             var primaryColumnAttribute = entity.GetType().GetCustomAttribute<PrimaryKeyAttribute>();
 
             return
-                _dbContext.UpdateAsync(tableNameAttribute.Value, primaryColumnAttribute.Value, entity, columnsToUpdate);
+                this._dbContext.UpdateAsync(tableNameAttribute.Value, primaryColumnAttribute.Value, entity, columnsToUpdate);
         }
 
         public Task UpdateAsync<TEntity, TKey>(TEntity entity, TKey primaryKeyValue, IEnumerable<string> columnsToUpdate)
@@ -71,34 +70,34 @@ namespace AMSLLC.Listener.Persistence.Listener
             //var primaryColumnAttribute = entity.GetType().GetCustomAttribute<PrimaryKeyAttribute>();
 
             return
-                _dbContext.UpdateAsync(entity, primaryKeyValue, columnsToUpdate);
+                this._dbContext.UpdateAsync(entity, primaryKeyValue, columnsToUpdate);
         }
 
         public Task InsertAsync<TEntity>(TEntity entity)
         {
-            return _dbContext.InsertAsync(entity);
+            return this._dbContext.InsertAsync(entity);
         }
 
         public Task<TValue> ExecuteScalarAsync<TValue>(string query, params object[] args)
         {
-            return _dbContext.ExecuteScalarAsync<TValue>(query, args);
+            return this._dbContext.ExecuteScalarAsync<TValue>(query, args);
         }
 
         public Task<List<T2>> ProjectionAsync<T, T1, T2>(Func<T, T1, T2> func, string query, params object[] args)
         {
-            return _dbContext.FetchAsync(func, query, args);
+            return this._dbContext.FetchAsync(func, query, args);
         }
 
         public Task<List<T3>> ProjectionAsync<T, T1, T2, T3>(Func<T, T1, T2, T3> func, string query, params object[] args)
         {
-            return _dbContext.FetchAsync<T3>(new[] { typeof(T), typeof(T1), typeof(T2) },
+            return this._dbContext.FetchAsync<T3>(new[] { typeof(T), typeof(T1), typeof(T2) },
                 func, query, args);
         }
 
         public Task<List<T4>> ProjectionAsync<T, T1, T2, T3, T4>(Func<T, T1, T2, T3, T4> func, string query,
             params object[] args)
         {
-            return _dbContext.FetchAsync<T4>(new[] { typeof(T), typeof(T1), typeof(T2), typeof(T3) },
+            return this._dbContext.FetchAsync<T4>(new[] { typeof(T), typeof(T1), typeof(T2), typeof(T3) },
                 func, query, args);
         }
 
@@ -107,7 +106,7 @@ namespace AMSLLC.Listener.Persistence.Listener
         {
             string key = $"{typeof(TEntity)}_{string.Join("_", args)}";
 
-            await cacheLock.WaitAsync();
+            await this.cacheLock.WaitAsync();
             try
             {
                 object result;
@@ -117,14 +116,14 @@ namespace AMSLLC.Listener.Persistence.Listener
                 }
                 else
                 {
-                    var returnValue = await selector(_dbContext, args);
+                    var returnValue = await selector(this._dbContext, args);
                     _innerCache.TryAdd(key, returnValue);
                     return returnValue;
                 }
             }
             finally
             {
-                cacheLock.Release();
+                this.cacheLock.Release();
             }
         }
     }

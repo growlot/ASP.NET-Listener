@@ -123,7 +123,6 @@
                     }
                 }
 
-
                 var asList = currentPath[source] as List<object>;
                 if (asList != null)
                 {

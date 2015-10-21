@@ -10,11 +10,11 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
     public abstract class ODataFunctionToSqlConvertorGenericImpl : IODataFunctionToSqlConvertor, ISupportedODataFunctionToSql
     {
         public bool IsSupported(string functionName) =>
-            GetMappedMethod(functionName) != null;
+            this.GetMappedMethod(functionName) != null;
 
         public string Convert(string functionName, Func<QueryNode, string> genericBinder, List<QueryNode> arguments)
         {
-            var method = GetMappedMethod(functionName);
+            var method = this.GetMappedMethod(functionName);
 
             // should never happen because IsSupported check should be made
             // prior to each Convert call
@@ -25,29 +25,29 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
         }
 
         private MethodInfo GetMappedMethod(string functionName) =>
-            GetType()
+            this.GetType()
                 .GetMethod(functionName, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
 
         protected string GenericFuncCall(string functionName, Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>
             $"{functionName}({arguments.Select(genericBinder).Aggregate((a, b) => a + ',' + b)})";
 
         public string ToLower(Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>
-            GenericFuncCall("LOWER", genericBinder, arguments);
+            this.GenericFuncCall("LOWER", genericBinder, arguments);
 
         public string ToUpper(Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>
-            GenericFuncCall("UPPER", genericBinder, arguments);
+            this.GenericFuncCall("UPPER", genericBinder, arguments);
 
         public string Concat(Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>
-            GenericFuncCall("CONCAT", genericBinder, arguments);
+            this.GenericFuncCall("CONCAT", genericBinder, arguments);
 
         public string Ceiling(Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>
-            GenericFuncCall("CEILING", genericBinder, arguments);
+            this.GenericFuncCall("CEILING", genericBinder, arguments);
 
         public string Floor(Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>
-            GenericFuncCall("FLOOR", genericBinder, arguments);
+            this.GenericFuncCall("FLOOR", genericBinder, arguments);
 
         public string Round(Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>
-            GenericFuncCall("ROUND", genericBinder, arguments);
+            this.GenericFuncCall("ROUND", genericBinder, arguments);
 
         public string Trim(Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>
             $"RTRIM(LTRIM({genericBinder(arguments[0])}))";

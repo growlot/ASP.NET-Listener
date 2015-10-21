@@ -16,12 +16,9 @@
 
         public DbSet<TransactionRegistryEntity> TransactionRegistry { get; set; }
 
-
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             MapPetaPocoEntity<TransactionRegistryEntity, string>(modelBuilder, a => a.RecordKey);
-            
 
             base.OnModelCreating(modelBuilder);
         }

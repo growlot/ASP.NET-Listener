@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.ApplicationService.Validator
         /// <param name="repository">The repository.</param>
         public UniqueHashValidator(ITransactionRepository repository)
         {
-            _repository = repository;
+            this._repository = repository;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.ApplicationService.Validator
         /// <returns>Task.</returns>
         public Task ValidateAsync(int enabledOperationId, string hash)
         {
-            return _repository.GetHashCount(enabledOperationId, hash).ContinueWith(t=>Valid = t.Result == 0);
+            return this._repository.GetHashCount(enabledOperationId, hash).ContinueWith(t=>this.Valid = t.Result == 0);
         }
     }
 }

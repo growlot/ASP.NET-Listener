@@ -10,16 +10,16 @@
 
         private WNPUnitOfWork()
         {
-            dbContext.BeginTransaction();
+            this.dbContext.BeginTransaction();
         }
 
         public IOwnerRepository OwnerRepository
         {
             get
             {
-                if(ownerRepository == null)
+                if(this.ownerRepository == null)
                 {
-                    this.ownerRepository = new OwnerRepository(dbContext);
+                    this.ownerRepository = new OwnerRepository(this.dbContext);
                 }
                 return this.ownerRepository;
             }
@@ -35,12 +35,12 @@
 
         public void Commit()
         {
-            dbContext.CompleteTransaction();
+            this.dbContext.CompleteTransaction();
         }
 
         public void Rollback()
         {
-            dbContext.AbortTransaction();
+            this.dbContext.AbortTransaction();
         }
     }
 }

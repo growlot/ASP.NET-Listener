@@ -6,7 +6,6 @@ namespace AMSLLC.Listener.ODataService.Actions.Properties
     {
         public override void Load()
         {
-            
         }
     }
 }

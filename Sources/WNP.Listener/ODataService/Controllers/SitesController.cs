@@ -36,9 +36,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
         public Task<IHttpActionResult> Post()
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return Task.FromResult<IHttpActionResult>(BadRequest(ModelState));
+                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
             }
 
             // constructing oData options since we can not using generic return type
@@ -50,12 +50,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var oDataModelType = queryOptions.Context.ElementClrType;
 
             // get the model describing this type
-            var modelMapping = metadataService.GetModelMapping(oDataModelType.Name);
-            
+            var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
+
             // create actual result object we will be sending over the wire
             var requestContent = base.CreateResult(oDataModelType);
 
-            var request = JObject.Parse(GetRequestContents(Request));
+            var request = JObject.Parse(this.GetRequestContents(this.Request));
 
             ////var method = typeof(JsonConvert).GetGenericMethod("DeserializeObject", new Type[] { typeof(string) });
             ////requestContent = method.MakeGenericMethod(oDataModelType).Invoke(null, new object[] { GetRequestContents(Request) });
@@ -71,7 +71,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             ////result.Add(entityInstance);
 
-
             ////// convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
             ////for (int i = 0; i < sqlWhere.PositionalParameters.Length; i++)
             ////{
@@ -85,16 +84,15 @@ namespace AMSLLC.Listener.ODataService.Controllers
             ////    }
             ////}
 
-
             ////return CreateOkResponse(oDataModelType, result);
-            return Task.FromResult<IHttpActionResult>(Ok());
+            return Task.FromResult<IHttpActionResult>(this.Ok());
         }
 
         public Task<IHttpActionResult> Get([FromODataUri] int key)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return Task.FromResult<IHttpActionResult>(BadRequest(ModelState));
+                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
             }
 
             // constructing oData options since we can not using generic return type
@@ -119,7 +117,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
         private string GetRequestContents(HttpRequestMessage request)
         {
-            HttpContent requestContent = Request.Content;
+            HttpContent requestContent = this.Request.Content;
             string content = requestContent.ReadAsStringAsync().Result;
 
             return content;

@@ -37,7 +37,7 @@ namespace AMSLLC.Listener.ApplicationService
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -48,14 +48,13 @@ namespace AMSLLC.Listener.ApplicationService
                 ApplicationIntegration.DependencyResolver.ResolveType<IDateTimeProvider>());
         }
 
-
         /// <summary>
         /// Finalizes an instance of the <see cref="ApplicationServiceScope" /> class.
         /// </summary>
         ~ApplicationServiceScope()
         {
             // Finalizer calls Dispose(false)
-            Dispose(false);
+            this.Dispose(false);
         }
 
         /// <summary>

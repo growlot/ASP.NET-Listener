@@ -12,7 +12,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
         public ODataRouteManagerImpl(HttpConfiguration config)
         {
-          _config = config;
+          this._config = config;
         }
 
         public void AddOrderRoute()
@@ -21,12 +21,12 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 //            builder.EntitySet<Meter>("Meters");
 //            builder.EntitySet<Order>("Orders");
 
-            var route = _config.Routes.Where(r => r is System.Web.OData.Routing.ODataRoute).First();
+            var route = this._config.Routes.Where(r => r is System.Web.OData.Routing.ODataRoute).First();
             var odataRoute = route as System.Web.OData.Routing.ODataRoute;
 
-            _config.Routes.Remove("ODataRoute");
+            this._config.Routes.Remove("ODataRoute");
 
-            _config.MapODataServiceRoute(
+            this._config.MapODataServiceRoute(
                 routeName: "ODataRoute",
                 routePrefix: null, //"odata",
                 model: builder.GetEdmModel(),
