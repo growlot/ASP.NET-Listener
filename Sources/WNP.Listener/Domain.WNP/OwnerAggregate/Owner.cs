@@ -7,7 +7,6 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using SiteAggregate;
 
     /// <summary>

@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
-    using System;
     using System.Globalization;
 
     /// <summary>
