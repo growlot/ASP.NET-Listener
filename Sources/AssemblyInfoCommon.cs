@@ -3,6 +3,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+using System;
 using System.Reflection;
 
 [assembly: AssemblyCompany("Advanced Metering Services LLC")]
@@ -19,10 +20,11 @@ using System.Reflection;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
+// AssemblyInformationalVersion should contain CI build information
+// AssemblyVersion represents marketed version
+// AssemblyFileVersion needs to change for every new WNP setup package.
 [assembly: AssemblyVersion("2.2.0.0")]
 [assembly: AssemblyInformationalVersion("2.2")]
 [assembly: AssemblyFileVersion("2.2.0.14")]
 
-// AssemblyInformationalVersion should contain CI build information
-// AssemblyVersion represents marketed version
-// AssemblyFileVersion needs to change for every new WNP setup package.
+[assembly: CLSCompliant(true)]

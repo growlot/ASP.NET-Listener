@@ -20,6 +20,7 @@ namespace AMSLLC.Listener.Core
         /// <param name="query">The query.</param>
         /// <param name="args">The query arguments.</param>
         /// <returns>The list of entities.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "None of the parameters can be supplied with correct type.")]
         Task<List<TEntity>> GetListAsync<TEntity>(string query, params object[] args);
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace AMSLLC.Listener.Core
         /// <param name="query">The query.</param>
         /// <param name="args">The query arguments.</param>
         /// <returns>The entity.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "None of the parameters can be supplied with correct type.")]
         Task<TEntity> GetAsync<TEntity>(string query, params object[] args);
 
         /// <summary>
@@ -98,6 +100,7 @@ namespace AMSLLC.Listener.Core
         /// <returns>
         /// The list of retrun objects.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is expected design.")]
         Task<List<TRet>> ProjectionAsync<T1, T2, TRet>(Func<T1, T2, TRet> func, string query, params object[] args);
 
         /// <summary>
@@ -113,6 +116,7 @@ namespace AMSLLC.Listener.Core
         /// <returns>
         /// The list of retrun objects.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is expected design.")]
         Task<List<TRet>> ProjectionAsync<T1, T2, T3, TRet>(Func<T1, T2, T3, TRet> func, string query, params object[] args);
 
         /// <summary>
@@ -129,6 +133,7 @@ namespace AMSLLC.Listener.Core
         /// <returns>
         /// The list of retrun objects.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is expected design.")]
         Task<List<TRet>> ProjectionAsync<T1, T2, T3, T4, TRet>(Func<T1, T2, T3, T4, TRet> func, string query, params object[] args);
     }
 }

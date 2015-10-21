@@ -19,6 +19,8 @@ namespace System.Reflection
         /// <param name="obj">The object on which methods is invoked.</param>
         /// <param name="parameters">The parameters provided as name-value dictionary.</param>
         /// <returns>The object returned by invoked method.</returns>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "obj", Justification = "Provides consistent identifier name with Invoke method.")]
+        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this parameter can't be null")]
         public static object InvokeWithNamedParameters(this MethodBase methodBase, object obj, IDictionary<string, object> parameters)
         {
             var paramNames = methodBase.GetParameters().Select(p => p.Name).ToArray();
