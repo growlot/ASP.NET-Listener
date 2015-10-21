@@ -1,13 +1,16 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="FailFast.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="FailFast.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
-namespace AMSLLC.Core
+namespace AMSLLC.Listener.Core
 {
     using System;
 
+    /// <summary>
+    /// A helpper class to perform quick checks on the arguments.
+    /// </summary>
     public static class FailFast
     {
         /// <summary>
@@ -20,7 +23,9 @@ namespace AMSLLC.Core
         public static void EnsureNotNull<TType>(TType obj, string name)
         {
             if (obj == null)
+            {
                 throw new ArgumentNullException(name);
+            }
         }
 
         /// <summary>
@@ -34,7 +39,9 @@ namespace AMSLLC.Core
         public static TType PassThroughNotNull<TType>(TType obj, string name)
         {
             if (obj == null)
+            {
                 throw new ArgumentNullException(name);
+            }
 
             return obj;
         }
@@ -50,9 +57,11 @@ namespace AMSLLC.Core
         public static void AssertTrue(Func<bool> rule, string message, string argumentName = null)
         {
             if (!rule())
+            {
                 throw string.IsNullOrEmpty(argumentName)
                     ? new ArgumentException(message)
                     : new ArgumentException(message, argumentName);
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Reflection;
 
 [assembly: AssemblyCompany("Advanced Metering Services LLC")]
 [assembly: AssemblyProduct("AMSLLC.Listener")]
-[assembly: AssemblyCopyright("Copyright © 2014 Advanced Metering Services LLC")]
+[assembly: AssemblyCopyright("Copyright © 2015 Advanced Metering Services LLC")]
 
 // Version information for an assembly consists of the following four values:
 //

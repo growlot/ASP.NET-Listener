@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// <copyright file="ApplicationIntegration.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
-namespace AMSLLC.Core
+namespace AMSLLC.Listener.Core
 {
+    /// <summary>
+    /// Provides access to dependency resolution management.
+    /// </summary>
     public static class ApplicationIntegration
     {
+        /// <summary>
+        /// Gets the dependency resolver.
+        /// </summary>
+        /// <value>
+        /// The dependency resolver.
+        /// </value>
         public static IDependencyInjectionAdapter DependencyResolver { get; private set; }
 
         /// <summary>
