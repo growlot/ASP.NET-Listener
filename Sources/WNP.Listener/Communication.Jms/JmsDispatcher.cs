@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="JmsDispatcher.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="JmsDispatcher.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Communication.Jms
@@ -36,14 +36,14 @@ namespace AMSLLC.Listener.Communication.Jms
             if (request == null)
             {
                 throw new ArgumentException(
-                    "eventData must be of type {0}".FormatWith(typeof (TransactionDataReady).FullName));
+                    "eventData must be of type {0}".FormatWith(typeof(TransactionDataReady).FullName));
             }
 
             if (cfg == null)
             {
                 throw new ArgumentException(
                     "connectionConfiguration must be of type {0}".FormatWith(
-                        typeof (JmsConnectionConfiguration).FullName));
+                        typeof(JmsConnectionConfiguration).FullName));
             }
 
             return Task.Run(() =>
@@ -64,7 +64,7 @@ namespace AMSLLC.Listener.Communication.Jms
                 IConnectionFactory cf = context.LookupConnectionFactory(cfName);
 
                 // lookup the queue
-                IQueue queue = (IQueue) context.LookupDestination(cfg.QueueName);
+                IQueue queue = (IQueue)context.LookupDestination(cfg.QueueName);
 
                 // create a connection
                 IConnection connection = cf.CreateConnection();
@@ -82,7 +82,7 @@ namespace AMSLLC.Listener.Communication.Jms
 
                 // create a text message
                 ITextMessage textMessage = session.CreateTextMessage(JsonConvert.SerializeObject(request.Data));
-                //textMessage.JMSType = request.
+                // textMessage.JMSType = request.
 
                 // send the message
                 producer.Send(textMessage);

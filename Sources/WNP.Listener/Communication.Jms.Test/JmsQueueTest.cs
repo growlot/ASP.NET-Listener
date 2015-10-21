@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="JmsQueueTest.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="JmsQueueTest.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Communication.Jms.Test
@@ -37,8 +37,8 @@ namespace AMSLLC.Listener.Communication.Jms.Test
             {
                 JmsDispatcher dispatcher = new JmsDispatcher();
                 var transactionId = Guid.NewGuid().ToString();
-                var testMessage = new TestMessage {TransactionId = transactionId, Value = (new Random()).Next(9999)};
-                var eventData = new TransactionDataReady {Data = testMessage};
+                var testMessage = new TestMessage { TransactionId = transactionId, Value = new Random().Next(9999) };
+                var eventData = new TransactionDataReady { Data = testMessage };
                 var connectionConfiguration = new JmsConnectionConfiguration
                 {
                     Host = Host,
@@ -73,7 +73,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
             IConnectionFactory cf = context.LookupConnectionFactory(cfName);
 
             // lookup the queue
-            IQueue queue = (IQueue) context.LookupDestination(config.QueueName);
+            IQueue queue = (IQueue)context.LookupDestination(config.QueueName);
 
             // create a connection
             IConnection connection = cf.CreateConnection();
@@ -88,7 +88,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
 
             var found = false;
             ITextMessage message;
-            while ((message = (ITextMessage) consumer.ReceiveNoWait()) != null)
+            while ((message = (ITextMessage)consumer.ReceiveNoWait()) != null)
             {
                 found = string.Compare(message.Text, messageBody, StringComparison.InvariantCulture) == 0;
                 if (found)
@@ -110,6 +110,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
         private class TestMessage
         {
             public string TransactionId { get; set; }
+
             public int Value { get; set; }
         }
     }

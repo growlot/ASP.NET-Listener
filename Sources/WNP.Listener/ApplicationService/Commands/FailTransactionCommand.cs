@@ -1,15 +1,18 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="TransactionFailedMessage.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="FailTransactionCommand.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
-
-namespace AMSLLC.Listener.Communication
+namespace AMSLLC.Listener.ApplicationService.Commands
 {
-    public class TransactionFailedMessage
+    using Domain;
+
+    public class FailTransactionCommand : ICommand
     {
         public string RecordKey { get; set; }
+
         public string Message { get; set; }
+
         public string Details { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="JmsConnectionConfigurationBuilder.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="JmsConnectionConfigurationBuilder.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Communication.Jms
@@ -19,7 +19,7 @@ namespace AMSLLC.Listener.Communication.Jms
         /// <returns>IConnectionConfiguration.</returns>
         public IConnectionConfiguration Create(IMemento memento)
         {
-            var myMemento = (IntegrationEndpointConfigurationMemento) memento;
+            var myMemento = (IntegrationEndpointConfigurationMemento)memento;
             return JsonConvert.DeserializeObject<JmsConnectionConfiguration>(myMemento.ConnectionDetails);
         }
     }
