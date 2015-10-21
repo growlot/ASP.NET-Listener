@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ISpecification.cs" company="Advanced Metering Services LLC">
+// <copyright file="ISpecification{TEntity,TId}.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -10,8 +10,9 @@ namespace AMSLLC.Listener.Domain
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TId">The type of the entity identity.</typeparam>
-    public interface ISpecification<TEntity, TId> where TEntity : IEntity<TId>
-    {
+    public interface ISpecification<TEntity, TId>
+            where TEntity : IEntity<TId>
+        {
         /// <summary>
         /// Evaluates the specification against an entity.
         /// </summary>

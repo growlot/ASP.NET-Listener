@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="EventsRegister.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="EventsRegister.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain
@@ -33,7 +33,8 @@ namespace AMSLLC.Listener.Domain
         /// </summary>
         /// <typeparam name="T">The event type.</typeparam>
         /// <param name="handler">The handler.</param>
-        public static void Register<T>(Action<T> handler) where T : IEvent
+        public static void Register<T>(Action<T> handler)
+            where T : IEvent
         {
             if (!Handlers.ContainsKey(typeof(T)))
             {
@@ -48,8 +49,9 @@ namespace AMSLLC.Listener.Domain
         /// </summary>
         /// <typeparam name="T">The event type.</typeparam>
         /// <param name="handler">The handler.</param>
-        public static void RegisterAsync<T>(Func<T, Task> handler) where T : IEvent
-        {
+        public static void RegisterAsync<T>(Func<T, Task> handler)
+                    where T : IEvent
+                {
             if (!AsyncHandlers.ContainsKey(typeof(T)))
             {
                 AsyncHandlers.Add(typeof(T), new List<Func<IEvent, Task>>());
@@ -63,8 +65,7 @@ namespace AMSLLC.Listener.Domain
         /// </summary>
         /// <param name="eventData">The event data.</param>
         /// <exception cref="System.ArgumentNullException">eventData; Event data must be specified in order to raise the event.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate",
-            Justification = "This implementation is similar but much simplier than MS Observer pattern.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This implementation is similar but much simplier than MS Observer pattern.")]
         public static void Raise(IEvent eventData)
         {
             if (eventData == null)
@@ -87,8 +88,7 @@ namespace AMSLLC.Listener.Domain
         /// <param name="eventData">The event data.</param>
         /// <returns>Set of tasks.</returns>
         /// <exception cref="System.ArgumentNullException">eventData; Event data must be specified in order to raise the event.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate",
-            Justification = "This implementation is similar but much simplier than MS Observer pattern.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This implementation is similar but much simplier than MS Observer pattern.")]
         public static Task[] RaiseAsync(IEvent eventData)
         {
             if (eventData == null)

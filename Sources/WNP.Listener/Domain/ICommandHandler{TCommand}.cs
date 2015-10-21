@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ICommandHandler.cs" company="Advanced Metering Services LLC">
+// <copyright file="ICommandHandler{TCommand}.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -11,8 +11,9 @@ namespace AMSLLC.Listener.Domain
     /// Interface for all domain command handlers.
     /// </summary>
     /// <typeparam name="TCommand">The type of the command.</typeparam>
-    public interface ICommandHandler<TCommand> where TCommand : ICommand
-    {
+    public interface ICommandHandler<TCommand>
+            where TCommand : ICommand
+        {
         /// <summary>
         /// Handles the specified command.
         /// </summary>

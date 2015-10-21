@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Entity.cs" company="Advanced Metering Services LLC">
+// <copyright file="Entity{T}.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -91,15 +91,15 @@ namespace AMSLLC.Listener.Domain
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        protected abstract void SetMemento(IMemento memento);
+        void IOriginator.SetMemento(IMemento memento)
+        {
+            this.SetMemento(memento);
+        }
 
         /// <summary>
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        void IOriginator.SetMemento(IMemento memento)
-        {
-            this.SetMemento(memento);
-        }
+        protected abstract void SetMemento(IMemento memento);
     }
 }

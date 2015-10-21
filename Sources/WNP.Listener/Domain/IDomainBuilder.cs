@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="IDomainBuilder.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="IDomainBuilder.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain
@@ -16,7 +16,8 @@ namespace AMSLLC.Listener.Domain
         /// </summary>
         /// <typeparam name="TDomainModel">The type of the domain model.</typeparam>
         /// <returns>Domain model.</returns>
-        TDomainModel Create<TDomainModel>() where TDomainModel : IOriginator;
+        TDomainModel Create<TDomainModel>()
+                    where TDomainModel : IOriginator;
 
         /// <summary>
         /// Creates domain model instance.
@@ -24,6 +25,7 @@ namespace AMSLLC.Listener.Domain
         /// <typeparam name="TDomainModel">The type of the domain model.</typeparam>
         /// <param name="memento">The memento.</param>
         /// <returns>Domain model.</returns>
-        TDomainModel Create<TDomainModel>(IMemento memento) where TDomainModel : IOriginator;
+        TDomainModel Create<TDomainModel>(IMemento memento)
+                    where TDomainModel : IOriginator;
     }
 }
