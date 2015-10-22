@@ -1,6 +1,6 @@
 ﻿// //-----------------------------------------------------------------------
-// <copyright file="JmsConnectionConfigurationBuilder.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="JmsConnectionConfigurationBuilder.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 // //-----------------------------------------------------------------------
 
@@ -10,10 +10,13 @@ namespace AMSLLC.Listener.Communication.Jms
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// Implements <see cref="IConnectionConfigurationBuilder"/> for JMS
+    /// </summary>
     public class JmsConnectionConfigurationBuilder : IConnectionConfigurationBuilder
     {
         /// <summary>
-        /// Create Jms connection configuration using provided memento
+        /// Create JMS connection configuration using provided memento
         /// </summary>
         /// <param name="memento">The memento.</param>
         /// <returns>IConnectionConfiguration.</returns>

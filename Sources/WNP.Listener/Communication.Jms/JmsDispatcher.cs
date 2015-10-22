@@ -1,6 +1,6 @@
 ﻿// //-----------------------------------------------------------------------
-// <copyright file="JmsDispatcher.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="JmsDispatcher.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 // //-----------------------------------------------------------------------
 
@@ -22,38 +22,34 @@ namespace AMSLLC.Listener.Communication.Jms
         private static string cfName = "weblogic.jms.ConnectionFactory";
 
         /// <summary>
-        /// Handles the specified event data.
+        /// Handles the specified request data.
         /// </summary>
-        /// <param name="eventData">The event data.</param>
+        /// <param name="requestData">The request data.</param>
         /// <param name="connectionConfiguration">The connection configuration.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentException">eventData must be of type {0}.FormatWith(typeof(TransactionDataReady).FullName)</exception>
-        public Task Handle(object eventData, IConnectionConfiguration connectionConfiguration)
+        public Task Handle(object requestData, IConnectionConfiguration connectionConfiguration)
         {
-            var request = eventData as TransactionDataReady;
+            var request = requestData as TransactionDataReady;
             var cfg = connectionConfiguration as JmsConnectionConfiguration;
 
             if (request == null)
             {
-                throw new ArgumentException(
-                    "eventData must be of type {0}".FormatWith(typeof(TransactionDataReady).FullName));
+                throw new ArgumentException("{0} must be of type {1}".FormatWith(nameof(requestData), typeof(TransactionDataReady).FullName));
             }
 
             if (cfg == null)
             {
-                throw new ArgumentException(
-                    "connectionConfiguration must be of type {0}".FormatWith(
-                        typeof(JmsConnectionConfiguration).FullName));
+                throw new ArgumentException("{0} must be of type {1}".FormatWith(nameof(connectionConfiguration), typeof(JmsConnectionConfiguration).FullName));
             }
 
             return Task.Run(() =>
             {
                 // create properties dictionary
-                IDictionary<string, Object> paramMap = new Dictionary<string, Object>();
+                IDictionary<string, object> paramMap = new Dictionary<string, object>();
 
                 // add necessary properties
-                paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(cfg.Host,
-                    cfg.Port);
+                paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(cfg.Host, cfg.Port);
                 paramMap[Constants.Context.SECURITY_PRINCIPAL] = cfg.UserName;
                 paramMap[Constants.Context.SECURITY_CREDENTIALS] = cfg.Password;
 
@@ -82,7 +78,6 @@ namespace AMSLLC.Listener.Communication.Jms
 
                 // create a text message
                 ITextMessage textMessage = session.CreateTextMessage(JsonConvert.SerializeObject(request.Data));
-                // textMessage.JMSType = request.
 
                 // send the message
                 producer.Send(textMessage);
