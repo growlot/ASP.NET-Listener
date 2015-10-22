@@ -1,4 +1,4 @@
-﻿// <copyright file="OwnerRepository.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="SiteRepository.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
@@ -13,15 +13,15 @@ namespace AMSLLC.Listener.Persistence
     /// <summary>
     /// Repository implementation for working with <see cref="Owner"/> agregate root.
     /// </summary>
-    public class OwnerRepository : IOwnerRepository
+    public class SiteRepository : ISiteRepository
     {
         private WNPDBContext dbContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OwnerRepository"/> class.
+        /// Initializes a new instance of the <see cref="SiteRepository"/> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
-        public OwnerRepository(WNPDBContext dbContext)
+        public SiteRepository(WNPDBContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -35,14 +35,10 @@ namespace AMSLLC.Listener.Persistence
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Gets the owner.
-        /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <returns>The owner memento.</returns>
-        public Task<IMemento> GetOwner(int owner)
+        /// <inheritdoc/>
+        public Task<IMemento> GetSiteByPremiseNumber(string premiseNumber)
         {
-            return Task.FromResult((IMemento)this.dbContext.FirstOrDefault<OwnerMemento>("SELECT owner FROM wndba.towner WHERE owner = @0", owner));
+            throw new NotImplementedException();
         }
     }
 }

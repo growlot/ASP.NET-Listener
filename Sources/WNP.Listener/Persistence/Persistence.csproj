@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\build\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.props" Condition="Exists('..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\build\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,6 +12,8 @@
     <AssemblyName>AMSLLC.Listener.Persistence</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +24,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\AMSLLC.Listener.Persistence.XML</DocumentationFile>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +36,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\AMSLLC.Listener.Persistence.XML</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MiniProfiler, Version=3.1.1.140, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
@@ -55,7 +64,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FluentMapper.cs" />
+    <Compile Include="..\..\AssemblyInfoCommon.cs">
+      <Link>Properties\AssemblyInfoCommon.cs</Link>
+    </Compile>
+    <Compile Include="FluentColumnMap.cs" />
+    <Compile Include="FluentMapperExtensions.cs" />
+    <Compile Include="FluentMapper{T}.cs" />
+    <Compile Include="Metadata\AmiInstallHistory.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\AuditLog.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -109,10 +126,16 @@
     <Compile Include="Metadata\DeviceTest.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\EqpAmi.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\EqpCt.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpCtHist.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\EqpGeneric.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpMeter.cs">
@@ -151,10 +174,16 @@
     <Compile Include="Metadata\EqpTransducerHist.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\EqpType.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\EventTriggers.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\FirmwareLabel.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\GenericCode.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\HarmonicConfigData.cs">
@@ -229,6 +258,9 @@
     <Compile Include="Metadata\MeterPowerSetup.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\MeterPwds.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\MeterTestResults.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -245,6 +277,9 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\NewBatch.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\Obsolete.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Owner.cs">
@@ -340,6 +375,9 @@
     <Compile Include="Metadata\SiteHist.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\SiteInstallHistory.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\SiteMetrics.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -409,6 +447,9 @@
     <Compile Include="Metadata\Validation.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\Vehicle.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\Vendor.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -427,6 +468,7 @@
     <Compile Include="Metadata\Workstation.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="SiteRepository.cs" />
     <Compile Include="OwnerRepository.cs" />
     <Compile Include="PetaPoco.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -434,6 +476,9 @@
     <Compile Include="WNPUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\FxCopRuleSets\stylecop.json">
+      <Link>Properties\stylecop.json</Link>
+    </None>
     <None Include="..\ConnectionStrings.config">
       <Link>ConnectionStrings.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -443,6 +488,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\..\FxCopRuleSets\CustomDictionary.xml">
+      <Link>Properties\CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
     <Content Include="Metadata\DBMetadata.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DBMetadata.cs</LastGenOutput>
@@ -469,7 +517,21 @@
       <Name>Repository</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\tools\analyzers\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.dll" />
+    <Analyzer Include="..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\tools\analyzers\Microsoft.CodeAnalysis.FxCopAnalyzers.dll" />
+    <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets" Condition="Exists('..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\build\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\build\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
