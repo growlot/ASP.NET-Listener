@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Core.Ninject")]
+[assembly: AssemblyTitle("Core.Ninject.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
@@ -20,4 +20,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d9dc3880-1557-45fe-828e-120d9670c50a")]
+[assembly: Guid("253c8dc2-7e79-4e86-a799-e4909d9fe25e")]

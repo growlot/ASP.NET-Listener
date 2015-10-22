@@ -15,6 +15,7 @@
       <Word>labtrack</Word> <!-- LabTrack is a third party software name -->
       <Word>sql</Word>
       <Word>jms</Word>
+      <Word>ninject</Word> <!-- DI framework name -->
     </Recognized>
     <Compound>
 		  <Term CompoundAlternate="LabTrack">labtrack</Term>
