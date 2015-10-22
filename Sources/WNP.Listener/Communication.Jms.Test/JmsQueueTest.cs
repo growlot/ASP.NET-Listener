@@ -1,6 +1,6 @@
 ﻿// //-----------------------------------------------------------------------
-// <copyright file="JmsQueueTest.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="JmsQueueTest.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 // //-----------------------------------------------------------------------
 
@@ -15,6 +15,9 @@ namespace AMSLLC.Listener.Communication.Jms.Test
     using Newtonsoft.Json;
     using WebLogic.Messaging;
 
+    /// <summary>
+    /// Tests JMS queue
+    /// </summary>
     [TestClass]
     public class JmsQueueTest
     {
@@ -30,8 +33,12 @@ namespace AMSLLC.Listener.Communication.Jms.Test
 
         private static string cfName = "weblogic.jms.ConnectionFactory";
 
+        /// <summary>
+        /// Tests message sending to JMS queue.
+        /// </summary>
+        /// <returns>The empty task</returns>
         [TestMethod]
-        public async Task TestPutMessage()
+        public async Task TestPutMessageAsync()
         {
             try
             {
@@ -48,7 +55,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
                     Port = Port
                 };
                 await dispatcher.Handle(eventData, connectionConfiguration);
-                this.ReadMessage(JsonConvert.SerializeObject(testMessage), connectionConfiguration);
+                ReadMessage(JsonConvert.SerializeObject(testMessage), connectionConfiguration);
             }
             catch (MessageException exc)
             {
@@ -56,10 +63,10 @@ namespace AMSLLC.Listener.Communication.Jms.Test
             }
         }
 
-        private void ReadMessage(string messageBody, JmsConnectionConfiguration config)
+        private static void ReadMessage(string messageBody, JmsConnectionConfiguration config)
         {
             // create properties dictionary
-            IDictionary<string, Object> paramMap = new Dictionary<string, Object>();
+            IDictionary<string, object> paramMap = new Dictionary<string, object>();
 
             // add necessary properties
             paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(config.Host, config.Port);
@@ -109,8 +116,10 @@ namespace AMSLLC.Listener.Communication.Jms.Test
 
         private class TestMessage
         {
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "False positive, property is accessed during serialization to Json string")]
             public string TransactionId { get; set; }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "False positive, property is accessed during serialization to Json string")]
             public int Value { get; set; }
         }
     }
