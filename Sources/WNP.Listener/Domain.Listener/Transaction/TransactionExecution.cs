@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="TransactionExecution.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="TransactionExecution.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
@@ -29,12 +29,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             this.validatorRegistry.Add(typeof(IUniqueHashValidator), hashValidator);
         }
-
-        /// <summary>
-        /// Gets the hash validator.
-        /// </summary>
-        /// <value>The hash validator.</value>
-        protected IUniqueHashValidator HashValidator => this.validatorRegistry[typeof(IUniqueHashValidator)] as IUniqueHashValidator;
 
         /// <summary>
         /// Gets the transaction identifier.
@@ -75,28 +69,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public virtual IDomainBuilder DomainBuilder { get; set; }
 
         /// <summary>
-        /// Sets the memento.
+        /// Gets the hash validator.
         /// </summary>
-        /// <param name="memento">The memento.</param>
-        protected override void SetMemento(IMemento memento)
-        {
-            var myMemento = (TransactionExecutionMemento)memento;
-            this.RecordKey = myMemento.RecordKey;
-            this.Id = myMemento.TransactionId;
-            this.EnabledOperationId = myMemento.EnabledOperationId;
-            this.EndpointConfigurations =
-                new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(
-                    cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
-
-            this.FieldConfigurations =
-                new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(
-                    s =>
-                    {
-                        var itm = new FieldConfiguration();
-                        ((IOriginator)itm).SetMemento(s);
-                        return itm;
-                    })));
-        }
+        /// <value>The hash validator.</value>
+        protected IUniqueHashValidator HashValidator => this.validatorRegistry[typeof(IUniqueHashValidator)] as IUniqueHashValidator;
 
         /// <summary>
         /// Processes the specified transaction.
@@ -132,7 +108,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
                     var eventData = new TransactionDataReady
                     {
-                        Data = new TransactionMessage { Data = preparedData.Data, RecordKey = this.RecordKey },
+                        Data = preparedData.Data,
+                        RecordKey = this.RecordKey
                     };
                     EventsRegister.Raise(eventData);
 
@@ -141,6 +118,30 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             }
 
             return returnValue;
+        }
+
+        /// <summary>
+        /// Sets the memento.
+        /// </summary>
+        /// <param name="memento">The memento.</param>
+        protected override void SetMemento(IMemento memento)
+        {
+            var myMemento = (TransactionExecutionMemento)memento;
+            this.RecordKey = myMemento.RecordKey;
+            this.Id = myMemento.TransactionId;
+            this.EnabledOperationId = myMemento.EnabledOperationId;
+            this.EndpointConfigurations =
+                new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(
+                    cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
+
+            this.FieldConfigurations =
+                new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(
+                    s =>
+                    {
+                        var itm = new FieldConfiguration();
+                        ((IOriginator)itm).SetMemento(s);
+                        return itm;
+                    })));
         }
     }
 }

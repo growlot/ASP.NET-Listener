@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="TransactionRegistry.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="TransactionRegistry.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
@@ -9,7 +9,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System;
     using System.Collections.Generic;
     using Communication;
-    using Core;
 
     /// <summary>
     /// Transaction Registry domain model
@@ -28,12 +27,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.TransactionKeyBuilder = transactionKeyBuilder;
             this.SummaryBuilder = summaryBuilder;
         }
-
-        private IRecordKeyBuilder KeyBuilder { get; }
-
-        private ITransactionKeyBuilder TransactionKeyBuilder { get; }
-
-        private ISummaryBuilder SummaryBuilder { get; }
 
         /// <summary>
         /// Gets the transaction record key.
@@ -112,6 +105,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The summary.</value>
         public Dictionary<string, object> Summary { get; } = new Dictionary<string, object>();
+
+        private IRecordKeyBuilder KeyBuilder { get; }
+
+        private ITransactionKeyBuilder TransactionKeyBuilder { get; }
+
+        private ISummaryBuilder SummaryBuilder { get; }
 
         /// <summary>
         /// Setup new transaction registry entry

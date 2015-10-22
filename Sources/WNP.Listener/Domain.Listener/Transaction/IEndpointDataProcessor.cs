@@ -1,13 +1,12 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="IEndpointDataProcessor.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="IEndpointDataProcessor.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System.Collections.Generic;
-    using System.Dynamic;
 
     /// <summary>
     /// Endpoint data processor interface

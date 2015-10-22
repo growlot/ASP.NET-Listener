@@ -1,15 +1,13 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="TransactionRegistryMemento.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="TransactionRegistryMemento.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System;
-    using System.Collections.Generic;
     using Communication;
-    using Core;
 
     /// <summary>
     /// Transaction Registry Memento.
@@ -32,9 +30,20 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="data">The request data.</param>
         /// <param name="message">The message.</param>
         /// <param name="details">The details.</param>
-        public TransactionRegistryMemento(int transactionId, string recordKey, string transactionKey, string companyCode, string applicationKey,
-            string operationKey, TransactionStatusType status, string userName, DateTime createdDateTime,
-            DateTime? updatedDateTime, string data, string message, string details)
+        public TransactionRegistryMemento(
+            int transactionId,
+            string recordKey,
+            string transactionKey,
+            string companyCode,
+            string applicationKey,
+            string operationKey,
+            TransactionStatusType status,
+            string userName,
+            DateTime createdDateTime,
+            DateTime? updatedDateTime,
+            string data,
+            string message,
+            string details)
         {
             this.TransactionId = transactionId;
             this.RecordKey = recordKey;

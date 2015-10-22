@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Domain.Listener.Application
 {
-    using System;
     using System.Collections.Generic;
     using Lookups;
 

@@ -1,14 +1,11 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="IntegrationEndpointConfigurationMemento.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="IntegrationEndpointConfigurationMemento.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
     using Communication;
 
     /// <summary>
@@ -22,8 +19,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="protocol">The protocol.</param>
         /// <param name="connectionDetails">The connection details.</param>
         /// <param name="triggerType">Type of the trigger.</param>
-        public IntegrationEndpointConfigurationMemento(string protocol, string connectionDetails,
-            EndpointTriggerType triggerType)
+        public IntegrationEndpointConfigurationMemento(string protocol, string connectionDetails, EndpointTriggerType triggerType)
         {
             this.Protocol = protocol;
             this.ConnectionDetails = connectionDetails;

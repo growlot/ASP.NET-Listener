@@ -1,11 +1,12 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="ConnectionConfigurationFactory.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="ConnectionConfigurationFactory.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
+    using System;
     using Communication;
     using Core;
 
