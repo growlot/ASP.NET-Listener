@@ -81,6 +81,83 @@ public static class DBMetadata {
 	/// </summary>
 	public static readonly TransactionLogImpl TransactionLog = new TransactionLogImpl();	
 	/// <summary>
+	/// <para />Schema: dbo
+	/// <para />Table Name: __MigrationHistory
+	/// <para />Class Name: __MigrationHistory
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly MigrationhistoryImpl Migrationhistory = new MigrationhistoryImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: TSYS_VALIDATION
+	/// <para />Class Name: TSYS_VALIDATION
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly SysValidationImpl SysValidation = new SysValidationImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tfirmware_label
+	/// <para />Class Name: tfirmware_label
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly FirmwareLabelImpl FirmwareLabel = new FirmwareLabelImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tlistener_config
+	/// <para />Class Name: tlistener_config
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly ListenerConfigImpl ListenerConfig = new ListenerConfigImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tbarcode_ct
+	/// <para />Class Name: tbarcode_ct
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly BarcodeCtImpl BarcodeCt = new BarcodeCtImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: TTRACKING
+	/// <para />Class Name: TTRACKING
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly TrackingImpl Tracking = new TrackingImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tbarcode_pt
+	/// <para />Class Name: tbarcode_pt
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly BarcodePtImpl BarcodePt = new BarcodePtImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: TTRACKING_IN
+	/// <para />Class Name: TTRACKING_IN
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly TrackingInImpl TrackingIn = new TrackingInImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tlistener_transaction_log
+	/// <para />Class Name: tlistener_transaction_log
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly ListenerTransactionLogImpl ListenerTransactionLog = new ListenerTransactionLogImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: TTRACKING_OUT
+	/// <para />Class Name: TTRACKING_OUT
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly TrackingOutImpl TrackingOut = new TrackingOutImpl();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tlistener_transaction_source
+	/// <para />Class Name: tlistener_transaction_source
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly ListenerTransactionSourceImpl ListenerTransactionSource = new ListenerTransactionSourceImpl();	
+	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TLOT_PERCENT_DEF
 	/// <para />Class Name: TLOT_PERCENT_DEF
@@ -558,76 +635,6 @@ public static class DBMetadata {
 	public static readonly SysControlImpl SysControl = new SysControlImpl();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TSYS_VALIDATION
-	/// <para />Class Name: TSYS_VALIDATION
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly SysValidationImpl SysValidation = new SysValidationImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: tfirmware_label
-	/// <para />Class Name: tfirmware_label
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly FirmwareLabelImpl FirmwareLabel = new FirmwareLabelImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: tlistener_config
-	/// <para />Class Name: tlistener_config
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly ListenerConfigImpl ListenerConfig = new ListenerConfigImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: tbarcode_ct
-	/// <para />Class Name: tbarcode_ct
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly BarcodeCtImpl BarcodeCt = new BarcodeCtImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TTRACKING
-	/// <para />Class Name: TTRACKING
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly TrackingImpl Tracking = new TrackingImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: tbarcode_pt
-	/// <para />Class Name: tbarcode_pt
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly BarcodePtImpl BarcodePt = new BarcodePtImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TTRACKING_IN
-	/// <para />Class Name: TTRACKING_IN
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly TrackingInImpl TrackingIn = new TrackingInImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: tlistener_transaction_log
-	/// <para />Class Name: tlistener_transaction_log
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly ListenerTransactionLogImpl ListenerTransactionLog = new ListenerTransactionLogImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TTRACKING_OUT
-	/// <para />Class Name: TTRACKING_OUT
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly TrackingOutImpl TrackingOut = new TrackingOutImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: tlistener_transaction_source
-	/// <para />Class Name: tlistener_transaction_source
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly ListenerTransactionSourceImpl ListenerTransactionSource = new ListenerTransactionSourceImpl();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: ttransducer_test_results
 	/// <para />Class Name: ttransducer_test_result
 	/// <para />Is View: False
@@ -864,6 +871,17 @@ public static class DBMetadata {
 				{Device.RealTableName, Device},
 				{DeviceTest.RealTableName, DeviceTest},
 				{TransactionLog.RealTableName, TransactionLog},
+				{Migrationhistory.RealTableName, Migrationhistory},
+				{SysValidation.RealTableName, SysValidation},
+				{FirmwareLabel.RealTableName, FirmwareLabel},
+				{ListenerConfig.RealTableName, ListenerConfig},
+				{BarcodeCt.RealTableName, BarcodeCt},
+				{Tracking.RealTableName, Tracking},
+				{BarcodePt.RealTableName, BarcodePt},
+				{TrackingIn.RealTableName, TrackingIn},
+				{ListenerTransactionLog.RealTableName, ListenerTransactionLog},
+				{TrackingOut.RealTableName, TrackingOut},
+				{ListenerTransactionSource.RealTableName, ListenerTransactionSource},
 				{LotPercentDef.RealTableName, LotPercentDef},
 				{LotAcceptQualityLevel.RealTableName, LotAcceptQualityLevel},
 				{ImportExportOptions.RealTableName, ImportExportOptions},
@@ -932,16 +950,6 @@ public static class DBMetadata {
 				{Status.RealTableName, Status},
 				{ListenerConfigNotifications.RealTableName, ListenerConfigNotifications},
 				{SysControl.RealTableName, SysControl},
-				{SysValidation.RealTableName, SysValidation},
-				{FirmwareLabel.RealTableName, FirmwareLabel},
-				{ListenerConfig.RealTableName, ListenerConfig},
-				{BarcodeCt.RealTableName, BarcodeCt},
-				{Tracking.RealTableName, Tracking},
-				{BarcodePt.RealTableName, BarcodePt},
-				{TrackingIn.RealTableName, TrackingIn},
-				{ListenerTransactionLog.RealTableName, ListenerTransactionLog},
-				{TrackingOut.RealTableName, TrackingOut},
-				{ListenerTransactionSource.RealTableName, ListenerTransactionSource},
 				{TransducerTestResults.RealTableName, TransducerTestResults},
 				{Barcode.RealTableName, Barcode},
 				{MeterLimitSet.RealTableName, MeterLimitSet},

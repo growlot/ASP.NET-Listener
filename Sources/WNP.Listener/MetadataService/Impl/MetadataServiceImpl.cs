@@ -112,8 +112,8 @@ namespace AMSLLC.Listener.MetadataService.Impl
                 }
 
                 Type actionsContainer = null;
-                if (_actionConfigurator.IsEntityActionsContainerAvailable(tableName))
-                    actionsContainer = _actionConfigurator.GetEntityActionContainer(tableName);
+                if (_actionConfigurator.IsEntityActionsContainerAvailable($"wndba.{tableName}"))
+                    actionsContainer = _actionConfigurator.GetEntityActionContainer($"wndba.{tableName}");
 
                 var oDataModelMapping = new MetadataModel($"wndba.{tableName}", modelClassName, modelToColumnMappings, columnToModelMappings, fieldsInfo, actionsContainer);
                 oDataModelMappings.Add($"{ODataModelNamespace}.{modelClassName}", oDataModelMapping);

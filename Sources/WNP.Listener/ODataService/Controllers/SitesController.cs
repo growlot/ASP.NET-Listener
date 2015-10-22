@@ -3,6 +3,14 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+
+using System.Threading;
+using System.Web.Http.Controllers;
+using AMSLLC.Listener.ODataService.Actions;
+using AMSLLC.Listener.ODataService.Actions.Attributes;
+using AMSLLC.Listener.ODataService.Controllers.Base;
+using AMSLLC.Listener.Persistence.Metadata;
+
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System.Threading.Tasks;
@@ -17,13 +25,15 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Web.OData;
     using Persistence;
 
-    public class SitesController : WNPController
+    public class SitesController : WNPEntityController
     {
+        public override string GetEntityTableName() => DBMetadata.Site.FullTableName;
+
         public SitesController(IMetadataService metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
             : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
         {
         }
-                
+
         public Task<IHttpActionResult> Post()
         {
             if (!ModelState.IsValid)

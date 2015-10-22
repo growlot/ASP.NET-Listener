@@ -91,6 +91,11 @@ public class SiteMetricsImpl: ITableInformation {
 		get { return "tsite_metrics".ToLowerInvariant(); }		
 	}
 
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return _columnsLookup; } }
 
 	public Dictionary<string, ColumnInformation> _columnsLookup = new Dictionary<string, ColumnInformation>() 

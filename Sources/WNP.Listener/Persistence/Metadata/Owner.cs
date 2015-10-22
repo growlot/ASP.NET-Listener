@@ -97,6 +97,11 @@ public class OwnerImpl: ITableInformation {
 		get { return "TOWNER".ToLowerInvariant(); }		
 	}
 
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return _columnsLookup; } }
 
 	public Dictionary<string, ColumnInformation> _columnsLookup = new Dictionary<string, ColumnInformation>() 

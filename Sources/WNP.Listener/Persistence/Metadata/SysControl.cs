@@ -109,6 +109,11 @@ public class SysControlImpl: ITableInformation {
 		get { return "TSYS_CONTROL".ToLowerInvariant(); }		
 	}
 
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return _columnsLookup; } }
 
 	public Dictionary<string, ColumnInformation> _columnsLookup = new Dictionary<string, ColumnInformation>() 

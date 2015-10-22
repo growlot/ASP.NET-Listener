@@ -238,6 +238,9 @@
     <Compile Include="Metadata\Mfr.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\Migrationhistory.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\Multimedia.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>

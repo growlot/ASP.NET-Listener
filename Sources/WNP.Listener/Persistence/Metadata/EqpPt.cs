@@ -385,6 +385,11 @@ public class EqpPtImpl: ITableInformation {
 		get { return "TEQP_PT".ToLowerInvariant(); }		
 	}
 
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return _columnsLookup; } }
 
 	public Dictionary<string, ColumnInformation> _columnsLookup = new Dictionary<string, ColumnInformation>() 

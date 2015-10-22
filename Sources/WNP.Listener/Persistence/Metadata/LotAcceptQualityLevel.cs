@@ -37,6 +37,11 @@ public class LotAcceptQualityLevelImpl: ITableInformation {
 		get { return "TLOT_ACCEPT_QUALITY_LEVEL".ToLowerInvariant(); }		
 	}
 
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return _columnsLookup; } }
 
 	public Dictionary<string, ColumnInformation> _columnsLookup = new Dictionary<string, ColumnInformation>() 

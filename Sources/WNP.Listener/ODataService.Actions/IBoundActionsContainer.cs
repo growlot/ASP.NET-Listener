@@ -1,7 +1,17 @@
 ﻿namespace AMSLLC.Listener.ODataService.Actions
 {
+    /// <summary>
+    /// Interface is used to mark class as containing entity actions.
+    /// Currently is used only in conjunction with WNPController.
+    /// </summary>
     public interface IBoundActionsContainer
     {
-        string GetTableName();
+        /// <summary>
+        /// The specifics of this method is that it can (and will) be invoked without 
+        /// creating initialized class instance. Thus the implementation should not rely on
+        /// any constructor-related logic.
+        /// </summary>
+        /// <returns>Table name in lower case (with schema)</returns>
+        string GetEntityTableName();
     }
 }

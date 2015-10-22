@@ -61,6 +61,11 @@ public class ReferenceInstallHistoryImpl: ITableInformation {
 		get { return "TREFERENCE_INSTALL_HISTORY".ToLowerInvariant(); }		
 	}
 
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return _columnsLookup; } }
 
 	public Dictionary<string, ColumnInformation> _columnsLookup = new Dictionary<string, ColumnInformation>() 

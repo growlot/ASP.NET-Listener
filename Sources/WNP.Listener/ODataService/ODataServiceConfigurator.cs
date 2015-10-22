@@ -48,8 +48,8 @@ namespace AMSLLC.Listener.ODataService
                 routePrefix: null,
                 model: this.modelGenerator.GenerateODataModel(),
                 pathHandler: new DefaultODataPathHandler(),
-                routingConventions: conventions,
-                defaultHandler: new DefaultODataBatchHandler(new HttpServer(config)));
+                routingConventions: conventions //,
+                /*defaultHandler: new DefaultODataBatchHandler(new HttpServer(config))*/);
 
             // separate OData endpoint for Listener API
             var builder = new ODataConventionModelBuilder

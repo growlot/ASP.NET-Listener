@@ -217,6 +217,11 @@ public class CustomFieldDescriptionsImpl: ITableInformation {
 		get { return "TCUSTOM_FIELD_DESCRIPTIONS".ToLowerInvariant(); }		
 	}
 
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return _columnsLookup; } }
 
 	public Dictionary<string, ColumnInformation> _columnsLookup = new Dictionary<string, ColumnInformation>() 

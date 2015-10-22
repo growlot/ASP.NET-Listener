@@ -37,7 +37,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                 _metadataService.ODataModelAssembly.GetTypes()
                     .Where(type => typeof(IODataEntity).IsAssignableFrom(type));
 
-            generatedModels.Map(type => GenerateBoundAction(type, builder));
+            generatedModels.Map(type => GenerateBoundActions(type, builder));
 
             GenerateUnboundActions(builder);
 
@@ -54,16 +54,26 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
             unboundActionContainers.Map(type =>
             {
-                var actionMethodsList = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                var actionMethodsList =
+                    type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                        .Where(info => info.CustomAttributes.Any(data => data.AttributeType == typeof (UnboundActionAttribute)));
+
+                var actionPrefix = type.Name;
+                var actionPrefixAttribute =
+                    type.GetCustomAttributes(typeof (ActionPrefixAttribute)).FirstOrDefault() as ActionPrefixAttribute;
+
+                if (actionPrefixAttribute != null)
+                    actionPrefix = actionPrefixAttribute.Prefix;
+
                 actionMethodsList.Map(info =>
                 {
-                    var actionConfiguration = builder.Action($"{type.Name}_{info.Name}");
+                    var actionConfiguration = builder.Action($"{actionPrefix}_{info.Name}");
                     CreateActionParameters(info, actionConfiguration);
                 });                
             });
         }
 
-        private void GenerateBoundAction(Type type, ODataConventionModelBuilder builder)
+        private void GenerateBoundActions(Type type, ODataConventionModelBuilder builder)
         {
             var entitySetMethod = typeof (ODataConventionModelBuilder).GetMethod("EntitySet");
             var entityTypeMethod = typeof (ODataConventionModelBuilder).GetMethod("EntityType");
@@ -78,7 +88,8 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                 var actionMethodsList =
                     actionsContainer.GetMethods(BindingFlags.Public | BindingFlags.Instance |
                                                 BindingFlags.DeclaredOnly)
-                        .Where(info => info.Name != "GetTableName");
+                        .Where(info => info.Name != "GetEntityTableName")
+                        .Where(info => info.CustomAttributes.Any(data => data.AttributeType == typeof(BoundActionAttribute)));
 
                 actionMethodsList.Map(info =>
                 {
@@ -121,6 +132,14 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             var etcType = entityTypeConfiguration.GetType();
 
             object actionConfiguration;
+            var actionPrefix = actionsContainer.Name;
+            var actionPrefixAttribute =
+                actionsContainer.GetCustomAttributes(typeof (ActionPrefixAttribute)).FirstOrDefault() as
+                    ActionPrefixAttribute;
+
+            if (actionPrefixAttribute != null)
+                actionPrefix = actionPrefixAttribute.Prefix;
+
             if (isCollectionWide)
             {
                 var collectionPropertyType = etcType.GetProperty("Collection").PropertyType;
@@ -129,13 +148,13 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                 var actionMethodInfo = collectionPropertyType.GetMethod("Action");
 
                 actionConfiguration = actionMethodInfo.Invoke(collectionProperty,
-                    new[] {$"{actionsContainer.Name}_{actionMethod.Name}"});
+                    new[] {$"{actionPrefix}_{actionMethod.Name}"});
             }
             else
             {
                 var actionMethodInfo = etcType.GetMethod("Action");
                 actionConfiguration = actionMethodInfo.Invoke(entityTypeConfiguration,
-                    new[] {$"{actionsContainer.Name}_{actionMethod.Name}"});
+                    new[] {$"{actionPrefix}_{actionMethod.Name}"});
             }
 
             return actionConfiguration as ActionConfiguration;
