@@ -1,114 +1,64 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="SerializationUtilities.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="SerializationUtilities.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Utilities
 {
     using System.Collections.Generic;
-    using System.Dynamic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Serialization;
 
+    /// <summary>
+    /// Various methods to help serialize and deserialize objects to various formats
+    /// </summary>
     public static class SerializationUtilities
     {
+        /// <summary>
+        /// Converts name value dictionary to XML string.
+        /// </summary>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <returns>The XML string</returns>
         public static string DictionaryToXml(Dictionary<string, object> dictionary)
         {
-            XElement el = new XElement("root",
-                dictionary.Select(kv => new XElement(kv.Key, kv.Value?.ToString())));
+            XElement el = new XElement("root", dictionary.Select(kv => new XElement(kv.Key, kv.Value?.ToString())));
             return el.ToString(SaveOptions.DisableFormatting);
         }
 
-        public static string AsString(this XmlDocument document)
-        {
-            using (var stringWriter = new StringWriter())
-            using (var xmlTextWriter = XmlWriter.Create(stringWriter))
-            {
-                document.WriteTo(xmlTextWriter);
-                xmlTextWriter.Flush();
-                return stringWriter.GetStringBuilder().ToString();
-            }
-        }
-
+        /// <summary>
+        /// Convert any type to XML string.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the model.</typeparam>
+        /// <param name="data">The data.</param>
+        /// <returns>The XML string</returns>
         public static string ToXml<TModel>(TModel data)
         {
-            XmlSerializer xsSubmit = new XmlSerializer(typeof (TModel));
-            using (StringWriter sww = new StringWriter())
-            using (XmlWriter writer = XmlWriter.Create(sww))
+            XmlSerializer xsSubmit = new XmlSerializer(typeof(TModel));
+            StringWriter stringWriter = null;
+            try
             {
-                xsSubmit.Serialize(writer, data);
-                return sww.ToString();
+                stringWriter = new StringWriter(CultureInfo.InvariantCulture);
+
+                using (XmlWriter writer = XmlWriter.Create(stringWriter))
+                {
+                    stringWriter = null;
+                    xsSubmit.Serialize(writer, data);
+                }
+
+                return stringWriter.ToString();
+            }
+            finally
+            {
+                if (stringWriter != null)
+                {
+                    stringWriter.Dispose();
+                }
             }
         }
-
-        public static string ToX<TModel>(TModel data)
-        {
-            XDocument target = new XDocument();
-            XmlSerializer s = new XmlSerializer(typeof (TModel));
-            using (XmlWriter writer = target.CreateWriter())
-            {
-                s.Serialize(writer, data);
-            }
-            return target.ToString();
-        }
-
-        public static dynamic AsExpando(this XDocument document)
-        {
-            var tmpDoc = new XDocument(new XElement("root"));
-            tmpDoc.Root.Add();
-            return CreateExpando(document.Root.Elements());
-        }
-
-        private static dynamic CreateExpando(IEnumerable<XElement> elements)
-        {
-            var returnValue = new ExpandoObject() as IDictionary<string, object>;
-
-            foreach (var xElement in elements)
-            {
-                returnValue.Add(xElement.Name.ToString(),
-                    xElement.HasElements ? CreateExpando(xElement) : xElement.Value);
-            }
-
-            return returnValue;
-        }
-
-        private static dynamic CreateExpando(XElement element)
-        {
-            var result = new ExpandoObject() as IDictionary<string, object>;
-
-            if (element.Elements().Any(e => e.HasElements))
-            {
-                var list = new List<ExpandoObject>();
-
-                result.Add(element.Name.ToString(), list);
-
-                foreach (var childElement in element.Elements())
-                    list.Add(CreateExpando(childElement));
-            }
-            else
-            {
-                foreach (var leafElement in element.Elements())
-                    result.Add(leafElement.Name.ToString(), leafElement.Value);
-            }
-
-            return result;
-        }
-
-        //    }
-        //        document.
-        //    {
-
-        //    foreach (var o in expando)
-        //    XDocument document = new XDocument();
-        //{
-
-        //public static XDocument JsonToXml(ExpandoObject expando)
-
-        //    return document;
-        //}
     }
 }

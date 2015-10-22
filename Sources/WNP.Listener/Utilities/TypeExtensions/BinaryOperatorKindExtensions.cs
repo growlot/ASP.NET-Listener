@@ -1,26 +1,22 @@
-﻿using System;
-using Microsoft.OData.Core.UriParser.Semantic;
-using Microsoft.OData.Core.UriParser.TreeNodeKinds;
-using Microsoft.OData.Edm.Library;
+﻿// <copyright file="BinaryOperatorKindExtensions.cs" company="Advanced Metering Services LLC">
+// Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
-namespace AMSLLC.Listener.Utilities
+namespace Microsoft.OData.Core.UriParser.TreeNodeKinds
 {
-    public static class EdmExtensions
+    /// <summary>
+    /// Defines custom extensions for <see cref="BinaryOperatorKind"/> type
+    /// </summary>
+    public static class BinaryOperatorKindExtensions
     {
-        public static object ToKnownClrType(this ConstantNode constNode)
+        /// <summary>
+        /// Converts <see cref="BinaryOperatorKind"/> from Edm operator to SQL operator.
+        /// </summary>
+        /// <param name="binaryOperator">The binary operator.</param>
+        /// <returns>The binary operator for use in SQL construction.</returns>
+        public static string ToSqlOperator(this BinaryOperatorKind binaryOperator)
         {
-            if (constNode.Value is Date)
-            {
-                var edmDate = ((Date)constNode.Value);
-                return new DateTime(edmDate.Year, edmDate.Month, edmDate.Day);
-            }
-
-            return constNode.Value;
-        }
-
-        public static string ToSqlOperator(this BinaryOperatorKind binaryOpertor)
-        {
-            switch (binaryOpertor)
+            switch (binaryOperator)
             {
                 case BinaryOperatorKind.Add:
                     return "+";
@@ -48,19 +44,6 @@ namespace AMSLLC.Listener.Utilities
                     return "OR";
                 case BinaryOperatorKind.Subtract:
                     return "-";
-                default:
-                    return null;
-            }
-        }
-
-        public static string ToSqlOperator(this UnaryOperatorKind unaryOperator)
-        {
-            switch (unaryOperator)
-            {
-                case UnaryOperatorKind.Negate:
-                    return "!";
-                case UnaryOperatorKind.Not:
-                    return "NOT";
                 default:
                     return null;
             }
