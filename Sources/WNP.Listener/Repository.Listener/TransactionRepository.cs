@@ -1,129 +1,171 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="TransactionRepository.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="TransactionRepository.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Repository.Listener
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Communication;
+    using Core;
     using Domain;
     using Domain.Listener.Transaction;
     using Persistence.Listener;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Communication;
-    using Core;
-    using Newtonsoft.Json;
     using Utilities;
 
+    /// <summary>
+    /// Implements <see cref="ITransactionRepository"/> for AsyncPoco
+    /// </summary>
     public class TransactionRepository : ITransactionRepository
     {
-        private readonly IPersistenceAdapter _persistence;
+        private readonly IPersistenceAdapter persistence;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransactionRepository"/> class.
+        /// </summary>
+        /// <param name="persistence">The persistence.</param>
         public TransactionRepository(IPersistenceAdapter persistence)
         {
-            this._persistence = persistence;
+            this.persistence = persistence;
         }
 
-        public Task Create(TransactionExecution transaction)
+        /// <summary>
+        /// Finalizes an instance of the <see cref="TransactionRepository" /> class.
+        /// </summary>
+        ~TransactionRepository()
+        {
+            // Finalizer calls Dispose(false)
+            this.Dispose(false);
+        }
+
+        /// <inheritdoc/>
+        public Task CreateAsync(TransactionExecution transaction)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(TransactionExecution transaction)
+        /// <inheritdoc/>
+        public Task UpdateAsync(TransactionExecution transaction)
         {
             throw new NotImplementedException();
         }
 
-        public async Task UpdateHash(int transactionId, string hash)
+        /// <inheritdoc/>
+        public async Task UpdateHashAsync(int transactionId, string hash)
         {
-            //Single update, transaction scope removed
-            //await
+            // Single update, transaction scope removed
+            // await
             //    _persistence.UpdateAsync("TransactionRegistry", "TransactionId", new TransactionRegistryEntity()
             //    {
             //        TransactionHash = hash
             //    }, new[] { "TransactionHash" });
-
             await
-                this._persistence.UpdateAsync(new TransactionRegistryEntity { TransactionHash = hash, TransactionId = transactionId }, transactionId,
+                this.persistence.UpdateAsync(
+                    new TransactionRegistryEntity { TransactionHash = hash, TransactionId = transactionId },
+                    transactionId,
                     new[] { "TransactionHash" });
         }
 
-        /// <summary>
-        /// Gets the field configurations.
-        /// </summary>
-        /// <param name="companyCode">The company code.</param>
-        /// <param name="sourceApplicationKey">The source application key.</param>
-        /// <param name="operationKey">The operation key.</param>
-        /// <returns>Task&lt;IEnumerable&lt;IMemento&gt;&gt;.</returns>
-        public async Task<IEnumerable<IMemento>> GetFieldConfigurations(string companyCode, string sourceApplicationKey, string operationKey)
+        /// <inheritdoc/>
+        public async Task<IEnumerable<IMemento>> GetFieldConfigurationsAsync(string companyCode, string sourceApplicationKey, string operationKey)
         {
-            var fieldConfigurationEntries = await this._persistence.GetListAsync<FieldConfigurationEntryEntity>(
-                       @"SELECT FCE.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
+            var select = @"SELECT FCE.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
 INNER JOIN Company C ON EO.CompanyId = C.CompanyId
-INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2", companyCode, sourceApplicationKey, operationKey);
-            var valueMapEntries = await this._persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
-            var valueMaps = await this._persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
+INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2";
 
-           return this.PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps);
+            var fieldConfigurationEntries = await this.persistence.GetListAsync<FieldConfigurationEntryEntity>(
+                       select,
+                       companyCode,
+                       sourceApplicationKey,
+                       operationKey);
+            var valueMapEntries = await this.persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
+            var valueMaps = await this.persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
+
+           return PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps);
         }
 
-        //        public Task<int> GetEnabledOperation(string companyCode, string sourceApplicationKey, string operationKey)
-        //        {
-        //            return _persistence.ExecuteScalarAsync<int>(@"SELECT EO.EnabledOperationId FROM EnabledOperation EO
-        //INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId
-        //INNER JOIN Company C ON EO.CompanyId = C.CompanyId
-        //INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2", companyCode, sourceApplicationKey, operationKey);
-        //        }
-
-        public async Task<IMemento> GetExecutionContext(string recordKey)
+        /// <inheritdoc/>
+        public async Task<IMemento> GetExecutionContextAsync(string recordKey)
         {
             TransactionExecutionMemento returnValue = null;
-            var protocols = await this._persistence.GetListAsync<ProtocolTypeEntity>("SELECT * FROM ProtocolType");
+            var protocols = await this.persistence.GetListAsync<ProtocolTypeEntity>("SELECT * FROM ProtocolType");
             var valueMapEntries =
-                await this._persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
-            var valueMaps = await this._persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
-            //var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
-            var tr = await this._persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
-            //
-            var endpoints = await this._persistence.ProjectionAsync<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IntegrationEndpointConfigurationMemento>((ee, oe, eo) => new IntegrationEndpointConfigurationMemento(protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name, ee.ConnectionConfiguration,
-                                 (EndpointTriggerType)ee.EndpointTriggerTypeId), @"SELECT 
-	E.*, OE.*, EO.*
+                await this.persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
+            var valueMaps = await this.persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
+
+            // var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
+            var tr = await this.persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
+
+            Func<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IntegrationEndpointConfigurationMemento> callback = (ee, oe, eo) => new IntegrationEndpointConfigurationMemento(
+                    protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name,
+                    ee.ConnectionConfiguration,
+                    (EndpointTriggerType)ee.EndpointTriggerTypeId);
+
+            var select = @"
+SELECT E.*, OE.*, EO.*
 FROM 
 	Endpoint E 
 	INNER JOIN OperationEndpoint OE ON E.EndpointId = OE.EndpointId
 	INNER JOIN EnabledOperation EO ON OE.EnabledOperationId = EO.EnabledOperationId
 	INNER JOIN TransactionRegistry TR ON TR.EnabledOperationId = EO.EnabledOperationId
     LEFT JOIN FieldConfiguration FC ON EO.FieldConfigurationId = FC.FieldConfigurationId 
-WHERE TR.RecordKey = @0", recordKey);
+WHERE TR.RecordKey = @0";
 
-            var fieldConfigurationEntries =
-                await
-                    this._persistence.GetListAsync<FieldConfigurationEntryEntity>(
-                        "SELECT FCE.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId WHERE EO.EnabledOperationId = @0", tr.EnabledOperationId);
+            var endpoints = await this.persistence.ProjectionAsync(
+                callback,
+                select,
+                recordKey);
+
+            select = @"
+SELECT FCE.* 
+FROM FieldConfigurationEntry FCE 
+    INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId 
+    INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId 
+WHERE EO.EnabledOperationId = @0";
+
+            var fieldConfigurationEntries = await this.persistence.GetListAsync<FieldConfigurationEntryEntity>(
+                        select,
+                        tr.EnabledOperationId);
 
             if (endpoints != null)
             {
-                returnValue = new TransactionExecutionMemento(tr.TransactionId, recordKey, tr.EnabledOperationId, endpoints, this.PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps));
+                returnValue = new TransactionExecutionMemento(
+                    tr.TransactionId,
+                    recordKey,
+                    tr.EnabledOperationId,
+                    endpoints,
+                    PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps));
             }
+
             return returnValue;
         }
 
-        public async Task Create(TransactionRegistry transactionRegistry)
+        /// <inheritdoc/>
+        public async Task CreateTransactionRegistryAsync(TransactionRegistry transactionRegistry)
         {
+            var select = @"
+SELECT EO.EnabledOperationId 
+FROM EnabledOperation EO 
+    INNER JOIN Application A ON A.ApplicationId = EO.ApplicationId 
+    INNER JOIN Company C ON C.CompanyId = EO.CompanyId 
+    INNER JOIN Operation O ON O.OperationId = EO.OperationId 
+WHERE A.RecordKey = @0 AND C.ExternalCode = @1 AND O.Name = @2";
 
             var enabledOperationid =
                 await
-                    this._persistence.ExecuteScalarAsync<int>(
-                        "SELECT EO.EnabledOperationId FROM EnabledOperation EO INNER JOIN Application A ON A.ApplicationId = EO.ApplicationId INNER JOIN Company C ON C.CompanyId = EO.CompanyId INNER JOIN Operation O ON O.OperationId = EO.OperationId WHERE A.RecordKey = @0 AND C.ExternalCode = @1 AND O.Name = @2",
-                        transactionRegistry.ApplicationKey, transactionRegistry.CompanyCode,
+                    this.persistence.ExecuteScalarAsync<int>(
+                        select,
+                        transactionRegistry.ApplicationKey,
+                        transactionRegistry.CompanyCode,
                         transactionRegistry.OperationKey);
 
-            //Single insert, transaction scope removed
+            // Single insert, transaction scope removed
             await
-                this._persistence.InsertAsync(new TransactionRegistryEntity //"TransactionRegistry", "TransactionId",
+                this.persistence.InsertAsync(new TransactionRegistryEntity // "TransactionRegistry", "TransactionId",
                 {
                     CreatedDateTime = transactionRegistry.CreatedDateTime,
                     RecordKey = transactionRegistry.RecordKey,
@@ -139,54 +181,92 @@ WHERE TR.RecordKey = @0", recordKey);
                 });
         }
 
+        /// <inheritdoc/>
         public async Task<IMemento> GetRegistryEntry(string recordKey)
         {
-            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app,
-                 cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, tr.TransactionKey, cmp.ExternalCode, app.RecordKey, op.Name,
-                     (TransactionStatusType)tr.TransactionStatusId, tr.AppUser, tr.CreatedDateTime,
-                     tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details);
+            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app, cmp, op) => new TransactionRegistryMemento(
+                tr.TransactionId,
+                tr.RecordKey,
+                tr.TransactionKey,
+                cmp.ExternalCode,
+                app.RecordKey,
+                op.Name,
+                (TransactionStatusType)tr.TransactionStatusId,
+                tr.AppUser,
+                tr.CreatedDateTime,
+                tr.UpdatedDateTime,
+                tr.Data,
+                tr.Message,
+                tr.Details);
 
-            var registryEntities = await
-                    this._persistence.ProjectionAsync(callback,
-                        @"SELECT TR.*, A.*, C.*, O.*
+            var select = @"
+SELECT TR.*, A.*, C.*, O.*
 FROM TransactionRegistry TR 
-INNER JOIN EnabledOperation EO ON TR.EnabledOperationId = EO.EnabledOperationId
-INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
-INNER JOIN Company C ON EO.CompanyId = C.CompanyId
-INNER JOIN Operation O ON EO.OperationId = O.OperationId
-WHERE TR.RecordKey = @0", recordKey);
+    INNER JOIN EnabledOperation EO ON TR.EnabledOperationId = EO.EnabledOperationId
+    INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
+    INNER JOIN Company C ON EO.CompanyId = C.CompanyId
+    INNER JOIN Operation O ON EO.OperationId = O.OperationId
+WHERE TR.RecordKey = @0";
+
+            var registryEntities = await this.persistence.ProjectionAsync(
+                callback,
+                select,
+                recordKey);
 
             return registryEntities.SingleOrDefault();
         }
 
-        public async Task Update(TransactionRegistry transactionRegistry)
+        /// <inheritdoc/>
+        public async Task UpdateTransactionRegistryAsync(TransactionRegistry transactionRegistry)
         {
-            await
-                this._persistence.UpdateAsync(new TransactionRegistryEntity
-                {
-                    TransactionId = transactionRegistry.Id,
-                    TransactionStatusId = (int)transactionRegistry.Status,
-                    UpdatedDateTime = transactionRegistry.UpdatedDateTime,
-                    AppUser = transactionRegistry.UserName,
-                    Message = transactionRegistry.Message,
-                    Details = transactionRegistry.Details
-                }, transactionRegistry.Id,
-                    new[] { "TransactionStatusId", "UpdatedDateTime", "AppUser", "Message", "Details" });
+            var entity = new TransactionRegistryEntity
+            {
+                TransactionId = transactionRegistry.Id,
+                TransactionStatusId = (int)transactionRegistry.Status,
+                UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                AppUser = transactionRegistry.UserName,
+                Message = transactionRegistry.Message,
+                Details = transactionRegistry.Details
+            };
+
+            await this.persistence.UpdateAsync(
+                entity,
+                transactionRegistry.Id,
+                new[] { "TransactionStatusId", "UpdatedDateTime", "AppUser", "Message", "Details" });
         }
 
-        public Task<string> GetTransactionData(string recordKey)
+        /// <inheritdoc/>
+        public Task<string> GetTransactionDataAsync(string recordKey)
         {
-            return this._persistence.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
+            return this.persistence.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
         }
 
-        public Task<int> GetHashCount(int enabledOperationId, string hash)
+        /// <inheritdoc/>
+        public Task<int> GetHashCountAsync(int enabledOperationId, string hash)
         {
-            return this._persistence.ExecuteScalarAsync<int>("SELECT COUNT(TransactionHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND TransactionHash = @1", enabledOperationId, hash);
+            return this.persistence.ExecuteScalarAsync<int>("SELECT COUNT(TransactionHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND TransactionHash = @1", enabledOperationId, hash);
         }
 
-        private IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)
+        /// <inheritdoc/>
+        public void Dispose()
         {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
+        /// <summary>
+        /// Disposes the specified disposing.
+        /// </summary>
+        /// <param name="disposing">The disposing.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        private static IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)
+        {
             List<FieldConfigurationMemento> returnValue = new List<FieldConfigurationMemento>();
 
             foreach (var fieldConfigurationEntry in fieldConfigurationEntries)
@@ -199,42 +279,18 @@ WHERE TR.RecordKey = @0", recordKey);
                     {
                         break;
                     }
+
                     var mapType = valueMaps.Single(m => m.ValueMapId == map.First().ValueMapId);
                     foreach (var valueMapEntry in map)
                     {
                         valueMap.Add(valueMapEntry.RecordKey ?? string.Empty, ValueConverter.Convert(valueMapEntry.Value, mapType.ValueType));
                     }
                 }
+
                 returnValue.Add(new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.HashSequence, fieldConfigurationEntry.KeySequence, valueMap));
             }
 
             return returnValue;
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="TransactionRepository" /> class.
-        /// </summary>
-        ~TransactionRepository()
-        {
-            // Finalizer calls Dispose(false)
-            this.Dispose(false);
-        }
-
-        /// <summary>
-        /// Disposes the specified disposing.
-        /// </summary>
-        /// <param name="disposing">The disposing.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-            }
         }
     }
 }

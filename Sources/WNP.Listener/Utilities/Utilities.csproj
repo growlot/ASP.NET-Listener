@@ -73,6 +73,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="StringUtilities.cs" />
     <Compile Include="TypeExtensions\XMLDocumentExtensions.cs" />
     <Compile Include="TypeExtensions\XDocumentExtensions.cs" />
     <Compile Include="TypeExtensions\MemoryCacheExtensions.cs" />
