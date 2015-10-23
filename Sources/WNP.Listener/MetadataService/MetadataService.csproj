@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\build\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.props" Condition="Exists('..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\build\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,6 +12,8 @@
     <AssemblyName>AMSLLC.Listener.MetadataService</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,8 +24,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Debug\AMSLLC.Listener.MetadataService.XML</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,32 +36,19 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Release\AMSLLC.Listener.MetadataService.XML</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\1234.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AutoMapper.4.0.4\lib\net45\AutoMapper.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MiniProfiler, Version=3.1.1.140, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\MiniProfiler.3.1.1.140\lib\net40\MiniProfiler.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Ninject.Web.Common.3.2.3.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Serilog, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Serilog.1.5.11\lib\net45\Serilog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Serilog.FullNetFx, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Serilog.1.5.11\lib\net45\Serilog.FullNetFx.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -73,20 +64,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMetadataService.cs" />
-    <Compile Include="Impl\ActionConfiguratorImpl.cs" />
-    <Compile Include="Impl\MetadataServiceImpl.cs" />
+    <Compile Include="..\..\AssemblyInfoCommon.cs">
+      <Link>Properties\AssemblyInfoCommon.cs</Link>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IMetadataProvider.cs" />
+    <Compile Include="Implementations\ActionConfigurator.cs" />
+    <Compile Include="Implementations\MetadataProvider.cs" />
     <Compile Include="IODataEntity.cs" />
-    <Compile Include="Mapping\WNPMetadataMapping.cs" />
-    <Compile Include="MetadataDbContext.cs" />
+    <Compile Include="WNPMetadataMapping.cs" />
     <Compile Include="MetadataFieldInfo.cs" />
-    <Compile Include="MetadataModel.cs" />
+    <Compile Include="MetadataEntityModel.cs" />
     <Compile Include="IActionConfigurator.cs" />
-    <Compile Include="Properties\MetadataServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Model\WNPMetadataEntry.cs" />
+    <Compile Include="WNPMetadataEntry.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\FxCopRuleSets\stylecop.json">
+      <Link>Properties\stylecop.json</Link>
+    </None>
     <None Include="..\ConnectionStrings.config">
       <Link>ConnectionStrings.config</Link>
     </None>
@@ -116,7 +112,26 @@
       <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\tools\analyzers\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.dll" />
+    <Analyzer Include="..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\tools\analyzers\Microsoft.CodeAnalysis.FxCopAnalyzers.dll" />
+    <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\..\FxCopRuleSets\CustomDictionary.xml">
+      <Link>Properties\CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets" Condition="Exists('..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\build\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\build\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

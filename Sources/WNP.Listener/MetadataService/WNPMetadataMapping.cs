@@ -1,12 +1,23 @@
-﻿using AMSLLC.Listener.MetadataService.Model;
-using AMSLLC.Listener.Persistence;
-using AMSLLC.Listener.Persistence.Metadata;
+﻿// <copyright file="WNPMetadataMapping.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
-namespace AMSLLC.Listener.MetadataService.Mapping
+namespace AMSLLC.Listener.MetadataService
 {
+    using Persistence;
+    using Persistence.Metadata;
+
+    /// <summary>
+    /// Maps db generated model to <see cref="WNPMetadataEntry"/>
+    /// </summary>
+    // TODO: why is this needed???
     public class WNPMetadataMapping : FluentMapper<WNPMetadataEntry>
     {
-        public WNPMetadataMapping() : base(DBMetadata.Metadata.ToString(), DBMetadata.Metadata.Id)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WNPMetadataMapping"/> class.
+        /// </summary>
+        public WNPMetadataMapping()
+            : base(DBMetadata.Metadata.ToString(), DBMetadata.Metadata.Id)
         {
             this.Property(metadata => metadata.ColumnName, DBMetadata.Metadata.ColumnName)
                 .Property(metadata => metadata.CustomerLabel, DBMetadata.Metadata.CustomerLabel)
