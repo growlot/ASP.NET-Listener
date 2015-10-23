@@ -7,8 +7,11 @@ namespace AMSLLC.Listener.MetadataService.Implementations
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
+    using System.Runtime.Serialization;
     using Core;
     using ODataService.Actions;
+    using ODataService.Actions.Attributes;
 
     /// <summary>
     /// Implements <see cref="IActionConfigurator"/>
@@ -29,18 +32,30 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     .Where(type => !type.IsInterface)
                     .ToList();
 
-            var boundActionContainers =
-                actionContainers.Where(type => typeof(IBoundActionsContainer).IsAssignableFrom(type));
+            var boundActionContainers = actionContainers
+                .Where(type => !type.IsAbstract)
+                .Where(type => typeof(IBoundActionsContainer).IsAssignableFrom(type));
 
-            var unboundActionContainers =
-                actionContainers.Where(type => typeof(IUnboundActionsContainer).IsAssignableFrom(type));
-
-            var compositionRoot = ApplicationIntegration.DependencyResolver;
+            var unboundActionContainers = actionContainers
+                .Where(type => !type.IsAbstract)
+                .Where(type => typeof(IUnboundActionsContainer).IsAssignableFrom(type));
 
             boundActionContainers.Map(
-                type => this.boundActionContainers.Add(((IBoundActionsContainer)compositionRoot.ResolveType(type)).GetTableName(), type));
+                type => this._boundActionContainers.Add(((IBoundActionsContainer)FormatterServices.GetUninitializedObject(type)).GetEntityTableName(), type));
 
-            unboundActionContainers.Map(type => this.unboundActionContainers.Add(type.Name, type));
+            unboundActionContainers.Map(type =>
+            {
+                var containerName = type.Name;
+                var actionPrefixAttribute =
+                    type.GetCustomAttributes(typeof(ActionPrefixAttribute)).FirstOrDefault() as ActionPrefixAttribute;
+
+                if (actionPrefixAttribute != null)
+                {
+                    containerName = actionPrefixAttribute.Prefix;
+                }
+
+                this.unboundActionContainers.Add(containerName, type);
+            });
         }
 
         /// <inheritdoc/>

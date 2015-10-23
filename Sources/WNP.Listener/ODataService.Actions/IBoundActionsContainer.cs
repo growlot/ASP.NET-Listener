@@ -1,4 +1,8 @@
-﻿namespace AMSLLC.Listener.ODataService.Actions
+﻿// <copyright file="IBoundActionsContainer.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.ODataService.Actions
 {
     /// <summary>
     /// Interface is used to mark class as containing entity actions.
