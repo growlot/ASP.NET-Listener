@@ -14,7 +14,6 @@ using AMSLLC.Listener.ODataService.Actions;
 using AMSLLC.Listener.ODataService.Services;
 using AMSLLC.Listener.ODataService.Services.FilterTransformer;
 using AMSLLC.Listener.Persistence;
-using AMSLLC.Listener.Utilities;
 using Microsoft.OData.Edm;
 
 namespace AMSLLC.Listener.ODataService.Controllers.Base

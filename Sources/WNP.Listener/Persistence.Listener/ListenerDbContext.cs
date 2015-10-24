@@ -8,7 +8,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 {
     using System.Data;
     using System.Data.Common;
-    using System.Threading.Tasks;
     using AsyncPoco;
     using Serilog;
 

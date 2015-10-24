@@ -4,10 +4,6 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System.Threading;
-using System.Web.Http.Controllers;
-using AMSLLC.Listener.ODataService.Actions;
-using AMSLLC.Listener.ODataService.Actions.Attributes;
 using AMSLLC.Listener.ODataService.Controllers.Base;
 using AMSLLC.Listener.Persistence.Metadata;
 

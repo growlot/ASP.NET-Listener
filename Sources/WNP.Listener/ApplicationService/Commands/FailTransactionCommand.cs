@@ -5,8 +5,6 @@
 // //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
-    using Domain;
-
     /// <summary>
     /// Fail transaction command
     /// </summary>

@@ -11,7 +11,6 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using System.Linq;
     using System.Threading.Tasks;
     using ApplicationService;
-    using Bus;
     using Commands;
     using Communication;
     using Core;

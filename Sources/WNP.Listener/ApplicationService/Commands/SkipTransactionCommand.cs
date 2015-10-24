@@ -3,8 +3,6 @@
 // </copyright>
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
-    using Domain;
-
     /// <summary>
     /// Skip transaction command
     /// </summary>

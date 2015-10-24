@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
-    using Domain;
     using Domain.Listener.Lookups;
 
     /// <summary>

@@ -9,7 +9,6 @@ namespace AMSLLC.Listener.MetadataService.Implementations
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
-    using Core;
     using ODataService.Actions;
     using ODataService.Actions.Attributes;
 

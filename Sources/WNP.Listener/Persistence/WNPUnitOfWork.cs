@@ -4,7 +4,6 @@
 
 namespace AMSLLC.Listener.Persistence
 {
-    using System;
     using Repository.WNP;
 
     /// <summary>

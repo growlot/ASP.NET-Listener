@@ -16,7 +16,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
     using Communication;
-    using Core;
     using Core.Ninject.Test;
     using Domain.Listener.Transaction;
     using Microsoft.Owin.Testing;

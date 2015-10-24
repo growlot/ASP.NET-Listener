@@ -5,7 +5,6 @@
 namespace AMSLLC.Listener.ApplicationService
 {
     using Commands;
-    using Core;
     using Domain;
     using Domain.Listener.Transaction;
 

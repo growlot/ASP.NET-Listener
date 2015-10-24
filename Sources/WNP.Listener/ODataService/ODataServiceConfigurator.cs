@@ -12,14 +12,12 @@ namespace AMSLLC.Listener.ODataService
     using System.Reflection;
     using System.Web.Http;
     using System.Web.Http.Dispatcher;
-    using System.Web.OData.Batch;
     using System.Web.OData.Builder;
     using System.Web.OData.Extensions;
     using System.Web.OData.Routing;
     using System.Web.OData.Routing.Conventions;
     using HttpMessageHandlers;
     using MetadataService;
-    using Persistence;
     using Persistence.Listener;
     using Services;
 

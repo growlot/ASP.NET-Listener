@@ -4,8 +4,6 @@
 
 namespace AMSLLC.Listener.Core
 {
-    using System;
-
     /// <summary>
     /// Abstracts dependency injection framework.
     /// </summary>

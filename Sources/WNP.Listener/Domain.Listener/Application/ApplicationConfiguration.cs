@@ -9,7 +9,6 @@ namespace AMSLLC.Listener.Domain.Listener.Application
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Globalization;
-    using Core;
     using Lookups;
 
     /// <summary>

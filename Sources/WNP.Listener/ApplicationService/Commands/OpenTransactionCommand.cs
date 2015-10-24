@@ -6,7 +6,6 @@
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
     using System.Collections.Generic;
-    using Domain;
 
     /// <summary>
     /// Opent trasnaction command
