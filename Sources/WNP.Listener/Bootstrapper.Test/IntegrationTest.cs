@@ -17,17 +17,23 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Threading.Tasks;
     using Communication;
     using Core;
-    using Core.Ninject;
+    using Core.Ninject.Test;
     using Domain.Listener.Transaction;
     using Microsoft.Owin.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
-    using Core.Ninject.Test;
 
     [TestClass]
     public class IntegrationTest
     {
+        private NinjectTestDependencyInjectionAdapter di;
+
+        public IntegrationTest()
+        {
+            this.di = new NinjectTestDependencyInjectionAdapter();
+        }
+
         // [TestInitialize()]
         // public void Initialize() { }
 
@@ -38,7 +44,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         {
             using (var server = TestServer.Create<Startup>())
             {
-                var di = (NinjectTestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
                 var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
                 string nextKey = Guid.NewGuid().ToString("D");
                 transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey);
@@ -54,8 +59,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                         (object data, IConnectionConfiguration conn) =>
                             receivedData = ((TransactionDataReady)data).Data);
 
-                di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
-                di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
+                this.di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
+                this.di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
                 var responseMessage = await OpenTransaction(server, entityKey);
                 Assert.AreEqual(nextKey, responseMessage);
 
@@ -82,7 +87,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         {
             using (var server = TestServer.Create<Startup>())
             {
-                var di = (NinjectTestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
                 var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
                 transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
                 var entityKey = Guid.NewGuid().ToString("D");
@@ -91,8 +95,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                     s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()))
                     .Returns(Task.CompletedTask);
 
-                di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
-                di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
+                this.di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
+                this.di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
 
                 var transactionRecordKey1 = await OpenTransaction(server, entityKey);
                 var transactionRecordKey2 = await OpenTransaction(server, entityKey);
@@ -117,7 +121,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         {
             using (var server = TestServer.Create<Startup>())
             {
-                var di = (NinjectTestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
                 var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
                 transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
                 var entityKey = Guid.NewGuid().ToString("D");
@@ -126,8 +129,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                     s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()))
                     .Returns(Task.CompletedTask);
 
-                di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
-                di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
+                this.di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
+                this.di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
 
                 var recordKey = await OpenTransaction(server, entityKey);
 
@@ -191,20 +194,22 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
             mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
 
+            var requestMessage = new InstallMeterRequestMessage
+            {
+                Test = "A1-S2-D3",
+                EntityCategory = "ElectricMeters",
+                OperationKey = "Install",
+                EntityKey = entityKey
+            };
             HttpResponseMessage response =
                 await
                     server.CreateRequest("listener/Open")
                         .And(
                             request =>
                                 request.Content =
-                                    new ObjectContent(typeof(InstallMeterRequestMessage),
-                                        new InstallMeterRequestMessage
-                                        {
-                                            Test = "A1-S2-D3",
-                                            EntityCategory = "ElectricMeters",
-                                            OperationKey = "Install",
-                                            EntityKey = entityKey
-                                        },
+                                    new ObjectContent(
+                                        typeof(InstallMeterRequestMessage),
+                                        requestMessage,
                                         new JsonMediaTypeFormatter { SerializerSettings = settings },
                                         mediaType))
                         .AddHeader("AMS-Company", "CCD")

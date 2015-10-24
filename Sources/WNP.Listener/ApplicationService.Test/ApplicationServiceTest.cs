@@ -11,6 +11,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using System.Linq;
     using System.Threading.Tasks;
     using ApplicationService;
+    using Bus;
     using Commands;
     using Communication;
     using Core;
@@ -70,7 +71,9 @@ namespace AMSLLC.Listener.ApplicationService.Test
             validatorMock.Setup(s => s.ValidateAsync(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             validatorMock.Setup(s => s.Valid).Returns(true);
 
-            var transactionExecutionDomain = new Mock<TransactionExecution>(validatorMock.Object) { CallBase = true };
+            var domainEventBus = new Mock<IDomainEventBus>();
+
+            var transactionExecutionDomain = new Mock<TransactionExecution>(validatorMock.Object, domainEventBus.Object) { CallBase = true };
             transactionExecutionDomain.As<IOriginator>();
             transactionExecutionDomain.As<IWithDomainBuilder>();
             var integrationEndpointConfiguration = new Mock<IntegrationEndpointConfiguration>();

@@ -109,9 +109,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                         return Task.Factory.StartNew(() => { });
                     }
 
-                    var dispatcher =
-                    ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>(
-                        "communication-{0}".FormatWith(cfg.Protocol));
+                    var dispatcher = ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>("communication-{0}".FormatWith(cfg.Protocol));
 
                     var eventData = new TransactionDataReady
                     {

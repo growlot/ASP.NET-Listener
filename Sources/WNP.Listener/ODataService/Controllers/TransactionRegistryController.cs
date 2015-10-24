@@ -14,7 +14,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
     using ApplicationService;
-    using Communication;
+    using ApplicationService.Commands;
     using Persistence.Listener;
     using Serilog;
 
@@ -24,8 +24,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         private readonly ListenerODataContext _dbContext;
         private readonly ITransactionService _transactionService;
 
-        public string CompanyCode => Request.Headers.GetValues("AMS-Company").FirstOrDefault();
-        public string ApplicationKey => Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+        public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
+        public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRegistryController" /> class.
@@ -34,7 +34,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="transactionService">The transaction service.</param>
         public TransactionRegistryController(ListenerODataContext dbctx, ITransactionService transactionService)
         {
-            _dbContext = dbctx;
+            this._dbContext = dbctx;
             this._transactionService = transactionService;
         }
 
@@ -42,7 +42,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                return _dbContext.TransactionRegistry.AsQueryable();
+                return this._dbContext.TransactionRegistry.AsQueryable();
             }
             catch (Exception exc)
             {
@@ -55,8 +55,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                var result = _dbContext.TransactionRegistry.Where(s => s.RecordKey == key);
-                return Ok(result);
+                var result = this._dbContext.TransactionRegistry.Where(s => s.RecordKey == key);
+                return this.Ok(result);
             }
             catch (Exception exc)
             {
@@ -65,28 +65,33 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
         }
 
+        /// <summary>
+        /// Opens new Listener transaction.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The key of new transaction</returns>
         [HttpPost]
-        [ODataRoute("Open")]//(entityCategory={entityCategory},operationKey={operationKey},entityKey={entityKey})
-        public async Task<IHttpActionResult> Open(ODataActionParameters parameters)//[FromODataUri]string entityCategory, [FromODataUri]string operationKey, [FromODataUri]string entityKey
+        [ODataRoute("Open")]
+        public async Task<IHttpActionResult> Open(ODataActionParameters parameters)
         {
             try
             {
-                string data = (string)Request.Properties["ListenerRequestBody"];
+                string data = (string)this.Request.Properties["ListenerRequestBody"];
 
-                var message = new OpenTransactionRequestMessage
+                var message = new OpenTransactionCommand
                 {
-                    CompanyCode = CompanyCode,
+                    CompanyCode = this.CompanyCode,
                     OperationKey = parameters["OperationKey"]?.ToString(),
-                    SourceApplicationKey = ApplicationKey,
+                    SourceApplicationKey = this.ApplicationKey,
                     Data = data,
-                    User = User?.Identity.Name
+                    User = this.User?.Identity.Name
                 };
 
                 message.Header.Add("PrimaryCategory", parameters["EntityCategory"]?.ToString());
                 message.Header.Add("PrimaryKey", parameters["EntityKey"]?.ToString());
                 message.Header.Add("Operation", parameters["OperationKey"]?.ToString());
 
-                return Ok(await this._transactionService.Open(message));
+                return this.Ok(await this._transactionService.Open(message));
             }
             catch (Exception exc)
             {
@@ -105,8 +110,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                await this._transactionService.Process(new ProcessTransactionRequestMessage { RecordKey = key });
-                return Ok();
+                await this._transactionService.Process(new ProcessTransactionCommand { RecordKey = key });
+                return this.Ok();
             }
             catch (Exception exc)
             {
@@ -125,8 +130,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                await this._transactionService.Success(new TransactionSuccessMessage() { RecordKey = key });
-                return Ok();
+                await this._transactionService.Success(new SucceedTransactionCommand() { RecordKey = key });
+                return this.Ok();
             }
             catch (Exception exc)
             {
@@ -148,13 +153,13 @@ namespace AMSLLC.Listener.ODataService.Controllers
             try
             {
                 await
-                    this._transactionService.Failed(new TransactionFailedMessage()
+                    this._transactionService.Failed(new FailTransactionCommand()
                     {
                         RecordKey = key,
                         Details = parameters.ContainsKey("Details") ? parameters["Details"].ToString() : null,
                         Message = parameters.ContainsKey("Message") ? parameters["Message"].ToString() : null
                     });
-                return Ok();
+                return this.Ok();
             }
             catch (Exception exc)
             {

@@ -175,11 +175,7 @@
     </Compile>
     <Compile Include="Controllers\ElectricMetersController.cs" />
     <Compile Include="Controllers\SitesController.cs" />
-    <Compile Include="Controllers\TransactionController.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TransactionController.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\UnboundActionsController.cs" />
     <Compile Include="Controllers\Base\WNPController.cs" />
@@ -263,11 +259,6 @@
     <CodeAnalysisDictionary Include="..\..\..\FxCopRuleSets\CustomDictionary.xml">
       <Link>Properties\CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
-    <Content Include="Controllers\TransactionController.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TransactionController.cs</LastGenOutput>
-    </Content>
-    <None Include="Controllers\TransactionController.ttinclude" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\tools\analyzers\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.dll" />

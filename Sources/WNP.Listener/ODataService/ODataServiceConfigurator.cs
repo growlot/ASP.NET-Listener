@@ -105,7 +105,7 @@ namespace AMSLLC.Listener.ODataService
             Expression<Func<T, TKey>> primaryKeySelector)
             where T : class
         {
-            var tableNameAttribute = typeof(T).GetCustomAttribute<TableNameAttribute>();
+            var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
             modelBuilder.EntitySet<T>(tableNameAttribute.Value);
             modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
         }

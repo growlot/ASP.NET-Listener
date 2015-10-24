@@ -75,6 +75,10 @@
       <Project>{6B540066-84AB-4D63-81A6-9C724AEF039F}</Project>
       <Name>ApplicationService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bus\Bus.csproj">
+      <Project>{92d5d64c-da0a-4d9f-9aca-29aaf58133c1}</Project>
+      <Name>Bus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Communication\Communication.csproj">
       <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
       <Name>Communication</Name>
