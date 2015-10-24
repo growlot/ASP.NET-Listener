@@ -120,7 +120,6 @@ public static class DBMetadata {
 public interface ITableInformation 
 {
 	string RealTableName {get;}
-	Dictionary<string, ColumnInformation> ColumnsLookup {get;}
 }
 
 public class ColumnInformation 

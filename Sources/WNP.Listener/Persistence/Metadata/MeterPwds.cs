@@ -75,7 +75,11 @@ public class MeterPwdsTable: ITableInformation {
 		get { return "TMETER_PWDS".ToUpperInvariant(); }		
 	}
 
-	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return columnsLookup; } }
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 
 	private Dictionary<string, ColumnInformation> columnsLookup = new Dictionary<string, ColumnInformation>() 
 	{

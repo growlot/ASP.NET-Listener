@@ -75,6 +75,12 @@ public class MultimediaTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string CreateDate { get; } = "CREATE_DATE";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: False
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string Id { get; } = "ID";
 	
 	public string RealTableName
 	{
@@ -101,6 +107,7 @@ public class MultimediaTable: ITableInformation {
 				{"EqpType", new ColumnInformation() { DataType = "string", ModelName = "EqpType", ColumnName = "EQP_TYPE"}},
 				{"CreateBy", new ColumnInformation() { DataType = "string", ModelName = "CreateBy", ColumnName = "CREATE_BY"}},
 				{"CreateDate", new ColumnInformation() { DataType = "DateTime", ModelName = "CreateDate", ColumnName = "CREATE_DATE"}},
+				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
 			};
 
 	public override string ToString() 

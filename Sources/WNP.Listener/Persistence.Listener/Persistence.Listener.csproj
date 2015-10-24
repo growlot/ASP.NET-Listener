@@ -29,10 +29,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\1234.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\3rdParty\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.1.5.11\lib\net45\Serilog.dll</HintPath>
@@ -59,14 +65,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\PetaPoco.cs" />
     <Compile Include="PocoCachedAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Models\Generated\PetaPoco.Core.ttinclude" />
-    <None Include="Models\Generated\PetaPoco.Generator.ttinclude" />
+    <None Include="Models\Generated\AsyncPoco.Core.ttinclude" />
+    <None Include="Models\Generated\AsyncPoco.Generator.ttinclude" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

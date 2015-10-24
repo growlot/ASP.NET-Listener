@@ -1,40 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Caching;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.OData;
-using System.Web.OData.Extensions;
-using System.Web.OData.Query;
-using System.Web.OData.Routing;
-using AMSLLC.Core;
-using AMSLLC.Listener.MetadataService;
-using AMSLLC.Listener.ODataService.Actions.Attributes;
-using AMSLLC.Listener.ODataService.Services;
-using AMSLLC.Listener.ODataService.Services.FilterTransformer;
-using AMSLLC.Listener.Persistence;
-using AMSLLC.Listener.Utilities;
-using Microsoft.OData.Edm;
-using Microsoft.OData.Edm.Library;
-using Newtonsoft.Json;
-using Serilog;
-
-namespace AMSLLC.Listener.ODataService.Controllers.Base
+﻿namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.Caching;
+    using System.Threading.Tasks;
+    using System.Web.Http;
+    using System.Web.OData;
+    using System.Web.OData.Extensions;
+    using System.Web.OData.Query;
+    using System.Web.OData.Routing;
+    using Actions.Attributes;
+    using MetadataService;
+    using Microsoft.OData.Edm;
+    using Microsoft.OData.Edm.Library;
+    using Newtonsoft.Json;
+    using Persistence;
+    using Serilog;
+    using Services;
+    using Services.FilterTransformer;
+
     [EnableQuery]
     public abstract class WNPController : ODataController
     {
-        protected readonly IMetadataService metadataService;
+        protected readonly IMetadataProvider metadataService;
         protected readonly IFilterTransformer filterTransformer;
         protected readonly IAutoConvertor convertor;
         protected readonly IActionConfigurator actionConfigurator;
 
         protected readonly WNPDBContext dbContext;
 
-        protected WNPController(IMetadataService metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
+        protected WNPController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
         {
             this.metadataService = metadataService;
             this.dbContext = dbContext;
@@ -45,7 +43,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
         public async Task<IHttpActionResult> UnboundActionHandler()
         {
-            var oDataProperties = Request.ODataProperties();
+            var oDataProperties = this.Request.ODataProperties();
             var oDataPath = oDataProperties.Path;
 
             var actionSegment = oDataPath.Segments[0] as UnboundActionPathSegment;
@@ -57,7 +55,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var containerTypeName = fqnActionName.Substring(0, underscorePosition);
             var actionName = fqnActionName.Substring(underscorePosition + 1);
 
-            return await InvokeAction(actionConfigurator.GetUnboundActionContainer(containerTypeName), actionName);
+            return await this.InvokeAction(this.actionConfigurator.GetUnboundActionContainer(containerTypeName), actionName);
         }
 
         protected async Task<IHttpActionResult> InvokeAction(Type actionsContainerType, string actionName, KeyValuePathSegment keySegment = null)
@@ -67,17 +65,17 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             // get the action parameters
             var jsonParameters =
-                JsonConvert.DeserializeObject<Dictionary<string, object>>(await Request.Content.ReadAsStringAsync());
+                JsonConvert.DeserializeObject<Dictionary<string, object>>(await this.Request.Content.ReadAsStringAsync());
 
             var methodInfo = actionsContainerType.GetMethod(actionName);
             if (methodInfo == null)
-                return NotFound();
+                return this.NotFound();
 
             // check the number of parameters
             var parametersInfo = methodInfo.GetParameters();
-            if (GetRequiredParametersCount(parametersInfo) > jsonParameters.Count)
+            if (this.GetRequiredParametersCount(parametersInfo) > jsonParameters.Count)
                 return
-                    BadRequest($"Invalid number of non-optional parameters. Expected: {parametersInfo.Length}. Got: {jsonParameters.Count}.");
+                    this.BadRequest($"Invalid number of non-optional parameters. Expected: {parametersInfo.Length}. Got: {jsonParameters.Count}.");
 
             var missingParameter =
                 parametersInfo.FirstOrDefault(
@@ -87,7 +85,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                             data => data.AttributeType != typeof (BoundEntityKeyAttribute)));
 
             if (missingParameter != null)
-                return BadRequest($"Non-optional parameter {missingParameter.Name} not found in request body.");
+                return this.BadRequest($"Non-optional parameter {missingParameter.Name} not found in request body.");
 
             // if we have a key, we can optionally bind it to the appropriate action parameter
             if (keySegment != null)
@@ -100,7 +98,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 if (entityKeyParameter != null)
                 {
                     if (jsonParameters.ContainsKey(entityKeyParameter.Name))
-                        return BadRequest($"Parameter {entityKeyParameter.Name} is entity key.");
+                        return this.BadRequest($"Parameter {entityKeyParameter.Name} is entity key.");
 
                     jsonParameters.Add(entityKeyParameter.Name, keyValue);
                 }
@@ -111,21 +109,21 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 // adjust parameters types
                 jsonParameters = jsonParameters.ToDictionary(kvp => kvp.Key,
                     kvp =>
-                        convertor.Convert(kvp.Value, parametersInfo.First(info => info.Name == kvp.Key).ParameterType));
+                        this.convertor.Convert(kvp.Value, parametersInfo.First(info => info.Name == kvp.Key).ParameterType));
 
                 var result = methodInfo.InvokeWithNamedParameters(actionsContainer, jsonParameters);
 
                 if (methodInfo.ReturnType != typeof(void))
-                    return CreateSimpleOkResponse(methodInfo.ReturnType, result);
+                    return this.CreateSimpleOkResponse(methodInfo.ReturnType, result);
 
-                return Ok();
+                return this.Ok();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Action {ActionName} in container {ContainerType} failed to execute.", actionName,
                     actionsContainerType.FullName);
 
-                return InternalServerError(ex);
+                return this.InternalServerError(ex);
             }
         }
 
@@ -136,12 +134,12 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     info.CustomAttributes.All(data => data.AttributeType != typeof (BoundEntityKeyAttribute)));
 
         private IHttpActionResult CreateSimpleOkResponse(Type dataType, object result)
-            => (IHttpActionResult)GetSimpleOkMethod(dataType).Invoke(this, new[] { result });
+            => (IHttpActionResult)this.GetSimpleOkMethod(dataType).Invoke(this, new[] { result });
 
         private MethodInfo GetSimpleOkMethod(Type dataType)
             => MemoryCache.Default.GetOrAddExisting($"WNPController.SimpleOkMethod<{dataType.FullName}>",
             () =>
-                GetType()
+                this.GetType()
                     .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
                     .MakeGenericMethod(dataType));
@@ -151,7 +149,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
         protected ODataQueryOptions ConstructQueryOptions()
         {
-            var oDataProperties = Request.ODataProperties();
+            var oDataProperties = this.Request.ODataProperties();
             var oDataPath = oDataProperties.Path;
             var model = oDataProperties.Model;
 
@@ -159,9 +157,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             {
                 var entitySetName = oDataProperties.Path.Segments[0] as EntitySetPathSegment;
                 var edmType = entitySetName.GetEdmType(null);
-                var type = metadataService.GetEntityType(((IEdmCollectionType)edmType).ElementType.ShortQualifiedName());
+                var type = this.metadataService.GetEntityType(((IEdmCollectionType)edmType).ElementType.ShortQualifiedName());
 
-                return new ODataQueryOptions(new ODataQueryContext(model, type, oDataPath), Request);
+                return new ODataQueryOptions(new ODataQueryContext(model, type, oDataPath), this.Request);
             }
             else
             {
@@ -190,9 +188,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         throw new ArgumentOutOfRangeException();
                 }
 
-                var type = metadataService.ODataModelAssembly.GetType(modelTypeFullName);                
+                var type = this.metadataService.ODataModelAssembly.GetType(modelTypeFullName);                
 
-                return new ODataQueryOptions(new ODataQueryContext(model, type, oDataPath), Request);
+                return new ODataQueryOptions(new ODataQueryContext(model, type, oDataPath), this.Request);
             }
         }        
     }

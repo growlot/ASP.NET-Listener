@@ -375,7 +375,11 @@ public class EqpGenericTable: ITableInformation {
 		get { return "TEQP_GENERIC".ToUpperInvariant(); }		
 	}
 
-	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return columnsLookup; } }
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 
 	private Dictionary<string, ColumnInformation> columnsLookup = new Dictionary<string, ColumnInformation>() 
 	{

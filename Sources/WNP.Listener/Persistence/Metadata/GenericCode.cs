@@ -237,7 +237,11 @@ public class GenericCodeTable: ITableInformation {
 		get { return "TGENERIC_CODE".ToUpperInvariant(); }		
 	}
 
-	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return columnsLookup; } }
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 
 	private Dictionary<string, ColumnInformation> columnsLookup = new Dictionary<string, ColumnInformation>() 
 	{

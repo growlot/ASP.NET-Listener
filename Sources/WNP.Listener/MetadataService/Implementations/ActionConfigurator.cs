@@ -41,7 +41,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 .Where(type => typeof(IUnboundActionsContainer).IsAssignableFrom(type));
 
             boundActionContainers.Map(
-                type => this._boundActionContainers.Add(((IBoundActionsContainer)FormatterServices.GetUninitializedObject(type)).GetEntityTableName(), type));
+                type => this.boundActionContainers.Add(((IBoundActionsContainer)FormatterServices.GetUninitializedObject(type)).GetEntityTableName(), type));
 
             unboundActionContainers.Map(type =>
             {

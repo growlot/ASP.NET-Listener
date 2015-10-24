@@ -13,11 +13,9 @@ namespace AMSLLC.Listener.ODataService
     using System.Web.Http.Controllers;
     using System.Web.OData.Routing;
     using System.Web.OData.Routing.Conventions;
-    using AMSLLC.Core;
-    using AMSLLC.Listener.MetadataService;
-    using AMSLLC.Listener.ODataService.Actions;
-    using AMSLLC.Listener.ODataService.Controllers;
-    using AMSLLC.Listener.ODataService.Controllers.Base;
+    using Actions;
+    using Controllers.Base;
+    using MetadataService;
 
     public class WNPGenericRoutingConvention : IODataRoutingConvention
     {
@@ -41,7 +39,7 @@ namespace AMSLLC.Listener.ODataService
                     var entityTableName = ((IBoundActionsContainer)FormatterServices.GetUninitializedObject(type)).GetEntityTableName();
                     var controllerName = type.Name.Substring(0, type.Name.IndexOf("Controller", StringComparison.Ordinal));
 
-                    _entityNameToController.Add(entityTableName, controllerName);
+                    this._entityNameToController.Add(entityTableName, controllerName);
                 });
         }
 
@@ -76,9 +74,9 @@ namespace AMSLLC.Listener.ODataService
             var entitySetName = entitySetSegment.EntitySetName;
             var entityName = entitySetName.Remove(entitySetName.Length - 1);
 
-            var metadataModel = metadataService.GetModelMapping(entityName);
-            if (_entityNameToController.ContainsKey(metadataModel.TableName))
-                return _entityNameToController[metadataModel.TableName];
+            var metadataModel = this.metadataService.GetModelMapping(entityName);
+            if (this._entityNameToController.ContainsKey(metadataModel.TableName))
+                return this._entityNameToController[metadataModel.TableName];
 
             return entitySetName;
         }

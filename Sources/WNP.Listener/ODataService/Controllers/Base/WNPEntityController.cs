@@ -23,11 +23,15 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     {
         private readonly ODataValidationSettings defaultODataValidationSettings;
 
-        protected WNPEntityController(IMetadataService metadataService, WNPDBContext dbContext,
-            IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
+        protected WNPEntityController(
+            IMetadataProvider metadataService,
+            WNPDBContext dbContext,
+            IFilterTransformer filterTransformer,
+            IAutoConvertor convertor,
+            IActionConfigurator actionConfigurator)
             : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
         {
-            defaultODataValidationSettings = new ODataValidationSettings()
+            this.defaultODataValidationSettings = new ODataValidationSettings()
             {
                 AllowedQueryOptions =
                     AllowedQueryOptions.Select | AllowedQueryOptions.Filter | AllowedQueryOptions.Top |
@@ -39,14 +43,14 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
-            var queryOptions = ConstructQueryOptions();
-            queryOptions.Validate(defaultODataValidationSettings);
+            var queryOptions = this.ConstructQueryOptions();
+            queryOptions.Validate(this.defaultODataValidationSettings);
 
             // we can infer model type from the ODataQueryOptions
             // we created earlier
             var oDataModelType = queryOptions.Context.ElementClrType;
 
-            var modelMapping = metadataService.GetModelMapping(oDataModelType.Name);
+            var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
 
             var skip = queryOptions.Skip?.Value ?? 0;
             var top = queryOptions.Top?.Value ?? 10;
@@ -55,10 +59,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var result = this.CreateResultList(oDataModelType);
 
             var sql =
-                Sql.Builder.Select(GetDBColumnsList(queryOptions.SelectExpand, modelMapping.ModelToColumnMappings))
+                Sql.Builder.Select(this.GetDBColumnsList(queryOptions.SelectExpand, modelMapping.ModelToColumnMappings))
                            .From($"{modelMapping.TableName}");
 
-            var sqlWhere = filterTransformer.TransformFilterQueryOption(queryOptions.Filter);
+            var sqlWhere = this.filterTransformer.TransformFilterQueryOption(queryOptions.Filter);
 
             // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
             for (int i = 0; i < sqlWhere.PositionalParameters.Length; i++)
@@ -76,7 +80,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             if (!string.IsNullOrWhiteSpace(sqlWhere.Clause))
                 sql = sql.Where(sqlWhere.Clause, sqlWhere.PositionalParameters);
 
-            var dbResults = dbContext.SkipTake<dynamic>(skip, top, sql);
+            var dbResults = this.dbContext.SkipTake<dynamic>(skip, top, sql);
 
             foreach (var record in dbResults)
             {
@@ -86,18 +90,18 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                 {
                     var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key.ToLowerInvariant()]);
-                    property.SetValue(entityInstance, convertor.Convert(rawData[key], property.PropertyType));
+                    property.SetValue(entityInstance, this.convertor.Convert(rawData[key], property.PropertyType));
                 }
 
                 result.Add(entityInstance);
             }
 
-            return CreateOkResponse(oDataModelType, result);
+            return this.CreateOkResponse(oDataModelType, result);
         }
 
         public async Task<IHttpActionResult> EntityActionHandler()
         {
-            var queryOptions = ConstructQueryOptions();
+            var queryOptions = this.ConstructQueryOptions();
             var oDataPath = queryOptions.Context.Path;
 
             var isCollectionWide = oDataPath.PathTemplate == "~/entityset/action";
@@ -113,15 +117,15 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             Debug.Assert(fqnActionName != null, "fqnActionName != null");
             var actionName = fqnActionName.Substring(fqnActionName.IndexOf("_", StringComparison.Ordinal) + 1);
 
-            var actionsContainerType = metadataService.GetModelMapping(metadataService.GetEntityType(entityName)).ActionsContainer;
+            var actionsContainerType = this.metadataService.GetModelMapping(this.metadataService.GetEntityType(entityName)).ActionsContainer;
             if (actionsContainerType == null)
-                return NotFound();
+                return this.NotFound();
 
             KeyValuePathSegment keySegment = null;
             if (!isCollectionWide)
                 keySegment = oDataPath.Segments[1] as KeyValuePathSegment;
 
-            return await InvokeAction(actionsContainerType, actionName, keySegment);
+            return await this.InvokeAction(actionsContainerType, actionName, keySegment);
         }
 
         public abstract string GetEntityTableName();
@@ -147,15 +151,15 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         private MethodInfo GetOkMethod(Type oDataModelType)
             => MemoryCache.Default.GetOrAddExisting($"WNPController.OkMethod<{oDataModelType.FullName}>",
                 () =>
-                    GetType()
+                    this.GetType()
                         .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                         .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
-                        .MakeGenericMethod(GetGenericListType(oDataModelType)));
+                        .MakeGenericMethod(this.GetGenericListType(oDataModelType)));
 
         private IHttpActionResult CreateOkResponse(Type oDataModelType, object result)
-            => (IHttpActionResult) GetOkMethod(oDataModelType).Invoke(this, new[] {result});
+            => (IHttpActionResult) this.GetOkMethod(oDataModelType).Invoke(this, new[] {result});
 
         private IList CreateResultList(Type oDataModelType)
-            => (IList) Activator.CreateInstance(GetGenericListType(oDataModelType));
+            => (IList) Activator.CreateInstance(this.GetGenericListType(oDataModelType));
     }
 }

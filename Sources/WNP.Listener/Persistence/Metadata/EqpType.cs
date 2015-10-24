@@ -45,7 +45,11 @@ public class EqpTypeTable: ITableInformation {
 		get { return "TEQP_TYPE".ToUpperInvariant(); }		
 	}
 
-	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return columnsLookup; } }
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 
 	private Dictionary<string, ColumnInformation> columnsLookup = new Dictionary<string, ColumnInformation>() 
 	{

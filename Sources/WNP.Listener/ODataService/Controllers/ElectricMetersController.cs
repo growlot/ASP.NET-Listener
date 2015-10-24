@@ -4,24 +4,36 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using AMSLLC.Listener.ODataService.Actions.Attributes;
-using AMSLLC.Listener.ODataService.Controllers.Base;
-using AMSLLC.Listener.Persistence.Metadata;
-
 namespace AMSLLC.Listener.ODataService.Controllers
 {
+    using System;
+    using Actions.Attributes;
+    using Base;
     using MetadataService;
     using Persistence;
+    using Persistence.Metadata;
     using Services;
     using Services.FilterTransformer;
 
+    /// <summary>
+    /// Controller for electric meters
+    /// </summary>
     [ActionPrefix("ElectricMeter")]
     public class ElectricMetersController : WNPEntityController
     {
+        /// <inheritdoc/>
         public override string GetEntityTableName() => DBMetadata.EqpMeter.FullTableName;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ElectricMetersController" /> class.
+        /// </summary>
+        /// <param name="metadataService">The metadata service.</param>
+        /// <param name="dbContext">The database context.</param>
+        /// <param name="filterTransformer">The filter transformer.</param>
+        /// <param name="convertor">The convertor.</param>
+        /// <param name="actionConfigurator">The action configurator.</param>
         public ElectricMetersController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
-            : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
+                    : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
         {
         }
 

@@ -70,6 +70,7 @@
     <Compile Include="Attributes\BoundEntityKeyAttribute.cs" />
     <Compile Include="Attributes\CollectionWideActionAttribute.cs" />
     <Compile Include="Attributes\UnboundActionAttribute.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IBoundActionsContainer.cs" />
     <Compile Include="IUnboundActionsContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

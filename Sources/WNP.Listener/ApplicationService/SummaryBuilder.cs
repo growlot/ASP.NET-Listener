@@ -2,17 +2,13 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AMSLLC.Listener.ApplicationService
 {
+    using System.Collections.Generic;
     using System.Dynamic;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
+    using Utilities;
 
     /// <summary>
     /// Implments <see cref="ISummaryBuilder"/>
@@ -35,18 +31,23 @@ namespace AMSLLC.Listener.ApplicationService
                 workData = JsonConvert.DeserializeObject<ExpandoObject>(value);
             }
 
-
-            foreach (var fieldConfiguration in fieldConfigurations)
+            if (fieldConfigurations != null)
             {
-                DynamicUtilities.ProcessProperty(workData, fieldConfiguration.Name, null,
-                    (targetProperty, owner, propRef) =>
-                    {
-                        var targetValue = targetProperty.GetValue(owner);
-                        if (fieldConfiguration.HashSequence.HasValue)
+                foreach (var fieldConfiguration in fieldConfigurations)
+                {
+                    DynamicUtilities.ProcessProperty(
+                        workData,
+                        fieldConfiguration.Name,
+                        null,
+                        (targetProperty, owner, propRef) =>
                         {
-                            summary.Add(fieldConfiguration.Name, targetValue);
-                        }
-                    });
+                            var targetValue = targetProperty.GetValue(owner);
+                            if (fieldConfiguration.HashSequence.HasValue)
+                            {
+                                summary.Add(fieldConfiguration.Name, targetValue);
+                            }
+                        });
+                }
             }
         }
     }

@@ -222,7 +222,7 @@
       <Name>ODataService.Actions</Name>
     </ProjectReference>
     <ProjectReference Include="..\ODataService\ODataService.csproj">
-      <Project>{28DE87B5-514B-4996-B65A-9D8F9E4578E0}</Project>
+      <Project>{28de87b5-514b-4996-b65a-9d8f9e4578e0}</Project>
       <Name>ODataService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Persistence.Listener\Persistence.Listener.csproj">

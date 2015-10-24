@@ -109,9 +109,6 @@
     <Compile Include="Metadata\Comment.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
-    <Compile Include="Metadata\Company.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
     <Compile Include="Metadata\CtTestResults.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -124,12 +121,6 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\DefaultValues.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\Device.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\DeviceTest.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpAmi.cs">
@@ -276,9 +267,6 @@
     <Compile Include="Metadata\Mfr.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
-    <Compile Include="Metadata\Migrationhistory.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
     <Compile Include="Metadata\Multimedia.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -366,9 +354,6 @@
     <Compile Include="Metadata\SelectionProgramGroup.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
-    <Compile Include="Metadata\ServiceType.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
     <Compile Include="Metadata\ShopGoals.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -423,24 +408,6 @@
     <Compile Include="Metadata\TrackingOut.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
-    <Compile Include="Metadata\TransactionLog.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\TransactionLogState.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\TransactionSource.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\TransactionState.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\TransactionStatus.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\TransactionType.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
     <Compile Include="Metadata\TransducerTestResults.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -466,9 +433,6 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\VersionHistory.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\VersionInfo.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Workstation.cs">

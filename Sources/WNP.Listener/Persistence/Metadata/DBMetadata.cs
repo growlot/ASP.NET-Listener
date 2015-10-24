@@ -77,6 +77,13 @@ public static class DBMetadata {
 	public static readonly RmaBatchInTable RmaBatchIn = new RmaBatchInTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: tevent_triggers
+	/// <para />Class Name: tevent_trigger
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly EventTriggersTable EventTriggers = new EventTriggersTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: tharmonic_configuration
 	/// <para />Class Name: tharmonic_configuration
 	/// <para />Is View: False
@@ -89,6 +96,13 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly BarcodeLabelTable BarcodeLabel = new BarcodeLabelTable();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: TTRANSFORMER_CODE_CT
+	/// <para />Class Name: TTRANSFORMER_CODE_CT
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly TransformerCodeCtTable TransformerCodeCt = new TransformerCodeCtTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tversion
@@ -105,6 +119,13 @@ public static class DBMetadata {
 	public static readonly BarcodeLabelDefTable BarcodeLabelDef = new BarcodeLabelDefTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: TTRANSFORMER_CODE_PT
+	/// <para />Class Name: TTRANSFORMER_CODE_PT
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly TransformerCodePtTable TransformerCodePt = new TransformerCodePtTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: tharmonic_config_data
 	/// <para />Class Name: tharmonic_config_datum
 	/// <para />Is View: False
@@ -112,11 +133,25 @@ public static class DBMetadata {
 	public static readonly HarmonicConfigDataTable HarmonicConfigData = new HarmonicConfigDataTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: tsite_metrics
+	/// <para />Class Name: tsite_metric
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly SiteMetricsTable SiteMetrics = new SiteMetricsTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TVERSION_HISTORY
 	/// <para />Class Name: TVERSION_HISTORY
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly VersionHistoryTable VersionHistory = new VersionHistoryTable();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tsite_wiring_check
+	/// <para />Class Name: tsite_wiring_check
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly SiteWiringCheckTable SiteWiringCheck = new SiteWiringCheckTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TWORKSTATION
@@ -133,6 +168,13 @@ public static class DBMetadata {
 	public static readonly CircuitTable Circuit = new CircuitTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: trma_batch_out
+	/// <para />Class Name: trma_batch_out
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly RmaBatchOutTable RmaBatchOut = new RmaBatchOutTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TTEST_CARD
 	/// <para />Class Name: TTEST_CARD
 	/// <para />Is View: False
@@ -145,6 +187,13 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RatioTable Ratio = new RatioTable();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: trma_eqp
+	/// <para />Class Name: trma_eqp
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly RmaEqpTable RmaEqp = new RmaEqpTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_REFERENCE
@@ -175,6 +224,13 @@ public static class DBMetadata {
 	public static readonly CommentTable Comment = new CommentTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: teqp_ami
+	/// <para />Class Name: teqp_ami
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly EqpAmiTable EqpAmi = new EqpAmiTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TCT_TEST_RESULTS
 	/// <para />Class Name: TCT_TEST_RESULT
 	/// <para />Is View: False
@@ -194,6 +250,13 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly CustomFieldDescriptionsTable CustomFieldDescriptions = new CustomFieldDescriptionsTable();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tvehicle
+	/// <para />Class Name: tvehicle
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly VehicleTable Vehicle = new VehicleTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TREFERENCE_TEST_RESULTS
@@ -224,25 +287,25 @@ public static class DBMetadata {
 	public static readonly EqpCtHistTable EqpCtHist = new EqpCtHistTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: tmetadata
+	/// <para />Class Name: tmetadatum
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly MetadataTable Metadata = new MetadataTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_METER
 	/// <para />Class Name: TEQP_METER
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpMeterTable EqpMeter = new EqpMeterTable();	
 	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: VersionInfo
-	/// <para />Class Name: VersionInfo
+	/// <para />Schema: wndba
+	/// <para />Table Name: TAMI_INSTALL_HISTORY
+	/// <para />Class Name: TAMI_INSTALL_HISTORY
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly VersionInfoTable VersionInfo = new VersionInfoTable();	
-	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: TransactionType
-	/// <para />Class Name: TransactionType
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly TransactionTypeTable TransactionType = new TransactionTypeTable();	
+	public static readonly AmiInstallHistoryTable AmiInstallHistory = new AmiInstallHistoryTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_METER_HIST
@@ -251,12 +314,12 @@ public static class DBMetadata {
 	/// </summary>
 	public static readonly EqpMeterHistTable EqpMeterHist = new EqpMeterHistTable();	
 	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: TransactionStatus
-	/// <para />Class Name: TransactionStatus
+	/// <para />Schema: wndba
+	/// <para />Table Name: TSITE_INSTALL_HISTORY
+	/// <para />Class Name: TSITE_INSTALL_HISTORY
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly TransactionStatusTable TransactionStatus = new TransactionStatusTable();	
+	public static readonly SiteInstallHistoryTable SiteInstallHistory = new SiteInstallHistoryTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_PT
@@ -265,12 +328,12 @@ public static class DBMetadata {
 	/// </summary>
 	public static readonly EqpPtTable EqpPt = new EqpPtTable();	
 	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: TransactionState
-	/// <para />Class Name: TransactionState
+	/// <para />Schema: wndba
+	/// <para />Table Name: TOBSOLETE
+	/// <para />Class Name: TOBSOLETE
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly TransactionStateTable TransactionState = new TransactionStateTable();	
+	public static readonly ObsoleteTable Obsolete = new ObsoleteTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_PT_HIST
@@ -279,12 +342,12 @@ public static class DBMetadata {
 	/// </summary>
 	public static readonly EqpPtHistTable EqpPtHist = new EqpPtHistTable();	
 	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: TransactionSource
-	/// <para />Class Name: TransactionSource
+	/// <para />Schema: wndba
+	/// <para />Table Name: TEQP_TYPE
+	/// <para />Class Name: TEQP_TYPE
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly TransactionSourceTable TransactionSource = new TransactionSourceTable();	
+	public static readonly EqpTypeTable EqpType = new EqpTypeTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_RECORDER
@@ -293,12 +356,12 @@ public static class DBMetadata {
 	/// </summary>
 	public static readonly EqpRecorderTable EqpRecorder = new EqpRecorderTable();	
 	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: ServiceType
-	/// <para />Class Name: ServiceType
+	/// <para />Schema: wndba
+	/// <para />Table Name: TMETER_PWDS
+	/// <para />Class Name: TMETER_PWD
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly ServiceTypeTable ServiceType = new ServiceTypeTable();	
+	public static readonly MeterPwdsTable MeterPwds = new MeterPwdsTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_RECORDER_HIST
@@ -307,12 +370,12 @@ public static class DBMetadata {
 	/// </summary>
 	public static readonly EqpRecorderHistTable EqpRecorderHist = new EqpRecorderHistTable();	
 	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: Company
-	/// <para />Class Name: Company
+	/// <para />Schema: wndba
+	/// <para />Table Name: TEQP_GENERIC
+	/// <para />Class Name: TEQP_GENERIC
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly CompanyTable Company = new CompanyTable();	
+	public static readonly EqpGenericTable EqpGeneric = new EqpGenericTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TOTALIZER
@@ -322,18 +385,18 @@ public static class DBMetadata {
 	public static readonly EqpTotalizerTable EqpTotalizer = new EqpTotalizerTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: TGENERIC_CODE
+	/// <para />Class Name: TGENERIC_CODE
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly GenericCodeTable GenericCode = new GenericCodeTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: pbcattbl
 	/// <para />Class Name: pbcattbl
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly PbcattblTable Pbcattbl = new PbcattblTable();	
-	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: Device
-	/// <para />Class Name: Device
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly DeviceTable Device = new DeviceTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: pbcatcol
@@ -377,13 +440,6 @@ public static class DBMetadata {
 	/// </summary>
 	public static readonly PbcatedtTable Pbcatedt = new PbcatedtTable();	
 	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: DeviceTest
-	/// <para />Class Name: DeviceTest
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly DeviceTestTable DeviceTest = new DeviceTestTable();	
-	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TRANSDUCER_HIST
 	/// <para />Class Name: TEQP_TRANSDUCER_HIST
@@ -404,13 +460,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ImportExportDefinitionsTable ImportExportDefinitions = new ImportExportDefinitionsTable();	
-	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: TransactionLog
-	/// <para />Class Name: TransactionLog
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly TransactionLogTable TransactionLog = new TransactionLogTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TLOT_PERCENT_DEF
@@ -439,13 +488,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly NewBatchTable NewBatch = new NewBatchTable();	
-	/// <summary>
-	/// <para />Schema: dbo
-	/// <para />Table Name: TransactionLogState
-	/// <para />Class Name: TransactionLogState
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly TransactionLogStateTable TransactionLogState = new TransactionLogStateTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TLOCATION
@@ -476,25 +518,11 @@ public static class DBMetadata {
 	public static readonly MeterCodeTable MeterCode = new MeterCodeTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: tevent_triggers
-	/// <para />Class Name: tevent_trigger
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly EventTriggersTable EventTriggers = new EventTriggersTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: tmeter_emulation
 	/// <para />Class Name: tmeter_emulation
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterEmulationTable MeterEmulation = new MeterEmulationTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TTRANSFORMER_CODE_CT
-	/// <para />Class Name: TTRANSFORMER_CODE_CT
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly TransformerCodeCtTable TransformerCodeCt = new TransformerCodeCtTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMETER_POWER_SETUP
@@ -504,13 +532,6 @@ public static class DBMetadata {
 	public static readonly MeterPowerSetupTable MeterPowerSetup = new MeterPowerSetupTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TTRANSFORMER_CODE_PT
-	/// <para />Class Name: TTRANSFORMER_CODE_PT
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly TransformerCodePtTable TransformerCodePt = new TransformerCodePtTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: TMETER_TEST_RESULTS
 	/// <para />Class Name: TMETER_TEST_RESULT
 	/// <para />Is View: False
@@ -518,25 +539,11 @@ public static class DBMetadata {
 	public static readonly MeterTestResultsTable MeterTestResults = new MeterTestResultsTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: tsite_metrics
-	/// <para />Class Name: tsite_metric
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly SiteMetricsTable SiteMetrics = new SiteMetricsTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: tmeter_test_sequence
 	/// <para />Class Name: tmeter_test_sequence
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterTestSequenceTable MeterTestSequence = new MeterTestSequenceTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: tsite_wiring_check
-	/// <para />Class Name: tsite_wiring_check
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly SiteWiringCheckTable SiteWiringCheck = new SiteWiringCheckTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMFR
@@ -553,25 +560,11 @@ public static class DBMetadata {
 	public static readonly MapWinboard2Table MapWinboard2 = new MapWinboard2Table();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: trma_batch_out
-	/// <para />Class Name: trma_batch_out
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly RmaBatchOutTable RmaBatchOut = new RmaBatchOutTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: TMULTIMEDIA
 	/// <para />Class Name: TMULTIMEDIUM
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MultimediaTable Multimedia = new MultimediaTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: trma_eqp
-	/// <para />Class Name: trma_eqp
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly RmaEqpTable RmaEqp = new RmaEqpTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TREPAIR
@@ -588,25 +581,11 @@ public static class DBMetadata {
 	public static readonly OwnerTable Owner = new OwnerTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: tmetadata
-	/// <para />Class Name: tmetadatum
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly MetadataTable Metadata = new MetadataTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: TPROCESS_FLOW
 	/// <para />Class Name: TPROCESS_FLOW
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ProcessFlowTable ProcessFlow = new ProcessFlowTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: teqp_ami
-	/// <para />Class Name: teqp_ami
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly EqpAmiTable EqpAmi = new EqpAmiTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TPT_TEST_RESULTS
@@ -623,25 +602,11 @@ public static class DBMetadata {
 	public static readonly ReadSetTable ReadSet = new ReadSetTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: tvehicle
-	/// <para />Class Name: tvehicle
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly VehicleTable Vehicle = new VehicleTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: TREADING
 	/// <para />Class Name: TREADING
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ReadingTable Reading = new ReadingTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TAMI_INSTALL_HISTORY
-	/// <para />Class Name: TAMI_INSTALL_HISTORY
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly AmiInstallHistoryTable AmiInstallHistory = new AmiInstallHistoryTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSAMPLE_LIST
@@ -651,25 +616,11 @@ public static class DBMetadata {
 	public static readonly SampleListTable SampleList = new SampleListTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TSITE_INSTALL_HISTORY
-	/// <para />Class Name: TSITE_INSTALL_HISTORY
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly SiteInstallHistoryTable SiteInstallHistory = new SiteInstallHistoryTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: TSAMPLE_LIST_ARCH
 	/// <para />Class Name: TSAMPLE_LIST_ARCH
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SampleListArchTable SampleListArch = new SampleListArchTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TOBSOLETE
-	/// <para />Class Name: TOBSOLETE
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly ObsoleteTable Obsolete = new ObsoleteTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tdefault_values
@@ -679,13 +630,6 @@ public static class DBMetadata {
 	public static readonly DefaultValuesTable DefaultValues = new DefaultValuesTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TEQP_TYPE
-	/// <para />Class Name: TEQP_TYPE
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly EqpTypeTable EqpType = new EqpTypeTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: TSECURITY_GROUPS
 	/// <para />Class Name: TSECURITY_GROUP
 	/// <para />Is View: False
@@ -693,25 +637,11 @@ public static class DBMetadata {
 	public static readonly SecurityGroupsTable SecurityGroups = new SecurityGroupsTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TMETER_PWDS
-	/// <para />Class Name: TMETER_PWD
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly MeterPwdsTable MeterPwds = new MeterPwdsTable();	
-	/// <summary>
-	/// <para />Schema: wndba
 	/// <para />Table Name: TSECURITY_RIGHTS
 	/// <para />Class Name: TSECURITY_RIGHT
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly SecurityRightsTable SecurityRights = new SecurityRightsTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TEQP_GENERIC
-	/// <para />Class Name: TEQP_GENERIC
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly EqpGenericTable EqpGeneric = new EqpGenericTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSECURITY_USERS
@@ -726,13 +656,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly RedTagTable RedTag = new RedTagTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TGENERIC_CODE
-	/// <para />Class Name: TGENERIC_CODE
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly GenericCodeTable GenericCode = new GenericCodeTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TSELECTION_PROGRAM
@@ -928,100 +851,89 @@ public static class DBMetadata {
 				{Kyz.RealTableName, Kyz},
 				{VendorContact.RealTableName, VendorContact},
 				{RmaBatchIn.RealTableName, RmaBatchIn},
+				{EventTriggers.RealTableName, EventTriggers},
 				{HarmonicConfiguration.RealTableName, HarmonicConfiguration},
 				{BarcodeLabel.RealTableName, BarcodeLabel},
+				{TransformerCodeCt.RealTableName, TransformerCodeCt},
 				{Version.RealTableName, Version},
 				{BarcodeLabelDef.RealTableName, BarcodeLabelDef},
+				{TransformerCodePt.RealTableName, TransformerCodePt},
 				{HarmonicConfigData.RealTableName, HarmonicConfigData},
+				{SiteMetrics.RealTableName, SiteMetrics},
 				{VersionHistory.RealTableName, VersionHistory},
+				{SiteWiringCheck.RealTableName, SiteWiringCheck},
 				{Workstation.RealTableName, Workstation},
 				{Circuit.RealTableName, Circuit},
+				{RmaBatchOut.RealTableName, RmaBatchOut},
 				{TestCard.RealTableName, TestCard},
 				{Ratio.RealTableName, Ratio},
+				{RmaEqp.RealTableName, RmaEqp},
 				{EqpReference.RealTableName, EqpReference},
 				{CircuitHist.RealTableName, CircuitHist},
 				{EqpTestboard.RealTableName, EqpTestboard},
 				{Comment.RealTableName, Comment},
+				{EqpAmi.RealTableName, EqpAmi},
 				{CtTestResults.RealTableName, CtTestResults},
 				{ReferenceInstallHistory.RealTableName, ReferenceInstallHistory},
 				{CustomFieldDescriptions.RealTableName, CustomFieldDescriptions},
+				{Vehicle.RealTableName, Vehicle},
 				{ReferenceTestResults.RealTableName, ReferenceTestResults},
 				{EqpCt.RealTableName, EqpCt},
 				{StandardsCompareSequence.RealTableName, StandardsCompareSequence},
 				{EqpCtHist.RealTableName, EqpCtHist},
+				{Metadata.RealTableName, Metadata},
 				{EqpMeter.RealTableName, EqpMeter},
-				{VersionInfo.RealTableName, VersionInfo},
-				{TransactionType.RealTableName, TransactionType},
+				{AmiInstallHistory.RealTableName, AmiInstallHistory},
 				{EqpMeterHist.RealTableName, EqpMeterHist},
-				{TransactionStatus.RealTableName, TransactionStatus},
+				{SiteInstallHistory.RealTableName, SiteInstallHistory},
 				{EqpPt.RealTableName, EqpPt},
-				{TransactionState.RealTableName, TransactionState},
+				{Obsolete.RealTableName, Obsolete},
 				{EqpPtHist.RealTableName, EqpPtHist},
-				{TransactionSource.RealTableName, TransactionSource},
+				{EqpType.RealTableName, EqpType},
 				{EqpRecorder.RealTableName, EqpRecorder},
-				{ServiceType.RealTableName, ServiceType},
+				{MeterPwds.RealTableName, MeterPwds},
 				{EqpRecorderHist.RealTableName, EqpRecorderHist},
-				{Company.RealTableName, Company},
+				{EqpGeneric.RealTableName, EqpGeneric},
 				{EqpTotalizer.RealTableName, EqpTotalizer},
+				{GenericCode.RealTableName, GenericCode},
 				{Pbcattbl.RealTableName, Pbcattbl},
-				{Device.RealTableName, Device},
 				{Pbcatcol.RealTableName, Pbcatcol},
 				{EqpTotalizerHist.RealTableName, EqpTotalizerHist},
 				{Pbcatfmt.RealTableName, Pbcatfmt},
 				{Pbcatvld.RealTableName, Pbcatvld},
 				{EqpTransducer.RealTableName, EqpTransducer},
 				{Pbcatedt.RealTableName, Pbcatedt},
-				{DeviceTest.RealTableName, DeviceTest},
 				{EqpTransducerHist.RealTableName, EqpTransducerHist},
 				{LotSizeLookup.RealTableName, LotSizeLookup},
 				{ImportExportDefinitions.RealTableName, ImportExportDefinitions},
-				{TransactionLog.RealTableName, TransactionLog},
 				{LotPercentDef.RealTableName, LotPercentDef},
 				{LotAcceptQualityLevel.RealTableName, LotAcceptQualityLevel},
 				{ImportExportOptions.RealTableName, ImportExportOptions},
 				{NewBatch.RealTableName, NewBatch},
-				{TransactionLogState.RealTableName, TransactionLogState},
 				{Location.RealTableName, Location},
 				{Tamper.RealTableName, Tamper},
 				{Manufacturercode.RealTableName, Manufacturercode},
 				{MeterCode.RealTableName, MeterCode},
-				{EventTriggers.RealTableName, EventTriggers},
 				{MeterEmulation.RealTableName, MeterEmulation},
-				{TransformerCodeCt.RealTableName, TransformerCodeCt},
 				{MeterPowerSetup.RealTableName, MeterPowerSetup},
-				{TransformerCodePt.RealTableName, TransformerCodePt},
 				{MeterTestResults.RealTableName, MeterTestResults},
-				{SiteMetrics.RealTableName, SiteMetrics},
 				{MeterTestSequence.RealTableName, MeterTestSequence},
-				{SiteWiringCheck.RealTableName, SiteWiringCheck},
 				{Mfr.RealTableName, Mfr},
 				{MapWinboard2.RealTableName, MapWinboard2},
-				{RmaBatchOut.RealTableName, RmaBatchOut},
 				{Multimedia.RealTableName, Multimedia},
-				{RmaEqp.RealTableName, RmaEqp},
 				{Repair.RealTableName, Repair},
 				{Owner.RealTableName, Owner},
-				{Metadata.RealTableName, Metadata},
 				{ProcessFlow.RealTableName, ProcessFlow},
-				{EqpAmi.RealTableName, EqpAmi},
 				{PtTestResults.RealTableName, PtTestResults},
 				{ReadSet.RealTableName, ReadSet},
-				{Vehicle.RealTableName, Vehicle},
 				{Reading.RealTableName, Reading},
-				{AmiInstallHistory.RealTableName, AmiInstallHistory},
 				{SampleList.RealTableName, SampleList},
-				{SiteInstallHistory.RealTableName, SiteInstallHistory},
 				{SampleListArch.RealTableName, SampleListArch},
-				{Obsolete.RealTableName, Obsolete},
 				{DefaultValues.RealTableName, DefaultValues},
-				{EqpType.RealTableName, EqpType},
 				{SecurityGroups.RealTableName, SecurityGroups},
-				{MeterPwds.RealTableName, MeterPwds},
 				{SecurityRights.RealTableName, SecurityRights},
-				{EqpGeneric.RealTableName, EqpGeneric},
 				{SecurityUsers.RealTableName, SecurityUsers},
 				{RedTag.RealTableName, RedTag},
-				{GenericCode.RealTableName, GenericCode},
 				{SelectionProgram.RealTableName, SelectionProgram},
 				{RedTagControl.RealTableName, RedTagControl},
 				{SelectionProgramGroup.RealTableName, SelectionProgramGroup},
@@ -1060,7 +972,6 @@ public static class DBMetadata {
 public interface ITableInformation 
 {
 	string RealTableName {get;}
-	Dictionary<string, ColumnInformation> ColumnsLookup {get;}
 }
 
 public class ColumnInformation 

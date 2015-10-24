@@ -58,17 +58,6 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             return model = builder.GetEdmModel();
         }
 
-                    type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                        .Where(info => info.CustomAttributes.Any(data => data.AttributeType == typeof (UnboundActionAttribute)));
-
-                var actionPrefix = type.Name;
-                var actionPrefixAttribute =
-                    type.GetCustomAttributes(typeof (ActionPrefixAttribute)).FirstOrDefault() as ActionPrefixAttribute;
-
-                if (actionPrefixAttribute != null)
-                    actionPrefix = actionPrefixAttribute.Prefix;
-
-                        .Where(info => info.CustomAttributes.Any(data => data.AttributeType == typeof(BoundActionAttribute)));
         private static void CreateActionParameters(MethodInfo actionMethodInfo, ActionConfiguration actionConfiguration)
         {
             var methodParameters = actionMethodInfo.GetParameters();
@@ -177,7 +166,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
             entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] {$"{type.Name}s"});
 
-            var actionsContainer = this._metadataService.GetModelMapping(type).ActionsContainer;
+            var actionsContainer = this.metadataService.GetModelMapping(type).ActionsContainer;
             if (actionsContainer != null)
             {
                 var entityTypeConfiguration = entityTypeMethod.MakeGenericMethod(type).Invoke(builder, new object[0]);

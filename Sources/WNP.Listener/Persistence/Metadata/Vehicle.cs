@@ -51,13 +51,23 @@ public class VehicleTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModDate { get; } = "mod_date";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: False
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string Id { get; } = "ID";
 	
 	public string RealTableName
 	{
 		get { return "tvehicle".ToUpperInvariant(); }		
 	}
 
-	public Dictionary<string, ColumnInformation> ColumnsLookup { get { return columnsLookup; } }
+	public string FullTableName
+	{
+		get { return ToString(); }		
+	}
+
 
 	private Dictionary<string, ColumnInformation> columnsLookup = new Dictionary<string, ColumnInformation>() 
 	{
@@ -69,6 +79,7 @@ public class VehicleTable: ITableInformation {
 				{"CreateDate", new ColumnInformation() { DataType = "DateTime", ModelName = "CreateDate", ColumnName = "create_date"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "mod_by"}},
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "mod_date"}},
+				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
 			};
 
 	public override string ToString() 

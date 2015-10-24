@@ -46,6 +46,12 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\1234.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -175,7 +181,6 @@
     </Compile>
     <Compile Include="Controllers\ElectricMetersController.cs" />
     <Compile Include="Controllers\SitesController.cs" />
-    <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\UnboundActionsController.cs" />
     <Compile Include="Controllers\Base\WNPController.cs" />

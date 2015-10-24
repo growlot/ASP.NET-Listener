@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.ODataService.Actions
     public interface IBoundActionsContainer
     {
         /// <summary>
-        /// The specifics of this method is that it can (and will) be invoked without 
+        /// The specifics of this method is that it can (and will) be invoked without
         /// creating initialized class instance. Thus the implementation should not rely on
         /// any constructor-related logic.
         /// </summary>
