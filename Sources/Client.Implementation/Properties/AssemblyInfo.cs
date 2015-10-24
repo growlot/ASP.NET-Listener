@@ -26,5 +26,4 @@ using log4net.Config;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("c142ef65-1f56-4f3f-9fe2-06f5fde11939")]
 
-[assembly: CLSCompliant(true)]
 [assembly: XmlConfigurator(Watch = true)]
