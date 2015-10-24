@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="UniqueHashValidator.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="UniqueHashValidator.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.ApplicationService.Validator
@@ -15,7 +15,7 @@ namespace AMSLLC.Listener.ApplicationService.Validator
     /// </summary>
     public class UniqueHashValidator : IUniqueHashValidator
     {
-        private readonly ITransactionRepository _repository;
+        private readonly ITransactionRepository repository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UniqueHashValidator"/> class.
@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.ApplicationService.Validator
         /// <param name="repository">The repository.</param>
         public UniqueHashValidator(ITransactionRepository repository)
         {
-            this._repository = repository;
+            this.repository = repository;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.ApplicationService.Validator
         /// <returns>Task.</returns>
         public Task ValidateAsync(int enabledOperationId, string hash)
         {
-            return this._repository.GetHashCount(enabledOperationId, hash).ContinueWith(t=>this.Valid = t.Result == 0);
+            return this.repository.GetHashCountAsync(enabledOperationId, hash).ContinueWith(t => this.Valid = t.Result == 0);
         }
     }
 }

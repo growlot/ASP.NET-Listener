@@ -1,11 +1,15 @@
-﻿using System;
+﻿// <copyright file="UnsubscribeDisposable.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 {
+    using System;
+
     internal class UnsubscribeDisposable : IDisposable
     {
-        IDisposable target;
-        bool unsubscribe = false;
+        private IDisposable target;
+        private bool unsubscribe = false;
 
         public UnsubscribeDisposable(IDisposable target)
         {

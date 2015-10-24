@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="ListenerRequestHeaderMap.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService
 {
+    using System;
+    using System.Collections.Generic;
+
     public class ListenerRequestHeaderMap : Dictionary<string, Type>
     {
         private ListenerRequestHeaderMap()

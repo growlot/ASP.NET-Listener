@@ -1,12 +1,16 @@
-﻿using System;
-using System.Configuration;
-using Topshelf;
+﻿// <copyright file="Program.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.Bootstrapper
 {
-    class Program
+    using System;
+    using System.Configuration;
+    using Topshelf;
+
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var protocol = ConfigurationManager.AppSettings["DefaultProtocol"];
             var hostName = ConfigurationManager.AppSettings["DefaultHostname"];

@@ -1,5 +1,5 @@
 ﻿// //-----------------------------------------------------------------------
-// <copyright file="XMLDocumentExtensions.cs" company="Advanced Metering Services LLC">
+// <copyright file="XmlDocumentExtensions.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 // //-----------------------------------------------------------------------
@@ -12,7 +12,7 @@ namespace System.Xml
     /// <summary>
     /// Various methods to help serialize and deserialize objects to various formats
     /// </summary>
-    public static class XMLDocumentExtensions
+    public static class XmlDocumentExtensions
     {
         /// <summary>
         /// Convert <see cref="XmlDocument"/> to XML string

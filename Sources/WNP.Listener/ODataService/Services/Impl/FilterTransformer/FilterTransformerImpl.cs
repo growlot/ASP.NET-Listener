@@ -1,45 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.OData.Query;
-using AMSLLC.Listener.MetadataService;
-using AMSLLC.Listener.ODataService.Services.FilterTransformer;
-using AMSLLC.Listener.Utilities;
-using Microsoft.OData.Core.UriParser.Semantic;
-using Microsoft.OData.Core.UriParser.TreeNodeKinds;
-using Microsoft.OData.Edm;
+﻿// <copyright file="FilterTransformerImpl.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.OData.Query;
+    using AMSLLC.Listener.MetadataService;
+    using AMSLLC.Listener.ODataService.Services.FilterTransformer;
+    using Microsoft.OData.Core.UriParser.Semantic;
+    using Microsoft.OData.Core.UriParser.TreeNodeKinds;
+    using Microsoft.OData.Edm;
+
     public class FilterTransformerImpl : IFilterTransformer
     {
-        private readonly IMetadataService _metadataService;
-        private readonly IODataFunctionToSqlConvertor _oDataToSql;
-
-        private readonly List<object> _positionalParmeters = new List<object>();
         private static readonly WhereClause EmptyWhereClause = new WhereClause
         {
             Clause = string.Empty,
             PositionalParameters = new object[0]
         };
 
-        private FilterQueryOption _filterQueryOption;
+        private readonly IMetadataProvider metadataService;
+        private readonly IODataFunctionToSqlConvertor oDataToSql;
 
-        public FilterTransformerImpl(IMetadataService metadataService, IODataFunctionToSqlConvertor ioDataToSql)
+        private readonly List<object> positionalParmeters = new List<object>();
+
+        private FilterQueryOption filterQueryOption;
+
+        public FilterTransformerImpl(IMetadataProvider metadataService, IODataFunctionToSqlConvertor ioDataToSql)
         {
-            this._metadataService = metadataService;
-            this._oDataToSql = ioDataToSql;
+            this.metadataService = metadataService;
+            this.oDataToSql = ioDataToSql;
         }
 
+        /// <inheritdoc/>
         public WhereClause TransformFilterQueryOption(FilterQueryOption filterQueryOption)
         {
-            if ((this._filterQueryOption = filterQueryOption) == null)
+            if ((this.filterQueryOption = filterQueryOption) == null)
+            {
                 return EmptyWhereClause;
+            }
 
             return new WhereClause
             {
                 Clause = $"{this.BindFilter(filterQueryOption)}{Environment.NewLine}",
-                PositionalParameters = this._positionalParmeters.ToArray()
+                PositionalParameters = this.positionalParmeters.ToArray()
             };
         }
 
@@ -131,7 +138,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
             "EXISTS (" +
                 $" FROM {this.Bind(anyNode.Source)} {anyNode.RangeVariables.First().Name}" +
             (anyNode.Body != null ?
-                $" WHERE {this.Bind(anyNode.Body)}" : "") +
+                $" WHERE {this.Bind(anyNode.Body)}" : string.Empty) +
             ")";
 
         private string BindNavigationPropertyNode(SingleEntityNode singleEntityNode, IEdmNavigationProperty edmNavigationProperty)
@@ -145,10 +152,12 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
             var arguments = singleValueFunctionCallNode.Parameters.ToList();
             var funName = singleValueFunctionCallNode.Name.ToLowerInvariant();
 
-            if (!this._oDataToSql.IsSupported(funName))
+            if (!this.oDataToSql.IsSupported(funName))
+            {
                 throw new NotSupportedException($"{funName} is not supported");
+            }
 
-            return this._oDataToSql.Convert(funName, this.Bind, arguments);
+            return this.oDataToSql.Convert(funName, this.Bind, arguments);
         }
 
         private string BindUnaryOperatorNode(UnaryOperatorNode unaryOperatorNode) =>
@@ -173,9 +182,9 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
 
         private string BindConstantNode(ConstantNode constantNode)
         {
-            this._positionalParmeters.Add(constantNode.ToKnownClrType());
+            this.positionalParmeters.Add(constantNode.ToKnownClrType());
 
-            return $"@{this._positionalParmeters.Count - 1}";
+            return $"@{this.positionalParmeters.Count - 1}";
         }
 
         private string BindBinaryOperatorNode(BinaryOperatorNode binaryOperatorNode)
@@ -189,13 +198,13 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
         private string VariableToTable(string rangeVariable)
         {
             var actualVar = this.VariableToActualName(rangeVariable);
-            return this._metadataService.GetModelMapping(actualVar).TableName;
+            return this.metadataService.GetModelMapping(actualVar).TableName;
         }
 
         private string PropertyNameToColumn(string variable, string propertyName)
         {
             var actualVar = this.VariableToActualName(variable);
-            var modelMapping = this._metadataService.GetModelMapping(actualVar);
+            var modelMapping = this.metadataService.GetModelMapping(actualVar);
 
             return modelMapping.ModelToColumnMappings[propertyName];
         }
@@ -203,7 +212,9 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
         private string VariableToActualName(string rangeVariable)
         {
             if (string.Equals(rangeVariable, "$it", StringComparison.OrdinalIgnoreCase))
-                return this._filterQueryOption.Context.ElementClrType.Name;
+            {
+                return this.filterQueryOption.Context.ElementClrType.Name;
+            }
 
             return rangeVariable;
         }

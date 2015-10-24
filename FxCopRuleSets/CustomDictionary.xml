@@ -16,6 +16,7 @@
       <Word>sql</Word>
       <Word>jms</Word>
       <Word>ninject</Word> <!-- DI framework name -->
+      <Word>edm</Word> <!-- Entity Data Model (used in OData) -->
     </Recognized>
     <Compound>
 		  <Term CompoundAlternate="LabTrack">labtrack</Term>

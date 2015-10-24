@@ -7,8 +7,17 @@ namespace AMSLLC.Listener.ApplicationService.Commands
 {
     using Domain;
 
+    /// <summary>
+    /// Succeed transaction command
+    /// </summary>
     public class SucceedTransactionCommand : ICommand
     {
+        /// <summary>
+        /// Gets or sets the record key.
+        /// </summary>
+        /// <value>
+        /// The record key.
+        /// </value>
         public string RecordKey { get; set; }
     }
 }

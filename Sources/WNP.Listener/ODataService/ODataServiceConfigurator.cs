@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="ODataServiceConfigurator.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="ODataServiceConfigurator.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.ODataService
@@ -17,18 +17,18 @@ namespace AMSLLC.Listener.ODataService
     using System.Web.OData.Extensions;
     using System.Web.OData.Routing;
     using System.Web.OData.Routing.Conventions;
-    using MessageHandlers;
+    using HttpMessageHandlers;
+    using MetadataService;
+    using Persistence;
     using Persistence.Listener;
     using Services;
-    using MetadataService;
-    using AsyncPoco;
 
     public class ODataServiceConfigurator
     {
         private readonly IEdmModelGenerator modelGenerator;
-        private readonly IMetadataService metadataService;
+        private readonly IMetadataProvider metadataService;
 
-        public ODataServiceConfigurator(IEdmModelGenerator modelGenerator, IMetadataService metadataService)
+        public ODataServiceConfigurator(IEdmModelGenerator modelGenerator, IMetadataProvider metadataService)
         {
             this.modelGenerator = modelGenerator;
             this.metadataService = metadataService;
@@ -37,8 +37,8 @@ namespace AMSLLC.Listener.ODataService
         public void Configure(HttpConfiguration config)
         {
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
-            // config.MessageHandlers.Add(new MiniProfilerMessageHandler());
 
+            // config.MessageHandlers.Add(new MiniProfilerMessageHandler());
             var conventions = ODataRoutingConventions.CreateDefault();
             conventions.Insert(0, new WNPGenericRoutingConvention(this.metadataService));
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
@@ -58,7 +58,7 @@ namespace AMSLLC.Listener.ODataService
                 ContainerName = "AMSLLC.Listener"
             };
 
-            MapPetaPocoEntity<TransactionRegistryEntity, string>(builder, a => a.RecordKey);
+            this.MapPetaPocoEntity<TransactionRegistryEntity, string>(builder, a => a.RecordKey);
 
             var transactionRegistry = builder.EntityType<TransactionRegistryEntity>();
 
@@ -102,7 +102,8 @@ namespace AMSLLC.Listener.ODataService
 
         private void MapPetaPocoEntity<T, TKey>(
             ODataModelBuilder modelBuilder,
-            Expression<Func<T, TKey>> primaryKeySelector) where T : class
+            Expression<Func<T, TKey>> primaryKeySelector)
+            where T : class
         {
             var tableNameAttribute = typeof(T).GetCustomAttribute<TableNameAttribute>();
             modelBuilder.EntitySet<T>(tableNameAttribute.Value);

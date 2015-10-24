@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Configuration;
-using Serilog;
+﻿// <copyright file="AutoConvertorImpl.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService.Services.Impl
 {
+    using System;
+    using System.Collections.Generic;
+    using Serilog;
+
     public class AutoConvertorImpl : IAutoConvertor
     {
         private static readonly Dictionary<Type, Func<object, object>> Conversions = new Dictionary<Type, Func<object, object>>
         {
-            {typeof (decimal), v => System.Convert.ToDecimal(v)},
-            {typeof (float), v => System.Convert.ToSingle(v)},
-            {typeof (char), v =>
+            { typeof(decimal), v => System.Convert.ToDecimal(v) },
+            { typeof(float), v => System.Convert.ToSingle(v) },
+            { typeof(char), v =>
                 {
                     if (v == null)
                     {
@@ -43,11 +46,13 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                     throw new NotImplementedException($"Conversion of {v.GetType()} to char is not implemented.");
                 }
             },
-            {typeof (double), v => System.Convert.ToDouble(v)},
-            {typeof (DateTimeOffset), v =>
+            { typeof(double), v => System.Convert.ToDouble(v) },
+            { typeof(DateTimeOffset), v =>
                 {
                     if (v == null)
+                    {
                         return null;
+                    }
 
                     if (v is DateTime)
                     {
@@ -61,6 +66,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             }
         };
 
+        /// <inheritdoc/>
         public object Convert(object rawData, Type targetType)
         {
             if (Conversions.ContainsKey(targetType))

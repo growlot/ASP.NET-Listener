@@ -1,13 +1,16 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="IApplicationConfigurationService.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="IApplicationConfigurationService.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.ApplicationService
 {
     using Domain.Listener.Lookups;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IApplicationConfigurationService
     {
         /// <summary>

@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
     /// <summary>
     /// The event that updates site address.
     /// </summary>
-    public class SiteAddressUpdated : IEvent
+    public class SiteAddressUpdated : IDomainEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteAddressUpdated"/> class.

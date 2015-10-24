@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.Domain.Listener.Application
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Globalization;
+    using Core;
     using Lookups;
 
     /// <summary>
@@ -25,6 +26,20 @@ namespace AMSLLC.Listener.Domain.Listener.Application
         /// The transactions supporeted by this application.
         /// </summary>
         private ICollection<ApplicationTransaction> supportedTransactions;
+
+        /// <summary>
+        /// The domain event bus
+        /// </summary>
+        private IDomainEventBus domainEventBus;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationConfiguration"/> class.
+        /// </summary>
+        /// <param name="domainEventBus">The domain event bus.</param>
+        public ApplicationConfiguration(IDomainEventBus domainEventBus)
+        {
+            this.domainEventBus = domainEventBus;
+        }
 
         /// <summary>
         /// Enables the support of device type in this application.
@@ -50,7 +65,7 @@ namespace AMSLLC.Listener.Domain.Listener.Application
             else
             {
                 this.supportedDeviceTypes.Add(deviceType);
-                EventsRegister.Raise(new DeviceTypeEnabledForApplication(this.Id, deviceTypeId));
+                this.domainEventBus.Publish(new DeviceTypeEnabledForApplication(this.Id, deviceTypeId));
             }
         }
 
@@ -80,7 +95,7 @@ namespace AMSLLC.Listener.Domain.Listener.Application
                 }
 
                 this.supportedDeviceTypes.Remove(deviceType);
-                EventsRegister.Raise(new DeviceTypeDisabledForApplication(this.Id, deviceTypeId));
+                this.domainEventBus.Publish(new DeviceTypeDisabledForApplication(this.Id, deviceTypeId));
             }
             else
             {

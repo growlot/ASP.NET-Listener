@@ -13,23 +13,24 @@ using AMSLLC.Listener.Persistence.Metadata;
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
+    using System;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Http;
+    using System.Web.OData;
+    using ApplicationService.Commands;
     using MetadataService;
+    using Newtonsoft.Json.Linq;
+    using Persistence;
     using Services;
     using Services.FilterTransformer;
-    using Newtonsoft.Json.Linq;
-    using System.Net.Http;
-    using System;
-    using ApplicationService.Messages;
-    using System.Web.OData;
-    using Persistence;
 
     public class SitesController : WNPEntityController
     {
         public override string GetEntityTableName() => DBMetadata.Site.FullTableName;
 
-        public SitesController(IMetadataService metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
+        public SitesController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
+
             : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
         {
         }
@@ -43,7 +44,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             // constructing oData options since we can not using generic return type
             // without first generating Controller dynamically
-            var queryOptions = base.ConstructQueryOptions();
+            var queryOptions = this.ConstructQueryOptions();
 
             // we can infer model type from the ODataQueryOptions
             // we created earlier
@@ -53,14 +54,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
 
             // create actual result object we will be sending over the wire
-            var requestContent = base.CreateResult(oDataModelType);
+            var requestContent = this.CreateResult(oDataModelType);
 
             var request = JObject.Parse(this.GetRequestContents(this.Request));
 
             ////var method = typeof(JsonConvert).GetGenericMethod("DeserializeObject", new Type[] { typeof(string) });
             ////requestContent = method.MakeGenericMethod(oDataModelType).Invoke(null, new object[] { GetRequestContents(Request) });
 
-            var serviceRequest = new AddSiteRequestMessage();
+            var serviceRequest = new CreateSiteCommand();
 
             ////var requestData = (IDictionary<string, object>)request;
             ////foreach (var key in requestData.Keys)
@@ -97,7 +98,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             // constructing oData options since we can not using generic return type
             // without first generating Controller dynamically
-            var queryOptions = base.ConstructQueryOptions();
+            var queryOptions = this.ConstructQueryOptions();
 
             // we can infer model type from the ODataQueryOptions
             // we created earlier

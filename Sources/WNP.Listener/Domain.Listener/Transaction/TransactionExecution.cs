@@ -22,12 +22,19 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         private readonly DomainValidatorDictionary validatorRegistry = new DomainValidatorDictionary();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionExecution"/> class.
+        /// The domain event bus
+        /// </summary>
+        private IDomainEventBus domainEventBus;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransactionExecution" /> class.
         /// </summary>
         /// <param name="hashValidator">The hash validator.</param>
-        public TransactionExecution(IUniqueHashValidator hashValidator)
+        /// <param name="domainEventBus">The domain event bus.</param>
+        public TransactionExecution(IUniqueHashValidator hashValidator, IDomainEventBus domainEventBus)
         {
             this.validatorRegistry.Add(typeof(IUniqueHashValidator), hashValidator);
+            this.domainEventBus = domainEventBus;
         }
 
         /// <summary>
@@ -94,7 +101,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 {
                     if (!this.HashValidator.Valid && cfg.Trigger == EndpointTriggerType.Changed)
                     {
-                        var tasks = EventsRegister.RaiseAsync(new TransactionSkipped(this.RecordKey));
+                        var tasks = this.domainEventBus.PublishAsync(new TransactionSkipped(this.RecordKey));
                         if (tasks.Any())
                         {
                             return Task.Factory.ContinueWhenAll(tasks, (tt) => tt);
@@ -111,7 +118,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                         Data = preparedData.Data,
                         RecordKey = this.RecordKey
                     };
-                    EventsRegister.Raise(eventData);
+                    this.domainEventBus.Publish(eventData);
 
                     return dispatcher.Handle(eventData, cfg.ConnectionConfiguration);
                 });

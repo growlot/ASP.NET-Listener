@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Domain.Listener.Application
     /// <summary>
     /// The event that enables device type for application
     /// </summary>
-    public class DeviceTypeEnabledForApplication : IEvent
+    public class DeviceTypeEnabledForApplication : IDomainEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceTypeEnabledForApplication" /> class.

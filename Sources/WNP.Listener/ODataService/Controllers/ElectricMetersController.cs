@@ -11,17 +11,16 @@ using AMSLLC.Listener.Persistence.Metadata;
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using MetadataService;
+    using Persistence;
     using Services;
     using Services.FilterTransformer;
-    using System;
-    using Persistence;
 
     [ActionPrefix("ElectricMeter")]
     public class ElectricMetersController : WNPEntityController
     {
         public override string GetEntityTableName() => DBMetadata.EqpMeter.FullTableName;
 
-        public ElectricMetersController(IMetadataService metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
+        public ElectricMetersController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
             : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
         {
         }

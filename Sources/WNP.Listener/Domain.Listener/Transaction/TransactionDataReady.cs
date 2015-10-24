@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction data ready
     /// </summary>
-    public class TransactionDataReady : IEvent
+    public class TransactionDataReady : IDomainEvent
     {
         /// <summary>
         /// Gets or sets the data.

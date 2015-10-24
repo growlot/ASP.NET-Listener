@@ -1,23 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="ApplicationServiceConfigurator.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ApplicationService
 {
-    using Communication;
+    using Commands;
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
 
+    /// <summary>
+    /// Configures application services by registering command handlers
+    /// </summary>
     public class ApplicationServiceConfigurator
     {
+        private IDomainEventBus domainEventBus;
+        private ITransactionService transactionService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationServiceConfigurator" /> class.
+        /// </summary>
+        /// <param name="transactionService">The transaction service.</param>
+        /// <param name="domainEventBus">The domain event bus.</param>
+        public ApplicationServiceConfigurator(ITransactionService transactionService, IDomainEventBus domainEventBus)
+        {
+            this.transactionService = transactionService;
+            this.domainEventBus = domainEventBus;
+        }
+
+        /// <summary>
+        /// Configures this instance.
+        /// </summary>
         public void Configure()
         {
-            EventsRegister.RegisterAsync<TransactionSkipped>(
-                msg => ApplicationIntegration.DependencyResolver.ResolveType<ITransactionService>()
-                        .Skipped(new TransactionSkippedRequestMessage { RecordKey = msg.RecordKey }));
+            this.domainEventBus.SubscribeAsync<TransactionSkipped>(
+                msg => this.transactionService.Skipped(new SkipTransactionCommand { RecordKey = msg.RecordKey }));
         }
     }
 }

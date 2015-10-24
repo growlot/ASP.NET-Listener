@@ -1,29 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Owin;
-using Owin;
+﻿// <copyright file="OwinRequestScopeContextMiddleware.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
 {
-    using Serilog;
+    using System.Threading.Tasks;
+    using Microsoft.Owin;
 
+    /// <summary>
+    /// Owin middleware for single request scope
+    /// </summary>
     public class OwinRequestScopeContextMiddleware : OwinMiddleware
     {
-        readonly OwinMiddleware next;
-        readonly bool threadSafeItem;
+        private readonly OwinMiddleware next;
+        private readonly bool threadSafeItem;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OwinRequestScopeContextMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The next.</param>
         public OwinRequestScopeContextMiddleware(OwinMiddleware next)
             : this(next, threadSafeItem: false)
         {
         }
 
-        public OwinRequestScopeContextMiddleware(OwinMiddleware next, bool threadSafeItem) : base(next)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OwinRequestScopeContextMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The next.</param>
+        /// <param name="threadSafeItem">if set to <c>true</c> [thread safe item].</param>
+        public OwinRequestScopeContextMiddleware(OwinMiddleware next, bool threadSafeItem)
+            : base(next)
         {
             this.next = next;
             this.threadSafeItem = threadSafeItem;
         }
 
+        /// <inheritdoc/>
         public async override Task Invoke(IOwinContext context)
         {
             var scopeContext = new OwinRequestScopeContext(context, this.threadSafeItem);
@@ -44,20 +57,6 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
                     OwinRequestScopeContext.FreeContextSlot();
                 }
             }
-        }
-    }
-
-    public static class AppBuilderOwinRequestScopeContextMiddlewareExtensions
-    {
-        /// <summary>
-        /// Use OwinRequestScopeContextMiddleware.
-        /// </summary>
-        /// <param name="app">Owin app.</param>
-        /// <param name="isThreadsafeItem">OwinRequestScopeContext.Item is threadsafe or not. Default is threadsafe.</param>
-        /// <returns></returns>
-        public static IAppBuilder UseRequestScopeContext(this IAppBuilder app, bool isThreadsafeItem = true)
-        {
-            return app.Use(typeof(OwinRequestScopeContextMiddleware), isThreadsafeItem);
         }
     }
 }

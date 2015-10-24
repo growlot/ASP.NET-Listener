@@ -1,10 +1,10 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="ListenerMessageHandler.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="ListenerMessageHandler.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
-namespace AMSLLC.Listener.ODataService.MessageHandlers
+namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
     using System;
     using System.Collections.Generic;
@@ -19,7 +19,9 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
 
     public class ListenerMessageHandler : DelegatingHandler
     {
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+        /// <inheritdoc/>
+        protected override async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
             var content = await request.Content.ReadAsStringAsync();
@@ -37,16 +39,22 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
                         {
                             header.Add(o.Key, o.Value);
                         }
+
                         body.Add(o.Key, o.Value);
                     }
+
                     request.Properties["ListenerRequestBody"] = JsonConvert.SerializeObject(body);
 
                     var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
                     mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
-                    request.Content = new ObjectContent(typeof (Dictionary<string, object>), header,
-                        new JsonMediaTypeFormatter(), mediaType);
+                    request.Content = new ObjectContent(
+                        typeof(Dictionary<string, object>),
+                        header,
+                        new JsonMediaTypeFormatter(),
+                        mediaType);
                 }
             }
+
             HttpResponseMessage response = null;
             try
             {
@@ -64,8 +72,8 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
         private static bool IsJson(string input)
         {
             input = input.Trim();
-            return input.StartsWith("{") && input.EndsWith("}")
-                   || input.StartsWith("[") && input.EndsWith("]");
+            return (input.StartsWith("{") && input.EndsWith("}"))
+                   || (input.StartsWith("[") && input.EndsWith("]"));
         }
     }
 }

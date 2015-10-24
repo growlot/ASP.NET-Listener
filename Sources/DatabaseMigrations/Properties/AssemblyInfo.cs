@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using log4net.Config;
 
@@ -26,5 +25,4 @@ using log4net.Config;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("7299249e-c685-4741-b054-c5e3992c4f53")]
 
-[assembly: CLSCompliant(true)]
 [assembly: XmlConfigurator(Watch = true)]

@@ -6,12 +6,18 @@
 namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
     using System;
+    using Core;
 
     /// <summary>
     /// Root aggregate for a Site
     /// </summary>
     public class Site : Entity<int>, IAggregateRoot
     {
+        /// <summary>
+        /// The domain event bus
+        /// </summary>
+        private IDomainEventBus domainEventBus = ApplicationIntegration.DependencyResolver.ResolveType<IDomainEventBus>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Site"/> class.
         /// </summary>
@@ -92,7 +98,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
                 throw new ArgumentException("At least first address line must be specified for a Site.");
             }
 
-            EventsRegister.Raise(new SiteAddressUpdated(this.Id, newAddress));
+            this.domainEventBus.Publish(new SiteAddressUpdated(this.Id, newAddress));
         }
 
         /// <summary>

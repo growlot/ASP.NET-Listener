@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction Skipped event data
     /// </summary>
-    public class TransactionSkipped : IEvent
+    public class TransactionSkipped : IDomainEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionSkipped" /> class.

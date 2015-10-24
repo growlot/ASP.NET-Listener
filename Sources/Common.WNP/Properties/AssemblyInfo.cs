@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
@@ -24,5 +23,3 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("9eaa8c0d-d3bd-49b7-a020-7e012b445522")]
-
-[assembly: CLSCompliant(true)]

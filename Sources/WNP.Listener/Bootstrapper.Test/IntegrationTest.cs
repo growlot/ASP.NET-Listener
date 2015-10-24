@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="IntegrationTest.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="IntegrationTest.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Bootstrapper.Test
@@ -14,34 +14,31 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Net.Http;
     using System.Net.Http.Formatting;
     using System.Net.Http.Headers;
-    using System.Text;
     using System.Threading.Tasks;
     using Communication;
     using Core;
     using Core.Ninject;
-    using Domain.Listener;
     using Domain.Listener.Transaction;
     using Microsoft.Owin.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
+    using Core.Ninject.Test;
 
     [TestClass]
     public class IntegrationTest
     {
-        //[TestInitialize()]
-        //public void Initialize() { }
+        // [TestInitialize()]
+        // public void Initialize() { }
 
-        //[TestCleanup()]
-        //public void Cleanup() { }
-
+        // [TestCleanup()]
+        // public void Cleanup() { }
         [TestMethod]
         public async Task OpenAndSucceedTransactionTest()
         {
             using (var server = TestServer.Create<Startup>())
             {
-                var di = ((NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver);
+                var di = (NinjectTestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
                 var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
                 string nextKey = Guid.NewGuid().ToString("D");
                 transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey);
@@ -57,8 +54,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                         (object data, IConnectionConfiguration conn) =>
                             receivedData = ((TransactionDataReady)data).Data);
 
-                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
-                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
+                di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
+                di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
                 var responseMessage = await OpenTransaction(server, entityKey);
                 Assert.AreEqual(nextKey, responseMessage);
 
@@ -85,7 +82,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         {
             using (var server = TestServer.Create<Startup>())
             {
-                var di = ((NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver);
+                var di = (NinjectTestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
                 var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
                 transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
                 var entityKey = Guid.NewGuid().ToString("D");
@@ -94,8 +91,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                     s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()))
                     .Returns(Task.CompletedTask);
 
-                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
-                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
+                di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
+                di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
 
                 var transactionRecordKey1 = await OpenTransaction(server, entityKey);
                 var transactionRecordKey2 = await OpenTransaction(server, entityKey);
@@ -120,7 +117,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         {
             using (var server = TestServer.Create<Startup>())
             {
-                var di = ((NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver);
+                var di = (NinjectTestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
                 var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
                 transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
                 var entityKey = Guid.NewGuid().ToString("D");
@@ -129,8 +126,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                     s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>()))
                     .Returns(Task.CompletedTask);
 
-                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
-                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
+                di.RebindToObject<IRecordKeyBuilder, IRecordKeyBuilder>(transactionRecordKeyBuilder.Object);
+                di.RebindNamedToObject<ICommunicationHandler, ICommunicationHandler>(communicationHandler.Object, "communication-jms");
 
                 var recordKey = await OpenTransaction(server, entityKey);
 
@@ -244,7 +241,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             var ex = JsonConvert.DeserializeObject<ExpandoObject>(rstr) as IDictionary<string, object>;
             long transactionStatusId =
-                (long)(((ex["value"] as List<object>).Single() as IDictionary<string, object>)["TransactionStatusId"]);
+                (long)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["TransactionStatusId"];
             return transactionStatusId;
         }
 
@@ -252,15 +249,20 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             InstallMeterRequestMessage
         {
             public string Test { get; set; }
+
             public string UserName { get; set; }
+
             public string EntityCategory { get; set; }
+
             public string EntityKey { get; set; }
+
             public string OperationKey { get; set; }
         }
 
         private class FailureData
         {
             public string Message { get; set; }
+
             public string Details { get; set; }
         }
     }

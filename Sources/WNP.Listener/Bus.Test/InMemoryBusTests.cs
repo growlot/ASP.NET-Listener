@@ -3,10 +3,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.Test
+namespace AMSLLC.Listener.Bus.Test
 {
     using System;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Domain;
 
     /// <summary>
     /// Tests entity base class
@@ -14,16 +15,18 @@ namespace AMSLLC.Listener.Domain.Test
     [TestClass]
     public class EventRegisterTests
     {
+        private IDomainEventBus domainEventBus = new InMemoryBus();
+
         /// <summary>
         /// Handler registration works and handler is called when event is raised
         /// </summary>
         [TestMethod]
-        public void HandlerRegistrationWorksAndHandlerIsCalledWhenEventIsRaised()
+        public void DomainEventHandlerSubscriptionWorksAndHandlerIsCalledWhenEventIsPublished()
         {
-            EventsRegister.Register<TestEvent>(testEvent => TestEventHandler.Handler(testEvent));
+            this.domainEventBus.Subscribe<TestEvent>(testEvent => TestEventHandler.Handler(testEvent));
             TestEvent eventData = new TestEvent(1);
 
-            EventsRegister.Raise(eventData);
+            this.domainEventBus.Publish(eventData);
             Assert.AreEqual(1, TestEventHandler.CallCounter);
         }
 
@@ -35,7 +38,7 @@ namespace AMSLLC.Listener.Domain.Test
         {
             TestEvent eventData = null;
 
-            EventsRegister.Raise(eventData);
+            this.domainEventBus.Publish(eventData);
         }
 
         /// <summary>
@@ -83,9 +86,9 @@ namespace AMSLLC.Listener.Domain.Test
         }
 
         /// <summary>
-        /// Test class implementing <see cref="IEvent"/> interface
+        /// Test class implementing <see cref="IDomainEvent"/> interface
         /// </summary>
-        private class TestEvent : IEvent
+        private class TestEvent : IDomainEvent
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="TestEvent"/> class.

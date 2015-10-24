@@ -9,7 +9,6 @@ namespace AMSLLC.Listener.Communication.Jms.Test
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Core;
     using Domain.Listener.Transaction;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;

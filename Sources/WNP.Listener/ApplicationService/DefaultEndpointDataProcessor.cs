@@ -1,13 +1,14 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="DefaultEndpointDataProcessor.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="DefaultEndpointDataProcessor.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.ApplicationService
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
@@ -21,70 +22,6 @@ namespace AMSLLC.Listener.ApplicationService
     /// </summary>
     public class DefaultEndpointDataProcessor : IEndpointDataProcessor
     {
-        /// <summary>
-        /// Prepare data for the endpoint.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="fieldConfigurations">The field configurations.</param>
-        /// <returns>Task.</returns>
-        public virtual IEndpointDataProcessorResult Process(object data, IList<FieldConfiguration> fieldConfigurations)
-        {
-            IEndpointDataProcessorResult returnValue = new EndpointDataProcessorResult();
-            bool remap = fieldConfigurations.Any(f => !string.IsNullOrWhiteSpace(f.MapToName));
-            returnValue.Data = remap ? DynamicUtilities.ConvertToDynamic(data) : data;
-            Dictionary<short, object> hashElements = new Dictionary<short, object>();
-            foreach (var fieldConfiguration in fieldConfigurations)
-            {
-                DynamicUtilities.ProcessProperty(data, fieldConfiguration.Name, null,
-                    (targetProperty, owner, propRef) =>
-                    {
-                        var targetValue = targetProperty.GetValue(owner);
-                        var targetKey = targetValue?.ToString() ?? string.Empty;
-                        if (fieldConfiguration.ValueMap != null && fieldConfiguration.ValueMap.ContainsKey(targetKey))
-                        {
-                            targetValue = fieldConfiguration.ValueMap[targetKey];
-                        }
-
-                        if (fieldConfiguration.HashSequence.HasValue)
-                        {
-                            hashElements.Add(fieldConfiguration.HashSequence.Value, targetValue);
-                        }
-
-                        if (remap)
-                        {
-                            DynamicUtilities.RemoveProperty(returnValue.Data, propRef);
-                            int[] sequence =
-                                Regex.Matches(propRef, @"\[([^]]*)\]")
-                                    .Cast<Match>()
-                                    .Select(x => int.Parse(x.Groups[1].Value))
-                                    .ToArray();
-
-                            DynamicUtilities.AddPropertyAs(returnValue.Data, targetValue, fieldConfiguration.MapToName,
-                                sequence, 0);
-                        }
-                        else
-                        {
-                            //var converter = TypeDescriptor.GetConverter(targetProperty.PropertyType);
-                            targetProperty.SetValue(owner, targetValue);
-                            //converter.ConvertFrom(targetValue?.ToString())
-                        }
-                    });
-            }
-
-            List<KeyValuePair<short, object>> hashSorted =
-                hashElements.Where(s => s.Value != null).OrderBy(s => s.Key).ToList();
-            StringBuilder hashSourceBuilder = new StringBuilder();
-            for (int i = 0; i < hashSorted.Count; i++)
-            {
-                var hashElement = hashSorted[i].Value;
-                hashSourceBuilder.AppendFormat("{0}_", JsonConvert.SerializeObject(hashElement));
-            }
-
-            returnValue.Hash = GetHash(hashSourceBuilder.ToString());
-
-            return returnValue;
-        }
-
         /// <summary>
         /// Gets the SHA-1 hash.
         /// </summary>
@@ -102,6 +39,73 @@ namespace AMSLLC.Listener.ApplicationService
 
             result = BitConverter.ToString(hash).Replace("-", string.Empty);
             return result;
+        }
+
+        /// <summary>
+        /// Prepare data for the endpoint.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="fieldConfigurations">The field configurations.</param>
+        /// <returns>Task.</returns>
+        public virtual IEndpointDataProcessorResult Process(object data, IList<FieldConfiguration> fieldConfigurations)
+        {
+            if (fieldConfigurations == null)
+            {
+                throw new ArgumentNullException(nameof(fieldConfigurations), "Can not process data if field configurations are not specified.");
+            }
+
+            IEndpointDataProcessorResult returnValue = new EndpointDataProcessorResult();
+            bool remap = fieldConfigurations.Any(f => !string.IsNullOrWhiteSpace(f.MapToName));
+            returnValue.Data = remap ? DynamicUtilities.ConvertToDynamic(data) : data;
+            Dictionary<short, object> hashElements = new Dictionary<short, object>();
+            foreach (var fieldConfiguration in fieldConfigurations)
+            {
+                Action<DataPropertyInfo, object, string> action = (targetProperty, owner, propRef) =>
+                {
+                    var targetValue = targetProperty.GetValue(owner);
+                    var targetKey = targetValue?.ToString() ?? string.Empty;
+                    if (fieldConfiguration.ValueMap != null && fieldConfiguration.ValueMap.ContainsKey(targetKey))
+                    {
+                        targetValue = fieldConfiguration.ValueMap[targetKey];
+                    }
+
+                    if (fieldConfiguration.HashSequence.HasValue)
+                    {
+                        hashElements.Add(fieldConfiguration.HashSequence.Value, targetValue);
+                    }
+
+                    if (remap)
+                    {
+                        DynamicUtilities.RemoveProperty(returnValue.Data, propRef);
+                        int[] sequence =
+                            Regex.Matches(propRef, @"\[([^]]*)\]")
+                                .Cast<Match>()
+                                .Select(x => int.Parse(x.Groups[1].Value, CultureInfo.InvariantCulture))
+                                .ToArray();
+
+                        DynamicUtilities.AddPropertyAs(returnValue.Data, targetValue, fieldConfiguration.MapToName, sequence, 0);
+                    }
+                    else
+                    {
+                        targetProperty.SetValue(owner, targetValue);
+                    }
+                };
+
+                DynamicUtilities.ProcessProperty(data, fieldConfiguration.Name, null, action);
+            }
+
+            List<KeyValuePair<short, object>> hashSorted =
+                hashElements.Where(s => s.Value != null).OrderBy(s => s.Key).ToList();
+            StringBuilder hashSourceBuilder = new StringBuilder();
+            for (int i = 0; i < hashSorted.Count; i++)
+            {
+                var hashElement = hashSorted[i].Value;
+                hashSourceBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}_", JsonConvert.SerializeObject(hashElement));
+            }
+
+            returnValue.Hash = GetHash(hashSourceBuilder.ToString());
+
+            return returnValue;
         }
     }
 }

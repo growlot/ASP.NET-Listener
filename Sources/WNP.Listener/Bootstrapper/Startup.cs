@@ -1,44 +1,46 @@
-﻿using System.Web.Http;
-using AMSLLC.Listener.Bootstrapper.Owin.Middleware;
-using AMSLLC.Listener.MetadataService.Properties;
-using AMSLLC.Listener.ODataService;
-using AMSLLC.Listener.ODataService.Actions.Properties;
-using AMSLLC.Listener.ODataService.Properties;
-using Microsoft.Owin.Diagnostics;
-using Ninject;
-using Ninject.Web.Common.OwinHost;
-using Ninject.Web.WebApi.OwinHost;
-using Owin;
-using StackExchange.Profiling;
+﻿// <copyright file="Startup.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.Bootstrapper
 {
-
+    using System.Web.Http;
     using ApplicationService;
     using Core;
     using Core.Ninject;
+    using global::Owin;
+    using Microsoft.Owin.Diagnostics;
+    using Ninject;
+    using Ninject.Web.Common.OwinHost;
+    using Ninject.Web.WebApi.OwinHost;
+    using ODataService;
+    using Owin.Middleware;
     using Serilog;
+    using StackExchange.Profiling;
 
+    /// <summary>
+    /// Manages application/service startup
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Configurations the specified application.
+        /// </summary>
+        /// <param name="app">The application.</param>
         public void Configuration(IAppBuilder app)
         {
             var diAdapter = new NinjectDependencyInjectionAdapter();
             diAdapter.Initialize(container =>
             {
-                container.Load<ODataServiceModule>();
-                // TODO: is there a better way to initialize ODataService.Actions assembly?
-                container.Load<ODataServiceActionsModule>();
-                container.Load<MetadataServiceModule>();
+                container.Load<DependencyWiring>();
             });
 
             ApplicationIntegration.SetDependencyInjectionResolver(diAdapter);
 
-            this.InitOwinHost(app, diAdapter.Kernel);
+            this.InitOwinHost(app, diAdapter);
             this.InitProfiler();
 
-            var log =
-                new LoggerConfiguration().ReadFrom.AppSettings().CreateLogger();
+            var log = new LoggerConfiguration().ReadFrom.AppSettings().CreateLogger();
             Log.Logger = log;
         }
 
@@ -48,19 +50,18 @@ namespace AMSLLC.Listener.Bootstrapper
             MiniProfiler.Settings.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter(true);
         }
 
-        private void InitOwinHost(IAppBuilder app, StandardKernel kernel)
+        private void InitOwinHost(IAppBuilder app, NinjectDependencyInjectionAdapter diAdapter)
         {
-            var config = kernel.Get<HttpConfiguration>();
+            var config = diAdapter.ResolveType<HttpConfiguration>();
 
-            var odataServiceConfigurator = kernel.Get<ODataServiceConfigurator>();
+            var odataServiceConfigurator = diAdapter.ResolveType<ODataServiceConfigurator>();
             odataServiceConfigurator.Configure(config);
 
-            var appConfigurator = kernel.Get<ApplicationServiceConfigurator>();
-            appConfigurator.Configure();
+            diAdapter.ResolveType<ApplicationServiceConfigurator>().Configure();
 
             app.UseRequestScopeContext();
             app.UseErrorPage(ErrorPageOptions.ShowAll);
-            app.UseNinjectMiddleware(() => kernel).UseNinjectWebApi(config);
+            diAdapter.Initialize(container => app.UseNinjectMiddleware(() => container).UseNinjectWebApi(config));
 
             config.EnsureInitialized();
         }

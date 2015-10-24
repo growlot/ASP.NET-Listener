@@ -1,26 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Runtime.Serialization;
-using System.Web.Http.Controllers;
-using System.Web.OData.Routing;
-using System.Web.OData.Routing.Conventions;
-using AMSLLC.Core;
-using AMSLLC.Listener.MetadataService;
-using AMSLLC.Listener.ODataService.Actions;
-using AMSLLC.Listener.ODataService.Controllers;
-using AMSLLC.Listener.ODataService.Controllers.Base;
+﻿// <copyright file="WNPGenericRoutingConvention.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Runtime.Serialization;
+    using System.Web.Http.Controllers;
+    using System.Web.OData.Routing;
+    using System.Web.OData.Routing.Conventions;
+    using AMSLLC.Core;
+    using AMSLLC.Listener.MetadataService;
+    using AMSLLC.Listener.ODataService.Actions;
+    using AMSLLC.Listener.ODataService.Controllers;
+    using AMSLLC.Listener.ODataService.Controllers.Base;
+
     public class WNPGenericRoutingConvention : IODataRoutingConvention
     {
-        private readonly IMetadataService metadataService;
+        private readonly IMetadataProvider metadataService;
         private readonly Dictionary<string, string> _entityNameToController = new Dictionary<string, string>();
 
-        public WNPGenericRoutingConvention(IMetadataService metadataService)
+        public WNPGenericRoutingConvention(IMetadataProvider metadataService)
         {
             this.metadataService = metadataService;
 
@@ -41,6 +45,7 @@ namespace AMSLLC.Listener.ODataService
                 });
         }
 
+        /// <inheritdoc/>
         public string SelectAction(ODataPath odataPath, HttpControllerContext controllerContext, ILookup<string, HttpActionDescriptor> actionMap)
         {
             switch (odataPath.PathTemplate)
@@ -55,6 +60,7 @@ namespace AMSLLC.Listener.ODataService
             return null;
         }
 
+        /// <inheritdoc/>
         public string SelectController(ODataPath odataPath, HttpRequestMessage request)
         {
             if (odataPath.PathTemplate == "~" || odataPath.PathTemplate == "~/$metadata")

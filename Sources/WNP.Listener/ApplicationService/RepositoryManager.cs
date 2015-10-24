@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="RepositoryManager.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="RepositoryManager.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.ApplicationService
@@ -11,22 +11,12 @@ namespace AMSLLC.Listener.ApplicationService
     using Core;
     using Repository;
 
+    /// <summary>
+    /// Implmenets <see cref="IRepositoryManager"/>
+    /// </summary>
     public class RepositoryManager : IRepositoryManager
     {
-        private readonly ConcurrentBag<IRepository> _knownRepositories = new ConcurrentBag<IRepository>();
-
-        public TRepository Create<TRepository>() where TRepository : IRepository
-        {
-            var repository = ApplicationIntegration.DependencyResolver.ResolveType<TRepository>();
-            this._knownRepositories.Add(repository);
-            return repository;
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        private readonly ConcurrentBag<IRepository> knownRepositories = new ConcurrentBag<IRepository>();
 
         /// <summary>
         /// Finalizes an instance of the <see cref="RepositoryManager" /> class.
@@ -37,6 +27,22 @@ namespace AMSLLC.Listener.ApplicationService
             this.Dispose(false);
         }
 
+        /// <inheritdoc/>
+        public TRepository Create<TRepository>()
+            where TRepository : IRepository
+        {
+            var repository = ApplicationIntegration.DependencyResolver.ResolveType<TRepository>();
+            this.knownRepositories.Add(repository);
+            return repository;
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>
         /// Disposes the specified disposing.
         /// </summary>
@@ -45,7 +51,7 @@ namespace AMSLLC.Listener.ApplicationService
         {
             if (disposing)
             {
-                foreach (var knownRepository in this._knownRepositories)
+                foreach (var knownRepository in this.knownRepositories)
                 {
                     knownRepository?.Dispose();
                 }

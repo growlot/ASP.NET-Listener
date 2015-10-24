@@ -9,7 +9,6 @@ namespace AMSLLC.Listener.Communication.Jms
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Core;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using WebLogic.Messaging;

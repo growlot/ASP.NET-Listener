@@ -1,7 +1,11 @@
-﻿using System.Web.OData.Query;
+﻿// <copyright file="IFilterTransformer.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService.Services.FilterTransformer
 {
+    using System.Web.OData.Query;
+
     public interface IFilterTransformer
     {
         WhereClause TransformFilterQueryOption(FilterQueryOption filterQueryOption);

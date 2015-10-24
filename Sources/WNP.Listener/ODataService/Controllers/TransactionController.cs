@@ -1,25 +1,25 @@
-﻿
-namespace AMSLLC.Listener.ODataService.Controllers {
-using System;
+﻿// <copyright file="TransactionController.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.ODataService.Controllers
+{
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.OData;
     using System.Web.OData.Query;
-    using System.Web.OData.Routing;
     using ApplicationService;
-    using Communication;
+    using ApplicationService.Commands;
     using Persistence.Listener;
     using Serilog;
 
     [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]
     public class TransactionController : ODataController
     {
-        private readonly ListenerODataContext _dbContext;
-        private readonly ITransactionService _transactionService;
-
-        public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
-        public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+        private readonly ListenerODataContext dbContext;
+        private readonly ITransactionService transactionService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionController" /> class.
@@ -28,15 +28,20 @@ using System;
         /// <param name="transactionService">The transaction service.</param>
         public TransactionController(ListenerODataContext dbctx, ITransactionService transactionService)
         {
-            this._dbContext = dbctx;
-            this._transactionService = transactionService;
+            this.dbContext = dbctx;
+            this.transactionService = transactionService;
         }
 
+        public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
+
+        public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+
+        [CLSCompliant(false)]
         public IQueryable<TransactionRegistryEntity> Get()
         {
             try
             {
-                return this._dbContext.TransactionRegistry.AsQueryable();
+                return this.dbContext.TransactionRegistry.AsQueryable();
             }
             catch (Exception exc)
             {
@@ -49,8 +54,8 @@ using System;
         {
             try
             {
-                var result = this._dbContext.TransactionRegistry.Where(s => s.RecordKey == key);
-                return Ok(result);
+                var result = this.dbContext.TransactionRegistry.Where(s => s.RecordKey == key);
+                return this.Ok(result);
             }
             catch (Exception exc)
             {
@@ -69,7 +74,7 @@ using System;
         {
             try
             {
-                await this._transactionService.Process(new ProcessTransactionRequestMessage { RecordKey = key });
+                await this.transactionService.Process(new ProcessTransactionCommand { RecordKey = key });
                 return this.Ok();
             }
             catch (Exception exc)
@@ -89,7 +94,7 @@ using System;
         {
             try
             {
-                await this._transactionService.Success(new TransactionSuccessMessage() { RecordKey = key });
+                await this.transactionService.Success(new SucceedTransactionCommand() { RecordKey = key });
                 return this.Ok();
             }
             catch (Exception exc)
@@ -105,14 +110,14 @@ using System;
         /// <param name="key">The key.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
+        // [ODataRoute("(Message={message},Details={details})")]
         [HttpPost]
-        //[ODataRoute("(Message={message},Details={details})")]
         public async Task<IHttpActionResult> Fail([FromODataUri] string key, ODataActionParameters parameters)
         {
             try
             {
                 await
-                    this._transactionService.Failed(new TransactionFailedMessage()
+                    this.transactionService.Failed(new FailTransactionCommand()
                     {
                         RecordKey = key,
                         Details = parameters.ContainsKey("Details") ? parameters["Details"].ToString() : null,

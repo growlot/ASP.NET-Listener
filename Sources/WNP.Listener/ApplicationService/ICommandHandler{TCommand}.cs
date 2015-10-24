@@ -3,12 +3,12 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain
+namespace AMSLLC.Listener.ApplicationService
 {
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Interface for all domain command handlers.
+    /// Interface for all application command handlers.
     /// </summary>
     /// <typeparam name="TCommand">The type of the command.</typeparam>
     public interface ICommandHandler<TCommand>

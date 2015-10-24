@@ -1,22 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using StackExchange.Profiling;
+﻿// <copyright file="MiniProfilerMessageHandler.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
-namespace AMSLLC.Listener.ODataService.MessageHandlers
+namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
+    using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web.Script.Serialization;
+    using StackExchange.Profiling;
+
     public class MiniProfilerMessageHandler : DelegatingHandler
     {
+        /// <inheritdoc/>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             MiniProfiler.Start();
-            //request.Content.
+
+            // request.Content.
             var response = await base.SendAsync(request, cancellationToken);
             MiniProfiler.Stop();
 
-            if (response.Content != null)// && response.Content is ObjectContent<string>
+            if (response.Content != null)
             {
                 var responseMessage = await response.Content.ReadAsStringAsync();
                 if (IsJson(responseMessage))
@@ -37,8 +43,8 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
         private static bool IsJson(string input)
         {
             input = input.Trim();
-            return input.StartsWith("{") && input.EndsWith("}")
-                   || input.StartsWith("[") && input.EndsWith("]");
+            return (input.StartsWith("{") && input.EndsWith("}"))
+                   || (input.StartsWith("[") && input.EndsWith("]"));
         }
     }
 }

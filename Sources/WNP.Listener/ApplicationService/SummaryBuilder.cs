@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="SummaryBuilder.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +14,18 @@ namespace AMSLLC.Listener.ApplicationService
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// Implments <see cref="ISummaryBuilder"/>
+    /// </summary>
     public class SummaryBuilder : ISummaryBuilder
     {
+        /// <summary>
+        /// Builds the summary from specified data.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="summary">The summary generation function.</param>
+        /// <param name="fieldConfigurations">The field configurations.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
         public void Build(object data, Dictionary<string, object> summary, IEnumerable<FieldConfiguration> fieldConfigurations)
         {
             object workData = data;

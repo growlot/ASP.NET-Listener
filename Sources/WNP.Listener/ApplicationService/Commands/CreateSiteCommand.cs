@@ -1,11 +1,10 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CreateSiteCommand.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="CreateSiteCommand.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
-    using Domain;
     using Domain.WNP.SiteAggregate;
 
     /// <summary>

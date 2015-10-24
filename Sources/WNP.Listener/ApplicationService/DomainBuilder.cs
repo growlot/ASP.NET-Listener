@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="DomainBuilder.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="DomainBuilder.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.ApplicationService
@@ -19,7 +19,8 @@ namespace AMSLLC.Listener.ApplicationService
         /// </summary>
         /// <typeparam name="TDomainModel">The type of the domain model.</typeparam>
         /// <returns>Domain model.</returns>
-        public virtual TDomainModel Create<TDomainModel>() where TDomainModel : IOriginator
+        public virtual TDomainModel Create<TDomainModel>()
+            where TDomainModel : IOriginator
         {
             return this.Create<TDomainModel>(null);
         }
@@ -30,7 +31,8 @@ namespace AMSLLC.Listener.ApplicationService
         /// <typeparam name="TDomainModel">The type of the domain model.</typeparam>
         /// <param name="memento">The memento.</param>
         /// <returns>Domain model.</returns>
-        public TDomainModel Create<TDomainModel>(IMemento memento) where TDomainModel : IOriginator
+        public TDomainModel Create<TDomainModel>(IMemento memento)
+            where TDomainModel : IOriginator
         {
             var returnValue = ApplicationIntegration.DependencyResolver.ResolveType<TDomainModel>();
 

@@ -1,20 +1,27 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="PocoCachedAdapter.cs" company="Advanced Metering Services LLC">
+// <copyright file="TransactionalODataBatchHandler.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.ODataService.MessageHandlers
+namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.OData.Batch;
+    using Persistence;
 
+    /// <summary>
+    /// Custom OData batch handler that ensures that changeset is executed in single transaction.
+    /// </summary>
     public class TransactionalODataBatchHandler : DefaultODataBatchHandler
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransactionalODataBatchHandler"/> class.
+        /// </summary>
+        /// <param name="httpServer">The HTTP server.</param>
         public TransactionalODataBatchHandler(HttpServer httpServer)
             : base(httpServer)
         {
@@ -63,6 +70,7 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
                         response.Dispose();
                     }
                 }
+
                 throw;
             }
 
@@ -77,7 +85,7 @@ namespace AMSLLC.Listener.ODataService.MessageHandlers
         /// <param name="changeSet">The change set.</param>
         /// <param name="responses">The responses.</param>
         /// <param name="cancellation">The cancellation.</param>
-        /// <returns></returns>
+        /// <returns>The empty task</returns>
         private async Task ExecuteChangeSet(
             ChangeSetRequestItem changeSet,
             IList<ODataBatchResponseItem> responses,

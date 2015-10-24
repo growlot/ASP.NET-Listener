@@ -39,7 +39,7 @@ namespace AMSLLC.Listener.Core.Ninject
         }
 
         /// <summary>
-        /// Initializes Ninject dependency resolver.
+        /// Initializes specified action with Ninject dependency resolver.
         /// </summary>
         /// <param name="action">The action.</param>
         public void Initialize(Action<StandardKernel> action)
