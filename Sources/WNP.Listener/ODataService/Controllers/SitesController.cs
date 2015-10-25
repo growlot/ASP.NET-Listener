@@ -4,9 +4,6 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using AMSLLC.Listener.ODataService.Controllers.Base;
-using AMSLLC.Listener.Persistence.Metadata;
-
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
@@ -15,22 +12,40 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Web.Http;
     using System.Web.OData;
     using ApplicationService.Commands;
+    using Base;
     using MetadataService;
     using Newtonsoft.Json.Linq;
     using Persistence;
+    using Persistence.Metadata;
     using Services;
     using Services.FilterTransformer;
 
+    /// <summary>
+    /// Controller for Sites.
+    /// </summary>
     public class SitesController : WNPEntityController
     {
-        public override string GetEntityTableName() => DBMetadata.Site.FullTableName;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SitesController"/> class.
+        /// </summary>
+        /// <param name="metadataService">The metadata service.</param>
+        /// <param name="dbContext">The database context.</param>
+        /// <param name="filterTransformer">The filter transformer.</param>
+        /// <param name="convertor">The convertor.</param>
+        /// <param name="actionConfigurator">The action configurator.</param>
         public SitesController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
 
             : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
         {
         }
 
+        /// <inheritdoc/>
+        public override string GetEntityTableName() => DBMetadata.Site.FullTableName;
+
+        /// <summary>
+        /// Adds new Site.
+        /// </summary>
+        /// <returns>The newly created Site, or redirect to existing Site resource.</returns>
         public Task<IHttpActionResult> Post()
         {
             if (!this.ModelState.IsValid)
@@ -102,6 +117,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Updates specified Site.
+        /// </summary>
+        /// <param name="key">The site identifier.</param>
+        /// <returns>The result as HTTP response.</returns>
         public Task<IHttpActionResult> Put([FromODataUri] int key)
         {
             throw new NotImplementedException();

@@ -4,7 +4,9 @@
 
 namespace AMSLLC.Listener.ApplicationService
 {
+    using CommandHandlers;
     using Commands;
+    using Core;
     using Domain;
     using Domain.Listener.Transaction;
 
@@ -13,6 +15,7 @@ namespace AMSLLC.Listener.ApplicationService
     /// </summary>
     public class ApplicationServiceConfigurator
     {
+        private ICommandBus commandBus;
         private IDomainEventBus domainEventBus;
         private ITransactionService transactionService;
 
@@ -21,19 +24,30 @@ namespace AMSLLC.Listener.ApplicationService
         /// </summary>
         /// <param name="transactionService">The transaction service.</param>
         /// <param name="domainEventBus">The domain event bus.</param>
-        public ApplicationServiceConfigurator(ITransactionService transactionService, IDomainEventBus domainEventBus)
+        /// <param name="commandBus">The command bus.</param>
+        public ApplicationServiceConfigurator(ITransactionService transactionService, IDomainEventBus domainEventBus, ICommandBus commandBus)
         {
             this.transactionService = transactionService;
             this.domainEventBus = domainEventBus;
+            this.commandBus = commandBus;
         }
 
         /// <summary>
-        /// Configures this instance.
+        /// Registers command handlers for all commands.
         /// </summary>
-        public void Configure()
+        public void RegisterCommandHandlers()
+        {
+            this.commandBus.SubscribeAsync<CreateSiteCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<CreateSiteCommandHandler>().Handle(command));
+        }
+
+        /// <summary>
+        /// Registers the handlers for all Saga's.
+        /// </summary>
+        public void RegisterSagaHandlers()
         {
             this.domainEventBus.SubscribeAsync<TransactionSkipped>(
-                msg => this.transactionService.Skipped(new SkipTransactionCommand { RecordKey = msg.RecordKey }));
+                domainEvent => this.transactionService.Skipped(new SkipTransactionCommand { RecordKey = domainEvent.RecordKey }));
         }
     }
 }

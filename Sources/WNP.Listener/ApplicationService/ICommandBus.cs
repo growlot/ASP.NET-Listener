@@ -9,6 +9,11 @@ namespace AMSLLC.Listener.ApplicationService
     /// <summary>
     /// Interface for domain event bus.
     /// </summary>
+    /// <remarks>
+    /// A mechanism for publishing commands and subscribing handlers to these commands.
+    /// The only behavior is publishing commands and subscribing command handlers to commands;
+    /// the only state is what's required to track which handler have subscribed to which command.
+    /// </remarks>
     public interface ICommandBus
     {
         /// <summary>

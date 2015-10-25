@@ -9,6 +9,11 @@ namespace AMSLLC.Listener.Domain
     /// <summary>
     /// Interface for domain event bus.
     /// </summary>
+    /// <remarks>
+    /// A mechanism for publishing domain events and subscribing handlers to these events.
+    /// The only behavior is publishing events and subscribing event handlers and saga handlers to events;
+    /// the only state is what's required to track which handler have subscribed to which events.
+    /// </remarks>
     public interface IDomainEventBus
     {
         /// <summary>

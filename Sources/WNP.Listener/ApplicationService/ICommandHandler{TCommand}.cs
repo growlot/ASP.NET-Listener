@@ -10,6 +10,11 @@ namespace AMSLLC.Listener.ApplicationService
     /// <summary>
     /// Interface for all application command handlers.
     /// </summary>
+    /// <remarks>
+    /// Command Handler is a domain service that turns a command into events by calling methods on an aggregate
+    /// root and publishes the resulting events.
+    /// Stateless with just behavior; just a task based method and sort of procedural.
+    /// </remarks>
     /// <typeparam name="TCommand">The type of the command.</typeparam>
     public interface ICommandHandler<TCommand>
             where TCommand : ICommand

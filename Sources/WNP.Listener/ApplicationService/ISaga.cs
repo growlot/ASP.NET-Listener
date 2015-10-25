@@ -1,19 +1,19 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IDomainEvent.cs" company="Advanced Metering Services LLC">
+// <copyright file="ISaga.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain
+namespace AMSLLC.Listener.ApplicationService
 {
     /// <summary>
-    /// Marker interface for all domain events.
+    /// Interface for all sagas.
     /// </summary>
     /// <remarks>
-    /// A simple message that represents a change to the state of an aggregate.
-    /// Just data with no behavior and often named in the past tense.
+    /// A persistent object that turns domain events into commands. Stateful and behaviorful.
+    /// The only state is what's required for knowing when to create the commands.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1040:AvoidEmptyInterfaces", Justification = "This is a marker interface.")]
-    public interface IDomainEvent
+    public interface ISaga
     {
     }
 }
