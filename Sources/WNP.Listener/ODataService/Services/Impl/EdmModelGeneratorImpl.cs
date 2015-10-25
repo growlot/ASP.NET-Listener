@@ -106,7 +106,9 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                     ActionPrefixAttribute;
 
             if (actionPrefixAttribute != null)
+            {
                 actionPrefix = actionPrefixAttribute.Prefix;
+            }
 
             if (isCollectionWide)
             {
@@ -149,7 +151,9 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                     type.GetCustomAttributes(typeof (ActionPrefixAttribute)).FirstOrDefault() as ActionPrefixAttribute;
 
                 if (actionPrefixAttribute != null)
+                {
                     actionPrefix = actionPrefixAttribute.Prefix;
+                }
 
                 actionMethodsList.Map(info =>
                 {
@@ -161,8 +165,8 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
         private void GenerateBoundActions(Type type, ODataConventionModelBuilder builder)
         {
-            var entitySetMethod = typeof (ODataConventionModelBuilder).GetMethod("EntitySet");
-            var entityTypeMethod = typeof (ODataConventionModelBuilder).GetMethod("EntityType");
+            var entitySetMethod = typeof(ODataConventionModelBuilder).GetMethod("EntitySet");
+            var entityTypeMethod = typeof(ODataConventionModelBuilder).GetMethod("EntityType");
 
             entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] {$"{type.Name}s"});
 
