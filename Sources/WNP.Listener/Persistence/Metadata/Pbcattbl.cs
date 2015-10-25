@@ -196,7 +196,7 @@ public class PbcattblTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.pbcattbl";
+		return "WNDBA.PBCATTBL";
 	}
 }
 }

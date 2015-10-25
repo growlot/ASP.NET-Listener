@@ -63,7 +63,7 @@ public class LotSizeLookupTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tlot_size_lookup";
+		return "WNDBA.TLOT_SIZE_LOOKUP";
 	}
 }
 }

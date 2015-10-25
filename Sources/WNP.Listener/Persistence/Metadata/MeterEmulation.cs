@@ -203,7 +203,7 @@ public class MeterEmulationTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tmeter_emulation";
+		return "WNDBA.TMETER_EMULATION";
 	}
 }
 }

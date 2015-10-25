@@ -266,7 +266,7 @@ public class CustomFieldDescriptionsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tcustom_field_descriptions";
+		return "WNDBA.TCUSTOM_FIELD_DESCRIPTIONS";
 	}
 }
 }

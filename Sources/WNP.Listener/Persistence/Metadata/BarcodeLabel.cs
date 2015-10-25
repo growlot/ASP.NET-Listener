@@ -45,12 +45,6 @@ public class BarcodeLabelTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string PromptOrder { get; } = "PROMPT_ORDER";
-		/// <summary>
-	/// <para />Database Type: int
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string BarcodeLength { get; } = "barcode_length";
 	
 	public string RealTableName
 	{
@@ -72,12 +66,11 @@ public class BarcodeLabelTable: ITableInformation {
 				{"PromptForScan", new ColumnInformation() { DataType = "string", ModelName = "PromptForScan", ColumnName = "PROMPT_FOR_SCAN"}},
 				{"PromptText", new ColumnInformation() { DataType = "string", ModelName = "PromptText", ColumnName = "PROMPT_TEXT"}},
 				{"PromptOrder", new ColumnInformation() { DataType = "int", ModelName = "PromptOrder", ColumnName = "PROMPT_ORDER"}},
-				{"BarcodeLength", new ColumnInformation() { DataType = "int", ModelName = "BarcodeLength", ColumnName = "barcode_length"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.tbarcode_label";
+		return "WNDBA.TBARCODE_LABEL";
 	}
 }
 }

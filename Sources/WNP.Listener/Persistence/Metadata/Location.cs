@@ -63,7 +63,7 @@ public class LocationTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tlocation";
+		return "WNDBA.TLOCATION";
 	}
 }
 }

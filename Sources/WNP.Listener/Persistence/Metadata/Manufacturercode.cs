@@ -42,7 +42,7 @@ public class ManufacturercodeTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tmanufacturercode";
+		return "WNDBA.TMANUFACTURERCODE";
 	}
 }
 }

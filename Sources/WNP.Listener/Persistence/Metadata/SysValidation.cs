@@ -70,7 +70,7 @@ public class SysValidationTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsys_validation";
+		return "WNDBA.TSYS_VALIDATION";
 	}
 }
 }

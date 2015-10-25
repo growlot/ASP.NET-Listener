@@ -42,7 +42,7 @@ public class ListenerConfigNotificationsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tlistener_config_notifications";
+		return "WNDBA.TLISTENER_CONFIG_NOTIFICATIONS";
 	}
 }
 }

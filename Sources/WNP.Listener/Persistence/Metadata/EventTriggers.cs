@@ -77,7 +77,7 @@ public class EventTriggersTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tevent_triggers";
+		return "WNDBA.TEVENT_TRIGGERS";
 	}
 }
 }

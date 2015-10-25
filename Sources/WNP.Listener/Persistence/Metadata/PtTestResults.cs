@@ -350,7 +350,7 @@ public class PtTestResultsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tpt_test_results";
+		return "WNDBA.TPT_TEST_RESULTS";
 	}
 }
 }

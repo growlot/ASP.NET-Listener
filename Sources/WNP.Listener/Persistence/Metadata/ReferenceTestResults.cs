@@ -203,7 +203,7 @@ public class ReferenceTestResultsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.treference_test_results";
+		return "WNDBA.TREFERENCE_TEST_RESULTS";
 	}
 }
 }

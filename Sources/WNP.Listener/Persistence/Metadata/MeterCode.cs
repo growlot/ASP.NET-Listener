@@ -633,12 +633,6 @@ public class MeterCodeTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string MeterClass { get; } = "METER_CLASS";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string IsFirstArticle { get; } = "is_first_article";
 	
 	public string RealTableName
 	{
@@ -758,12 +752,11 @@ public class MeterCodeTable: ITableInformation {
 				{"SumSqVaPhaseC", new ColumnInformation() { DataType = "double", ModelName = "SumSqVaPhaseC", ColumnName = "sum_sq_va_phase_c"}},
 				{"RmaAcceptTestPercent", new ColumnInformation() { DataType = "string", ModelName = "RmaAcceptTestPercent", ColumnName = "rma_accept_test_percent"}},
 				{"MeterClass", new ColumnInformation() { DataType = "int", ModelName = "MeterClass", ColumnName = "METER_CLASS"}},
-				{"IsFirstArticle", new ColumnInformation() { DataType = "string", ModelName = "IsFirstArticle", ColumnName = "is_first_article"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.tmeter_code";
+		return "WNDBA.TMETER_CODE";
 	}
 }
 }

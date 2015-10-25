@@ -70,7 +70,7 @@ public class WorkstationTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tworkstation";
+		return "WNDBA.TWORKSTATION";
 	}
 }
 }

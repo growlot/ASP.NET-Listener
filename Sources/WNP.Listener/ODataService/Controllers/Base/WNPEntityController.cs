@@ -10,7 +10,6 @@ using System.Web.Http;
 using System.Web.OData.Query;
 using System.Web.OData.Routing;
 using AMSLLC.Listener.MetadataService;
-using AMSLLC.Listener.ODataService.Actions;
 using AMSLLC.Listener.ODataService.Services;
 using AMSLLC.Listener.ODataService.Services.FilterTransformer;
 using AMSLLC.Listener.Persistence;

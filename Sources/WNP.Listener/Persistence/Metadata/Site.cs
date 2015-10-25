@@ -105,18 +105,6 @@ public class SiteTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string TransactionId { get; } = "transaction_id";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string IsInterconnect { get; } = "is_interconnect";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string InterconnectUtility { get; } = "interconnect_utility";
 	
 	public string RealTableName
 	{
@@ -148,13 +136,11 @@ public class SiteTable: ITableInformation {
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "mod_date"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "mod_by"}},
 				{"TransactionId", new ColumnInformation() { DataType = "int", ModelName = "TransactionId", ColumnName = "transaction_id"}},
-				{"IsInterconnect", new ColumnInformation() { DataType = "string", ModelName = "IsInterconnect", ColumnName = "is_interconnect"}},
-				{"InterconnectUtility", new ColumnInformation() { DataType = "string", ModelName = "InterconnectUtility", ColumnName = "interconnect_utility"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.tsite";
+		return "WNDBA.TSITE";
 	}
 }
 }

@@ -126,7 +126,7 @@ public class RatioTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tratio";
+		return "WNDBA.TRATIO";
 	}
 }
 }

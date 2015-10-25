@@ -154,7 +154,7 @@ public class ShopGoalsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tshop_goals";
+		return "WNDBA.TSHOP_GOALS";
 	}
 }
 }

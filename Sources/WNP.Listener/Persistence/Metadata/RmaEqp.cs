@@ -301,7 +301,7 @@ public class RmaEqpTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.trma_eqp";
+		return "WNDBA.TRMA_EQP";
 	}
 }
 }

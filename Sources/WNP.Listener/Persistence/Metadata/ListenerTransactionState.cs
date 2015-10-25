@@ -49,7 +49,7 @@ public class ListenerTransactionStateTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tlistener_transaction_state";
+		return "WNDBA.TLISTENER_TRANSACTION_STATE";
 	}
 }
 }

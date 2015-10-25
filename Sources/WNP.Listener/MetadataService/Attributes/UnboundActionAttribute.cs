@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Actions.Attributes
+namespace AMSLLC.Listener.MetadataService.Attributes
 {
     using System;
 

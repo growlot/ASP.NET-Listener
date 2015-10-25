@@ -126,7 +126,7 @@ public class OwnerTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.towner";
+		return "WNDBA.TOWNER";
 	}
 }
 }

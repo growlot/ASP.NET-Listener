@@ -57,12 +57,6 @@ public class SiteCommentsTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModBy { get; } = "MOD_BY";
-		/// <summary>
-	/// <para />Database Type: int
-	/// <para />Is Nullable: False
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string Id { get; } = "ID";
 	
 	public string RealTableName
 	{
@@ -86,12 +80,11 @@ public class SiteCommentsTable: ITableInformation {
 				{"CreateBy", new ColumnInformation() { DataType = "string", ModelName = "CreateBy", ColumnName = "CREATE_BY"}},
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "MOD_DATE"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "MOD_BY"}},
-				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.tsite_comments";
+		return "WNDBA.TSITE_COMMENTS";
 	}
 }
 }

@@ -119,7 +119,7 @@ public class TrackingTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.ttracking";
+		return "WNDBA.TTRACKING";
 	}
 }
 }

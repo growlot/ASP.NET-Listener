@@ -238,7 +238,7 @@ public class SampleListTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsample_list";
+		return "WNDBA.TSAMPLE_LIST";
 	}
 }
 }

@@ -77,7 +77,7 @@ public class StatusTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tstatus";
+		return "WNDBA.TSTATUS";
 	}
 }
 }

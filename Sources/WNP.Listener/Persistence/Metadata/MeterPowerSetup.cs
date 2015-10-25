@@ -210,7 +210,7 @@ public class MeterPowerSetupTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tmeter_power_setup";
+		return "WNDBA.TMETER_POWER_SETUP";
 	}
 }
 }

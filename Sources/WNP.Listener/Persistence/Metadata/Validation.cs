@@ -70,7 +70,7 @@ public class ValidationTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tvalidation";
+		return "WNDBA.TVALIDATION";
 	}
 }
 }

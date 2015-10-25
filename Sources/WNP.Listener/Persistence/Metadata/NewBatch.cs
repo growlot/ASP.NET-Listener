@@ -112,7 +112,7 @@ public class NewBatchTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tnew_batch";
+		return "WNDBA.TNEW_BATCH";
 	}
 }
 }

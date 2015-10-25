@@ -105,7 +105,7 @@ public class AuditLogTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.taudit_log";
+		return "WNDBA.TAUDIT_LOG";
 	}
 }
 }

@@ -84,7 +84,7 @@ public class DefaultValuesTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tdefault_values";
+		return "WNDBA.TDEFAULT_VALUES";
 	}
 }
 }

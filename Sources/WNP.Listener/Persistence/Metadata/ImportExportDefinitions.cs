@@ -77,7 +77,7 @@ public class ImportExportDefinitionsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.timport_export_definitions";
+		return "WNDBA.TIMPORT_EXPORT_DEFINITIONS";
 	}
 }
 }

@@ -4,10 +4,11 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+using AMSLLC.Listener.MetadataService.Attributes;
+
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
-    using Actions.Attributes;
     using Base;
     using MetadataService;
     using Persistence;

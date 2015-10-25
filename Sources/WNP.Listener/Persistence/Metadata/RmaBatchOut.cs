@@ -154,7 +154,7 @@ public class RmaBatchOutTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.trma_batch_out";
+		return "WNDBA.TRMA_BATCH_OUT";
 	}
 }
 }

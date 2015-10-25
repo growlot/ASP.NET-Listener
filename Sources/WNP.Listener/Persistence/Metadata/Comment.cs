@@ -140,7 +140,7 @@ public class CommentTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tcomment";
+		return "WNDBA.TCOMMENT";
 	}
 }
 }

@@ -112,7 +112,7 @@ public class ReadingTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.treading";
+		return "WNDBA.TREADING";
 	}
 }
 }

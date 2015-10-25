@@ -140,7 +140,7 @@ public class SysControlTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsys_control";
+		return "WNDBA.TSYS_CONTROL";
 	}
 }
 }

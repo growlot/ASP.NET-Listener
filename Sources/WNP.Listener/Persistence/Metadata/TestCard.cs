@@ -91,7 +91,7 @@ public class TestCardTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.ttest_card";
+		return "WNDBA.TTEST_CARD";
 	}
 }
 }

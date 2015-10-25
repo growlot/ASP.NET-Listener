@@ -168,7 +168,7 @@ public class FirmwareLabelTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tfirmware_label";
+		return "WNDBA.TFIRMWARE_LABEL";
 	}
 }
 }

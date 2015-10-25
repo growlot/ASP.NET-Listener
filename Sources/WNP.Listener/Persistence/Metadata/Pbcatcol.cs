@@ -161,7 +161,7 @@ public class PbcatcolTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.pbcatcol";
+		return "WNDBA.PBCATCOL";
 	}
 }
 }

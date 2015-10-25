@@ -77,7 +77,7 @@ public class MfrTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tmfr";
+		return "WNDBA.TMFR";
 	}
 }
 }

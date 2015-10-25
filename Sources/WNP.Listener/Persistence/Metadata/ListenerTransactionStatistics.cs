@@ -42,7 +42,7 @@ public class ListenerTransactionStatisticsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tlistener_transaction_statistics";
+		return "WNDBA.TLISTENER_TRANSACTION_STATISTICS";
 	}
 }
 }

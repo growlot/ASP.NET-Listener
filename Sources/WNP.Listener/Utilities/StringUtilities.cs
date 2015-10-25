@@ -21,12 +21,7 @@ namespace AMSLLC.Listener.Utilities
         /// <returns>Culture invariant string.</returns>
         public static string Invariant(FormattableString formattable)
         {
-            if (formattable == null)
-            {
-                return null;
-            }
-
-            return formattable.ToString(CultureInfo.InvariantCulture);
+            return formattable?.ToString(CultureInfo.InvariantCulture);
         }
     }
 }

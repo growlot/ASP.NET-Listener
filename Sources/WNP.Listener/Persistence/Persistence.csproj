@@ -76,9 +76,6 @@
     <Compile Include="FluentColumnMap.cs" />
     <Compile Include="FluentMapperExtensions.cs" />
     <Compile Include="FluentMapper{T}.cs" />
-    <Compile Include="Metadata\AmiInstallHistory.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
     <Compile Include="Metadata\AuditLog.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -109,6 +106,9 @@
     <Compile Include="Metadata\Comment.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\Company.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\CtTestResults.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -116,23 +116,21 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\DBMetadata.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\DefaultValues.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
-    <Compile Include="Metadata\EqpAmi.cs">
+    <Compile Include="Metadata\Device.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\DeviceTest.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpCt.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpCtHist.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\EqpGeneric.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpMeter.cs">
@@ -171,16 +169,10 @@
     <Compile Include="Metadata\EqpTransducerHist.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
-    <Compile Include="Metadata\EqpType.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
     <Compile Include="Metadata\EventTriggers.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\FirmwareLabel.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\GenericCode.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\HarmonicConfigData.cs">
@@ -255,9 +247,6 @@
     <Compile Include="Metadata\MeterPowerSetup.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
-    <Compile Include="Metadata\MeterPwds.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
     <Compile Include="Metadata\MeterTestResults.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -267,13 +256,13 @@
     <Compile Include="Metadata\Mfr.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\Migrationhistory.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\Multimedia.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\NewBatch.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\Obsolete.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Owner.cs">
@@ -354,6 +343,9 @@
     <Compile Include="Metadata\SelectionProgramGroup.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\ServiceType.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\ShopGoals.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -364,9 +356,6 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\SiteHist.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Metadata\SiteInstallHistory.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\SiteMetrics.cs">
@@ -408,6 +397,24 @@
     <Compile Include="Metadata\TrackingOut.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\TransactionLog.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\TransactionLogState.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\TransactionSource.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\TransactionState.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\TransactionStatus.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\TransactionType.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\TransducerTestResults.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -420,9 +427,6 @@
     <Compile Include="Metadata\Validation.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
-    <Compile Include="Metadata\Vehicle.cs">
-      <DependentUpon>DBMetadata.tt</DependentUpon>
-    </Compile>
     <Compile Include="Metadata\Vendor.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -433,6 +437,9 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\VersionHistory.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\VersionInfo.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Workstation.cs">
@@ -463,7 +470,7 @@
     </CodeAnalysisDictionary>
     <Content Include="Metadata\DBMetadata.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DBMetadata.cs</LastGenOutput>
+      <LastGenOutput>DBMetadata1.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

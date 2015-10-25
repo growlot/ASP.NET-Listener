@@ -182,7 +182,7 @@ public class CircuitHistTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tcircuit_hist";
+		return "WNDBA.TCIRCUIT_HIST";
 	}
 }
 }

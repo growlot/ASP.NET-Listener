@@ -329,7 +329,7 @@ public class BarcodeCtTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tbarcode_ct";
+		return "WNDBA.TBARCODE_CT";
 	}
 }
 }

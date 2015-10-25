@@ -56,7 +56,7 @@ public class HarmonicConfigDataTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tharmonic_config_data";
+		return "WNDBA.THARMONIC_CONFIG_DATA";
 	}
 }
 }

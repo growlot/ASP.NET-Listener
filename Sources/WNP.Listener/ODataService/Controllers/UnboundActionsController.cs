@@ -1,7 +1,7 @@
-﻿namespace AMSLLC.Listener.ODataService.Controllers
+﻿using AMSLLC.Listener.MetadataService.Attributes;
+
+namespace AMSLLC.Listener.ODataService.Controllers
 {
-    using Actions;
-    using Actions.Attributes;
     using Base;
     using MetadataService;
     using Persistence;

@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Actions
+namespace AMSLLC.Listener.MetadataService
 {
     /// <summary>
     /// Interface is used to mark class as containing entity actions.

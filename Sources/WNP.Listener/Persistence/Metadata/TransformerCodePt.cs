@@ -231,12 +231,6 @@ public class TransformerCodePtTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModBy { get; } = "mod_by";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string IsFirstArticle { get; } = "is_first_article";
 	
 	public string RealTableName
 	{
@@ -289,12 +283,11 @@ public class TransformerCodePtTable: ITableInformation {
 				{"CreateBy", new ColumnInformation() { DataType = "string", ModelName = "CreateBy", ColumnName = "create_by"}},
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "mod_date"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "mod_by"}},
-				{"IsFirstArticle", new ColumnInformation() { DataType = "string", ModelName = "IsFirstArticle", ColumnName = "is_first_article"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.ttransformer_code_pt";
+		return "WNDBA.TTRANSFORMER_CODE_PT";
 	}
 }
 }

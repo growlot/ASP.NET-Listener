@@ -441,7 +441,7 @@ public class BarcodeTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tbarcode";
+		return "WNDBA.TBARCODE";
 	}
 }
 }

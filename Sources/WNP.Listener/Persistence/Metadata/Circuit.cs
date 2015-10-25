@@ -135,12 +135,6 @@ public class CircuitTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string InstallDate { get; } = "INSTALL_DATE";
-		/// <summary>
-	/// <para />Database Type: int
-	/// <para />Is Nullable: False
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string Id { get; } = "ID";
 	
 	public string RealTableName
 	{
@@ -177,12 +171,11 @@ public class CircuitTable: ITableInformation {
 				{"WireLocation", new ColumnInformation() { DataType = "string", ModelName = "WireLocation", ColumnName = "WIRE_LOCATION"}},
 				{"EnclosureType", new ColumnInformation() { DataType = "string", ModelName = "EnclosureType", ColumnName = "ENCLOSURE_TYPE"}},
 				{"InstallDate", new ColumnInformation() { DataType = "DateTime", ModelName = "InstallDate", ColumnName = "INSTALL_DATE"}},
-				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.tcircuit";
+		return "WNDBA.TCIRCUIT";
 	}
 }
 }

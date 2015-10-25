@@ -189,7 +189,7 @@ public class RepairTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.trepair";
+		return "WNDBA.TREPAIR";
 	}
 }
 }

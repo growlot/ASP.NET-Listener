@@ -387,24 +387,6 @@ public class EqpCtHistTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string RatingFactor55c { get; } = "rating_factor_55c";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string VehicleId { get; } = "vehicle_id";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ReceivedBy { get; } = "received_by";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string IsFirstArticle { get; } = "is_first_article";
 	
 	public string RealTableName
 	{
@@ -483,14 +465,11 @@ public class EqpCtHistTable: ITableInformation {
 				{"AccuracyClass2", new ColumnInformation() { DataType = "decimal", ModelName = "AccuracyClass2", ColumnName = "accuracy_class2"}},
 				{"BurdenValue2", new ColumnInformation() { DataType = "double", ModelName = "BurdenValue2", ColumnName = "burden_value2"}},
 				{"RatingFactor55c", new ColumnInformation() { DataType = "decimal", ModelName = "RatingFactor55c", ColumnName = "rating_factor_55c"}},
-				{"VehicleId", new ColumnInformation() { DataType = "string", ModelName = "VehicleId", ColumnName = "vehicle_id"}},
-				{"ReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ReceivedBy", ColumnName = "received_by"}},
-				{"IsFirstArticle", new ColumnInformation() { DataType = "string", ModelName = "IsFirstArticle", ColumnName = "is_first_article"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.teqp_ct_hist";
+		return "WNDBA.TEQP_CT_HIST";
 	}
 }
 }

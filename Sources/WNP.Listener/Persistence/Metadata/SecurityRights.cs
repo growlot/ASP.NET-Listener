@@ -84,7 +84,7 @@ public class SecurityRightsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsecurity_rights";
+		return "WNDBA.TSECURITY_RIGHTS";
 	}
 }
 }

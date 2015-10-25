@@ -98,7 +98,7 @@ public class EqpTestboardTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.teqp_testboard";
+		return "WNDBA.TEQP_TESTBOARD";
 	}
 }
 }

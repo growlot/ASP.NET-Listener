@@ -245,7 +245,7 @@ public class SampleListArchTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsample_list_arch";
+		return "WNDBA.TSAMPLE_LIST_ARCH";
 	}
 }
 }

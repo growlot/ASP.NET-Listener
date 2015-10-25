@@ -210,7 +210,7 @@ public class SiteWiringCheckTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsite_wiring_check";
+		return "WNDBA.TSITE_WIRING_CHECK";
 	}
 }
 }

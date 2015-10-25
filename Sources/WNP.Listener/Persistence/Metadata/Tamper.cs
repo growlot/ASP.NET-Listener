@@ -140,7 +140,7 @@ public class TamperTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.ttamper";
+		return "WNDBA.TTAMPER";
 	}
 }
 }

@@ -119,7 +119,7 @@ public class HarmonicConfigurationTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tharmonic_configuration";
+		return "WNDBA.THARMONIC_CONFIGURATION";
 	}
 }
 }

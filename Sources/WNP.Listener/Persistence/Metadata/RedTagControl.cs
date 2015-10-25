@@ -266,7 +266,7 @@ public class RedTagControlTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tred_tag_control";
+		return "WNDBA.TRED_TAG_CONTROL";
 	}
 }
 }

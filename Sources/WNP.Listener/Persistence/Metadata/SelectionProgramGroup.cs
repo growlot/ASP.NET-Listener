@@ -154,7 +154,7 @@ public class SelectionProgramGroupTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tselection_program_group";
+		return "WNDBA.TSELECTION_PROGRAM_GROUP";
 	}
 }
 }

@@ -105,7 +105,7 @@ public class SocketMappingTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsocket_mapping";
+		return "WNDBA.TSOCKET_MAPPING";
 	}
 }
 }

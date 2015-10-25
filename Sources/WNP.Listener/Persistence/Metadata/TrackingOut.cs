@@ -161,7 +161,7 @@ public class TrackingOutTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.ttracking_out";
+		return "WNDBA.TTRACKING_OUT";
 	}
 }
 }

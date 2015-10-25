@@ -63,7 +63,7 @@ public class ProcessFlowTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tprocess_flow";
+		return "WNDBA.TPROCESS_FLOW";
 	}
 }
 }

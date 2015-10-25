@@ -303,18 +303,6 @@ public class EqpReferenceTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string TestPeriod { get; } = "test_period";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string VehicleId { get; } = "vehicle_id";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ReceivedBy { get; } = "received_by";
 	
 	public string RealTableName
 	{
@@ -379,13 +367,11 @@ public class EqpReferenceTable: ITableInformation {
 				{"TestProgram", new ColumnInformation() { DataType = "string", ModelName = "TestProgram", ColumnName = "test_program"}},
 				{"NextTestDue", new ColumnInformation() { DataType = "string", ModelName = "NextTestDue", ColumnName = "next_test_due"}},
 				{"TestPeriod", new ColumnInformation() { DataType = "string", ModelName = "TestPeriod", ColumnName = "test_period"}},
-				{"VehicleId", new ColumnInformation() { DataType = "string", ModelName = "VehicleId", ColumnName = "vehicle_id"}},
-				{"ReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ReceivedBy", ColumnName = "received_by"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.teqp_reference";
+		return "WNDBA.TEQP_REFERENCE";
 	}
 }
 }

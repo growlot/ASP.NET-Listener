@@ -309,24 +309,6 @@ public class EqpTotalizerHistTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string AltEqpNo { get; } = "alt_eqp_no";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string VehicleId { get; } = "vehicle_id";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ReceivedBy { get; } = "received_by";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string IsFirstArticle { get; } = "is_first_article";
 	
 	public string RealTableName
 	{
@@ -392,14 +374,11 @@ public class EqpTotalizerHistTable: ITableInformation {
 				{"MfrBuildDate", new ColumnInformation() { DataType = "DateTime", ModelName = "MfrBuildDate", ColumnName = "MFR_BUILD_DATE"}},
 				{"TransactionId", new ColumnInformation() { DataType = "int", ModelName = "TransactionId", ColumnName = "transaction_id"}},
 				{"AltEqpNo", new ColumnInformation() { DataType = "string", ModelName = "AltEqpNo", ColumnName = "alt_eqp_no"}},
-				{"VehicleId", new ColumnInformation() { DataType = "string", ModelName = "VehicleId", ColumnName = "vehicle_id"}},
-				{"ReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ReceivedBy", ColumnName = "received_by"}},
-				{"IsFirstArticle", new ColumnInformation() { DataType = "string", ModelName = "IsFirstArticle", ColumnName = "is_first_article"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.teqp_totalizer_hist";
+		return "WNDBA.TEQP_TOTALIZER_HIST";
 	}
 }
 }

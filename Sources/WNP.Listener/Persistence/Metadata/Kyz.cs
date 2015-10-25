@@ -105,7 +105,7 @@ public class KyzTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tkyz";
+		return "WNDBA.TKYZ";
 	}
 }
 }

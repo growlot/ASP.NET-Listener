@@ -119,7 +119,7 @@ public class SiteMetricsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsite_metrics";
+		return "WNDBA.TSITE_METRICS";
 	}
 }
 }

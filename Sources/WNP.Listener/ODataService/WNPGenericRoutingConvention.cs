@@ -13,7 +13,6 @@ namespace AMSLLC.Listener.ODataService
     using System.Web.Http.Controllers;
     using System.Web.OData.Routing;
     using System.Web.OData.Routing.Conventions;
-    using Actions;
     using Controllers.Base;
     using MetadataService;
 

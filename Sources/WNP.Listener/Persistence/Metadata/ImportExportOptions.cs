@@ -217,7 +217,7 @@ public class ImportExportOptionsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.timport_export_options";
+		return "WNDBA.TIMPORT_EXPORT_OPTIONS";
 	}
 }
 }

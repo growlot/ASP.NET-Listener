@@ -741,24 +741,6 @@ public class EqpMeterTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string MeterClass { get; } = "METER_CLASS";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string VehicleId { get; } = "vehicle_id";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ReceivedBy { get; } = "received_by";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string IsFirstArticle { get; } = "is_first_article";
 	
 	public string RealTableName
 	{
@@ -896,14 +878,11 @@ public class EqpMeterTable: ITableInformation {
 				{"PrefTestSequence", new ColumnInformation() { DataType = "string", ModelName = "PrefTestSequence", ColumnName = "pref_test_sequence"}},
 				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
 				{"MeterClass", new ColumnInformation() { DataType = "int", ModelName = "MeterClass", ColumnName = "METER_CLASS"}},
-				{"VehicleId", new ColumnInformation() { DataType = "string", ModelName = "VehicleId", ColumnName = "vehicle_id"}},
-				{"ReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ReceivedBy", ColumnName = "received_by"}},
-				{"IsFirstArticle", new ColumnInformation() { DataType = "string", ModelName = "IsFirstArticle", ColumnName = "is_first_article"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.teqp_meter";
+		return "WNDBA.TEQP_METER";
 	}
 }
 }

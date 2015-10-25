@@ -381,24 +381,6 @@ public class EqpPtHistTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string BurdenValue2 { get; } = "burden_value2";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string VehicleId { get; } = "vehicle_id";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ReceivedBy { get; } = "received_by";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string IsFirstArticle { get; } = "is_first_article";
 	
 	public string RealTableName
 	{
@@ -476,14 +458,11 @@ public class EqpPtHistTable: ITableInformation {
 				{"ThermalRating", new ColumnInformation() { DataType = "int", ModelName = "ThermalRating", ColumnName = "thermal_rating"}},
 				{"AccuracyClass2", new ColumnInformation() { DataType = "decimal", ModelName = "AccuracyClass2", ColumnName = "accuracy_class2"}},
 				{"BurdenValue2", new ColumnInformation() { DataType = "string", ModelName = "BurdenValue2", ColumnName = "burden_value2"}},
-				{"VehicleId", new ColumnInformation() { DataType = "string", ModelName = "VehicleId", ColumnName = "vehicle_id"}},
-				{"ReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ReceivedBy", ColumnName = "received_by"}},
-				{"IsFirstArticle", new ColumnInformation() { DataType = "string", ModelName = "IsFirstArticle", ColumnName = "is_first_article"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.teqp_pt_hist";
+		return "WNDBA.TEQP_PT_HIST";
 	}
 }
 }

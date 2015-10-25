@@ -63,7 +63,7 @@ public class LotPercentDefTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tlot_percent_def";
+		return "WNDBA.TLOT_PERCENT_DEF";
 	}
 }
 }

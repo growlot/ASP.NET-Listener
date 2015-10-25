@@ -334,12 +334,6 @@ public class MeterTestResultsTable: ITableInformation {
 	/// </summary>
 	public string VaPhaseC { get; } = "va_phase_c";
 		/// <summary>
-	/// <para />Database Type: int
-	/// <para />Is Nullable: False
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string Id { get; } = "ID";
-		/// <summary>
 	/// <para />Database Type: string
 	/// <para />Is Nullable: True
 	/// <para />Is Primary Key: False
@@ -375,6 +369,12 @@ public class MeterTestResultsTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string TROUBLE5 { get; } = "TROUBLE5";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: False
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string Id { get; } = "ID";
 	
 	public string RealTableName
 	{
@@ -444,18 +444,18 @@ public class MeterTestResultsTable: ITableInformation {
 				{"VaPhaseA", new ColumnInformation() { DataType = "double", ModelName = "VaPhaseA", ColumnName = "va_phase_a"}},
 				{"VaPhaseB", new ColumnInformation() { DataType = "double", ModelName = "VaPhaseB", ColumnName = "va_phase_b"}},
 				{"VaPhaseC", new ColumnInformation() { DataType = "double", ModelName = "VaPhaseC", ColumnName = "va_phase_c"}},
-				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
 				{"ProcessTag", new ColumnInformation() { DataType = "string", ModelName = "ProcessTag", ColumnName = "PROCESS_TAG"}},
 				{"TROUBLE1", new ColumnInformation() { DataType = "string", ModelName = "TROUBLE1", ColumnName = "TROUBLE1"}},
 				{"TROUBLE2", new ColumnInformation() { DataType = "string", ModelName = "TROUBLE2", ColumnName = "TROUBLE2"}},
 				{"TROUBLE3", new ColumnInformation() { DataType = "string", ModelName = "TROUBLE3", ColumnName = "TROUBLE3"}},
 				{"TROUBLE4", new ColumnInformation() { DataType = "string", ModelName = "TROUBLE4", ColumnName = "TROUBLE4"}},
 				{"TROUBLE5", new ColumnInformation() { DataType = "string", ModelName = "TROUBLE5", ColumnName = "TROUBLE5"}},
+				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.tmeter_test_results";
+		return "WNDBA.TMETER_TEST_RESULTS";
 	}
 }
 }

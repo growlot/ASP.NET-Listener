@@ -112,7 +112,7 @@ public class SelectionProgramTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tselection_program";
+		return "WNDBA.TSELECTION_PROGRAM";
 	}
 }
 }

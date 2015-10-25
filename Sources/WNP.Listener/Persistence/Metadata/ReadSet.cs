@@ -105,7 +105,7 @@ public class ReadSetTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tread_set";
+		return "WNDBA.TREAD_SET";
 	}
 }
 }

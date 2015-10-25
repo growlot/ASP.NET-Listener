@@ -154,7 +154,7 @@ public class RedTagTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tred_tag";
+		return "WNDBA.TRED_TAG";
 	}
 }
 }

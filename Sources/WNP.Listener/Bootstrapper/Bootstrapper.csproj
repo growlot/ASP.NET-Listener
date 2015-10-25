@@ -217,10 +217,6 @@
       <Project>{702B10D4-57D6-4406-A159-715F658AE54D}</Project>
       <Name>MetadataService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ODataService.Actions\ODataService.Actions.csproj">
-      <Project>{F2279F58-4D34-48CE-893F-D5CF596220DD}</Project>
-      <Name>ODataService.Actions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ODataService\ODataService.csproj">
       <Project>{28de87b5-514b-4996-b65a-9d8f9e4578e0}</Project>
       <Name>ODataService</Name>

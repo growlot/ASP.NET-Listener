@@ -35,7 +35,7 @@ public class VersionTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tversion";
+		return "WNDBA.TVERSION";
 	}
 }
 }

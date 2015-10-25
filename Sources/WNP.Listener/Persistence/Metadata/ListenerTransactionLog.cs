@@ -70,7 +70,7 @@ public class ListenerTransactionLogTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tlistener_transaction_log";
+		return "WNDBA.TLISTENER_TRANSACTION_LOG";
 	}
 }
 }

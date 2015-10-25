@@ -1,4 +1,6 @@
-﻿namespace AMSLLC.Listener.ODataService.Controllers.Base
+﻿using AMSLLC.Listener.MetadataService.Attributes;
+
+namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
     using System;
     using System.Collections.Generic;
@@ -12,7 +14,6 @@
     using System.Web.OData.Extensions;
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
-    using Actions.Attributes;
     using MetadataService;
     using Microsoft.OData.Edm;
     using Microsoft.OData.Edm.Library;

@@ -84,7 +84,7 @@ public class ReferenceInstallHistoryTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.treference_install_history";
+		return "WNDBA.TREFERENCE_INSTALL_HISTORY";
 	}
 }
 }

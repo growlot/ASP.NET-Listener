@@ -70,7 +70,7 @@ public class PbcatedtTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.pbcatedt";
+		return "WNDBA.PBCATEDT";
 	}
 }
 }

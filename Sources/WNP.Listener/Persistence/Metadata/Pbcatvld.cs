@@ -56,7 +56,7 @@ public class PbcatvldTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.pbcatvld";
+		return "WNDBA.PBCATVLD";
 	}
 }
 }

@@ -56,7 +56,7 @@ public class BarcodeLabelDefTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tbarcode_label_def";
+		return "WNDBA.TBARCODE_LABEL_DEF";
 	}
 }
 }

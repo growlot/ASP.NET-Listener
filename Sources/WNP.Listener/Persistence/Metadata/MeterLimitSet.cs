@@ -189,7 +189,7 @@ public class MeterLimitSetTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tmeter_limit_set";
+		return "WNDBA.TMETER_LIMIT_SET";
 	}
 }
 }

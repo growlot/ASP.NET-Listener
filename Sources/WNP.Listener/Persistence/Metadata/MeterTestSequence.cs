@@ -175,7 +175,7 @@ public class MeterTestSequenceTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tmeter_test_sequence";
+		return "WNDBA.TMETER_TEST_SEQUENCE";
 	}
 }
 }

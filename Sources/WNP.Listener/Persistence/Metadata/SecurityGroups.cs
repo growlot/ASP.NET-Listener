@@ -35,7 +35,7 @@ public class SecurityGroupsTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tsecurity_groups";
+		return "WNDBA.TSECURITY_GROUPS";
 	}
 }
 }

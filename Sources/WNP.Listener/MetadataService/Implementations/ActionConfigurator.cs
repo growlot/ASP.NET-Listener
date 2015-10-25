@@ -9,8 +9,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
-    using ODataService.Actions;
-    using ODataService.Actions.Attributes;
+    using Attributes;
 
     /// <summary>
     /// Implements <see cref="IActionConfigurator"/>

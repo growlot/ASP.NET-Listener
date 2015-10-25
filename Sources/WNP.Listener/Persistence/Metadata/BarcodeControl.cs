@@ -56,7 +56,7 @@ public class BarcodeControlTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tbarcode_control";
+		return "WNDBA.TBARCODE_CONTROL";
 	}
 }
 }

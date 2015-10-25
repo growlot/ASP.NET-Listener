@@ -189,7 +189,7 @@ public class VersionHistoryTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tversion_history";
+		return "WNDBA.TVERSION_HISTORY";
 	}
 }
 }

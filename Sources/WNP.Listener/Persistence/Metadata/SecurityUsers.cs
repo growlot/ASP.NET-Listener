@@ -87,12 +87,6 @@ public class SecurityUsersTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string DefaultLocation { get; } = "DEFAULT_LOCATION";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string EmployeeId { get; } = "employee_id";
 	
 	public string RealTableName
 	{
@@ -121,12 +115,11 @@ public class SecurityUsersTable: ITableInformation {
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "mod_by"}},
 				{"DefaultOwner", new ColumnInformation() { DataType = "int", ModelName = "DefaultOwner", ColumnName = "DEFAULT_OWNER"}},
 				{"DefaultLocation", new ColumnInformation() { DataType = "string", ModelName = "DefaultLocation", ColumnName = "DEFAULT_LOCATION"}},
-				{"EmployeeId", new ColumnInformation() { DataType = "string", ModelName = "EmployeeId", ColumnName = "employee_id"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.tsecurity_users";
+		return "WNDBA.TSECURITY_USERS";
 	}
 }
 }

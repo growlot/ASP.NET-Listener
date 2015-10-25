@@ -56,7 +56,7 @@ public class LotAcceptQualityLevelTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tlot_accept_quality_level";
+		return "WNDBA.TLOT_ACCEPT_QUALITY_LEVEL";
 	}
 }
 }

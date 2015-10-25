@@ -93,12 +93,6 @@ public class SiteMultimediaTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string Circuit { get; } = "CIRCUIT";
-		/// <summary>
-	/// <para />Database Type: int
-	/// <para />Is Nullable: False
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string Id { get; } = "ID";
 	
 	public string RealTableName
 	{
@@ -128,12 +122,11 @@ public class SiteMultimediaTable: ITableInformation {
 				{"EqpType", new ColumnInformation() { DataType = "string", ModelName = "EqpType", ColumnName = "EQP_TYPE"}},
 				{"CreateBy", new ColumnInformation() { DataType = "string", ModelName = "CreateBy", ColumnName = "CREATE_BY"}},
 				{"Circuit", new ColumnInformation() { DataType = "int", ModelName = "Circuit", ColumnName = "CIRCUIT"}},
-				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
 			};
 
 	public override string ToString() 
 	{
-		return "wndba.tsite_multimedia";
+		return "WNDBA.TSITE_MULTIMEDIA";
 	}
 }
 }

@@ -126,7 +126,7 @@ public class StandardsCompareSequenceTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tstandards_compare_sequence";
+		return "WNDBA.TSTANDARDS_COMPARE_SEQUENCE";
 	}
 }
 }

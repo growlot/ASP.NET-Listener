@@ -49,7 +49,7 @@ public class PbcatfmtTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.pbcatfmt";
+		return "WNDBA.PBCATFMT";
 	}
 }
 }

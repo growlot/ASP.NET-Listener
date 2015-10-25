@@ -91,7 +91,7 @@ public class VendorContactTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tvendor_contact";
+		return "WNDBA.TVENDOR_CONTACT";
 	}
 }
 }

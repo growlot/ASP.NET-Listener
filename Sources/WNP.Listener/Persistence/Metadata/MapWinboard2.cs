@@ -133,7 +133,7 @@ public class MapWinboard2Table: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tmap_winboard2";
+		return "WNDBA.TMAP_WINBOARD2";
 	}
 }
 }

@@ -168,7 +168,7 @@ public class MetadataTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.tmetadata";
+		return "WNDBA.TMETADATA";
 	}
 }
 }

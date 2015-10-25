@@ -112,7 +112,7 @@ public class RmaBatchInTable: ITableInformation {
 
 	public override string ToString() 
 	{
-		return "wndba.trma_batch_in";
+		return "WNDBA.TRMA_BATCH_IN";
 	}
 }
 }
