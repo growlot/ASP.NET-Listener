@@ -5,9 +5,6 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService
 {
-    /// <summary>
-    /// Marker interface for all application commands.
-    /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1040:AvoidEmptyInterfaces", Justification = "This is a marker interface.")]
     public interface ICommand
     {
