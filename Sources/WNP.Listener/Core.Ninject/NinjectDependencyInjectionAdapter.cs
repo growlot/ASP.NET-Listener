@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.Core.Ninject
         /// <value>
         /// The kernel.
         /// </value>
-        protected StandardKernel Kernel { get; } = new StandardKernel();
+        public StandardKernel Kernel { get; } = new StandardKernel();
 
         /// <inheritdoc/>
         public TType ResolveType<TType>()

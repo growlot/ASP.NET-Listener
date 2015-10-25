@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="IntegrationEndpointConfiguration.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+﻿// <copyright file="IntegrationEndpointConfiguration.cs" company="Advanced Metering Services LLC">
+// Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
@@ -18,6 +16,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The connection configuration.</value>
         public IConnectionConfiguration ConnectionConfiguration { get; private set; }
+
+        /// <summary>
+        /// Gets the protocol configuration.
+        /// </summary>
+        /// <value>The protocol configuration.</value>
+        public IProtocolConfiguration ProtocolConfiguration { get; private set; }
 
         /// <summary>
         /// Gets or sets the protocol.
@@ -50,6 +54,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Protocol = myMemento.Protocol;
             this.Trigger = myMemento.Trigger;
             this.ConnectionConfiguration = ConnectionConfigurationFactory.Create(myMemento.Protocol, myMemento);
+            this.ProtocolConfiguration = ProtocolConfigurationFactory.Create(myMemento.Protocol, myMemento);
         }
     }
 }

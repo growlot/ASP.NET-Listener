@@ -64,7 +64,9 @@
     <Compile Include="EndpointTriggerType.cs" />
     <Compile Include="IConnectionConfiguration.cs" />
     <Compile Include="ICommunicationHandler.cs" />
+    <Compile Include="IProtocolConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransactionMessage.cs" />
     <Compile Include="TransactionStatusType.cs" />
   </ItemGroup>
   <ItemGroup>

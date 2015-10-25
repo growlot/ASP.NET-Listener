@@ -74,12 +74,14 @@
     <Compile Include="Transaction\IConnectionConfigurationBuilder.cs" />
     <Compile Include="Transaction\IEndpointDataProcessor.cs" />
     <Compile Include="Transaction\IEndpointDataProcessorResult.cs" />
+    <Compile Include="Transaction\IProtocolConfigurationBuilder.cs" />
     <Compile Include="Transaction\ISummaryBuilder.cs" />
     <Compile Include="Transaction\ITransactionKeyBuilder.cs" />
     <Compile Include="Transaction\IUniqueHashValidator.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfiguration.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfigurationMemento.cs" />
     <Compile Include="Transaction\IRecordKeyBuilder.cs" />
+    <Compile Include="Transaction\ProtocolConfigurationFactory.cs" />
     <Compile Include="Transaction\TransactionConfiguration.cs" />
     <Compile Include="Transaction\TransactionConfigurationMemento.cs" />
     <Compile Include="Transaction\TransactionDataReady.cs" />

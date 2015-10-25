@@ -155,10 +155,12 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             var communicationHandler = new Mock<ICommunicationHandler>();
             object commHandlerData = null;
-            communicationHandler.Setup(s => s.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>()))
+            communicationHandler.Setup(s => s.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()))
                 .Callback(
-                    (object data, IConnectionConfiguration conn) => commHandlerData = ((TransactionDataReady)data).Data)
+                    (object data, IConnectionConfiguration conn, IProtocolConfiguration pcfg) => commHandlerData = ((TransactionDataReady)data).Data)
                 .Returns(Task.CompletedTask);
+
+            var builderMock = new Mock<IProtocolConfigurationBuilder>();
 
             di.Initialize(container =>
             {
@@ -170,14 +172,9 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 container.Bind<IRepositoryManager>().To<RepositoryManager>();
                 container.Bind<ITransactionRepository>().ToConstant(transactionRepositoryMock.Object);
                 container.Bind<IEndpointDataProcessor>().ToConstant(jmsEndpointProcessorMock.Object);
-                container.Bind<IConnectionConfigurationBuilder>()
-                    .ToConstant(jmsConnectionBuilder.Object)
-                    .InSingletonScope()
-                    .Named("connection-builder-jms");
-                container.Bind<ICommunicationHandler>()
-                    .ToConstant(communicationHandler.Object)
-                    .InSingletonScope()
-                    .Named("communication-jms");
+                container.Bind<IConnectionConfigurationBuilder>().ToConstant(jmsConnectionBuilder.Object).InSingletonScope().Named("connection-builder-jms");
+                container.Bind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
+                container.Bind<IProtocolConfigurationBuilder>().ToConstant(builderMock.Object).Named("protocol-builder-jms");
             });
 
             ApplicationIntegration.SetDependencyInjectionResolver(di);
@@ -202,7 +199,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}},\"RecordKey\":\"{recordKey}\"}}";
 
             communicationHandler.Verify(
-                foo => foo.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>()),
+                foo => foo.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
                 Times.Once());
 
             communicationHandler.Verify(
@@ -214,7 +211,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                                      JsonConvert.SerializeObject(((TransactionDataReady)data).Data, settings),
                                      expectedMessageBodyJson,
                                      StringComparison.InvariantCulture) == 0),
-                         It.IsAny<IConnectionConfiguration>()), Times.Once(),
+                         It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once(),
                  "Handler invoked with unexpected data: {0}{1}Expected:{2}".FormatWith(JsonConvert.SerializeObject(commHandlerData, settings), Environment.NewLine, expectedMessageBodyJson));
         }
 
@@ -252,6 +249,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
             // var t = JsonConvert.SerializeObject(testMessageData);
             var di = new NinjectDependencyInjectionAdapter();
             var jmsConnectionBuilder = new Mock<IConnectionConfigurationBuilder>();
+            var builderMock = new Mock<IProtocolConfigurationBuilder>();
             di.Initialize(container =>
             {
                 container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
@@ -259,6 +257,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                     .ToConstant(jmsConnectionBuilder.Object)
                     .InSingletonScope()
                     .Named("connection-builder-jms");
+
+                container.Bind<IProtocolConfigurationBuilder>().ToConstant(builderMock.Object).Named("protocol-builder-jms");
             });
             ApplicationIntegration.SetDependencyInjectionResolver(di);
 

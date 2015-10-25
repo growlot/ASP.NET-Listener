@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="TransactionExecutionMemento.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+﻿// <copyright file="TransactionExecutionMemento.cs" company="Advanced Metering Services LLC">
+// Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
@@ -25,8 +23,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="fieldConfigurations">The field configurations.</param>
         public TransactionExecutionMemento(int transactionId, string recordKey, int enabledOperationId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration, IEnumerable<FieldConfigurationMemento> fieldConfigurations)
         {
-            this.EndpointConfigurations =
-                new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
+            this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
             this.RecordKey = recordKey;
             this.EnabledOperationId = enabledOperationId;

@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="JmsQueueTest.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+﻿// <copyright file="JmsQueueTest.cs" company="Advanced Metering Services LLC">
+// Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Communication.Jms.Test
 {
@@ -45,15 +43,11 @@ namespace AMSLLC.Listener.Communication.Jms.Test
                 var transactionId = Guid.NewGuid().ToString();
                 var testMessage = new TestMessage { TransactionId = transactionId, Value = new Random().Next(9999) };
                 var eventData = new TransactionDataReady { Data = testMessage };
-                var connectionConfiguration = new JmsConnectionConfiguration
-                {
-                    Host = Host,
-                    Password = Password,
-                    UserName = Username,
-                    QueueName = QueueName,
-                    Port = Port
-                };
-                await dispatcher.Handle(eventData, connectionConfiguration);
+                var connectionConfiguration = new JmsConnectionConfiguration { Host = Host, Password = Password, UserName = Username, QueueName = QueueName, Port = Port };
+
+                var protocolConfiguration = new ProtocolConfiguration();
+
+                await dispatcher.Handle(eventData, connectionConfiguration, protocolConfiguration);
                 ReadMessage(JsonConvert.SerializeObject(testMessage), connectionConfiguration);
             }
             catch (MessageException exc)

@@ -72,6 +72,8 @@
     <Compile Include="JmsConnectionConfigurationBuilder.cs" />
     <Compile Include="JmsDispatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtocolConfiguration.cs" />
+    <Compile Include="ProtocolConfigurationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Communication\Communication.csproj">

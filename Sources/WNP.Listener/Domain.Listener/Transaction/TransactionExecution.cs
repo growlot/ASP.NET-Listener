@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="TransactionExecution.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+﻿// <copyright file="TransactionExecution.cs" company="Advanced Metering Services LLC">
+// Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
@@ -59,15 +57,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the endpoint configurations.
         /// </summary>
         /// <value>The endpoint configurations.</value>
-        public ReadOnlyCollection<IntegrationEndpointConfiguration> EndpointConfigurations { get; private set; } =
-            new ReadOnlyCollection<IntegrationEndpointConfiguration>(new IntegrationEndpointConfiguration[0]);
+        public ReadOnlyCollection<IntegrationEndpointConfiguration> EndpointConfigurations { get; private set; } = new ReadOnlyCollection<IntegrationEndpointConfiguration>(new IntegrationEndpointConfiguration[0]);
 
         /// <summary>
         /// Gets the field configurations.
         /// </summary>
         /// <value>The field configurations.</value>
-        public ReadOnlyCollection<FieldConfiguration> FieldConfigurations { get; private set; } =
-                    new ReadOnlyCollection<FieldConfiguration>(new FieldConfiguration[0]);
+        public ReadOnlyCollection<FieldConfiguration> FieldConfigurations { get; private set; } = new ReadOnlyCollection<FieldConfiguration>(new FieldConfiguration[0]);
 
         /// <summary>
         /// Gets or sets the domain builder.
@@ -89,8 +85,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public virtual Task[] Process(object data)
         {
             var returnValue = new Task[this.EndpointConfigurations.Count];
-            var processor =
-                ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
+            var processor = ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
 
             var preparedData = processor.Process(data, this.FieldConfigurations);
             for (int i = 0; i < this.EndpointConfigurations.Count; i++)
@@ -113,12 +108,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
                     var eventData = new TransactionDataReady
                     {
-                        Data = preparedData.Data,
-                        RecordKey = this.RecordKey
+                        Data = new TransactionMessage { Data = preparedData.Data, RecordKey = this.RecordKey },
                     };
+
                     this.domainEventBus.Publish(eventData);
 
-                    return dispatcher.Handle(eventData, cfg.ConnectionConfiguration);
+                    return dispatcher.Handle(eventData, cfg.ConnectionConfiguration, cfg.ProtocolConfiguration);
                 });
             }
 
@@ -135,18 +130,14 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.RecordKey = myMemento.RecordKey;
             this.Id = myMemento.TransactionId;
             this.EnabledOperationId = myMemento.EnabledOperationId;
-            this.EndpointConfigurations =
-                new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(
-                    cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
+            this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
 
-            this.FieldConfigurations =
-                new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(
-                    s =>
-                    {
-                        var itm = new FieldConfiguration();
-                        ((IOriginator)itm).SetMemento(s);
-                        return itm;
-                    })));
+            this.FieldConfigurations = new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(s =>
+            {
+                var itm = new FieldConfiguration();
+                ((IOriginator)itm).SetMemento(s);
+                return itm;
+            })));
         }
     }
 }

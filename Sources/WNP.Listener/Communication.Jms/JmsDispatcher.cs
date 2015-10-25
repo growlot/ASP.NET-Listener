@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="JmsDispatcher.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+﻿// <copyright file="JmsDispatcher.cs" company="Advanced Metering Services LLC">
+// Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Communication.Jms
 {
@@ -25,9 +23,10 @@ namespace AMSLLC.Listener.Communication.Jms
         /// </summary>
         /// <param name="requestData">The request data.</param>
         /// <param name="connectionConfiguration">The connection configuration.</param>
+        /// <param name="protocolConfiguration">The protocol configuration.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentException">eventData must be of type {0}.FormatWith(typeof(TransactionDataReady).FullName)</exception>
-        public Task Handle(object requestData, IConnectionConfiguration connectionConfiguration)
+        public Task Handle(object requestData, IConnectionConfiguration connectionConfiguration, IProtocolConfiguration protocolConfiguration)
         {
             var request = requestData as TransactionDataReady;
             var cfg = connectionConfiguration as JmsConnectionConfiguration;

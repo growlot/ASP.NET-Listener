@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="ICommunicationHandler.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+﻿// <copyright file="ICommunicationHandler.cs" company="Advanced Metering Services LLC">
+// Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Communication
 {
@@ -18,7 +16,8 @@ namespace AMSLLC.Listener.Communication
         /// </summary>
         /// <param name="requestData">The request data.</param>
         /// <param name="connectionConfiguration">The connection configuration.</param>
+        /// <param name="protocolConfiguration">The protocol configuration.</param>
         /// <returns>Task.</returns>
-        Task Handle(object requestData, IConnectionConfiguration connectionConfiguration);
+        Task Handle(object requestData, IConnectionConfiguration connectionConfiguration, IProtocolConfiguration protocolConfiguration);
     }
 }
