@@ -87,7 +87,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 var rawData = (IDictionary<string, object>)record;
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                 {
-                    var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key.ToLowerInvariant()]);
+                    var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key.ToUpperInvariant()]);
                     property.SetValue(entityInstance, this.convertor.Convert(rawData[key], property.PropertyType));
                 }
 
