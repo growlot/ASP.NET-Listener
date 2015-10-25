@@ -9,5 +9,10 @@ namespace AMSLLC.Listener.Communication.Jms
     /// </summary>
     public class ProtocolConfiguration : IProtocolConfiguration
     {
+        /// <summary>
+        /// Gets or sets the message type template.
+        /// </summary>
+        /// <value>The message type template.</value>
+        public string MessageTypeTemplate { get; set; }
     }
 }

@@ -103,6 +103,7 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
             Func<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IntegrationEndpointConfigurationMemento> callback = (ee, oe, eo) => new IntegrationEndpointConfigurationMemento(
                     protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name,
                     ee.ConnectionConfiguration,
+                    ee.AdapterConfiguration,
                     (EndpointTriggerType)ee.EndpointTriggerTypeId);
 
             var select = @"

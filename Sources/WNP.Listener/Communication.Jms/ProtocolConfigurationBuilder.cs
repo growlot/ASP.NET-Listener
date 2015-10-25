@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Communication.Jms
 {
     using Domain;
     using Domain.Listener.Transaction;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// JMS protocol configuration builder
@@ -19,7 +20,8 @@ namespace AMSLLC.Listener.Communication.Jms
         /// <returns>IProtocolConfiguration.</returns>
         public IProtocolConfiguration Create(IMemento myMemento)
         {
-            return new ProtocolConfiguration();
+            var cfgMemento = (IntegrationEndpointConfigurationMemento)myMemento;
+            return cfgMemento.AdapterConfiguration == null ? null : JsonConvert.DeserializeObject<ProtocolConfiguration>(cfgMemento.AdapterConfiguration);
         }
     }
 }

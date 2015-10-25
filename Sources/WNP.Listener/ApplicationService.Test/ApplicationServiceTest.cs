@@ -123,7 +123,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 1,
                 recordKey,
                 1,
-                new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, EndpointTriggerType.Always) },
+                new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Always) },
                 fieldConfigurations);
 
             transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(recordKey))
@@ -289,7 +289,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             DefaultEndpointDataProcessor p = new DefaultEndpointDataProcessor();
             IntegrationEndpointConfiguration cfg = new IntegrationEndpointConfiguration();
-            ((IOriginator)cfg).SetMemento(new IntegrationEndpointConfigurationMemento("jms", string.Empty, EndpointTriggerType.Undefined));
+            ((IOriginator)cfg).SetMemento(new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Undefined));
 
             var fieldConfiguration = fieldConfigurations.Select(s =>
             {

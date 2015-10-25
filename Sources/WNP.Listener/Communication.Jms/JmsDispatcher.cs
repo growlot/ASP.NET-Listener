@@ -6,9 +6,11 @@ namespace AMSLLC.Listener.Communication.Jms
 {
     using System;
     using System.Collections.Generic;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
+    using Utilities;
     using WebLogic.Messaging;
 
     /// <summary>
@@ -17,6 +19,28 @@ namespace AMSLLC.Listener.Communication.Jms
     public class JmsDispatcher : ICommunicationHandler
     {
         private static string cfName = "weblogic.jms.ConnectionFactory";
+
+        /// <summary>
+        /// Creates the type of the message.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="messageTypeTemplate">The message type template.</param>
+        /// <returns>System.String.</returns>
+        public static string CreateMessageType(object data, string messageTypeTemplate)
+        {
+            string returnValue = messageTypeTemplate;
+            var regex = new Regex("{.*?}");
+            var matches = regex.Matches(messageTypeTemplate);
+            foreach (Match match in matches)
+            {
+                DynamicUtilities.ProcessProperty(data, match.Value.Substring(1, match.Value.Length - 2), null, (info, o, arg3) =>
+                {
+                    returnValue = returnValue.Replace(match.Value, info.GetValue(o)?.ToString());
+                });
+            }
+
+            return returnValue;
+        }
 
         /// <summary>
         /// Handles the specified request data.
@@ -30,6 +54,8 @@ namespace AMSLLC.Listener.Communication.Jms
         {
             var request = requestData as TransactionDataReady;
             var cfg = connectionConfiguration as JmsConnectionConfiguration;
+
+            var jmsAdapterConfiguration = (ProtocolConfiguration)protocolConfiguration;
 
             if (request == null)
             {
@@ -75,7 +101,7 @@ namespace AMSLLC.Listener.Communication.Jms
                 producer.DeliveryMode = Constants.DeliveryMode.PERSISTENT;
 
                 // create a text message
-                ITextMessage textMessage = session.CreateTextMessage(JsonConvert.SerializeObject(request.Data));
+                ITextMessage textMessage = CreateMessage(session, request.Data, jmsAdapterConfiguration);
 
                 // send the message
                 producer.Send(textMessage);
@@ -85,6 +111,13 @@ namespace AMSLLC.Listener.Communication.Jms
 
                 context.CloseAll();
             });
+        }
+
+        private static ITextMessage CreateMessage(ISession session, object data, ProtocolConfiguration configuration)
+        {
+            var returnValue = session.CreateTextMessage(JsonConvert.SerializeObject(data));
+            returnValue.JMSType = CreateMessageType(data, configuration.MessageTypeTemplate);
+            return returnValue;
         }
     }
 }

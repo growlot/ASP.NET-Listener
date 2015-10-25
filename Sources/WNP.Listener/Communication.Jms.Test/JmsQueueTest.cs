@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Policy;
     using System.Threading.Tasks;
     using Domain.Listener.Transaction;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -54,6 +55,19 @@ namespace AMSLLC.Listener.Communication.Jms.Test
             {
                 Assert.Inconclusive("Jms communication failed: {0}".FormatWith(exc.Message));
             }
+        }
+
+        /// <summary>
+        /// Tests the message type builder.
+        /// </summary>
+        [TestMethod]
+        public void TestMessageTypeBuilder()
+        {
+            const string template = "Type{EntityCategory}:{OperationKey}.{EntityCategory}?";
+            const string expected = "TypeElectricMeters:Install.ElectricMeters?";
+            var data = new DataMessage { EntityCategory = "ElectricMeters", OperationKey = "Install", SomeOtherProperty = 99 };
+            var actual = JmsDispatcher.CreateMessageType(data, template);
+            Assert.AreEqual(expected, actual);
         }
 
         private static void ReadMessage(string messageBody, JmsConnectionConfiguration config)
@@ -114,6 +128,18 @@ namespace AMSLLC.Listener.Communication.Jms.Test
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "False positive, property is accessed during serialization to Json string")]
             public int Value { get; set; }
+        }
+
+        private class DataMessage
+        {
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "False positive, property is accessed during serialization to Json string")]
+            public string EntityCategory { get; set; }
+
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "False positive, property is accessed during serialization to Json string")]
+            public string OperationKey { get; set; }
+
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "False positive, property is accessed during serialization to Json string")]
+            public int SomeOtherProperty { get; set; }
         }
     }
 }
