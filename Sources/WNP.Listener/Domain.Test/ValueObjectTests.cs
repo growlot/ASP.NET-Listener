@@ -1,8 +1,7 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="ValueObjectTests.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="ValueObjectTests.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-//-----------------------------------------------------------------------
+
 namespace AMSLLC.Listener.Domain.Test
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;

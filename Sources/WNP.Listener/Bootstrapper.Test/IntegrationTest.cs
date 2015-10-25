@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="IntegrationTest.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="IntegrationTest.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Bootstrapper.Test
 {

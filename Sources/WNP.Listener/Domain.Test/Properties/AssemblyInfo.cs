@@ -1,8 +1,7 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="AssemblyInfo.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="AssemblyInfo.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-//-----------------------------------------------------------------------
+
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;

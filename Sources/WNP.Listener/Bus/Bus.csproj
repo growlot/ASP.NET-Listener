@@ -64,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="stylecop.json" />
+    <None Include="..\..\..\FxCopRuleSets\stylecop.json">
+      <Link>stylecop.json</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\packages\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.1.0.0.0-beta2\tools\analyzers\Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.dll" />
