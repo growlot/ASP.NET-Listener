@@ -81,7 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\FxCopRuleSets\stylecop.json">
-      <Link>Properties\stylecop.json</Link>
+      <Link>stylecop.json</Link>
     </None>
     <None Include="..\ConnectionStrings.config">
       <Link>ConnectionStrings.config</Link>

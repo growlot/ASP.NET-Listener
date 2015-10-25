@@ -52,7 +52,7 @@
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <None Include="..\..\..\FxCopRuleSets\stylecop.json">
-      <Link>Properties\stylecop.json</Link>
+      <Link>stylecop.json</Link>
     </None>
     <None Include="1234.snk" />
     <None Include="packages.config" />
