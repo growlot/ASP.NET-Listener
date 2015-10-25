@@ -156,7 +156,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                      actionsContainer = this.actionConfigurator.GetEntityActionContainer(StringUtilities.Invariant($"wndba.{tableName}").ToUpperInvariant());
                 }
 
-                var oDataModelMapping = new MetadataEntityModel(StringUtilities.Invariant($"wndba.{tableName}"), modelClassName, modelToColumnMappings, columnToModelMappings, fieldsInfo, actionsContainer);
+                var oDataModelMapping = new MetadataEntityModel(StringUtilities.Invariant($"wndba.{tableName}").ToUpperInvariant(), modelClassName, modelToColumnMappings, columnToModelMappings, fieldsInfo, actionsContainer);
                 oDataModelMappings.Add(StringUtilities.Invariant($"{this.ODataModelNamespace}.{modelClassName}"), oDataModelMapping);
             }
         }
