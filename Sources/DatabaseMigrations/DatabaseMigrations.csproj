@@ -189,6 +189,7 @@
     <Compile Include="v2.2.0\Migration_202000110_OperationEndpoint_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000115_OperationEndpoint_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000120_TransactionRegistry_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000130_TransactionMessageData_Create.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">

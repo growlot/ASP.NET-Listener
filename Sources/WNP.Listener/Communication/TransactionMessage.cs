@@ -14,11 +14,5 @@ namespace AMSLLC.Listener.Communication
         /// </summary>
         /// <value>The data.</value>
         public object Data { get; set; }
-
-        /// <summary>
-        /// Gets or sets the record key.
-        /// </summary>
-        /// <value>The record key.</value>
-        public string RecordKey { get; set; }
     }
 }

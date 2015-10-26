@@ -7,18 +7,20 @@
 // 
 //     Connection String Name: `Listener`
 //     Provider:               `System.Data.SqlClient`
-//     Connection String:      `Server=localhost\sqlexpress;Database=Listener_new;User Id=wndba; password=**zapped**;`
+//     Connection String:      `Server=localhost\sqlexpress;Database=ListenerKCPL220;User Id=wndba; password=**zapped**;`
 //     Schema:                 ``
 //     Include Views:          `True`
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using AsyncPoco;
 
 namespace AMSLLC.Listener.Persistence.Listener
 {
-    public partial class ListenerDB : Database
+	public partial class ListenerDB : Database
 	{
 		public ListenerDB() 
 			: base("Listener")
@@ -109,6 +111,15 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 	
 
+    
+	[TableName("VersionInfo")]
+	[ExplicitColumns]
+    public partial class VersionInfoEntity : ListenerDB.Record<VersionInfoEntity>  
+    {
+		[Column] public long Version { get; set; }
+		[Column] public DateTime? AppliedOn { get; set; }
+		[Column] public string Description { get; set; }
+	}
     
 	[TableName("TransactionStatus")]
 	[PrimaryKey("TransactionStatusId", autoIncrement=false)]
@@ -460,12 +471,11 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public DateTime? UpdatedDateTime { get; set; }
 	}
     
-	[TableName("VersionInfo")]
+	[TableName("TransactionMessageData")]
 	[ExplicitColumns]
-    public partial class VersionInfoEntity : ListenerDB.Record<VersionInfoEntity>  
+    public partial class TransactionMessageDatumEntity : ListenerDB.Record<TransactionMessageDatumEntity>  
     {
-		[Column] public long Version { get; set; }
-		[Column] public DateTime? AppliedOn { get; set; }
-		[Column] public string Description { get; set; }
+		[Column] public string RecordKey { get; set; }
+		[Column] public string MessageData { get; set; }
 	}
 }

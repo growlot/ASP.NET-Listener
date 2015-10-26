@@ -93,6 +93,7 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             this.Kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
             this.Kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
+            this.Kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>();
 
             // -------------------------
             // Persistence bindings

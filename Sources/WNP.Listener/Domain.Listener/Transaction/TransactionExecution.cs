@@ -108,7 +108,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
                     var eventData = new TransactionDataReady
                     {
-                        Data = new TransactionMessage { Data = preparedData.Data, RecordKey = this.RecordKey },
+                        Data = new TransactionMessage { Data = preparedData.Data },
+                        RecordKey = this.RecordKey
                     };
 
                     this.domainEventBus.Publish(eventData);

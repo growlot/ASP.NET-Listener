@@ -10,6 +10,8 @@ namespace AMSLLC.Listener.Communication.Jms
     using System.Threading.Tasks;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
+    using Repository;
+    using Serilog;
     using Utilities;
     using WebLogic.Messaging;
 
@@ -19,6 +21,17 @@ namespace AMSLLC.Listener.Communication.Jms
     public class JmsDispatcher : ICommunicationHandler
     {
         private static string cfName = "weblogic.jms.ConnectionFactory";
+
+        private readonly ITransactionDataRepository transactionDataRepository;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JmsDispatcher"/> class.
+        /// </summary>
+        /// <param name="transactionDataRepository">The transaction data repository.</param>
+        public JmsDispatcher(ITransactionDataRepository transactionDataRepository)
+        {
+            this.transactionDataRepository = transactionDataRepository;
+        }
 
         /// <summary>
         /// Creates the type of the message.
@@ -67,50 +80,85 @@ namespace AMSLLC.Listener.Communication.Jms
                 throw new ArgumentException("{0} must be of type {1}".FormatWith(nameof(connectionConfiguration), typeof(JmsConnectionConfiguration).FullName));
             }
 
-            return Task.Run(() =>
+            return this.transactionDataRepository.SaveDataAsync(request.RecordKey, request.Data).ContinueWith((t) =>
             {
-                // create properties dictionary
-                IDictionary<string, object> paramMap = new Dictionary<string, object>();
-
-                // add necessary properties
-                paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(cfg.Host, cfg.Port);
-                paramMap[Constants.Context.SECURITY_PRINCIPAL] = cfg.UserName;
-                paramMap[Constants.Context.SECURITY_CREDENTIALS] = cfg.Password;
-
-                // get the initial context
-                IContext context = ContextFactory.CreateContext(paramMap);
-
-                // lookup the connection factory
-                IConnectionFactory cf = context.LookupConnectionFactory(cfName);
-
-                // lookup the queue
-                IQueue queue = (IQueue)context.LookupDestination(cfg.QueueName);
-
-                // create a connection
-                IConnection connection = cf.CreateConnection();
-
-                // start the connection
-                connection.Start();
-
-                // create a session
-                ISession session = connection.CreateSession(Constants.SessionMode.AUTO_ACKNOWLEDGE);
-
-                // create a message producer
-                IMessageProducer producer = session.CreateProducer(queue);
-
-                producer.DeliveryMode = Constants.DeliveryMode.PERSISTENT;
-
-                // create a text message
-                ITextMessage textMessage = CreateMessage(session, request.Data, jmsAdapterConfiguration);
-
-                // send the message
-                producer.Send(textMessage);
-
-                // CLEAN UP
-                connection.Close();
-
-                context.CloseAll();
+                if (t.IsCompleted)
+                {
+                    this.PutMessage(cfg, request, jmsAdapterConfiguration);
+                }
+                else
+                {
+                    if (t.Exception != null)
+                    {
+                        Log.Error(t.Exception.Flatten(), "Failed to persist transaction data");
+                    }
+                    else
+                    {
+                        Log.Error(t.IsCanceled ? "Canceled transaction data persistance" : "Failed to persist transaction data due to unknown reasons");
+                    }
+                }
             });
+        }
+
+        /// <summary>
+        /// Puts the message.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="jmsAdapterConfiguration">The JMS adapter configuration.</param>
+        public virtual void PutMessage(JmsConnectionConfiguration configuration, TransactionDataReady request, ProtocolConfiguration jmsAdapterConfiguration)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            // create properties dictionary
+            IDictionary<string, object> paramMap = new Dictionary<string, object>();
+
+            // add necessary properties
+            paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(configuration.Host, configuration.Port);
+            paramMap[Constants.Context.SECURITY_PRINCIPAL] = configuration.UserName;
+            paramMap[Constants.Context.SECURITY_CREDENTIALS] = configuration.Password;
+
+            // get the initial context
+            IContext context = ContextFactory.CreateContext(paramMap);
+
+            // lookup the connection factory
+            IConnectionFactory cf = context.LookupConnectionFactory(cfName);
+
+            // lookup the queue
+            IQueue queue = (IQueue)context.LookupDestination(configuration.QueueName);
+
+            // create a connection
+            IConnection connection = cf.CreateConnection();
+
+            // start the connection
+            connection.Start();
+
+            // create a session
+            ISession session = connection.CreateSession(Constants.SessionMode.AUTO_ACKNOWLEDGE);
+
+            // create a message producer
+            IMessageProducer producer = session.CreateProducer(queue);
+
+            producer.DeliveryMode = Constants.DeliveryMode.PERSISTENT;
+
+            // create a text message
+            ITextMessage textMessage = CreateMessage(session, request.RecordKey, jmsAdapterConfiguration);
+
+            // send the message
+            producer.Send(textMessage);
+
+            // CLEAN UP
+            connection.Close();
+
+            context.CloseAll();
         }
 
         private static ITextMessage CreateMessage(ISession session, object data, ProtocolConfiguration configuration)

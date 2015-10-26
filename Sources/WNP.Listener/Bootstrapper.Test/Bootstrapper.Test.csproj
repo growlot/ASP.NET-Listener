@@ -156,6 +156,10 @@
       <Project>{e3183353-f97e-4ee2-84d7-d81ce2707ff7}</Project>
       <Name>Bootstrapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Communication.Jms\Communication.Jms.csproj">
+      <Project>{0213748A-3255-4704-84EA-8821B311A3A2}</Project>
+      <Name>Communication.Jms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Communication\Communication.csproj">
       <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
       <Name>Communication</Name>
@@ -183,6 +187,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
+      <Project>{15A4ABA5-F6DC-44F4-A116-54A6546B3C29}</Project>
+      <Name>Repository.Listener</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{72E29F3F-E27A-4224-9F7B-59C2497D3BF3}</Project>

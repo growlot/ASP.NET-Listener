@@ -155,9 +155,13 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             var communicationHandler = new Mock<ICommunicationHandler>();
             object commHandlerData = null;
+            string actualKey = null;
             communicationHandler.Setup(s => s.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()))
-                .Callback(
-                    (object data, IConnectionConfiguration conn, IProtocolConfiguration pcfg) => commHandlerData = ((TransactionDataReady)data).Data)
+                .Callback((object data, IConnectionConfiguration conn, IProtocolConfiguration pcfg) =>
+                {
+                    commHandlerData = ((TransactionDataReady)data).Data;
+                    actualKey = ((TransactionDataReady)data).RecordKey;
+                })
                 .Returns(Task.CompletedTask);
 
             var builderMock = new Mock<IProtocolConfigurationBuilder>();
@@ -196,7 +200,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         It.IsAny<object>(),
                         It.IsAny<IList<FieldConfiguration>>()), Times.Once);
             string expectedMessageBodyJson =
-                $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}},\"RecordKey\":\"{recordKey}\"}}";
+                $"{{\"Data\":{{\"ComplexProperty\":{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":null}},\"NestedArray\":null,\"CorrectValue\":\"Hello, World!\"}},\"ArrayProperty\":[{{\"NestedData\":{{\"NestedData\":null,\"NestedArray\":[{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":159000}},{{\"ComplexProperty\":null,\"ArrayProperty\":null,\"DeepValue\":9713000}}],\"NestedArrayProperty\":\"EFD\"}},\"NestedArray\":null,\"SimpleArrayProperty\":\"ABC\"}},{{\"NestedData\":null,\"NestedArray\":null,\"SimpleArrayProperty\":\"F-1\"}}],\"Value1\":987,\"Flatten\":\"Hi, Bob!\"}}}}";
 
             communicationHandler.Verify(
                 foo => foo.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
@@ -210,9 +214,23 @@ namespace AMSLLC.Listener.ApplicationService.Test
                                  string.Compare(
                                      JsonConvert.SerializeObject(((TransactionDataReady)data).Data, settings),
                                      expectedMessageBodyJson,
-                                     StringComparison.InvariantCulture) == 0),
+                                     StringComparison.InvariantCulture) == 0
+                                     ),
                          It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once(),
-                 "Handler invoked with unexpected data: {0}{1}Expected:{2}".FormatWith(JsonConvert.SerializeObject(commHandlerData, settings), Environment.NewLine, expectedMessageBodyJson));
+                 "Handler invoked with unexpected data: {0}{1}Expected:{2}{1}".FormatWith(JsonConvert.SerializeObject(commHandlerData, settings), Environment.NewLine, expectedMessageBodyJson));
+
+            communicationHandler.Verify(
+                 foo =>
+                     foo.Handle(
+                         It.Is<object>(
+                             data =>
+                                     string.Compare(
+                                         ((TransactionDataReady)data).RecordKey,
+                                     recordKey,
+                                     StringComparison.InvariantCulture) == 0
+                                     ),
+                         It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once(),
+                 "Handler invoked with unexpected data: expected/actual key:{0}/{1}".FormatWith(recordKey, actualKey));
         }
 
         [TestMethod]

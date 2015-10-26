@@ -10,7 +10,9 @@ namespace AMSLLC.Listener.Communication.Jms.Test
     using System.Threading.Tasks;
     using Domain.Listener.Transaction;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Moq;
     using Newtonsoft.Json;
+    using Repository;
     using WebLogic.Messaging;
 
     /// <summary>
@@ -40,7 +42,8 @@ namespace AMSLLC.Listener.Communication.Jms.Test
         {
             try
             {
-                JmsDispatcher dispatcher = new JmsDispatcher();
+                var transactionMessageDataRepMock = new Mock<ITransactionDataRepository>();
+                JmsDispatcher dispatcher = new JmsDispatcher(transactionMessageDataRepMock.Object);
                 var transactionId = Guid.NewGuid().ToString();
                 var testMessage = new TestMessage { TransactionId = transactionId, Value = new Random().Next(9999) };
                 var eventData = new TransactionDataReady { Data = testMessage };
