@@ -41,7 +41,7 @@ namespace AMSLLC.Listener.Persistence.WNP.Metadata {
 public class <#=tableName#>Table: ITableInformation {
 	<#foreach (var column in table.Columns) {
 		var realColName = column.Name;
-		var readableName = Dehumanize(column.Name);
+		var readableName = Humanize(column.Name);
 	#>
 	/// <summary>
 	/// <para />Database Type: <#=column.PropertyType#>
@@ -66,7 +66,7 @@ public class <#=tableName#>Table: ITableInformation {
 	{
 		<#foreach (var column in table.Columns) {
 			var realColName = column.Name;
-			var readableName = Dehumanize(column.Name);
+			var readableName = Humanize(column.Name);
 		#>
 		{"<#=readableName#>", new ColumnInformation() { DataType = "<#=column.PropertyType#>", ModelName = "<#=readableName#>", ColumnName = "<#=realColName#>"}},
 		<#}#>
@@ -139,10 +139,10 @@ public class ColumnInformation
     public string GetTableName(Dictionary<string, string> redefined, string tableName)
     {
         var tableNameLower = tableName.ToLowerInvariant();
-        return Dehumanize(redefined.ContainsKey(tableNameLower) ? redefined[tableNameLower] : tableName, true);
+        return Humanize(redefined.ContainsKey(tableNameLower) ? redefined[tableNameLower] : tableName, true);
     }
 
-	public string Dehumanize(string val, bool isTable = false)
+	public string Humanize(string val, bool isTable = false)
 	{
 	    if (isTable && val.StartsWith("T", StringComparison.InvariantCultureIgnoreCase) &&
 	        !val.StartsWith("Transaction", StringComparison.InvariantCultureIgnoreCase))

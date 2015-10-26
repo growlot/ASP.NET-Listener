@@ -137,7 +137,7 @@ namespace <#=Namespace #>
 <#
 foreach(Table tbl in from t in tables where !t.Ignore select t)
 {
-	tbl.ClassName = Dehumanize(tbl.Name, true) + ClassSuffix;
+	tbl.ClassName = Humanize(tbl.Name, true) + ClassSuffix;
 #>
     
 	[TableName("<#=tbl.Name#>")]
@@ -157,7 +157,7 @@ foreach(Table tbl in from t in tables where !t.Ignore select t)
 <#
 foreach(Column col in from c in tbl.Columns where !c.Ignore select c)
 {
-	col.PropertyName = Dehumanize(col.Name);
+	col.PropertyName = Humanize(col.Name);
 		// Column bindings
 #>
 <# if (TrackModifiedColumns) { #>
@@ -194,13 +194,7 @@ foreach(Column col in from c in tbl.Columns where !c.Ignore select c)
 }
 #pragma warning restore 1591
 <#+
-    public string GetTableName(Dictionary<string, string> redefined, string tableName)
-    {
-        var tableNameLower = tableName.ToLowerInvariant();
-        return Dehumanize(redefined.ContainsKey(tableNameLower) ? redefined[tableNameLower] : tableName, true);
-    }
-	
-	public string Dehumanize(string val, bool isTable = false)
+	public string Humanize(string val, bool isTable = false)
 	{
 	    if (isTable && val.StartsWith("T", StringComparison.InvariantCultureIgnoreCase) &&
 	        !val.StartsWith("Transaction", StringComparison.InvariantCultureIgnoreCase))
