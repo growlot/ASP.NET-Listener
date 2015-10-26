@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IApplicationConfigurationRepository.cs" />
+    <Compile Include="IPersistenceAdapter.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IRepositoryManager.cs" />
     <Compile Include="ITransactionDataRepository.cs" />

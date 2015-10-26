@@ -77,7 +77,6 @@
     <Compile Include="IDateTimeProvider.cs" />
     <Compile Include="IDependencyInjectionAdapter.cs" />
     <Compile Include="TypeExtenstions\EnumerableExtensions.cs" />
-    <Compile Include="IPersistenceAdapter.cs" />
     <Compile Include="IStringToTypeConverter.cs" />
     <Compile Include="TypeExtenstions\MethodBaseExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

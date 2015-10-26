@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Core
+namespace AMSLLC.Listener.Repository
 {
     using System;
     using System.Collections.Generic;

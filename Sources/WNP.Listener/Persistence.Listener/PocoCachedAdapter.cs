@@ -13,7 +13,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System.Threading;
     using System.Threading.Tasks;
     using AsyncPoco;
-    using Core;
+    using Repository;
 
     public class PocoCachedAdapter : IPersistenceAdapter
     {

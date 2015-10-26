@@ -6,7 +6,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 {
     using System;
     using System.Threading.Tasks;
-    using Core;
     using Newtonsoft.Json;
     using Repository;
 

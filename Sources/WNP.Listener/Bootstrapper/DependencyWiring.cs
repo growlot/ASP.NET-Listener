@@ -39,7 +39,6 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Core bindings
             // -------------------------
-            this.Kernel.Bind<IPersistenceAdapter>().To<PocoCachedAdapter>().InRequestScope();
             this.Kernel.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
 
             // -------------------------
@@ -90,6 +89,7 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Repository bindings
             // -------------------------
+            this.Kernel.Bind<IPersistenceAdapter>().To<PocoCachedAdapter>().InRequestScope();
             this.Kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
             this.Kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
             this.Kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>();

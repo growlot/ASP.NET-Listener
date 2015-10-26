@@ -11,7 +11,6 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System.Linq;
     using System.Threading.Tasks;
     using Communication;
-    using Core;
     using Domain;
     using Domain.Listener.Transaction;
     using Utilities;
