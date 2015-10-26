@@ -50,7 +50,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug.SQLServer\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>bin\Debug\AMSLLC.Listener.Persistence.WNP.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug.SQLServer\AMSLLC.Listener.Persistence.WNP.XML</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -449,6 +449,11 @@
     <Compile Include="Metadata\Workstation.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Generated\Database.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="SiteRepository.cs" />
     <Compile Include="OwnerRepository.cs" />
     <Compile Include="PetaPoco.cs" />
@@ -460,20 +465,10 @@
     <None Include="..\..\..\FxCopRuleSets\stylecop.json">
       <Link>stylecop.json</Link>
     </None>
-    <None Include="..\ConnectionStrings.config">
-      <Link>ConnectionStrings.config</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\ConnectionStrings.Debug.config">
-      <Link>ConnectionStrings.Debug.config</Link>
-      <DependentUpon>ConnectionStrings.config</DependentUpon>
-    </None>
-    <None Include="..\ConnectionStrings.Debug.SQLServer.config">
-      <Link>ConnectionStrings.Debug.SQLServer.config</Link>
-      <DependentUpon>ConnectionStrings.config</DependentUpon>
-    </None>
     <None Include="App.config" />
     <None Include="Metadata\PetaPoco.Core.ttinclude" />
+    <None Include="Models\Generated\PetaPoco.Core.ttinclude" />
+    <None Include="Models\Generated\PetaPoco.Generator.ttinclude" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -483,6 +478,10 @@
     <Content Include="Metadata\DBMetadata.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DBMetadata1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Generated\Database.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -512,9 +511,7 @@
     <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
     <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets" Condition="Exists('..\..\..\packages\StyleCop.Analyzers.1.0.0-beta014\build\StyleCop.Analyzers.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
