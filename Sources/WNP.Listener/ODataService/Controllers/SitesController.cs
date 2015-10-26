@@ -15,8 +15,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Base;
     using MetadataService;
     using Newtonsoft.Json.Linq;
-    using Persistence;
-    using Persistence.Metadata;
+    using Persistence.WNP;
+    using Persistence.WNP.Metadata;
     using Services;
     using Services.FilterTransformer;
 

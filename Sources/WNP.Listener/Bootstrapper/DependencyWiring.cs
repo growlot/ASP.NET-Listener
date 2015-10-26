@@ -23,8 +23,8 @@ namespace AMSLLC.Listener.Bootstrapper
     using ODataService.Services.FilterTransformer;
     using ODataService.Services.Impl;
     using ODataService.Services.Impl.FilterTransformer;
-    using Persistence;
     using Persistence.Listener;
+    using Persistence.WNP;
     using Repository;
     using Serilog;
 

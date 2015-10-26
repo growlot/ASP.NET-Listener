@@ -127,9 +127,9 @@
       <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Persistence\Persistence.csproj">
+    <ProjectReference Include="..\Persistence.WNP\Persistence.WNP.csproj">
       <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>
-      <Name>Persistence</Name>
+      <Name>Persistence.WNP</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{CF40FB68-247D-4024-A8E9-3B707973AD11}</Project>

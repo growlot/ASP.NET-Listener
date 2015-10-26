@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Caching;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.OData.Query;
-using System.Web.OData.Routing;
-using AMSLLC.Listener.MetadataService;
-using AMSLLC.Listener.ODataService.Services;
-using AMSLLC.Listener.ODataService.Services.FilterTransformer;
-using AMSLLC.Listener.Persistence;
-using Microsoft.OData.Edm;
+﻿// <copyright file="WNPEntityController.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.Caching;
+    using System.Threading.Tasks;
+    using System.Web.Http;
+    using System.Web.OData.Query;
+    using System.Web.OData.Routing;
+    using MetadataService;
+    using Microsoft.OData.Edm;
+    using Persistence.WNP;
+    using Services;
+    using Services.FilterTransformer;
+
     public abstract class WNPEntityController : WNPController, IBoundActionsContainer
     {
         private readonly ODataValidationSettings defaultODataValidationSettings;

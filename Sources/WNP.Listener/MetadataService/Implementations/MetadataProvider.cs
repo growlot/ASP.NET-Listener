@@ -13,8 +13,8 @@ namespace AMSLLC.Listener.MetadataService.Implementations
     using System.Linq;
     using System.Reflection;
     using Microsoft.CSharp;
-    using Persistence;
-    using Persistence.Metadata;
+    using Persistence.WNP;
+    using Persistence.WNP.Metadata;
     using Utilities;
 
     /// <summary>

@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Microsoft.OData.Edm;
     using Microsoft.OData.Edm.Library;
     using Newtonsoft.Json;
-    using Persistence;
+    using Persistence.WNP;
     using Serilog;
     using Services;
     using Services.FilterTransformer;

@@ -4,7 +4,7 @@
 
 namespace AMSLLC.Listener.MetadataService
 {
-    using Persistence;
+    using Persistence.WNP;
 
     /// <summary>
     /// Entry from WNP Metadata table

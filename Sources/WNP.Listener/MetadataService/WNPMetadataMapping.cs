@@ -4,8 +4,8 @@
 
 namespace AMSLLC.Listener.MetadataService
 {
-    using Persistence;
-    using Persistence.Metadata;
+    using Persistence.WNP;
+    using Persistence.WNP.Metadata;
 
     /// <summary>
     /// Maps db generated model to <see cref="WNPMetadataEntry"/>

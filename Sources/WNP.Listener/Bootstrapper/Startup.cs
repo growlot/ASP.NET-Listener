@@ -57,7 +57,9 @@ namespace AMSLLC.Listener.Bootstrapper
             var odataServiceConfigurator = diAdapter.ResolveType<ODataServiceConfigurator>();
             odataServiceConfigurator.Configure(config);
 
-            diAdapter.ResolveType<ApplicationServiceConfigurator>().RegisterCommandHandlers();
+            var applicationServerConfigurator = diAdapter.ResolveType<ApplicationServiceConfigurator>();
+            applicationServerConfigurator.RegisterCommandHandlers();
+            applicationServerConfigurator.RegisterSagaHandlers();
 
             app.UseRequestScopeContext();
             app.UseErrorPage(ErrorPageOptions.ShowAll);

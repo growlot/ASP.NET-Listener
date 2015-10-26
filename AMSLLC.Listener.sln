@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataService", "Sources\WNP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetadataService", "Sources\WNP.Listener\MetadataService\MetadataService.csproj", "{702B10D4-57D6-4406-A159-715F658AE54D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Sources\WNP.Listener\Persistence\Persistence.csproj", "{993CDFFD-FB9F-4C45-9F10-E4F006F0B8EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.WNP", "Sources\WNP.Listener\Persistence.WNP\Persistence.WNP.csproj", "{993CDFFD-FB9F-4C45-9F10-E4F006F0B8EA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApplicationServices", "ApplicationServices", "{C4BE66D0-2301-4028-A593-2F8DFA817E01}"
 EndProject
