@@ -4,7 +4,7 @@
 // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace AMSLLC.Listener.Repository.Listener
+namespace AMSLLC.Listener.Persistence.Listener
 {
     using System;
     using System.Collections.Generic;
@@ -14,8 +14,8 @@ namespace AMSLLC.Listener.Repository.Listener
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
-    using Persistence.Listener;
     using Utilities;
+    using Repository;
 
     /// <summary>
     /// Implements <see cref="ITransactionRepository"/> for AsyncPoco

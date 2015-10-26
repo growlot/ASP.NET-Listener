@@ -188,10 +188,6 @@
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
-      <Project>{15A4ABA5-F6DC-44F4-A116-54A6546B3C29}</Project>
-      <Name>Repository.Listener</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{72E29F3F-E27A-4224-9F7B-59C2497D3BF3}</Project>
       <Name>Repository</Name>

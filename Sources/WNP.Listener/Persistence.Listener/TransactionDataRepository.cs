@@ -2,13 +2,13 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Repository.Listener
+namespace AMSLLC.Listener.Persistence.Listener
 {
     using System;
     using System.Threading.Tasks;
     using Core;
     using Newtonsoft.Json;
-    using Persistence.Listener;
+    using Repository;
 
     /// <summary>
     /// Transaction data repository

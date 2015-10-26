@@ -26,7 +26,6 @@ namespace AMSLLC.Listener.Bootstrapper
     using Persistence;
     using Persistence.Listener;
     using Repository;
-    using Repository.Listener;
     using Serilog;
 
     /// <summary>

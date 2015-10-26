@@ -24,7 +24,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Moq;
     using Newtonsoft.Json;
     using Repository;
-    using Repository.Listener;
 
     [TestClass]
     public class IntegrationTest
