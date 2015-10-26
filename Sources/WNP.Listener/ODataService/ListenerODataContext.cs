@@ -21,10 +21,14 @@ namespace AMSLLC.Listener.ODataService
         [CLSCompliant(false)]
         public DbSet<TransactionRegistryEntity> TransactionRegistry { get; set; }
 
+        [CLSCompliant(false)]
+        public DbSet<TransactionMessageDatumEntity> TransactionMessageData { get; set; }
+
         /// <inheritdoc/>
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             this.MapPetaPocoEntity<TransactionRegistryEntity, string>(modelBuilder, a => a.RecordKey);
+            this.MapPetaPocoEntity<TransactionMessageDatumEntity, string>(modelBuilder, a => a.RecordKey);
 
             base.OnModelCreating(modelBuilder);
         }

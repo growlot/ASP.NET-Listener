@@ -47,46 +47,42 @@ namespace AMSLLC.Listener.ODataService
                 model: this.modelGenerator.GenerateODataModel(),
                 pathHandler: new DefaultODataPathHandler(),
                 routingConventions: conventions //,
-                /*defaultHandler: new DefaultODataBatchHandler(new HttpServer(config))*/);
+                                                /*defaultHandler: new DefaultODataBatchHandler(new HttpServer(config))*/);
 
-            // separate OData endpoint for Listener API
-            var builder = new ODataConventionModelBuilder
+            var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener", ContainerName = "AMSLLC.Listener" };
+            this.PrepareODataController<TransactionRegistryEntity, string>(builder, a => a.RecordKey, (b, configuration) =>
             {
-                Namespace = "AMSLLC.Listener",
-                ContainerName = "AMSLLC.Listener"
-            };
+                // bound actions
+                configuration.Action("Process");
+                configuration.Action("Succeed");
 
-            this.MapPetaPocoEntity<TransactionRegistryEntity, string>(builder, a => a.RecordKey);
+                var failAction = configuration.Action("Fail");
+                failAction.Parameter<string>("Message");
+                failAction.Parameter<string>("Details").OptionalParameter = true;
 
-            var transactionRegistry = builder.EntityType<TransactionRegistryEntity>();
+                // unbound actions
+                var openAction = b.Action("Open");
+                this.ConfigureHeader(openAction, builder);
+                openAction.Returns<string>();
+            });
 
-            // bound actions
-            transactionRegistry.Action("Process");
-            transactionRegistry.Action("Succeed");
-
-            var failAction = transactionRegistry.Action("Fail");
-            failAction.Parameter<string>("Message");
-            failAction.Parameter<string>("Details").OptionalParameter = true;
-
-            // unbound actions
-            var openAction = builder.Action("Open");
-            this.ConfigureHeader(openAction, builder);
-            openAction.Returns<string>();
-
-            DelegatingHandler[] handlers = new DelegatingHandler[]
-            {
-                new ListenerMessageHandler()
-            };
+            this.PrepareODataController<TransactionMessageDatumEntity, string>(builder, a => a.RecordKey);
 
             // Create a message handler chain with an end-point.
-            var routeHandlers = HttpClientFactory.CreatePipeline(
-                new HttpControllerDispatcher(config), handlers);
+            DelegatingHandler[] handlers = new DelegatingHandler[] { new ListenerMessageHandler() };
+            var routeHandlers = HttpClientFactory.CreatePipeline(new HttpControllerDispatcher(config), handlers);
+            config.MapODataServiceRoute("listener", routePrefix: "listener", model: builder.GetEdmModel(), defaultHandler: routeHandlers);
+        }
 
-            config.MapODataServiceRoute(
-                routeName: "listener",
-                routePrefix: "listener",
-                model: builder.GetEdmModel(),
-                defaultHandler: routeHandlers);
+        private void PrepareODataController<TEntity, TKey>(ODataModelBuilder builder, Expression<Func<TEntity, TKey>> primaryKeySelector, Action<ODataModelBuilder, EntityTypeConfiguration<TEntity>> actionBuilder = null)
+            where TEntity : class
+        {
+            // separate OData endpoint for Listener API
+            this.MapPetaPocoEntity(builder, primaryKeySelector);
+
+            var entityType = builder.EntityType<TEntity>();
+
+            actionBuilder?.Invoke(builder, entityType);
         }
 
         private void ConfigureHeader(ActionConfiguration action, ODataModelBuilder model)

@@ -84,6 +84,9 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 var transactionStatusId = await GetTransactionStatus(server, nextKey);
 
                 Assert.AreEqual(0L, transactionStatusId);
+
+                var transactionMessageData = await GetTransactionData(server, nextKey);
+                Assert.AreEqual(expectedMessage, transactionMessageData);
                 //transactionMessageDataRepository.Verify(s => s.SaveDataAsync(nextKey, It.Is<object>((obj) => string.CompareOrdinal(JsonConvert.SerializeObject(obj), expectedMessage) == 0)), Times.Once);
             }
         }
@@ -256,6 +259,23 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             long transactionStatusId =
                 (long)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["TransactionStatusId"];
             return transactionStatusId;
+        }
+
+        private static async Task<string> GetTransactionData(TestServer server, string nextKey)
+        {
+            HttpResponseMessage registryEntry =
+                await
+                    server.CreateRequest($"listener/TransactionMessageData?$filter=RecordKey%20eq%20%27{nextKey}%27")
+                        .AddHeader("AMS-Company", "CCD")
+                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
+            string rstr = await registryEntry.Content.ReadAsStringAsync();
+            Assert.AreEqual(HttpStatusCode.OK, registryEntry.StatusCode, rstr);
+
+            var ex = JsonConvert.DeserializeObject<ExpandoObject>(rstr) as IDictionary<string, object>;
+            string recordKey = (string)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["RecordKey"];
+            Assert.AreEqual(nextKey, recordKey);
+            string returnValue = (string)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["MessageData"];
+            return returnValue;
         }
 
         private class
