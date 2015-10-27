@@ -22,23 +22,22 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Serilog;
     using Services;
     using Services.FilterTransformer;
+    using Utilities;
 
     [EnableQuery]
     public abstract class WNPController : ODataController
     {
         protected readonly IMetadataProvider metadataService;
         protected readonly IFilterTransformer filterTransformer;
-        protected readonly IAutoConvertor convertor;
         protected readonly IActionConfigurator actionConfigurator;
 
         protected readonly WNPDBContext dbContext;
 
-        protected WNPController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
+        protected WNPController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator)
         {
             this.metadataService = metadataService;
             this.dbContext = dbContext;
             this.filterTransformer = filterTransformer;
-            this.convertor = convertor;
             this.actionConfigurator = actionConfigurator;
         }
 
@@ -110,7 +109,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 // adjust parameters types
                 jsonParameters = jsonParameters.ToDictionary(kvp => kvp.Key,
                     kvp =>
-                        this.convertor.Convert(kvp.Value, parametersInfo.First(info => info.Name == kvp.Key).ParameterType));
+                        Converters.Convert(kvp.Value, parametersInfo.First(info => info.Name == kvp.Key).ParameterType));
 
                 var result = methodInfo.InvokeWithNamedParameters(actionsContainer, jsonParameters);
 

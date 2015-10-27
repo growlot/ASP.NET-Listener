@@ -33,8 +33,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="convertor">The convertor.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
-        public ElectricMetersController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
-                    : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
+        public ElectricMetersController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator)
+                    : base(metadataService, dbContext, filterTransformer, actionConfigurator)
         {
         }
 

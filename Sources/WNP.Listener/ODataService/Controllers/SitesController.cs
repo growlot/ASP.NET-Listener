@@ -19,6 +19,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP.Metadata;
     using Services;
     using Services.FilterTransformer;
+    using Utilities;
 
     /// <summary>
     /// Controller for Sites.
@@ -33,9 +34,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="convertor">The convertor.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
-        public SitesController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IAutoConvertor convertor, IActionConfigurator actionConfigurator)
+        public SitesController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator)
 
-            : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
+            : base(metadataService, dbContext, filterTransformer, actionConfigurator)
         {
         }
 

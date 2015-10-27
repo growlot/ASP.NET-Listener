@@ -1,19 +1,23 @@
-﻿// <copyright file="AutoConvertorImpl.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="Converters.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl
+namespace AMSLLC.Listener.Utilities
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using Serilog;
 
-    public class AutoConvertorImpl : IAutoConvertor
+    /// <summary>
+    /// Various data and type converters
+    /// </summary>
+    public static class Converters
     {
         private static readonly Dictionary<Type, Func<object, object>> Conversions = new Dictionary<Type, Func<object, object>>
         {
-            { typeof(decimal), v => System.Convert.ToDecimal(v) },
-            { typeof(float), v => System.Convert.ToSingle(v) },
+            { typeof(decimal), v => System.Convert.ToDecimal(v, CultureInfo.InvariantCulture) },
+            { typeof(float), v => System.Convert.ToSingle(v, CultureInfo.InvariantCulture) },
             { typeof(char), v =>
                 {
                     if (v == null)
@@ -43,10 +47,10 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                         }
                     }
 
-                    throw new NotImplementedException($"Conversion of {v.GetType()} to char is not implemented.");
+                    throw new NotImplementedException(StringUtilities.Invariant($"Conversion of {v.GetType()} to char is not implemented."));
                 }
             },
-            { typeof(double), v => System.Convert.ToDouble(v) },
+            { typeof(double), v => System.Convert.ToDouble(v, CultureInfo.InvariantCulture) },
             { typeof(DateTimeOffset), v =>
                 {
                     if (v == null)
@@ -61,31 +65,35 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                         return result;
                     }
 
-                    throw new NotImplementedException($"Conversion of {v.GetType()} to DateTimeOffset is not implemented.");
+                    throw new NotImplementedException(StringUtilities.Invariant($"Conversion of {v.GetType()} to DateTimeOffset is not implemented."));
                 }
             }
         };
 
-        /// <inheritdoc/>
-        public object Convert(object rawData, Type targetType)
+        /// <summary>
+        /// Converts the specified data to target type.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="targetType">Type of the target.</param>
+        /// <returns>The data as target type.</returns>
+        public static object Convert(object data, Type targetType)
         {
             if (Conversions.ContainsKey(targetType))
             {
-                return Conversions[targetType](rawData);
+                return Conversions[targetType](data);
             }
             else
             {
                 try
                 {
-                    return System.Convert.ChangeType(rawData, targetType);
+                    return System.Convert.ChangeType(data, targetType, CultureInfo.InvariantCulture);
                 }
                 catch (Exception e)
                 {
-                    Log.Error(e, "Invalid cast from {RawDataType} to {TargetType}", rawData?.GetType(), targetType);
+                    Log.Error(e, "Invalid cast from {RawDataType} to {TargetType}", data?.GetType(), targetType);
+                    throw;
                 }
             }
-
-            return rawData;
         }
     }
 }

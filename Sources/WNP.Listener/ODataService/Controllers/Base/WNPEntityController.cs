@@ -20,6 +20,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Persistence.WNP;
     using Services;
     using Services.FilterTransformer;
+    using Utilities;
 
     public abstract class WNPEntityController : WNPController, IBoundActionsContainer
     {
@@ -29,9 +30,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             IMetadataProvider metadataService,
             WNPDBContext dbContext,
             IFilterTransformer filterTransformer,
-            IAutoConvertor convertor,
             IActionConfigurator actionConfigurator)
-            : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
+            : base(metadataService, dbContext, filterTransformer, actionConfigurator)
         {
             this.defaultODataValidationSettings = new ODataValidationSettings()
             {
@@ -92,7 +92,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                 {
                     var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key.ToUpperInvariant()]);
-                    property.SetValue(entityInstance, this.convertor.Convert(rawData[key], property.PropertyType));
+                    property.SetValue(entityInstance, Converters.Convert(rawData[key], property.PropertyType));
                 }
 
                 result.Add(entityInstance);
