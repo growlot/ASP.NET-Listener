@@ -283,7 +283,7 @@ WHERE TR.RecordKey = @0";
                     var mapType = valueMaps.Single(m => m.ValueMapId == map.First().ValueMapId);
                     foreach (var valueMapEntry in map)
                     {
-                        valueMap.Add(valueMapEntry.RecordKey ?? string.Empty, ValueConverter.Convert(valueMapEntry.Value, mapType.ValueType));
+                        valueMap.Add(valueMapEntry.RecordKey ?? string.Empty, Converters.ConvertFromString(valueMapEntry.Value, mapType.ValueType));
                     }
                 }
 

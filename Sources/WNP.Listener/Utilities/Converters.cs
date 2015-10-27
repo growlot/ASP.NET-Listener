@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Utilities
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using Core;
     using Serilog;
 
     /// <summary>
@@ -93,6 +94,36 @@ namespace AMSLLC.Listener.Utilities
                     Log.Error(e, "Invalid cast from {RawDataType} to {TargetType}", data?.GetType(), targetType);
                     throw;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Converts the specified string to the target type.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="targetType">Type of the target.</param>
+        /// <returns>System.Object.</returns>
+        public static object ConvertFromString(string value, string targetType)
+        {
+            if (targetType == null)
+            {
+                throw new ArgumentNullException(nameof(targetType), "Target type needs to be specified for convertion.");
+            }
+
+            switch (targetType.ToUpperInvariant())
+            {
+                case "INTEGER":
+                    return int.Parse(value, CultureInfo.InvariantCulture);
+                case "BOOLEAN":
+                    return !string.IsNullOrWhiteSpace(value) && (value.ToUpper(CultureInfo.InvariantCulture) == bool.TrueString.ToUpperInvariant() || value == "1");
+                case "FLOAT":
+                    return float.Parse(value, CultureInfo.InvariantCulture);
+                case "STRING":
+                    return value;
+                default:
+                    var converter = ApplicationIntegration.DependencyResolver.ResolveNamed<IStringToTypeConverter>(
+                        StringUtilities.Invariant($"convert-value-{targetType}"));
+                    return converter.Convert(value);
             }
         }
     }
