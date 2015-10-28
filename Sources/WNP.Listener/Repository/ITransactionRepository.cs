@@ -84,8 +84,16 @@ namespace AMSLLC.Listener.Repository
         /// </summary>
         /// <param name="companyCode">The company code.</param>
         /// <param name="sourceApplicationKey">The source application key.</param>
-        /// <param name="operationKey">The operation key.</param>
         /// <returns>The field configuration mementos.</returns>
-        Task<IEnumerable<IMemento>> GetFieldConfigurationsAsync(string companyCode, string sourceApplicationKey, string operationKey);
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review this")]
+        Task<Dictionary<string, IEnumerable<IMemento>>> GetFieldConfigurationsAsync(string companyCode, string sourceApplicationKey);
+
+        /// <summary>
+        /// Gets the enabled operations.
+        /// </summary>
+        /// <returns>Task&lt;List&lt;EnabledOperationLookup&gt;&gt;.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This is expected to be too complex for property")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review this")]
+        Task<List<EnabledOperationLookup>> GetEnabledOperations();
     }
 }

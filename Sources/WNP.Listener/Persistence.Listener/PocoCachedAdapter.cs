@@ -39,6 +39,11 @@ namespace AMSLLC.Listener.Persistence.Listener
                 args);
         }
 
+        public Task<List<TEntity>> GetListAsync<TEntity>(string query, bool useCache, params object[] args)
+        {
+            return useCache ? this.GetListAsync<TEntity>(query, args) : args == null ? this._dbContext.FetchAsync<TEntity>(query) : this._dbContext.FetchAsync<TEntity>(query, args);
+        }
+
         public Task<TEntity> GetAsync<TEntity>(string query, params object[] args)
         {
             return this.ReadOrAdd((db, a) => a == null ? db.SingleAsync<TEntity>(query) : db.SingleAsync<TEntity>(query, a),

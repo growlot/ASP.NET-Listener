@@ -87,44 +87,44 @@ namespace AMSLLC.Listener.ApplicationService.Test
             };
 
             var fieldConfigurations = new List<FieldConfigurationMemento>();
-            fieldConfigurations.Add(new FieldConfigurationMemento("Value", "Value1", null, null, null));
+            fieldConfigurations.Add(new FieldConfigurationMemento("Value", "Value1", null, null, null, 0, null));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ComplexProperty.AnotherValue",
                 "ComplexProperty.CorrectValue",
                 null,
                 null,
-                null));
+                null, 0, null));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ComplexProperty.NestedData.AnotherValue",
                 "Flatten",
                 null,
                 null,
-                stringMap));
+                stringMap, 0, null));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ArrayProperty.AnotherValue",
                 "ArrayProperty[].SimpleArrayProperty",
                 null,
                 null,
-                null));
+                null, 0, null));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ArrayProperty.NestedData.AnotherValue",
                 "ArrayProperty[].NestedData.NestedArrayProperty",
                 null,
                 null,
-                null));
+                null, 0, null));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ArrayProperty.NestedData.NestedArray.Value",
                 "ArrayProperty[].NestedData.NestedArray[].DeepValue",
                 null,
                 null,
-                integerMap));
+                integerMap, 0, null));
 
             var memento = new TransactionExecutionMemento(
                 1,
                 recordKey,
                 1,
                 new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Always) },
-                fieldConfigurations);
+                fieldConfigurations, null);
 
             transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(recordKey))
                 .Returns(
@@ -297,13 +297,13 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 null,
                 null,
                 null,
-                stringMap));
+                stringMap, 0, null));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ArrayProperty.NestedData.NestedArray.Value",
                 null,
                 null,
                 null,
-                integerMap));
+                integerMap, 0, null));
 
             DefaultEndpointDataProcessor p = new DefaultEndpointDataProcessor();
             IntegrationEndpointConfiguration cfg = new IntegrationEndpointConfiguration();

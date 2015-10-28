@@ -8,6 +8,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
     using Communication;
 
     /// <summary>
@@ -106,6 +108,18 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <value>The summary.</value>
         public Dictionary<string, object> Summary { get; } = new Dictionary<string, object>();
 
+        /// <summary>
+        /// Gets the child transactions.
+        /// </summary>
+        /// <value>The child transactions.</value>
+        public ReadOnlyCollection<ChildTransactionRegistryEntity> ChildTransactions { get; private set; } = new ReadOnlyCollection<ChildTransactionRegistryEntity>(new ChildTransactionRegistryEntity[0]);
+
+        /// <summary>
+        /// Gets or sets the enabled operation identifier.
+        /// </summary>
+        /// <value>The enabled operation identifier.</value>
+        public int EnabledOperationId { get; set; }
+
         private IRecordKeyBuilder KeyBuilder { get; }
 
         private ITransactionKeyBuilder TransactionKeyBuilder { get; }
@@ -117,22 +131,40 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="createdDateTime">The created date time.</param>
         /// <param name="fieldConfigurations">The field configurations.</param>
-        public void Create(DateTime createdDateTime, IEnumerable<FieldConfiguration> fieldConfigurations)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review this")]
+        public void Create(DateTime createdDateTime, Dictionary<int, IEnumerable<FieldConfiguration>> fieldConfigurations)
         {
             this.RecordKey = this.KeyBuilder.Create();
             this.CreatedDateTime = createdDateTime;
-            this.TransactionKey = this.TransactionKeyBuilder.Create(this.Data, fieldConfigurations);
+            if (fieldConfigurations != null && fieldConfigurations.ContainsKey(this.EnabledOperationId))
+            {
+                this.TransactionKey = this.TransactionKeyBuilder.Create(this.Data, fieldConfigurations[this.EnabledOperationId]);
+                this.SummaryBuilder.Build(this.Data, this.Summary, fieldConfigurations[this.EnabledOperationId]);
+            }
+
             this.Status = TransactionStatusType.InProgress;
-            this.SummaryBuilder.Build(this.Data, this.Summary, fieldConfigurations);
+            foreach (var childTransactionRegistryEntity in this.ChildTransactions)
+            {
+                childTransactionRegistryEntity.RecordKey = this.KeyBuilder.Create();
+                childTransactionRegistryEntity.CreatedDateTime = createdDateTime;
+                childTransactionRegistryEntity.TransactionKey = this.TransactionKeyBuilder.Create(childTransactionRegistryEntity.Data, fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]);
+                childTransactionRegistryEntity.Status = TransactionStatusType.InProgress;
+                this.SummaryBuilder.Build(childTransactionRegistryEntity.Data, childTransactionRegistryEntity.Summary, fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]);
+            }
         }
 
         /// <summary>
         /// Succeed the current transaction
         /// </summary>
         /// <param name="scopeDateTime">The scope date time.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public void Succeed(DateTime scopeDateTime)
         {
+            if (this.ChildTransactions.Any()
+                && !this.ChildTransactions.All(s => s.Status == TransactionStatusType.Success || s.Status == TransactionStatusType.Skipped))
+            {
+                return;
+            }
+
             this.UpdatedDateTime = scopeDateTime;
             this.Status = TransactionStatusType.Success;
         }
@@ -182,6 +214,14 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Details = myMemento.Details;
             this.Id = myMemento.TransactionId;
             this.TransactionKey = myMemento.TransactionKey;
+            this.EnabledOperationId = myMemento.EnabledOperationId;
+            this.ChildTransactions = new ReadOnlyCollection<ChildTransactionRegistryEntity>(myMemento.ChildTransactions.Select(s =>
+            {
+                var childMemento = (TransactionRegistryMemento)s;
+                ChildTransactionRegistryEntity e = new ChildTransactionRegistryEntity();
+                ((IOriginator)e).SetMemento(childMemento);
+                return e;
+            }).ToList());
         }
     }
 }

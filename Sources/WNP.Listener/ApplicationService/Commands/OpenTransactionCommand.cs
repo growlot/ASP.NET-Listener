@@ -51,13 +51,5 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// The data.
         /// </value>
         public string Data { get; set; }
-
-        /// <summary>
-        /// Gets the header information as name value dictionary.
-        /// </summary>
-        /// <value>
-        /// The header.
-        /// </value>
-        public Dictionary<string, object> Header { get; } = new Dictionary<string, object>();
     }
 }

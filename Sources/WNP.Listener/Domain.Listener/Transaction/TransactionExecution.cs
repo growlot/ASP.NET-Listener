@@ -66,6 +66,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public ReadOnlyCollection<FieldConfiguration> FieldConfigurations { get; private set; } = new ReadOnlyCollection<FieldConfiguration>(new FieldConfiguration[0]);
 
         /// <summary>
+        /// Gets the child transactions.
+        /// </summary>
+        /// <value>The child transactions.</value>
+        public ReadOnlyCollection<ChildTransactionEntity> ChildTransactions { get; private set; } = new ReadOnlyCollection<ChildTransactionEntity>(new ChildTransactionEntity[0]);
+
+        /// <summary>
         /// Gets or sets the domain builder.
         /// </summary>
         /// <value>The domain builder.</value>
@@ -136,6 +142,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(s =>
             {
                 var itm = new FieldConfiguration();
+                ((IOriginator)itm).SetMemento(s);
+                return itm;
+            })));
+
+            this.ChildTransactions = new ReadOnlyCollection<ChildTransactionEntity>(new List<ChildTransactionEntity>(myMemento.ChildTransactions.Select(s =>
+            {
+                var itm = new ChildTransactionEntity();
                 ((IOriginator)itm).SetMemento(s);
                 return itm;
             })));

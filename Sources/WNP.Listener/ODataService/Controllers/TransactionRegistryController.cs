@@ -87,10 +87,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     User = this.User?.Identity.Name
                 };
 
-                message.Header.Add("PrimaryCategory", parameters["EntityCategory"]?.ToString());
-                message.Header.Add("PrimaryKey", parameters["EntityKey"]?.ToString());
-                message.Header.Add("Operation", parameters["OperationKey"]?.ToString());
-
                 return this.Ok(await this._transactionService.Open(message));
             }
             catch (Exception exc)

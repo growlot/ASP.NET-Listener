@@ -69,6 +69,8 @@
     <Compile Include="Application\ApplicationTransaction.cs" />
     <Compile Include="Application\DeviceTypeDisabledForApplication.cs" />
     <Compile Include="Application\DeviceTypeEnabledForApplication.cs" />
+    <Compile Include="DeviceBatch\DeviceBatchProcessing.cs" />
+    <Compile Include="DeviceBatch\DeviceBatchProcessingMemento.cs" />
     <Compile Include="DomainValidatorDictionary.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IDomainValidator.cs" />
@@ -79,7 +81,10 @@
     <Compile Include="Application\ApplicationConfiguration.cs" />
     <Compile Include="Company\CompanyConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transaction\ChildTransactionEntity.cs" />
+    <Compile Include="Transaction\ChildTransactionRegistryEntity.cs" />
     <Compile Include="Transaction\ConnectionConfigurationFactory.cs" />
+    <Compile Include="Transaction\EnabledOperationLookup.cs" />
     <Compile Include="Transaction\EndpointDataProcessorResult.cs" />
     <Compile Include="Transaction\FieldConfiguration.cs" />
     <Compile Include="Transaction\FieldConfigurationMemento.cs" />

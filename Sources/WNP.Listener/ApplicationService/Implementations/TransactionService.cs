@@ -6,6 +6,7 @@
 
 namespace AMSLLC.Listener.ApplicationService.Implementations
 {
+    using System;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
@@ -34,8 +35,12 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 //    requestMessage.SourceApplicationKey, requestMessage.OperationKey);
                 var fieldConfigurationMemento = await transactionRepository.GetFieldConfigurationsAsync(
                     requestMessage.CompanyCode,
-                    requestMessage.SourceApplicationKey,
-                    requestMessage.OperationKey);
+                    requestMessage.SourceApplicationKey);
+
+                var enabledOperations = await transactionRepository.GetEnabledOperations();
+                var enabledOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
+                && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0
+                && string.Compare(s.OperationName, requestMessage.OperationKey, StringComparison.InvariantCulture) == 0);
 
                 var memento = new TransactionRegistryMemento(
                     0,
@@ -50,18 +55,19 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     null,
                     requestMessage.Data,
                     null,
+                    null,
+                    enabledOperation.EnabledOperationId,
                     null);
 
                 var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
-                var fieldConfigurations = new List<FieldConfiguration>(fieldConfigurationMemento.Select(
-                    s =>
-                    {
-                        var item = new FieldConfiguration();
-                        ((IOriginator)item).SetMemento(s);
-                        return item;
-                    }));
+                var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EnabledOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
+                  {
+                      var item = new FieldConfiguration();
+                      ((IOriginator)item).SetMemento(s);
+                      return item;
+                  }));
 
                 transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
 
@@ -71,6 +77,17 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
             }
 
             return returnValue;
+        }
+
+        /// <summary>
+        /// Opens the given batch transaction
+        /// </summary>
+        /// <param name="requestMessage">The request message.</param>
+        /// <returns>Task&lt;System.String&gt;.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Task<string> Open(OpenBatchTransactionCommand requestMessage)
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <inheritdoc/>

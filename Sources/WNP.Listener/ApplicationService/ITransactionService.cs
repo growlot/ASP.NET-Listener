@@ -22,6 +22,13 @@ namespace AMSLLC.Listener.ApplicationService
         Task<string> Open(OpenTransactionCommand requestMessage);
 
         /// <summary>
+        /// Opens the given batch transaction
+        /// </summary>
+        /// <param name="requestMessage">The request message.</param>
+        /// <returns>Task&lt;System.String&gt;.</returns>
+        Task<string> Open(OpenBatchTransactionCommand requestMessage);
+
+        /// <summary>
         /// Processes the specified request message.
         /// </summary>
         /// <param name="requestMessage">The request message.</param>

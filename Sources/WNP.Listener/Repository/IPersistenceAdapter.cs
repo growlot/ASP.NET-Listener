@@ -24,6 +24,17 @@ namespace AMSLLC.Listener.Repository
         Task<List<TEntity>> GetListAsync<TEntity>(string query, params object[] args);
 
         /// <summary>
+        /// Gets the list of entities asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the t entity.</typeparam>
+        /// <param name="query">The query.</param>
+        /// <param name="useCache">if set to <c>true</c> [use cache].</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>Task&lt;List&lt;TEntity&gt;&gt;.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "None of the parameters can be supplied with correct type.")]
+        Task<List<TEntity>> GetListAsync<TEntity>(string query, bool useCache, params object[] args);
+
+        /// <summary>
         /// Gets the entity asynchronously.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>

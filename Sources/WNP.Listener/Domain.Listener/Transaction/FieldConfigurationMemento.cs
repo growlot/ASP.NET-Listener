@@ -21,12 +21,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="hashSequence">The hash sequence.</param>
         /// <param name="keySequence">The key sequence.</param>
         /// <param name="valueMap">The value map.</param>
-        public FieldConfigurationMemento(string name, string mapToName, short? hashSequence, short? keySequence, Dictionary<string, object> valueMap)
+        /// <param name="enabledOperationId">The enabled operation identifier.</param>
+        /// <param name="operationKey">The operation key.</param>
+        public FieldConfigurationMemento(string name, string mapToName, short? hashSequence, short? keySequence, Dictionary<string, object> valueMap, int enabledOperationId, string operationKey)
         {
             this.Name = name;
             this.MapToName = mapToName;
             this.HashSequence = hashSequence;
             this.KeySequence = keySequence;
+            this.OperationKey = operationKey;
+            this.EnabledOperationId = enabledOperationId;
             if (valueMap != null)
             {
                 foreach (var o in valueMap)
@@ -35,6 +39,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the enabled operation identifier.
+        /// </summary>
+        /// <value>The enabled operation identifier.</value>
+        public int EnabledOperationId { get; private set; }
 
         /// <summary>
         /// Gets the key sequence.
@@ -65,5 +75,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The include in hash.</value>
         public short? HashSequence { get; private set; }
+
+        /// <summary>
+        /// Gets the operation key.
+        /// </summary>
+        /// <value>The operation key.</value>
+        public string OperationKey { get; private set; }
     }
 }

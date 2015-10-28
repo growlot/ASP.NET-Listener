@@ -21,13 +21,15 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="enabledOperationId">The enabled operation identifier.</param>
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
         /// <param name="fieldConfigurations">The field configurations.</param>
-        public TransactionExecutionMemento(int transactionId, string recordKey, int enabledOperationId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration, IEnumerable<FieldConfigurationMemento> fieldConfigurations)
+        /// <param name="childTransactions">The child transactions.</param>
+        public TransactionExecutionMemento(int transactionId, string recordKey, int enabledOperationId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration, IEnumerable<FieldConfigurationMemento> fieldConfigurations, IEnumerable<TransactionExecutionMemento> childTransactions)
         {
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
             this.RecordKey = recordKey;
             this.EnabledOperationId = enabledOperationId;
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfigurationMemento>(new List<FieldConfigurationMemento>(fieldConfigurations));
+            this.ChildTransactions = new ReadOnlyCollection<TransactionExecutionMemento>(new List<TransactionExecutionMemento>(childTransactions ?? new TransactionExecutionMemento[0]));
         }
 
         /// <summary>
@@ -59,5 +61,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The field configurations.</value>
         public ReadOnlyCollection<FieldConfigurationMemento> FieldConfigurations { get; private set; }
+
+        /// <summary>
+        /// Gets the child transactions.
+        /// </summary>
+        /// <value>The child transactions.</value>
+        public ReadOnlyCollection<TransactionExecutionMemento> ChildTransactions { get; private set; }
     }
 }

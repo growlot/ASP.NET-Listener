@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Resources;
     using System.Threading.Tasks;
     using Communication;
     using Domain;
@@ -70,21 +71,21 @@ namespace AMSLLC.Listener.Persistence.Listener
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<IMemento>> GetFieldConfigurationsAsync(string companyCode, string sourceApplicationKey, string operationKey)
+        public async Task<Dictionary<string, IEnumerable<IMemento>>> GetFieldConfigurationsAsync(string companyCode, string sourceApplicationKey)
         {
-            var select = @"SELECT FCE.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
-INNER JOIN Company C ON EO.CompanyId = C.CompanyId
-INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1 AND O.Name = @2";
-
-            var fieldConfigurationEntries = await this.persistence.GetListAsync<FieldConfigurationEntryEntity>(
-                       select,
-                       companyCode,
-                       sourceApplicationKey,
-                       operationKey);
             var valueMapEntries = await this.persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
             var valueMaps = await this.persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
 
-           return PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps);
+            var select = @"SELECT FCE.*, O.*, EO.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
+INNER JOIN Company C ON EO.CompanyId = C.CompanyId
+INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1";
+
+            var fieldConfigurationEntries = await this.persistence.ProjectionAsync((FieldConfigurationEntryEntity ent, OperationEntity operation, EnabledOperationEntity enabledOperation) => PrepareFieldConfiguration(ent, valueMapEntries, valueMaps, enabledOperation.EnabledOperationId, operation.Name), select,
+                       companyCode,
+                       sourceApplicationKey);//.GetListAsync<FieldConfigurationEntryEntity>(
+                                             //);
+
+            return fieldConfigurationEntries.GroupBy(o => o.OperationKey).ToDictionary(g => g.Key, g => g.ToList().Cast<IMemento>()); //;
         }
 
         /// <inheritdoc/>
@@ -97,13 +98,20 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
             var valueMaps = await this.persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
 
             // var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
+
             var tr = await this.persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
 
-            Func<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IntegrationEndpointConfigurationMemento> callback = (ee, oe, eo) => new IntegrationEndpointConfigurationMemento(
-                    protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name,
-                    ee.ConnectionConfiguration,
-                    ee.AdapterConfiguration,
-                    (EndpointTriggerType)ee.EndpointTriggerTypeId);
+            var childTr = await this.persistence.GetListAsync<TransactionRegistryEntity>("SELECT TR1.* FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.TransactionId = TR1.ParentTransactionId WHERE TR.RecordKey = @0", false, recordKey);
+            var enabledOperations = childTr.Select(s => s.EnabledOperationId).ToList();
+            enabledOperations.Add(tr.EnabledOperationId);
+
+            var recordKeys = childTr.Select(s => s.RecordKey).ToList();
+            if (!recordKeys.Any())
+            {
+                recordKeys.Add(recordKey);
+            }
+
+            Func<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IntegrationEndpointConfigurationMemento> callback = (ee, oe, eo) => new IntegrationEndpointConfigurationMemento(protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name, ee.ConnectionConfiguration, ee.AdapterConfiguration, (EndpointTriggerType)ee.EndpointTriggerTypeId);
 
             var select = @"
 SELECT E.*, OE.*, EO.*
@@ -113,33 +121,27 @@ FROM
 	INNER JOIN EnabledOperation EO ON OE.EnabledOperationId = EO.EnabledOperationId
 	INNER JOIN TransactionRegistry TR ON TR.EnabledOperationId = EO.EnabledOperationId
     LEFT JOIN FieldConfiguration FC ON EO.FieldConfigurationId = FC.FieldConfigurationId 
-WHERE TR.RecordKey = @0";
+WHERE TR.RecordKey IN (@records)";
 
-            var endpoints = await this.persistence.ProjectionAsync(
-                callback,
-                select,
-                recordKey);
+            var endpoints = await this.persistence.ProjectionAsync(callback, select, new { records = recordKeys.ToArray() });
 
             select = @"
-SELECT FCE.* 
+SELECT FCE.*, EO.*, O.*
 FROM FieldConfigurationEntry FCE 
     INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId 
     INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId 
-WHERE EO.EnabledOperationId = @0";
+    INNER JOIN Operation O ON EO.OperationId = O.OperationId
+WHERE EO.EnabledOperationId IN (@operations)";
 
-            var fieldConfigurationEntries = await this.persistence.GetListAsync<FieldConfigurationEntryEntity>(
-                        select,
-                        tr.EnabledOperationId);
+            //var fieldConfigurationEntries = await this.persistence.ProjectionAsync<FieldConfigurationEntryEntity>(select, new { operations = enabledOperations.Distinct().ToArray() });
+            var fieldConfigurationEntries = await this.persistence.ProjectionAsync((FieldConfigurationEntryEntity ent, EnabledOperationEntity enabledOperation, OperationEntity operation) => PrepareFieldConfiguration(ent, valueMapEntries, valueMaps, enabledOperation.EnabledOperationId, operation.Name), select,
+                        new { operations = enabledOperations.Distinct().ToArray() });
 
             if (endpoints != null)
             {
-                returnValue = new TransactionExecutionMemento(
-                    tr.TransactionId,
-                    recordKey,
-                    tr.EnabledOperationId,
-                    endpoints,
-                    PrepareFieldConfiguration(fieldConfigurationEntries, valueMapEntries, valueMaps));
+                returnValue = new TransactionExecutionMemento(tr.TransactionId, recordKey, tr.EnabledOperationId, endpoints, fieldConfigurationEntries.Where(fc => fc.EnabledOperationId == tr.EnabledOperationId), childTr.Select(ctr => new TransactionExecutionMemento(ctr.TransactionId, ctr.RecordKey, ctr.EnabledOperationId, new List<IntegrationEndpointConfigurationMemento>(), new List<FieldConfigurationMemento>(), null)));
             }
+
 
             return returnValue;
         }
@@ -147,21 +149,7 @@ WHERE EO.EnabledOperationId = @0";
         /// <inheritdoc/>
         public async Task CreateTransactionRegistryAsync(TransactionRegistry transactionRegistry)
         {
-            var select = @"
-SELECT EO.EnabledOperationId 
-FROM EnabledOperation EO 
-    INNER JOIN Application A ON A.ApplicationId = EO.ApplicationId 
-    INNER JOIN Company C ON C.CompanyId = EO.CompanyId 
-    INNER JOIN Operation O ON O.OperationId = EO.OperationId 
-WHERE A.RecordKey = @0 AND C.ExternalCode = @1 AND O.Name = @2";
-
-            var enabledOperationid =
-                await
-                    this.persistence.ExecuteScalarAsync<int>(
-                        select,
-                        transactionRegistry.ApplicationKey,
-                        transactionRegistry.CompanyCode,
-                        transactionRegistry.OperationKey);
+            await this.GetEnabledOperations();
 
             // Single insert, transaction scope removed
             await
@@ -170,7 +158,7 @@ WHERE A.RecordKey = @0 AND C.ExternalCode = @1 AND O.Name = @2";
                     CreatedDateTime = transactionRegistry.CreatedDateTime,
                     RecordKey = transactionRegistry.RecordKey,
                     TransactionStatusId = (int)transactionRegistry.Status,
-                    EnabledOperationId = enabledOperationid,
+                    EnabledOperationId = transactionRegistry.EnabledOperationId,
                     Data = transactionRegistry.Data,
                     UpdatedDateTime = transactionRegistry.UpdatedDateTime,
                     AppUser = transactionRegistry.UserName,
@@ -182,22 +170,38 @@ WHERE A.RecordKey = @0 AND C.ExternalCode = @1 AND O.Name = @2";
         }
 
         /// <inheritdoc/>
+        public async Task<List<EnabledOperationLookup>> GetEnabledOperations()
+        {
+            var select = @"
+SELECT EO.*, A.*, C.*, O.* 
+FROM EnabledOperation EO 
+    INNER JOIN Application A ON A.ApplicationId = EO.ApplicationId 
+    INNER JOIN Company C ON C.CompanyId = EO.CompanyId 
+    INNER JOIN Operation O ON O.OperationId = EO.OperationId";
+            //@select, transactionRegistry.ApplicationKey, transactionRegistry.CompanyCode, transactionRegistry.OperationKey
+            return await this.persistence.ProjectionAsync<EnabledOperationEntity, ApplicationEntity, CompanyEntity, OperationEntity, EnabledOperationLookup>((eo, a, c, o) => new EnabledOperationLookup(c.ExternalCode, a.RecordKey, o.Name, eo.EnabledOperationId), select);
+        }
+
+        /// <inheritdoc/>
         public async Task<IMemento> GetRegistryEntry(string recordKey)
         {
-            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app, cmp, op) => new TransactionRegistryMemento(
-                tr.TransactionId,
-                tr.RecordKey,
-                tr.TransactionKey,
-                cmp.ExternalCode,
-                app.RecordKey,
-                op.Name,
-                (TransactionStatusType)tr.TransactionStatusId,
-                tr.AppUser,
-                tr.CreatedDateTime,
-                tr.UpdatedDateTime,
-                tr.Data,
-                tr.Message,
-                tr.Details);
+
+
+            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = CreateRegistryEntryProjectionCallback(null);
+
+            var selectChildren = @"
+SELECT TR1.*, A.*, C.*, O.*
+FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.TransactionId = TR1.ParentTransactionId
+    INNER JOIN EnabledOperation EO ON TR1.EnabledOperationId = EO.EnabledOperationId
+    INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
+    INNER JOIN Company C ON EO.CompanyId = C.CompanyId
+    INNER JOIN Operation O ON EO.OperationId = O.OperationId
+WHERE TR.RecordKey = @0";
+
+            var childTransactions = await this.persistence.ProjectionAsync(
+                 callback,
+                 selectChildren,
+                 recordKey);
 
             var select = @"
 SELECT TR.*, A.*, C.*, O.*
@@ -208,12 +212,20 @@ FROM TransactionRegistry TR
     INNER JOIN Operation O ON EO.OperationId = O.OperationId
 WHERE TR.RecordKey = @0";
 
+            callback = CreateRegistryEntryProjectionCallback(childTransactions);
+
             var registryEntities = await this.persistence.ProjectionAsync(
                 callback,
                 select,
                 recordKey);
 
             return registryEntities.SingleOrDefault();
+        }
+
+        private static Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> CreateRegistryEntryProjectionCallback(IEnumerable<TransactionRegistryMemento> childTransactions)
+        {
+            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app, cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, tr.TransactionKey, cmp.ExternalCode, app.RecordKey, op.Name, (TransactionStatusType)tr.TransactionStatusId, tr.AppUser, tr.CreatedDateTime, tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details, tr.EnabledOperationId, childTransactions);
+            return callback;
         }
 
         /// <inheritdoc/>
@@ -265,32 +277,23 @@ WHERE TR.RecordKey = @0";
             }
         }
 
-        private static IEnumerable<FieldConfigurationMemento> PrepareFieldConfiguration(IEnumerable<FieldConfigurationEntryEntity> fieldConfigurationEntries, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps)
+        private static FieldConfigurationMemento PrepareFieldConfiguration(FieldConfigurationEntryEntity fieldConfigurationEntry, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps, int enabledOperationId, string operationKey)
         {
-            List<FieldConfigurationMemento> returnValue = new List<FieldConfigurationMemento>();
-
-            foreach (var fieldConfigurationEntry in fieldConfigurationEntries)
+            Dictionary<string, object> valueMap = new Dictionary<string, object>();
+            if (fieldConfigurationEntry.ValueMapId.HasValue)
             {
-                Dictionary<string, object> valueMap = new Dictionary<string, object>();
-                if (fieldConfigurationEntry.ValueMapId.HasValue)
+                var map = valueMapEntries.Where(s => s.ValueMapId == fieldConfigurationEntry.ValueMapId);
+                if (map.Any())
                 {
-                    var map = valueMapEntries.Where(s => s.ValueMapId == fieldConfigurationEntry.ValueMapId);
-                    if (!map.Any())
-                    {
-                        break;
-                    }
-
                     var mapType = valueMaps.Single(m => m.ValueMapId == map.First().ValueMapId);
                     foreach (var valueMapEntry in map)
                     {
                         valueMap.Add(valueMapEntry.RecordKey ?? string.Empty, Converters.ConvertFromString(valueMapEntry.Value, mapType.ValueType));
                     }
                 }
-
-                returnValue.Add(new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.HashSequence, fieldConfigurationEntry.KeySequence, valueMap));
             }
 
-            return returnValue;
+            return new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.HashSequence, fieldConfigurationEntry.KeySequence, valueMap, enabledOperationId, operationKey);
         }
     }
 }
