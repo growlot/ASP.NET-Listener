@@ -107,7 +107,7 @@ namespace AMSLLC.Listener.Utilities
         {
             if (targetType == null)
             {
-                throw new ArgumentNullException(nameof(targetType), "Target type needs to be specified for convertion.");
+                throw new ArgumentNullException(nameof(targetType), "Target type needs to be specified for conversion.");
             }
 
             switch (targetType.ToUpperInvariant())

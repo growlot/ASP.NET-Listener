@@ -240,6 +240,10 @@
       <Project>{67913C89-A9FE-41EF-A791-9119DCD9537A}</Project>
       <Name>Domain.Listener</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Domain.WNP\Domain.WNP.csproj">
+      <Project>{960f9f7b-d3a8-405c-86ce-0287de7096f4}</Project>
+      <Name>Domain.WNP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>

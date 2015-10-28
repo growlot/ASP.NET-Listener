@@ -169,10 +169,14 @@ namespace AMSLLC.Listener.MetadataService.Implementations
             var codeNamespace = new CodeNamespace(this.ODataModelNamespace);
             codeNamespace.Imports.Add(new CodeNamespaceImport("System"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
+            codeNamespace.Imports.Add(new CodeNamespaceImport("AMSLLC.Listener.Utilities"));
 
             // TODO: we should move the IODataEntity marker interface to another library, think about this
             // Do we really need marker interface? All types in generated assembly will be ODataEntity types.
             codeNamespace.Imports.Add(new CodeNamespaceImport("AMSLLC.Listener.MetadataService"));
+
+            // TODO: we should remove dependence on Persistence assemblies.
+            codeNamespace.Imports.Add(new CodeNamespaceImport("AMSLLC.Listener.Persistence.WNP"));
 
             // only tables defined in metadata with INFO as column name and IsUsed flag will be exposed in oData
             foreach (var table in oDataModelMappings.Values)
@@ -189,6 +193,20 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
                 codeNamespace.Types.Add(codeClass);
 
+                var entityName = WNPDBHelpers.HumanizeTable(table.TableName);
+
+                var getEntityMethod = new CodeMemberMethod();
+                getEntityMethod.Attributes = MemberAttributes.Public;
+                getEntityMethod.Name = "GetEntity";
+                getEntityMethod.ReturnType = new CodeTypeReference(entityName);
+                getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($"var result = new {entityName}();")));
+
+                var setFromEntityMethod = new CodeMemberMethod();
+                setFromEntityMethod.Attributes = MemberAttributes.Public;
+                setFromEntityMethod.Name = "SetFromEntity";
+                setFromEntityMethod.ReturnType = new CodeTypeReference(typeof(void));
+                setFromEntityMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(entityName), "entity"));
+
                 foreach (var field in table.FieldInfo)
                 {
                     var property = new CodeSnippetTypeMember();
@@ -197,10 +215,38 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                         property.Text = "[Key]";
                     }
 
-                    property.Text += StringUtilities.Invariant($" public {field.Value.DataType} {field.Key} {{ get; set; }}");
+                    var nullable = string.Empty;
+                    if (field.Value.DataType == "int")
+                    {
+                        nullable = "?";
+                    }
+
+                    property.Text += StringUtilities.Invariant($" public {field.Value.DataType}{nullable} {field.Key} {{ get; set; }}");
 
                     codeClass.Members.Add(property);
+
+                    var fieldName = WNPDBHelpers.HumanizeField(table.ModelToColumnMappings[field.Key]);
+
+                    if (field.Value.DataType == "DateTimeOffset")
+                    {
+                        getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" result.{fieldName} = new DateTime({field.Key}.ToLocalTime().Ticks);")));
+                    }
+                    else if (field.Value.DataType == "char")
+                    {
+                        getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" result.{fieldName} = {field.Key}.ToString();")));
+                    }
+                    else
+                    {
+                        getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" result.{fieldName} = {field.Key};")));
+                    }
+
+                    setFromEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" this.{field.Key} = ({field.Value.DataType})Converters.Convert(entity.{fieldName}, typeof({field.Value.DataType}));")));
                 }
+
+                getEntityMethod.Statements.Add(new CodeSnippetStatement("return result;"));
+
+                codeClass.Members.Add(getEntityMethod);
+                codeClass.Members.Add(setFromEntityMethod);
             }
 
             codeUnit.Namespaces.Add(codeNamespace);
@@ -225,6 +271,8 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 compilerParameters.ReferencedAssemblies.Add("System.dll");
                 compilerParameters.ReferencedAssemblies.Add("System.ComponentModel.DataAnnotations.dll");
                 compilerParameters.ReferencedAssemblies.Add("AMSLLC.Listener.MetadataService.dll");
+                compilerParameters.ReferencedAssemblies.Add("AMSLLC.Listener.Persistence.WNP.dll");
+                compilerParameters.ReferencedAssemblies.Add("AMSLLC.Listener.Utilities.dll");
                 var result = codeProvider.CompileAssemblyFromDom(compilerParameters, codeUnit);
 
                 if (result.Errors.Count > 0)

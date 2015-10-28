@@ -98,7 +98,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 result.Add(entityInstance);
             }
 
-            return this.CreateOkResponse(oDataModelType, result);
+            return this.CreateOkResponseList(oDataModelType, result);
         }
 
         public async Task<IHttpActionResult> EntityActionHandler()
@@ -132,8 +132,25 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
         public abstract string GetEntityTableName();
 
-        private string[] GetDBColumnsList(SelectExpandQueryOption queryOptions,
-            Dictionary<string, string> mapping)
+        /// <summary>
+        /// Creates the typed OK (HTTP 200) response from specified list of result objects.
+        /// </summary>
+        /// <param name="oDataModelType">Type of the OData model.</param>
+        /// <param name="result">The list of result objects.</param>
+        /// <returns>The typed HTTP 200 result.</returns>
+        protected IHttpActionResult CreateOkResponseList(Type oDataModelType, object result)
+                    => (IHttpActionResult)this.GetOkMethodList(oDataModelType).Invoke(this, new[] { result });
+
+        /// <summary>
+        /// Creates the typed OK (HTTP 200) response from specified result object.
+        /// </summary>
+        /// <param name="oDataModelType">Type of the OData model.</param>
+        /// <param name="result">The result object.</param>
+        /// <returns>The typed HTTP 200 result.</returns>
+        protected IHttpActionResult CreateOkResponse(Type oDataModelType, object result)
+                    => (IHttpActionResult)this.GetOkMethod(oDataModelType).Invoke(this, new[] { result });
+
+        private string[] GetDBColumnsList(SelectExpandQueryOption queryOptions, Dictionary<string, string> mapping)
             => queryOptions?.RawSelect.Split(',').Select(item => mapping[item]).ToArray() ?? mapping.Values.ToArray();
 
         /// <summary>
@@ -142,24 +159,33 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <param name="oDataModelType">Type of the OData model.</param>
         /// <returns>The list type for specified OData model type.</returns>
         private Type GetGenericListType(Type oDataModelType)
-                    => MemoryCache.Default.GetOrAddExisting($"WNPController.List<{oDataModelType.FullName}>",
-                            () => typeof(List<>).MakeGenericType(oDataModelType));
+                    => MemoryCache.Default.GetOrAddExisting(
+                        StringUtilities.Invariant($"WNPController.List<{oDataModelType.FullName}>"),
+                        () => typeof(List<>).MakeGenericType(oDataModelType));
 
         /// <summary>
-        /// Gets the OK method for specified OData model type and adds ti to the cash for faster future retrieval.
+        /// Gets the OK method for specified OData model type and adds it to the cash for faster future retrieval.
+        /// </summary>
+        /// <param name="oDataModelType">Type of the OData model.</param>
+        /// <returns>The OK method for specified OData model type.</returns>
+        private MethodInfo GetOkMethodList(Type oDataModelType)
+            => MemoryCache.Default.GetOrAddExisting(
+                StringUtilities.Invariant($"WNPController.OkListMethod<{oDataModelType.FullName}>"),
+                () => this.GetType()
+                        .GetGenericMethod("Ok")
+                        .MakeGenericMethod(this.GetGenericListType(oDataModelType)));
+
+        /// <summary>
+        /// Gets the OK method for specified OData model type and adds it to the cash for faster future retrieval.
         /// </summary>
         /// <param name="oDataModelType">Type of the OData model.</param>
         /// <returns>The OK method for specified OData model type.</returns>
         private MethodInfo GetOkMethod(Type oDataModelType)
-            => MemoryCache.Default.GetOrAddExisting($"WNPController.OkMethod<{oDataModelType.FullName}>",
-                () =>
-                    this.GetType()
-                        .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                        .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
-                        .MakeGenericMethod(this.GetGenericListType(oDataModelType)));
-
-        private IHttpActionResult CreateOkResponse(Type oDataModelType, object result)
-            => (IHttpActionResult) this.GetOkMethod(oDataModelType).Invoke(this, new[] {result});
+            => MemoryCache.Default.GetOrAddExisting(
+                StringUtilities.Invariant($"WNPController.OkMethod<{oDataModelType.FullName}>"),
+                () => this.GetType()
+                        .GetGenericMethod("Ok")
+                        .MakeGenericMethod(oDataModelType));
 
         private IList CreateResultList(Type oDataModelType)
             => (IList) Activator.CreateInstance(this.GetGenericListType(oDataModelType));

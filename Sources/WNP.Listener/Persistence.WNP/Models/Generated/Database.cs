@@ -27,20 +27,20 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class TransducerTestResultsEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("site_name")] public string SiteName { get; set; }
-		[Column("test_date_start")] public DateTime TestDateStart { get; set; }
-		[Column("test_date_stop")] public DateTime TestDateStop { get; set; }
-		[Column("step_no")] public int StepNo { get; set; }
+		[Column("test_date_start")] public DateTime? TestDateStart { get; set; }
+		[Column("test_date_stop")] public DateTime? TestDateStop { get; set; }
+		[Column("step_no")] public int? StepNo { get; set; }
 		[Column("phase")] public string Phase { get; set; }
-		[Column("volts")] public double Volts { get; set; }
-		[Column("amps")] public double Amps { get; set; }
-		[Column("phase_angle")] public double PhaseAngle { get; set; }
+		[Column("volts")] public double? Volts { get; set; }
+		[Column("amps")] public double? Amps { get; set; }
+		[Column("phase_angle")] public double? PhaseAngle { get; set; }
 		[Column("ct_ratio")] public string CtRatio { get; set; }
 		[Column("pt_ratio")] public string PtRatio { get; set; }
-		[Column("test_duration")] public int TestDuration { get; set; }
-		[Column("af")] public double Af { get; set; }
-		[Column("al")] public double Al { get; set; }
+		[Column("test_duration")] public int? TestDuration { get; set; }
+		[Column("af")] public double? Af { get; set; }
+		[Column("al")] public double? Al { get; set; }
 		[Column("service_type")] public string ServiceType { get; set; }
 		[Column("test_condition_xdcr")] public double? TestConditionXdcr { get; set; }
 		[Column("test_condition_primary")] public double? TestConditionPrimary { get; set; }
@@ -70,24 +70,24 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class BarcodeEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("AEP_CODE")] public string AepCode { get; set; }
 		[Column("FORM")] public string Form { get; set; }
 		[Column("BASE")] public string Base { get; set; }
 		[Column("KH")] public string Kh { get; set; }
-		[Column("VOLT")] public decimal Volt { get; set; }
-		[Column("AMP")] public decimal Amp { get; set; }
+		[Column("VOLT")] public decimal? Volt { get; set; }
+		[Column("AMP")] public decimal? Amp { get; set; }
 		[Column("REG_RATIO")] public string RegRatio { get; set; }
-		[Column("PHASE")] public int Phase { get; set; }
-		[Column("WIRE")] public int Wire { get; set; }
+		[Column("PHASE")] public int? Phase { get; set; }
+		[Column("WIRE")] public int? Wire { get; set; }
 		[Column("TEST_SEQUENCE")] public string TestSequence { get; set; }
-		[Column("TEST_REV")] public int TestRev { get; set; }
-		[Column("TEST_LIMIT_AF")] public int TestLimitAf { get; set; }
-		[Column("TEST_LIMIT_AL")] public int TestLimitAl { get; set; }
+		[Column("TEST_REV")] public int? TestRev { get; set; }
+		[Column("TEST_LIMIT_AF")] public int? TestLimitAf { get; set; }
+		[Column("TEST_LIMIT_AL")] public int? TestLimitAl { get; set; }
 		[Column("STD_MODE")] public string StdMode { get; set; }
-		[Column("DWELL_TIME")] public int DwellTime { get; set; }
+		[Column("DWELL_TIME")] public int? DwellTime { get; set; }
 		[Column("SS_OPTICS")] public string SsOptics { get; set; }
-		[Column("TEST_TIME")] public int TestTime { get; set; }
+		[Column("TEST_TIME")] public int? TestTime { get; set; }
 		[Column("TIME_REV")] public string TimeRev { get; set; }
 		[Column("TEST_SERVICE")] public string TestService { get; set; }
 		[Column("BC_USER01")] public string BcUser01 { get; set; }
@@ -137,7 +137,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class MeterLimitSetEntity  
     {
-		[Column("limit_index")] public int LimitIndex { get; set; }
+		[Column("limit_index")] public int? LimitIndex { get; set; }
 		[Column("limit_name")] public string LimitName { get; set; }
 		[Column("limit_desc")] public string LimitDesc { get; set; }
 		[Column("sfl_hi")] public decimal? SflHi { get; set; }
@@ -168,7 +168,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ValidationEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("VAL_COLUMN")] public string ValColumn { get; set; }
 		[Column("VAL_CODE")] public string ValCode { get; set; }
 		[Column("VAL_DESC")] public string ValDesc { get; set; }
@@ -182,7 +182,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class BarcodeControlEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("BC_FIELD")] public string BcField { get; set; }
 		[Column("VALIDATION_TABLE")] public string ValidationTable { get; set; }
 		[Column("FIELD_DESCRIPTION")] public string FieldDescription { get; set; }
@@ -194,7 +194,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class AuditLogEntity  
     {
-		[Column("log_index")] public int LogIndex { get; set; }
+		[Column("log_index")] public int? LogIndex { get; set; }
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
@@ -213,7 +213,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class VendorEntity  
     {
-		[Column("vendor_id")] public int VendorId { get; set; }
+		[Column("vendor_id")] public int? VendorId { get; set; }
 		[Column("mfr")] public string Mfr { get; set; }
 		[Column("vendor_desc")] public string VendorDesc { get; set; }
 		[Column("vendor_ship_addr1")] public string VendorShipAddr1 { get; set; }
@@ -230,9 +230,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class KyzEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("kyz_channel")] public int KyzChannel { get; set; }
+		[Column("kyz_channel")] public int? KyzChannel { get; set; }
 		[Column("energy_mode")] public string EnergyMode { get; set; }
 		[Column("reverse_power")] public string ReversePower { get; set; }
 		[Column("kyz_form")] public string KyzForm { get; set; }
@@ -249,8 +249,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class VendorContactEntity  
     {
-		[Column("vendor_id")] public int VendorId { get; set; }
-		[Column("contact_index")] public int ContactIndex { get; set; }
+		[Column("vendor_id")] public int? VendorId { get; set; }
+		[Column("contact_index")] public int? ContactIndex { get; set; }
 		[Column("contact_fname")] public string ContactFname { get; set; }
 		[Column("contact_lname")] public string ContactLname { get; set; }
 		[Column("contact_phone_no")] public string ContactPhoneNo { get; set; }
@@ -286,7 +286,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EventTriggersEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("workstation")] public string Workstation { get; set; }
 		[Column("workstation_event")] public string WorkstationEvent { get; set; }
 		[Column("event_trigger_1")] public string EventTrigger1 { get; set; }
@@ -308,7 +308,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("ia")] public string Ia { get; set; }
 		[Column("ib")] public string Ib { get; set; }
 		[Column("ic")] public string Ic { get; set; }
-		[Column("revision")] public int Revision { get; set; }
+		[Column("revision")] public int? Revision { get; set; }
 		[Column("va_revision")] public int? VaRevision { get; set; }
 		[Column("vb_revision")] public int? VbRevision { get; set; }
 		[Column("vc_revision")] public int? VcRevision { get; set; }
@@ -322,7 +322,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class BarcodeLabelEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("BARCODE_LABEL")] public string BarcodeLabel { get; set; }
 		[Column("BARCODE_TASK")] public string BarcodeTask { get; set; }
 		[Column("BARCODE_ACTION")] public string BarcodeAction { get; set; }
@@ -337,7 +337,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class TransformerCodeCtEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("transformer_code")] public string TransformerCode { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
 		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
@@ -384,7 +384,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class VersionEntity  
     {
-		[Column("version")] public int Version { get; set; }
+		[Column("version")] public int? Version { get; set; }
 		[Column("wnp_version")] public string WnpVersion { get; set; }
 	}
     
@@ -393,11 +393,11 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class BarcodeLabelDefEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("FACEPLATE_COL")] public string FaceplateCol { get; set; }
 		[Column("BARCODE_LABEL")] public string BarcodeLabel { get; set; }
-		[Column("start_pos")] public int StartPos { get; set; }
-		[Column("LENGTH")] public int Length { get; set; }
+		[Column("start_pos")] public int? StartPos { get; set; }
+		[Column("LENGTH")] public int? Length { get; set; }
 	}
     
 	[TableName("TTRANSFORMER_CODE_PT")]
@@ -405,7 +405,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class TransformerCodePtEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("transformer_code")] public string TransformerCode { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
 		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
@@ -452,10 +452,10 @@ namespace AMSLLC.Listener.Persistence.WNP
     public partial class HarmonicConfigDataEntity  
     {
 		[Column("name")] public string Name { get; set; }
-		[Column("revision")] public int Revision { get; set; }
-		[Column("harmonic")] public int Harmonic { get; set; }
-		[Column("magnitude")] public decimal Magnitude { get; set; }
-		[Column("phase")] public decimal Phase { get; set; }
+		[Column("revision")] public int? Revision { get; set; }
+		[Column("harmonic")] public int? Harmonic { get; set; }
+		[Column("magnitude")] public decimal? Magnitude { get; set; }
+		[Column("phase")] public decimal? Phase { get; set; }
 	}
     
 	[TableName("tsite_metrics")]
@@ -463,8 +463,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SiteMetricsEntity  
     {
-		[Column("site")] public int Site { get; set; }
-		[Column("date_read")] public DateTime DateRead { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("date_read")] public DateTime? DateRead { get; set; }
 		[Column("service_side")] public string ServiceSide { get; set; }
 		[Column("reading_type")] public string ReadingType { get; set; }
 		[Column("metric_type")] public string MetricType { get; set; }
@@ -484,9 +484,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class VersionHistoryEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("version_index")] public int VersionIndex { get; set; }
+		[Column("version_index")] public int? VersionIndex { get; set; }
 		[Column("old_program_id")] public string OldProgramId { get; set; }
 		[Column("OLD_FIRMWARE_REV01")] public string OldFirmwareRev01 { get; set; }
 		[Column("OLD_FIRMWARE_REV02")] public string OldFirmwareRev02 { get; set; }
@@ -515,8 +515,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SiteWiringCheckEntity  
     {
-		[Column("site")] public int Site { get; set; }
-		[Column("test_date")] public DateTime TestDate { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("test_date")] public DateTime? TestDate { get; set; }
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("service_check")] public string ServiceCheck { get; set; }
 		[Column("phase_a_check")] public string PhaseACheck { get; set; }
@@ -549,7 +549,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class WorkstationEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("WORKSTATION")] public string Workstation { get; set; }
 		[Column("SOURCE_TAG")] public string SourceTag { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
@@ -563,9 +563,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class CircuitEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
-		[Column("SITE")] public int Site { get; set; }
-		[Column("CIRCUIT")] public int Circuit { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
+		[Column("SITE")] public int? Site { get; set; }
+		[Column("CIRCUIT")] public int? Circuit { get; set; }
 		[Column("CIRCUIT_DESC")] public string CircuitDesc { get; set; }
 		[Column("LONGITUDE")] public double? Longitude { get; set; }
 		[Column("LATITUDE")] public double? Latitude { get; set; }
@@ -585,7 +585,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("WIRE_LOCATION")] public string WireLocation { get; set; }
 		[Column("ENCLOSURE_TYPE")] public string EnclosureType { get; set; }
 		[Column("INSTALL_DATE")] public DateTime? InstallDate { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 	}
     
 	[TableName("trma_batch_out")]
@@ -619,16 +619,16 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class TestCardEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("card_name")] public string CardName { get; set; }
 		[Column("obj_type")] public string ObjType { get; set; }
 		[Column("description")] public string Description { get; set; }
-		[Column("x")] public int X { get; set; }
-		[Column("y")] public int Y { get; set; }
-		[Column("width")] public int Width { get; set; }
-		[Column("height")] public int Height { get; set; }
+		[Column("x")] public int? X { get; set; }
+		[Column("y")] public int? Y { get; set; }
+		[Column("width")] public int? Width { get; set; }
+		[Column("height")] public int? Height { get; set; }
 		[Column("properties")] public string Properties { get; set; }
-		[Column("obj_index")] public int ObjIndex { get; set; }
+		[Column("obj_index")] public int? ObjIndex { get; set; }
 	}
     
 	[TableName("TRATIO")]
@@ -658,10 +658,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class RmaEqpEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
-		[Column("rma_cycle")] public int RmaCycle { get; set; }
+		[Column("rma_cycle")] public int? RmaCycle { get; set; }
 		[Column("rma_status")] public string RmaStatus { get; set; }
 		[Column("rma_batch_out_no")] public string RmaBatchOutNo { get; set; }
 		[Column("rma_batch_in_no")] public string RmaBatchInNo { get; set; }
@@ -705,7 +705,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpReferenceEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
 		[Column("purchase_date")] public DateTime? PurchaseDate { get; set; }
@@ -764,10 +764,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class CircuitHistEntity  
     {
-		[Column("site")] public int Site { get; set; }
-		[Column("circuit")] public int Circuit { get; set; }
-		[Column("site_date")] public DateTime SiteDate { get; set; }
-		[Column("owner")] public int Owner { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("circuit")] public int? Circuit { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("circuit_desc")] public string CircuitDesc { get; set; }
 		[Column("longitude")] public double? Longitude { get; set; }
 		[Column("latitude")] public double? Latitude { get; set; }
@@ -794,7 +794,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpTestboardEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("test_eqp_no")] public string TestEqpNo { get; set; }
 		[Column("serial_no")] public string SerialNo { get; set; }
 		[Column("mfr")] public string Mfr { get; set; }
@@ -812,10 +812,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class CommentEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
-		[Column("COMMENT_INDEX")] public int CommentIndex { get; set; }
+		[Column("COMMENT_INDEX")] public int? CommentIndex { get; set; }
 		[Column] public string TROUBLE1 { get; set; }
 		[Column] public string TROUBLE2 { get; set; }
 		[Column] public string TROUBLE3 { get; set; }
@@ -828,7 +828,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("CREATE_BY")] public string CreateBy { get; set; }
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 	}
     
 	[TableName("teqp_ami")]
@@ -836,7 +836,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpAmiEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("ami_id")] public string AmiId { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
@@ -864,10 +864,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class CtTestResultsEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
-		[Column("TEST_DATE_START")] public DateTime TestDateStart { get; set; }
-		[Column("STEP_NO")] public int StepNo { get; set; }
+		[Column("TEST_DATE_START")] public DateTime? TestDateStart { get; set; }
+		[Column("STEP_NO")] public int? StepNo { get; set; }
 		[Column("ACCURACY_CLASS")] public decimal? AccuracyClass { get; set; }
 		[Column("PHASE")] public string Phase { get; set; }
 		[Column("LOAD_LABEL")] public string LoadLabel { get; set; }
@@ -881,7 +881,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("PHASE_ERROR")] public double? PhaseError { get; set; }
 		[Column("BURDEN_VALUE")] public double? BurdenValue { get; set; }
 		[Column("RCF")] public double? Rcf { get; set; }
-		[Column("TEST_DATE_STOP")] public DateTime TestDateStop { get; set; }
+		[Column("TEST_DATE_STOP")] public DateTime? TestDateStop { get; set; }
 		[Column("IN_LIMITS")] public string InLimits { get; set; }
 		[Column("PRI_TEST_REASON")] public string PriTestReason { get; set; }
 		[Column("SEC_TEST_REASON")] public string SecTestReason { get; set; }
@@ -902,7 +902,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("results_user08")] public string ResultsUser08 { get; set; }
 		[Column("results_user09")] public string ResultsUser09 { get; set; }
 		[Column("results_user10")] public string ResultsUser10 { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 		[Column("PROCESS_TAG")] public string ProcessTag { get; set; }
 		[Column("upper_limit")] public double? UpperLimit { get; set; }
 		[Column("lower_limit")] public double? LowerLimit { get; set; }
@@ -918,9 +918,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ReferenceInstallHistoryEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("install_date")] public DateTime InstallDate { get; set; }
+		[Column("install_date")] public DateTime? InstallDate { get; set; }
 		[Column("remove_date")] public DateTime? RemoveDate { get; set; }
 		[Column("install_status")] public string InstallStatus { get; set; }
 		[Column("test_eqp_no")] public string TestEqpNo { get; set; }
@@ -934,7 +934,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class CustomFieldDescriptionsEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
 		[Column("WECO_FIELD_NAME")] public string WecoFieldName { get; set; }
 		[Column("CUSTOMER_DESC")] public string CustomerDesc { get; set; }
@@ -949,7 +949,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("REQUIRED_FIELD")] public string RequiredField { get; set; }
 		[Column("CLEAR_FROM_PREVIOUS")] public string ClearFromPrevious { get; set; }
 		[Column("READ_ONLY")] public string ReadOnly { get; set; }
-		[Column("min_length")] public int MinLength { get; set; }
+		[Column("min_length")] public int? MinLength { get; set; }
 		[Column("LAYOUT_NAME")] public string LayoutName { get; set; }
 		[Column("TABLE_NAME")] public string TableName { get; set; }
 		[Column("CONTROL_TYPE")] public string ControlType { get; set; }
@@ -976,7 +976,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class VehicleEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("vehicle_id")] public string VehicleId { get; set; }
 		[Column("vehicle_description")] public string VehicleDescription { get; set; }
 		[Column("location")] public string Location { get; set; }
@@ -984,7 +984,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("create_date")] public DateTime? CreateDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 	}
     
 	[TableName("TREFERENCE_TEST_RESULTS")]
@@ -992,10 +992,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ReferenceTestResultsEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("test_date_start")] public DateTime TestDateStart { get; set; }
-		[Column("test_step")] public int TestStep { get; set; }
+		[Column("test_date_start")] public DateTime? TestDateStart { get; set; }
+		[Column("test_step")] public int? TestStep { get; set; }
 		[Column("element")] public string Element { get; set; }
 		[Column("test_volts")] public double? TestVolts { get; set; }
 		[Column("test_amps")] public double? TestAmps { get; set; }
@@ -1025,7 +1025,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpCtEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
 		[Column("SITE")] public int? Site { get; set; }
 		[Column("CIRCUIT")] public int? Circuit { get; set; }
@@ -1085,7 +1085,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("voltage_class")] public decimal? VoltageClass { get; set; }
 		[Column("basic_impulse_level")] public decimal? BasicImpulseLevel { get; set; }
 		[Column("rating_factor_30c")] public decimal? RatingFactor30c { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 		[Column("accuracy_class2")] public decimal? AccuracyClass2 { get; set; }
 		[Column("burden_value2")] public double? BurdenValue2 { get; set; }
 		[Column("rating_factor_55c")] public decimal? RatingFactor55c { get; set; }
@@ -1100,7 +1100,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     public partial class StandardsCompareSequenceEntity  
     {
 		[Column("sequence_description")] public string SequenceDescription { get; set; }
-		[Column("step_no")] public int StepNo { get; set; }
+		[Column("step_no")] public int? StepNo { get; set; }
 		[Column("element")] public string Element { get; set; }
 		[Column("delivered_received")] public string DeliveredReceived { get; set; }
 		[Column("test_voltage")] public double? TestVoltage { get; set; }
@@ -1121,9 +1121,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpCtHistEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("site_date")] public DateTime SiteDate { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
@@ -1195,7 +1195,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class MetadataEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("table_name")] public string TableName { get; set; }
 		[Column("column_name")] public string ColumnName { get; set; }
 		[Column("data_type")] public string DataType { get; set; }
@@ -1215,7 +1215,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("customer_label")] public string CustomerLabel { get; set; }
 		[Column("data_description")] public string DataDescription { get; set; }
 		[Column("data_example")] public string DataExample { get; set; }
-		[Column("id")] public int Id { get; set; }
+		[Column("id")] public int? Id { get; set; }
 	}
     
 	[TableName("TEQP_METER")]
@@ -1223,7 +1223,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpMeterEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
 		[Column("SITE")] public int? Site { get; set; }
 		[Column("CIRCUIT")] public int? Circuit { get; set; }
@@ -1344,7 +1344,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("FIRMWARE_REV07")] public string FirmwareRev07 { get; set; }
 		[Column("FIRMWARE_REV08")] public string FirmwareRev08 { get; set; }
 		[Column("pref_test_sequence")] public string PrefTestSequence { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 		[Column("METER_CLASS")] public int? MeterClass { get; set; }
 		[Column("vehicle_id")] public string VehicleId { get; set; }
 		[Column("received_by")] public string ReceivedBy { get; set; }
@@ -1356,11 +1356,11 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class AmiInstallHistoryEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("parent_eqp_type")] public string ParentEqpType { get; set; }
 		[Column("parent_eqp_no")] public string ParentEqpNo { get; set; }
 		[Column("ami_id")] public string AmiId { get; set; }
-		[Column("install_count")] public int InstallCount { get; set; }
+		[Column("install_count")] public int? InstallCount { get; set; }
 		[Column("install_status")] public string InstallStatus { get; set; }
 		[Column("install_date")] public DateTime? InstallDate { get; set; }
 		[Column("install_by")] public string InstallBy { get; set; }
@@ -1374,9 +1374,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpMeterHistEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("site_date")] public DateTime SiteDate { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
@@ -1507,10 +1507,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SiteInstallHistoryEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("install_count")] public int InstallCount { get; set; }
+		[Column("install_count")] public int? InstallCount { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
 		[Column("account_no")] public string AccountNo { get; set; }
@@ -1532,7 +1532,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpPtEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
 		[Column("SITE")] public int? Site { get; set; }
 		[Column("CIRCUIT")] public int? Circuit { get; set; }
@@ -1592,7 +1592,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("voltage_class")] public decimal? VoltageClass { get; set; }
 		[Column("basic_impulse_level")] public decimal? BasicImpulseLevel { get; set; }
 		[Column("thermal_rating")] public int? ThermalRating { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 		[Column("accuracy_class2")] public decimal? AccuracyClass2 { get; set; }
 		[Column("burden_value2")] public string BurdenValue2 { get; set; }
 		[Column("vehicle_id")] public string VehicleId { get; set; }
@@ -1605,7 +1605,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ObsoleteEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
 		[Column("mfr")] public string Mfr { get; set; }
 		[Column("serial_no_start")] public string SerialNoStart { get; set; }
@@ -1625,9 +1625,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpPtHistEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("site_date")] public DateTime SiteDate { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
@@ -1698,7 +1698,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpTypeEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
 		[Column("eqp_type_desc")] public string EqpTypeDesc { get; set; }
 		[Column("protected_type")] public string ProtectedType { get; set; }
@@ -1711,7 +1711,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpRecorderEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
@@ -1773,7 +1773,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class MeterPwdsEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("protocol_type")] public string ProtocolType { get; set; }
 		[Column("l1_pwd")] public string L1Pwd { get; set; }
 		[Column("l2_pwd")] public string L2Pwd { get; set; }
@@ -1791,9 +1791,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpRecorderHistEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("site_date")] public DateTime SiteDate { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
@@ -1854,7 +1854,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpGenericEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("site")] public int? Site { get; set; }
@@ -1910,7 +1910,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("generic_user18")] public string GenericUser18 { get; set; }
 		[Column("generic_user19")] public string GenericUser19 { get; set; }
 		[Column("generic_user20")] public string GenericUser20 { get; set; }
-		[Column("id")] public int Id { get; set; }
+		[Column("id")] public int? Id { get; set; }
 		[Column("create_date")] public DateTime? CreateDate { get; set; }
 		[Column("create_by")] public string CreateBy { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
@@ -1922,7 +1922,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpTotalizerEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
@@ -1982,7 +1982,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class GenericCodeEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
 		[Column("generic_code")] public string GenericCode { get; set; }
 		[Column("accept_test_percent")] public string AcceptTestPercent { get; set; }
@@ -2084,9 +2084,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpTotalizerHistEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("site_date")] public DateTime SiteDate { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
@@ -2166,7 +2166,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpTransducerEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
 		[Column("SITE")] public int? Site { get; set; }
 		[Column("CIRCUIT")] public int? Circuit { get; set; }
@@ -2229,7 +2229,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("pbe_edit")] public string PbeEdit { get; set; }
 		[Column("pbe_type")] public short? PbeType { get; set; }
 		[Column("pbe_cntr")] public int? PbeCntr { get; set; }
-		[Column("pbe_seqn")] public short PbeSeqn { get; set; }
+		[Column("pbe_seqn")] public short? PbeSeqn { get; set; }
 		[Column("pbe_flag")] public int? PbeFlag { get; set; }
 		[Column("pbe_work")] public string PbeWork { get; set; }
 	}
@@ -2239,9 +2239,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class EqpTransducerHistEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("site_date")] public DateTime SiteDate { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
@@ -2300,9 +2300,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class LotSizeLookupEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
-		[Column("LOT_SIZE")] public int LotSize { get; set; }
-		[Column("SAMPLE_SIZE")] public int SampleSize { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
+		[Column("LOT_SIZE")] public int? LotSize { get; set; }
+		[Column("SAMPLE_SIZE")] public int? SampleSize { get; set; }
 		[Column("DESCRIPTION")] public string Description { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
@@ -2313,9 +2313,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ImportExportDefinitionsEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("DEFINITION_NAME")] public string DefinitionName { get; set; }
-		[Column("DATA_FIELD_NUMBER")] public int DataFieldNumber { get; set; }
+		[Column("DATA_FIELD_NUMBER")] public int? DataFieldNumber { get; set; }
 		[Column("DATA_FIELD_DESCRIPTION")] public string DataFieldDescription { get; set; }
 		[Column("DATA_FIELD_START")] public int? DataFieldStart { get; set; }
 		[Column("DATA_FIELD_LENGTH")] public int? DataFieldLength { get; set; }
@@ -2328,9 +2328,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class LotPercentDefEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
-		[Column("SAMPLE_SIZE")] public int SampleSize { get; set; }
-		[Column("QUALITY_INDEX")] public decimal QualityIndex { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
+		[Column("SAMPLE_SIZE")] public int? SampleSize { get; set; }
+		[Column("QUALITY_INDEX")] public decimal? QualityIndex { get; set; }
 		[Column("PERCENT_DEF")] public decimal? PercentDef { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
@@ -2341,8 +2341,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class LotAcceptQualityLevelEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
-		[Column("SAMPLE_SIZE")] public int SampleSize { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
+		[Column("SAMPLE_SIZE")] public int? SampleSize { get; set; }
 		[Column("AQL")] public decimal? Aql { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
@@ -2353,7 +2353,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ImportExportOptionsEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("DEFINITION_NAME")] public string DefinitionName { get; set; }
 		[Column("EQUIPMENT_TYPE")] public string EquipmentType { get; set; }
 		[Column("DELIMIT_CHAR")] public string DelimitChar { get; set; }
@@ -2408,7 +2408,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class LocationEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("LOCATION")] public string Location { get; set; }
 		[Column("LOCN_DESC")] public string LocnDesc { get; set; }
 		[Column("IS_LAB_LOCN")] public string IsLabLocn { get; set; }
@@ -2421,10 +2421,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class TamperEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
-		[Column("TAMPER_INDEX")] public int TamperIndex { get; set; }
+		[Column("TAMPER_INDEX")] public int? TamperIndex { get; set; }
 		[Column("TAMPER_FOUND")] public string TamperFound { get; set; }
 		[Column] public string TAMPER5 { get; set; }
 		[Column] public string TAMPER2 { get; set; }
@@ -2445,7 +2445,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ManufacturercodeEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("MFR")] public string Mfr { get; set; }
 		[Column("DESCRIPTION")] public string Description { get; set; }
 	}
@@ -2455,7 +2455,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class MeterCodeEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("METER_CODE")] public string MeterCode { get; set; }
 		[Column("CATALOG_NO")] public string CatalogNo { get; set; }
 		[Column("WARRANTY_PERIOD")] public int? WarrantyPeriod { get; set; }
@@ -2635,10 +2635,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class MeterTestResultsEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
-		[Column("TEST_DATE_START")] public DateTime TestDateStart { get; set; }
-		[Column("STEP_NO")] public int StepNo { get; set; }
+		[Column("TEST_DATE_START")] public DateTime? TestDateStart { get; set; }
+		[Column("STEP_NO")] public int? StepNo { get; set; }
 		[Column("TEST_DATE_STOP")] public DateTime? TestDateStop { get; set; }
 		[Column("TEST_LOCATION")] public string TestLocation { get; set; }
 		[Column("SITE")] public int? Site { get; set; }
@@ -2690,7 +2690,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("va_phase_a")] public double? VaPhaseA { get; set; }
 		[Column("va_phase_b")] public double? VaPhaseB { get; set; }
 		[Column("va_phase_c")] public double? VaPhaseC { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 		[Column("PROCESS_TAG")] public string ProcessTag { get; set; }
 		[Column] public string TROUBLE1 { get; set; }
 		[Column] public string TROUBLE2 { get; set; }
@@ -2705,22 +2705,22 @@ namespace AMSLLC.Listener.Persistence.WNP
     public partial class MeterTestSequenceEntity  
     {
 		[Column("sequence_description")] public string SequenceDescription { get; set; }
-		[Column("step_no")] public int StepNo { get; set; }
+		[Column("step_no")] public int? StepNo { get; set; }
 		[Column("element")] public string Element { get; set; }
 		[Column("test_type")] public string TestType { get; set; }
 		[Column("test_revs")] public int? TestRevs { get; set; }
 		[Column("time_rev")] public string TimeRev { get; set; }
 		[Column("reverse_power")] public string ReversePower { get; set; }
-		[Column("test_voltage")] public decimal TestVoltage { get; set; }
-		[Column("test_current")] public decimal TestCurrent { get; set; }
-		[Column("phase_angle")] public decimal PhaseAngle { get; set; }
+		[Column("test_voltage")] public decimal? TestVoltage { get; set; }
+		[Column("test_current")] public decimal? TestCurrent { get; set; }
+		[Column("phase_angle")] public decimal? PhaseAngle { get; set; }
 		[Column("test_service")] public string TestService { get; set; }
 		[Column("energy_mode")] public string EnergyMode { get; set; }
-		[Column("frequency")] public decimal Frequency { get; set; }
+		[Column("frequency")] public decimal? Frequency { get; set; }
 		[Column("optics")] public string Optics { get; set; }
-		[Column("upper_limit")] public decimal UpperLimit { get; set; }
-		[Column("lower_limit")] public decimal LowerLimit { get; set; }
-		[Column("desired_accuracy")] public decimal DesiredAccuracy { get; set; }
+		[Column("upper_limit")] public decimal? UpperLimit { get; set; }
+		[Column("lower_limit")] public decimal? LowerLimit { get; set; }
+		[Column("desired_accuracy")] public decimal? DesiredAccuracy { get; set; }
 		[Column("commands")] public string Commands { get; set; }
 		[Column("harmonic_configuration")] public string HarmonicConfiguration { get; set; }
 		[Column("harmonic_revision")] public int? HarmonicRevision { get; set; }
@@ -2733,7 +2733,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class MfrEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("mfr")] public string Mfr { get; set; }
 		[Column("barcode_mfr")] public string BarcodeMfr { get; set; }
 		[Column("mfr_desc")] public string MfrDesc { get; set; }
@@ -2748,7 +2748,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class MapWinboard2Entity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("wb2_table_name")] public string Wb2TableName { get; set; }
 		[Column("wb2_column_name")] public string Wb2ColumnName { get; set; }
 		[Column("wb2_data_type")] public string Wb2DataType { get; set; }
@@ -2760,9 +2760,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("special_proc_data1")] public string SpecialProcData1 { get; set; }
 		[Column("special_proc_tag2")] public string SpecialProcTag2 { get; set; }
 		[Column("special_proc_data2")] public string SpecialProcData2 { get; set; }
-		[Column("create_date")] public DateTime CreateDate { get; set; }
+		[Column("create_date")] public DateTime? CreateDate { get; set; }
 		[Column("create_by")] public string CreateBy { get; set; }
-		[Column("mod_date")] public DateTime ModDate { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
 	}
     
@@ -2771,19 +2771,19 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class MultimediaEntity  
     {
-		[Column("FILE_INDEX")] public int FileIndex { get; set; }
+		[Column("FILE_INDEX")] public int? FileIndex { get; set; }
 		[Column("FILE_NAME")] public string FileName { get; set; }
 		[Column("FILE_TYPE")] public string FileType { get; set; }
 		[Column("FILE_DESC")] public string FileDesc { get; set; }
 		[Column("FILE_CONTENTS")] public byte[] FileContents { get; set; }
 		[Column("LINK_ID")] public string LinkId { get; set; }
 		[Column("LINK_INDEX")] public int? LinkIndex { get; set; }
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
 		[Column("CREATE_BY")] public string CreateBy { get; set; }
 		[Column("CREATE_DATE")] public DateTime? CreateDate { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 	}
     
 	[TableName("TREPAIR")]
@@ -2791,10 +2791,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class RepairEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
-		[Column("repair_index")] public int RepairIndex { get; set; }
+		[Column("repair_index")] public int? RepairIndex { get; set; }
 		[Column("repair_status")] public string RepairStatus { get; set; }
 		[Column("request1")] public string Request1 { get; set; }
 		[Column("request2")] public string Request2 { get; set; }
@@ -2822,7 +2822,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class OwnerEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("OWNER_DESC")] public string OwnerDesc { get; set; }
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
@@ -2836,7 +2836,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("meter_code_is_lookup")] public string MeterCodeIsLookup { get; set; }
 		[Column("use_rma_accept_testing")] public string UseRmaAcceptTesting { get; set; }
 		[Column("rma_accept_list_source")] public string RmaAcceptListSource { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 	}
     
 	[TableName("TPROCESS_FLOW")]
@@ -2844,7 +2844,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ProcessFlowEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("TEST_PROGRAM")] public string TestProgram { get; set; }
 		[Column("CREATE_BY")] public string CreateBy { get; set; }
 		[Column("CREATE_DATE")] public DateTime? CreateDate { get; set; }
@@ -2857,10 +2857,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class PtTestResultsEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
-		[Column("TEST_DATE_START")] public DateTime TestDateStart { get; set; }
-		[Column("STEP_NO")] public int StepNo { get; set; }
+		[Column("TEST_DATE_START")] public DateTime? TestDateStart { get; set; }
+		[Column("STEP_NO")] public int? StepNo { get; set; }
 		[Column("ACCURACY_CLASS")] public decimal? AccuracyClass { get; set; }
 		[Column("PHASE")] public string Phase { get; set; }
 		[Column("LOAD_LABEL")] public string LoadLabel { get; set; }
@@ -2874,7 +2874,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("PHASE_ERROR")] public double? PhaseError { get; set; }
 		[Column("BURDEN_VALUE")] public string BurdenValue { get; set; }
 		[Column("RCF")] public double? Rcf { get; set; }
-		[Column("TEST_DATE_STOP")] public DateTime TestDateStop { get; set; }
+		[Column("TEST_DATE_STOP")] public DateTime? TestDateStop { get; set; }
 		[Column("IN_LIMITS")] public string InLimits { get; set; }
 		[Column("PRI_TEST_REASON")] public string PriTestReason { get; set; }
 		[Column("SEC_TEST_REASON")] public string SecTestReason { get; set; }
@@ -2895,7 +2895,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("results_user08")] public string ResultsUser08 { get; set; }
 		[Column("results_user09")] public string ResultsUser09 { get; set; }
 		[Column("results_user10")] public string ResultsUser10 { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 		[Column("PROCESS_TAG")] public string ProcessTag { get; set; }
 		[Column("upper_limit")] public double? UpperLimit { get; set; }
 		[Column("lower_limit")] public double? LowerLimit { get; set; }
@@ -2930,9 +2930,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ReadingEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("read_index")] public int ReadIndex { get; set; }
+		[Column("read_index")] public int? ReadIndex { get; set; }
 		[Column("annunciator")] public string Annunciator { get; set; }
 		[Column("event_flag")] public string EventFlag { get; set; }
 		[Column("read_label")] public string ReadLabel { get; set; }
@@ -2942,7 +2942,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("read_by")] public string ReadBy { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 	}
     
 	[TableName("TSAMPLE_LIST")]
@@ -2950,7 +2950,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SampleListEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
 		[Column("selection_program")] public string SelectionProgram { get; set; }
@@ -2988,10 +2988,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SampleListArchEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
-		[Column("year")] public int Year { get; set; }
+		[Column("year")] public int? Year { get; set; }
 		[Column("selection_program")] public string SelectionProgram { get; set; }
 		[Column("strata_name")] public string StrataName { get; set; }
 		[Column("eqp_code")] public string EqpCode { get; set; }
@@ -3027,7 +3027,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class DefaultValuesEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("wnp_process")] public string WnpProcess { get; set; }
 		[Column("table_name")] public string TableName { get; set; }
 		[Column("column_name")] public string ColumnName { get; set; }
@@ -3090,10 +3090,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class RedTagEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
-		[Column("shop_cycle")] public int ShopCycle { get; set; }
+		[Column("shop_cycle")] public int? ShopCycle { get; set; }
 		[Column("red_tag_status")] public string RedTagStatus { get; set; }
 		[Column("rtag_user_01")] public string RtagUser01 { get; set; }
 		[Column("rtag_user_02")] public string RtagUser02 { get; set; }
@@ -3116,8 +3116,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SelectionProgramEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
-		[Column("year")] public int Year { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("year")] public int? Year { get; set; }
 		[Column("selection_program")] public string SelectionProgram { get; set; }
 		[Column("selection_method")] public string SelectionMethod { get; set; }
 		[Column("start_date")] public DateTime? StartDate { get; set; }
@@ -3136,7 +3136,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class RedTagControlEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
 		[Column("rtag_utility_name")] public string RtagUtilityName { get; set; }
 		[Column("rtag_user_01_label")] public string RtagUser01Label { get; set; }
@@ -3178,8 +3178,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SelectionProgramGroupEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
-		[Column("year")] public int Year { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("year")] public int? Year { get; set; }
 		[Column("selection_program")] public string SelectionProgram { get; set; }
 		[Column("strata_name")] public string StrataName { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
@@ -3206,7 +3206,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     {
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
 		[Column("SHOP_STATUS")] public string ShopStatus { get; set; }
-		[Column("YEAR")] public int Year { get; set; }
+		[Column("YEAR")] public int? Year { get; set; }
 		[Column("JANUARY")] public int? January { get; set; }
 		[Column("FEBRUARY")] public int? February { get; set; }
 		[Column("MARCH")] public int? March { get; set; }
@@ -3230,7 +3230,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ListenerTransactionStateEntity  
     {
-		[Column("transaction_state")] public int TransactionState { get; set; }
+		[Column("transaction_state")] public int? TransactionState { get; set; }
 		[Column("transaction_state_desc")] public string TransactionStateDesc { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
@@ -3241,8 +3241,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SiteEntity  
     {
-		[Column("site")] public int Site { get; set; }
-		[Column("owner")] public int Owner { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("site_description")] public string SiteDescription { get; set; }
 		[Column("site_address")] public string SiteAddress { get; set; }
 		[Column("site_address2")] public string SiteAddress2 { get; set; }
@@ -3267,9 +3267,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ListenerTransactionStatisticsEntity  
     {
-		[Column("transaction_id")] public int TransactionId { get; set; }
-		[Column("call_time")] public DateTime CallTime { get; set; }
-		[Column("transaction_state")] public int TransactionState { get; set; }
+		[Column("transaction_id")] public int? TransactionId { get; set; }
+		[Column("call_time")] public DateTime? CallTime { get; set; }
+		[Column("transaction_state")] public int? TransactionState { get; set; }
 	}
     
 	[TableName("TSITE_COMMENTS")]
@@ -3277,16 +3277,16 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SiteCommentsEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
-		[Column("SITE")] public int Site { get; set; }
-		[Column("COMMENT_INDEX")] public int CommentIndex { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
+		[Column("SITE")] public int? Site { get; set; }
+		[Column("COMMENT_INDEX")] public int? CommentIndex { get; set; }
 		[Column("COMMENTS")] public string Comments { get; set; }
 		[Column("COMMENT_TYPE")] public string CommentType { get; set; }
 		[Column("CREATE_DATE")] public DateTime? CreateDate { get; set; }
 		[Column("CREATE_BY")] public string CreateBy { get; set; }
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 	}
     
 	[TableName("tlistener_transaction_status")]
@@ -3294,7 +3294,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ListenerTransactionStatusEntity  
     {
-		[Column("transaction_status")] public int TransactionStatus { get; set; }
+		[Column("transaction_status")] public int? TransactionStatus { get; set; }
 		[Column("transaction_status_desc")] public string TransactionStatusDesc { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
@@ -3305,9 +3305,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SiteHistEntity  
     {
-		[Column("site")] public int Site { get; set; }
-		[Column("site_date")] public DateTime SiteDate { get; set; }
-		[Column("owner")] public int Owner { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("site_description")] public string SiteDescription { get; set; }
 		[Column("site_address")] public string SiteAddress { get; set; }
 		[Column("site_address2")] public string SiteAddress2 { get; set; }
@@ -3332,7 +3332,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ListenerTransactionTypeEntity  
     {
-		[Column("transaction_type")] public int TransactionType { get; set; }
+		[Column("transaction_type")] public int? TransactionType { get; set; }
 		[Column("transaction_type_desc")] public string TransactionTypeDesc { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
@@ -3343,10 +3343,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SiteMultimediaEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
-		[Column("SITE")] public int Site { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
+		[Column("SITE")] public int? Site { get; set; }
 		[Column("CREATE_DATE")] public DateTime? CreateDate { get; set; }
-		[Column("FILE_INDEX")] public int FileIndex { get; set; }
+		[Column("FILE_INDEX")] public int? FileIndex { get; set; }
 		[Column("FILE_NAME")] public string FileName { get; set; }
 		[Column("FILE_TYPE")] public string FileType { get; set; }
 		[Column("FILE_DESC")] public string FileDesc { get; set; }
@@ -3358,7 +3358,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
 		[Column("CREATE_BY")] public string CreateBy { get; set; }
 		[Column("CIRCUIT")] public int? Circuit { get; set; }
-		[Column("ID")] public int Id { get; set; }
+		[Column("ID")] public int? Id { get; set; }
 	}
     
 	[TableName("tsocket_mapping")]
@@ -3385,7 +3385,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class StatusEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("type")] public string Type { get; set; }
 		[Column("code")] public string Code { get; set; }
 		[Column("description")] public string Description { get; set; }
@@ -3400,7 +3400,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ListenerConfigNotificationsEntity  
     {
-		[Column("state_notification_id")] public int StateNotificationId { get; set; }
+		[Column("state_notification_id")] public int? StateNotificationId { get; set; }
 		[Column("transaction_state")] public int? TransactionState { get; set; }
 		[Column("notification_email")] public string NotificationEmail { get; set; }
 	}
@@ -3434,7 +3434,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class SysValidationEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("val_column")] public string ValColumn { get; set; }
 		[Column("val_code")] public string ValCode { get; set; }
 		[Column("val_desc")] public string ValDesc { get; set; }
@@ -3448,7 +3448,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class FirmwareLabelEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("label_firmware_rev01")] public string LabelFirmwareRev01 { get; set; }
 		[Column("label_firmware_rev02")] public string LabelFirmwareRev02 { get; set; }
 		[Column("label_firmware_rev03")] public string LabelFirmwareRev03 { get; set; }
@@ -3476,7 +3476,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ListenerConfigEntity  
     {
-		[Column("config_id")] public int ConfigId { get; set; }
+		[Column("config_id")] public int? ConfigId { get; set; }
 		[Column("config_name")] public string ConfigName { get; set; }
 		[Column("config_value")] public string ConfigValue { get; set; }
 	}
@@ -3486,7 +3486,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class BarcodeCtEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("aep_code")] public string AepCode { get; set; }
 		[Column("nameplate_ratio")] public string NameplateRatio { get; set; }
 		[Column("taps")] public int? Taps { get; set; }
@@ -3537,10 +3537,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class TrackingEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
-		[Column("CREATE_DATE")] public DateTime CreateDate { get; set; }
+		[Column("CREATE_DATE")] public DateTime? CreateDate { get; set; }
 		[Column("WORKSTATION")] public string Workstation { get; set; }
 		[Column("TEST_PROGRAM")] public string TestProgram { get; set; }
 		[Column("LOCATION")] public string Location { get; set; }
@@ -3558,7 +3558,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class BarcodePtEntity  
     {
-		[Column("owner")] public int Owner { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
 		[Column("aep_code")] public string AepCode { get; set; }
 		[Column("nameplate_ratio")] public string NameplateRatio { get; set; }
 		[Column("taps")] public int? Taps { get; set; }
@@ -3609,10 +3609,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class TrackingInEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("TEST_PROGRAM")] public string TestProgram { get; set; }
 		[Column("WORKSTATION")] public string Workstation { get; set; }
-		[Column("IN_STATUS_INDEX")] public int InStatusIndex { get; set; }
+		[Column("IN_STATUS_INDEX")] public int? InStatusIndex { get; set; }
 		[Column("IS_ALLOWED")] public string IsAllowed { get; set; }
 		[Column("IN_SHOP_STATUS")] public string InShopStatus { get; set; }
 		[Column("IN_EQP_STATUS")] public string InEqpStatus { get; set; }
@@ -3630,7 +3630,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ListenerTransactionLogEntity  
     {
-		[Column("transaction_id")] public int TransactionId { get; set; }
+		[Column("transaction_id")] public int? TransactionId { get; set; }
 		[Column("transaction_type")] public int? TransactionType { get; set; }
 		[Column("transaction_status")] public int? TransactionStatus { get; set; }
 		[Column("owner")] public int? Owner { get; set; }
@@ -3644,10 +3644,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class TrackingOutEntity  
     {
-		[Column("OWNER")] public int Owner { get; set; }
+		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("TEST_PROGRAM")] public string TestProgram { get; set; }
 		[Column("WORKSTATION")] public string Workstation { get; set; }
-		[Column("OUT_STATUS_INDEX")] public int OutStatusIndex { get; set; }
+		[Column("OUT_STATUS_INDEX")] public int? OutStatusIndex { get; set; }
 		[Column("OUT_SHOP_STATUS")] public string OutShopStatus { get; set; }
 		[Column("OUT_EQP_STATUS")] public string OutEqpStatus { get; set; }
 		[Column("OUT_LOCATION")] public string OutLocation { get; set; }
@@ -3671,7 +3671,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[ExplicitColumns]
     public partial class ListenerTransactionSourceEntity  
     {
-		[Column("transaction_source")] public int TransactionSource { get; set; }
+		[Column("transaction_source")] public int? TransactionSource { get; set; }
 		[Column("transaction_source_desc")] public string TransactionSourceDesc { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }

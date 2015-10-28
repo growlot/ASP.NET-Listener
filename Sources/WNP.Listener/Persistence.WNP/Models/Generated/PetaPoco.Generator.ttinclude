@@ -157,7 +157,11 @@ foreach(Table tbl in from t in tables where !t.Ignore select t)
 <#
 foreach(Column col in from c in tbl.Columns where !c.Ignore select c)
 {
+	// Convert names based on our standards
 	col.PropertyName = Humanize(col.Name);
+
+	// Mark all columns as nullable
+	col.IsNullable = true;
 		// Column bindings
 #>
 <# if (TrackModifiedColumns) { #>

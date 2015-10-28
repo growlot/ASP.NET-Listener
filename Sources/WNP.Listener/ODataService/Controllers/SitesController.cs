@@ -7,6 +7,7 @@
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Http;
@@ -19,6 +20,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP.Metadata;
     using Services;
     using Services.FilterTransformer;
+    using Newtonsoft.Json;
+    using Domain.WNP.SiteAggregate;
     using Utilities;
 
     /// <summary>
@@ -62,18 +65,75 @@ namespace AMSLLC.Listener.ODataService.Controllers
             // we created earlier
             var oDataModelType = queryOptions.Context.ElementClrType;
 
-            // get the model describing this type
-            var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
-
-            // create actual result object we will be sending over the wire
+            // create actual object that was sent over the wire
             var requestContent = this.CreateResult(oDataModelType);
 
-            var request = JObject.Parse(this.GetRequestContents(this.Request));
+            var method = typeof(JsonConvert).GetGenericMethod("DeserializeObject", new Type[] { typeof(string) });
+            requestContent = method.MakeGenericMethod(oDataModelType).Invoke(null, new object[] { this.GetRequestContents(this.Request) });
 
-            ////var method = typeof(JsonConvert).GetGenericMethod("DeserializeObject", new Type[] { typeof(string) });
-            ////requestContent = method.MakeGenericMethod(oDataModelType).Invoke(null, new object[] { GetRequestContents(Request) });
+            var getEntityMethod = oDataModelType.GetMethod("GetEntity");
 
-            var serviceRequest = new CreateSiteCommand();
+            SiteEntity site = (SiteEntity)getEntityMethod.Invoke(requestContent, new object[] { });
+
+            if (!string.IsNullOrWhiteSpace(site.PremiseNo))
+            {
+                var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
+                var sql = Sql.Builder
+                    .Select(modelMapping.ModelToColumnMappings.Values.ToArray())
+                    .From(DBMetadata.Site.FullTableName)
+                    .Where($"{DBMetadata.Site.PremiseNo}=@0", site.PremiseNo);
+
+                var existingEnitty = this.dbContext.FirstOrDefault<SiteEntity>(sql);
+                if (existingEnitty != null)
+                {
+                    var httpResponse = this.ResponseMessage(new HttpResponseMessage(System.Net.HttpStatusCode.SeeOther));
+                    httpResponse.Response.Headers.Location = new Uri(StringUtilities.Invariant($"{this.Request.RequestUri}('{existingEnitty.PremiseNo}')"));
+                    return Task.FromResult<IHttpActionResult>(httpResponse);
+                }
+            }
+
+            if (site.CreateBy != null
+                || site.CreateDate != null
+                || site.ModBy != null
+                || site.ModDate != null
+                || site.Owner != null
+                || site.Site != null)
+            {
+                return Task.FromResult<IHttpActionResult>(this.BadRequest("Field can not be set in the call"));
+            }
+
+            PhysicalAddress siteAddres = null;
+            if (site.SiteAddress != null
+                || site.SiteAddress2 != null
+                || site.SiteCity != null
+                || site.SiteCountry != null
+                || site.SiteState != null
+                || site.SiteZipcode != null)
+            {
+                siteAddres = new PhysicalAddressBuilder()
+                    .WithAddressLine1(site.SiteAddress)
+                    .WithAddressLine2(site.SiteAddress2)
+                    .WithCity(site.SiteCity)
+                    .WithCountry(site.SiteCountry)
+                    .WithState(site.SiteState)
+                    .WithZipCode(site.SiteZipcode);
+            }
+
+            BillingAccount account = null;
+            if (site.AccountName != null
+                || site.AccountNo != null)
+            {
+                account = new BillingAccount(site.AccountName, site.AccountNo);
+            }
+
+            var serviceRequest = new CreateSiteCommand()
+            {
+                Account = account,
+                Address = siteAddres,
+                Description = site.SiteDescription,
+                Owner = 0,
+                PremiseNumber = site.PremiseNo
+            };
 
             ////var requestData = (IDictionary<string, object>)request;
             ////foreach (var key in requestData.Keys)
@@ -103,6 +163,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
         public Task<IHttpActionResult> Get([FromODataUri] int key)
         {
+            // we can infer model type from the ODataQueryOptions
+            // we created earlier
             if (!this.ModelState.IsValid)
             {
                 return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
@@ -115,7 +177,26 @@ namespace AMSLLC.Listener.ODataService.Controllers
             // we can infer model type from the ODataQueryOptions
             // we created earlier
             var oDataModelType = queryOptions.Context.ElementClrType;
-            throw new NotImplementedException();
+
+            var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
+            var sql = Sql.Builder
+                .Select(modelMapping.ModelToColumnMappings.Values.ToArray())
+                .From(DBMetadata.Site.FullTableName)
+                .Where($"{DBMetadata.Site.PremiseNo}=@0", key);
+
+            var existingEnitty = this.dbContext.FirstOrDefault<SiteEntity>(sql);
+            if (existingEnitty != null)
+            {
+                // create actual object that was sent over the wire
+                var responseContent = this.CreateResult(oDataModelType);
+
+                var setFromEntityMethod = oDataModelType.GetMethod("SetFromEntity");
+                setFromEntityMethod.Invoke(responseContent, new object[] { existingEnitty });
+
+                return Task.FromResult(this.CreateOkResponse(oDataModelType, responseContent));
+            }
+
+            return Task.FromResult<IHttpActionResult>(this.NotFound());
         }
 
         /// <summary>
