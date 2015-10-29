@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.Repository
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Domain;
@@ -33,7 +34,7 @@ namespace AMSLLC.Listener.Repository
         /// </summary>
         /// <param name="recordKey">The record key.</param>
         /// <returns>The memento</returns>
-        Task<IMemento> GetExecutionContextAsync(string recordKey);
+        Task<IMemento> GetExecutionContextAsync(Guid recordKey);
 
         /// <summary>
         /// Creates new transaction registry.
@@ -47,7 +48,7 @@ namespace AMSLLC.Listener.Repository
         /// </summary>
         /// <param name="recordKey">The record key.</param>
         /// <returns>The memento</returns>
-        Task<IMemento> GetRegistryEntry(string recordKey);
+        Task<IMemento> GetRegistryEntry(Guid recordKey);
 
         /// <summary>
         /// Updates the transaction registry.
@@ -61,7 +62,7 @@ namespace AMSLLC.Listener.Repository
         /// </summary>
         /// <param name="recordKey">The transaction record key.</param>
         /// <returns>The transaction data.</returns>
-        Task<string> GetTransactionDataAsync(string recordKey);
+        Task<string> GetTransactionDataAsync(Guid recordKey);
 
         /// <summary>
         /// Gets the hash count.
@@ -74,10 +75,10 @@ namespace AMSLLC.Listener.Repository
         /// <summary>
         /// Updates the hash.
         /// </summary>
-        /// <param name="transactionId">The transaction identifier.</param>
+        /// <param name="recordKey">The record key.</param>
         /// <param name="hash">The hash.</param>
         /// <returns>The empty task</returns>
-        Task UpdateHashAsync(int transactionId, string hash);
+        Task UpdateHashAsync(Guid recordKey, string hash);
 
         /// <summary>
         /// Gets the field configurations.

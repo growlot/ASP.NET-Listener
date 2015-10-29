@@ -55,7 +55,7 @@ namespace AMSLLC.Listener.Persistence.Listener
         }
 
         /// <inheritdoc/>
-        public async Task UpdateHashAsync(int transactionId, string hash)
+        public async Task UpdateHashAsync(Guid recordKey, string hash)
         {
             // Single update, transaction scope removed
             // await
@@ -65,8 +65,8 @@ namespace AMSLLC.Listener.Persistence.Listener
             //    }, new[] { "TransactionHash" });
             await
                 this.persistence.UpdateAsync(
-                    new TransactionRegistryEntity { TransactionHash = hash, TransactionId = transactionId },
-                    transactionId,
+                    new TransactionRegistryEntity { TransactionHash = hash, RecordKey = recordKey },
+                    recordKey,
                     new[] { "TransactionHash" });
         }
 
@@ -89,7 +89,7 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
         }
 
         /// <inheritdoc/>
-        public async Task<IMemento> GetExecutionContextAsync(string recordKey)
+        public async Task<IMemento> GetExecutionContextAsync(Guid recordKey)
         {
             TransactionExecutionMemento returnValue = null;
             var protocols = await this.persistence.GetListAsync<ProtocolTypeEntity>("SELECT * FROM ProtocolType");
@@ -101,7 +101,7 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
 
             var tr = await this.persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
 
-            var childTr = await this.persistence.GetListAsync<TransactionRegistryEntity>("SELECT TR1.* FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.TransactionId = TR1.ParentTransactionId WHERE TR.RecordKey = @0", false, recordKey);
+            var childTr = await this.persistence.GetListAsync<TransactionRegistryEntity>("SELECT TR1.* FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.RecordKey = TR1.BatchKey WHERE TR.RecordKey = @0", false, recordKey);
             var enabledOperations = childTr.Select(s => s.EnabledOperationId).ToList();
             enabledOperations.Add(tr.EnabledOperationId);
 
@@ -149,24 +149,66 @@ WHERE EO.EnabledOperationId IN (@operations)";
         /// <inheritdoc/>
         public async Task CreateTransactionRegistryAsync(TransactionRegistry transactionRegistry)
         {
-            await this.GetEnabledOperations();
+            //await this.GetEnabledOperations();
+            bool transactional = transactionRegistry.ChildTransactions.Any();
+
+            if (transactional)
+            {
+                using (var tr = await this.persistence.BeginTransaction())
+                {
+                    await this.InsertRoot(transactionRegistry);
+
+                    foreach (var childTransactionRegistryEntity in transactionRegistry.ChildTransactions)
+                    {
+                        await this.persistence.InsertAsync(new TransactionRegistryEntity // "TransactionRegistry", "TransactionId",
+                        {
+                            CreatedDateTime = childTransactionRegistryEntity.CreatedDateTime,
+                            BatchKey = transactionRegistry.RecordKey,
+                            RecordKey = childTransactionRegistryEntity.RecordKey,
+                            TransactionStatusId = (int)childTransactionRegistryEntity.Status,
+                            EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
+                            Data = childTransactionRegistryEntity.Data,
+                            UpdatedDateTime = null,
+                            AppUser = transactionRegistry.UserName,
+                            Message = null,
+                            Details = null,
+                            TransactionKey = childTransactionRegistryEntity.TransactionKey,
+                            Summary = SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
+                        });
+                    }
+
+                    tr.Commit();
+                }
+            }
+            else
+            {
+                await this.InsertRoot(transactionRegistry);
+            }
 
             // Single insert, transaction scope removed
-            await
-                this.persistence.InsertAsync(new TransactionRegistryEntity // "TransactionRegistry", "TransactionId",
-                {
-                    CreatedDateTime = transactionRegistry.CreatedDateTime,
-                    RecordKey = transactionRegistry.RecordKey,
-                    TransactionStatusId = (int)transactionRegistry.Status,
-                    EnabledOperationId = transactionRegistry.EnabledOperationId,
-                    Data = transactionRegistry.Data,
-                    UpdatedDateTime = transactionRegistry.UpdatedDateTime,
-                    AppUser = transactionRegistry.UserName,
-                    Message = transactionRegistry.Message,
-                    Details = transactionRegistry.Details,
-                    TransactionKey = transactionRegistry.TransactionKey,
-                    Summary = SerializationUtilities.DictionaryToXml(transactionRegistry.Summary)
-                });
+
+
+
+
+
+        }
+
+        private async Task InsertRoot(TransactionRegistry transactionRegistry)
+        {
+            await this.persistence.InsertAsync(new  // "TransactionRegistry", "TransactionId",
+            {
+                CreatedDateTime = transactionRegistry.CreatedDateTime,
+                RecordKey = transactionRegistry.RecordKey,
+                TransactionStatusId = (int)transactionRegistry.Status,
+                EnabledOperationId = transactionRegistry.EnabledOperationId,
+                Data = transactionRegistry.Data,
+                UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                AppUser = transactionRegistry.UserName,
+                Message = transactionRegistry.Message,
+                Details = transactionRegistry.Details,
+                TransactionKey = transactionRegistry.TransactionKey,
+                Summary = SerializationUtilities.DictionaryToXml(transactionRegistry.Summary)
+            }, "TransactionRegistry", "TransactionId");
         }
 
         /// <inheritdoc/>
@@ -183,7 +225,7 @@ FROM EnabledOperation EO
         }
 
         /// <inheritdoc/>
-        public async Task<IMemento> GetRegistryEntry(string recordKey)
+        public async Task<IMemento> GetRegistryEntry(Guid recordKey)
         {
 
 
@@ -191,7 +233,7 @@ FROM EnabledOperation EO
 
             var selectChildren = @"
 SELECT TR1.*, A.*, C.*, O.*
-FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.TransactionId = TR1.ParentTransactionId
+FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.RecordKey = TR1.BatchKey
     INNER JOIN EnabledOperation EO ON TR1.EnabledOperationId = EO.EnabledOperationId
     INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
     INNER JOIN Company C ON EO.CompanyId = C.CompanyId
@@ -243,12 +285,12 @@ WHERE TR.RecordKey = @0";
 
             await this.persistence.UpdateAsync(
                 entity,
-                transactionRegistry.Id,
+                transactionRegistry.RecordKey,
                 new[] { "TransactionStatusId", "UpdatedDateTime", "AppUser", "Message", "Details" });
         }
 
         /// <inheritdoc/>
-        public Task<string> GetTransactionDataAsync(string recordKey)
+        public Task<string> GetTransactionDataAsync(Guid recordKey)
         {
             return this.persistence.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
         }

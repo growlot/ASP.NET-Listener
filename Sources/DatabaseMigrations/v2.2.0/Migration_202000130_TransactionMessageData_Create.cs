@@ -19,7 +19,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
         public override void Up()
         {
             this.Create.Table("TransactionMessageData")
-                .WithColumn("RecordKey").AsString(60).NotNullable().Indexed()
+                .WithColumn("RecordKey").AsGuid().NotNullable().PrimaryKey()
                 .WithColumn("MessageData").AsString(int.MaxValue).Nullable();
         }
     }

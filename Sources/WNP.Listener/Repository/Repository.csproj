@@ -82,6 +82,7 @@
     <Compile Include="IRepository.cs" />
     <Compile Include="IRepositoryManager.cs" />
     <Compile Include="ITransactionDataRepository.cs" />
+    <Compile Include="ITransactionProxy.cs" />
     <Compile Include="ITransactionRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

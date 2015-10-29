@@ -51,7 +51,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
         }
 
-        public IHttpActionResult Get([FromODataUri] string key)
+        public IHttpActionResult Get([FromODataUri] Guid key)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="key">The key.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
         [HttpPost]
-        public async Task<IHttpActionResult> Process([FromODataUri] string key)
+        public async Task<IHttpActionResult> Process([FromODataUri] Guid key)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="key">The key.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
         [HttpPost]
-        public async Task<IHttpActionResult> Succeed([FromODataUri] string key)
+        public async Task<IHttpActionResult> Succeed([FromODataUri] Guid key)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
         [HttpPost]
         //[ODataRoute("(Message={message},Details={details})")]
-        public async Task<IHttpActionResult> Fail([FromODataUri] string key, ODataActionParameters parameters)
+        public async Task<IHttpActionResult> Fail([FromODataUri] Guid key, ODataActionParameters parameters)
         {
             try
             {

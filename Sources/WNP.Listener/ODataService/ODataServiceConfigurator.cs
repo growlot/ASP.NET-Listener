@@ -50,7 +50,7 @@ namespace AMSLLC.Listener.ODataService
                                                 /*defaultHandler: new DefaultODataBatchHandler(new HttpServer(config))*/);
 
             var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener", ContainerName = "AMSLLC.Listener" };
-            this.PrepareODataController<TransactionRegistryEntity, string>(builder, a => a.RecordKey, (b, configuration) =>
+            this.PrepareODataController<TransactionRegistryEntity, Guid>(builder, a => a.RecordKey, (b, configuration) =>
             {
                 // bound actions
                 configuration.Action("Process");
@@ -66,7 +66,7 @@ namespace AMSLLC.Listener.ODataService
                 openAction.Returns<string>();
             });
 
-            this.PrepareODataController<TransactionMessageDatumEntity, string>(builder, a => a.RecordKey);
+            this.PrepareODataController<TransactionMessageDatumEntity, Guid>(builder, a => a.RecordKey);
 
             // Create a message handler chain with an end-point.
             DelegatingHandler[] handlers = new DelegatingHandler[] { new ListenerMessageHandler() };

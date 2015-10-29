@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the record key.
         /// </summary>
         /// <value>The record key.</value>
-        public string RecordKey { get; set; }
+        public Guid RecordKey { get; set; }
 
         /// <summary>
         /// Gets or sets the created date time.

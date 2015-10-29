@@ -39,7 +39,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the transaction identifier.
         /// </summary>
         /// <value>The transaction identifier.</value>
-        public string RecordKey { get; private set; }
+        public Guid RecordKey { get; private set; }
 
         /// <summary>
         /// Gets the enabled operation identifier.

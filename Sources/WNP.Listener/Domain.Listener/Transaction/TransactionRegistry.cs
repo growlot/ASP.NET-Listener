@@ -34,7 +34,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the transaction record key.
         /// </summary>
         /// <value>The transaction identifier.</value>
-        public string RecordKey { get; private set; }
+        public Guid RecordKey { get; private set; }
 
         /// <summary>
         /// Gets the company code.
@@ -134,7 +134,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review this")]
         public void Create(DateTime createdDateTime, Dictionary<int, IEnumerable<FieldConfiguration>> fieldConfigurations)
         {
-            this.RecordKey = this.KeyBuilder.Create();
+            this.RecordKey = Guid.Parse(this.KeyBuilder.Create());
             this.CreatedDateTime = createdDateTime;
             if (fieldConfigurations != null && fieldConfigurations.ContainsKey(this.EnabledOperationId))
             {
@@ -145,7 +145,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Status = TransactionStatusType.InProgress;
             foreach (var childTransactionRegistryEntity in this.ChildTransactions)
             {
-                childTransactionRegistryEntity.RecordKey = this.KeyBuilder.Create();
+                childTransactionRegistryEntity.RecordKey = Guid.Parse(this.KeyBuilder.Create());
                 childTransactionRegistryEntity.CreatedDateTime = createdDateTime;
                 childTransactionRegistryEntity.TransactionKey = this.TransactionKeyBuilder.Create(childTransactionRegistryEntity.Data, fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]);
                 childTransactionRegistryEntity.Status = TransactionStatusType.InProgress;

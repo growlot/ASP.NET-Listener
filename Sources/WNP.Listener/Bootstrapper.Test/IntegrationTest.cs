@@ -40,8 +40,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             {
                 var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
                 var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
-                string nextKey = Guid.NewGuid().ToString("D");
-                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey);
+                var nextKey = Guid.NewGuid();
+                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey.ToString("D"));
                 var entityKey = Guid.NewGuid().ToString("D");
                 string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}}}}";
                 object receivedData = string.Empty;
@@ -50,7 +50,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
                 //var transactionMessageDataRepository = new Mock<TransactionDataRepository> { CallBase = true };
                 communicationHandlerMock.Setup(
-                    s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.Is<TransactionDataReady>(dr => string.CompareOrdinal(dr.RecordKey, nextKey) == 0), It.IsAny<ProtocolConfiguration>()))
+                    s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.Is<TransactionDataReady>(dr => dr.RecordKey == nextKey), It.IsAny<ProtocolConfiguration>()))
                     //.Returns(Task.CompletedTask)
                     .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
                     {
@@ -155,18 +155,18 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             }
         }
 
-        private static async Task SucceedTransaction(TestServer server, string nextKey)
+        private static async Task SucceedTransaction(TestServer server, Guid nextKey)
         {
             HttpResponseMessage succeedResponse =
                 await
-                    server.CreateRequest($"listener/TransactionRegistry('{nextKey}')/AMSLLC.Listener.Succeed()")
+                    server.CreateRequest($"listener/TransactionRegistry({nextKey})/AMSLLC.Listener.Succeed()")
                         .AddHeader("AMS-Company", "CCD")
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, succeedResponse.StatusCode);
         }
 
-        private static async Task FailTransaction(TestServer server, string nextKey, string message, string details)
+        private static async Task FailTransaction(TestServer server, Guid nextKey, string message, string details)
         {
             var settings = new JsonSerializerSettings
             {
@@ -178,7 +178,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             HttpResponseMessage failResponse =
                 await
-                    server.CreateRequest($"listener/TransactionRegistry('{nextKey}')/AMSLLC.Listener.Fail()").And(
+                    server.CreateRequest($"listener/TransactionRegistry({nextKey})/AMSLLC.Listener.Fail()").And(
                             request =>
                                 request.Content =
                                     new ObjectContent(typeof(FailureData),
@@ -195,7 +195,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             Assert.AreEqual(HttpStatusCode.OK, failResponse.StatusCode);
         }
 
-        private static async Task<string> OpenTransaction(TestServer server, string entityKey)
+        private static async Task<Guid> OpenTransaction(TestServer server, string entityKey)
         {
             var settings = new JsonSerializerSettings
             {
@@ -229,26 +229,26 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             string responseBody = await response.Content.ReadAsStringAsync();
             var expando = JsonConvert.DeserializeObject<ExpandoObject>(responseBody) as IDictionary<string, object>;
-            var responseMessage = expando["value"].ToString();
+            var responseMessage = Guid.Parse(expando["value"].ToString());
             return responseMessage;
         }
 
-        private static async Task ProcessTransaction(TestServer server, string nextKey)
+        private static async Task ProcessTransaction(TestServer server, Guid nextKey)
         {
             HttpResponseMessage processResponse =
                 await
-                    server.CreateRequest($"listener/TransactionRegistry('{nextKey}')/AMSLLC.Listener.Process()")
+                    server.CreateRequest($"listener/TransactionRegistry({nextKey})/AMSLLC.Listener.Process()")
                         .AddHeader("AMS-Company", "CCD")
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, processResponse.StatusCode);
         }
 
-        private static async Task<long> GetTransactionStatus(TestServer server, string nextKey)
+        private static async Task<long> GetTransactionStatus(TestServer server, Guid nextKey)
         {
             HttpResponseMessage registryEntry =
                 await
-                    server.CreateRequest($"listener/TransactionRegistry?$filter=RecordKey%20eq%20%27{nextKey}%27")
+                    server.CreateRequest($"listener/TransactionRegistry?$filter=RecordKey%20eq%20{nextKey}")
                         .AddHeader("AMS-Company", "CCD")
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
             string rstr = await registryEntry.Content.ReadAsStringAsync();
@@ -260,18 +260,18 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             return transactionStatusId;
         }
 
-        private static async Task<string> GetTransactionData(TestServer server, string nextKey)
+        private static async Task<string> GetTransactionData(TestServer server, Guid nextKey)
         {
             HttpResponseMessage registryEntry =
                 await
-                    server.CreateRequest($"listener/TransactionMessageData?$filter=RecordKey%20eq%20%27{nextKey}%27")
+                    server.CreateRequest($"listener/TransactionMessageData?$filter=RecordKey%20eq%20{nextKey}")
                         .AddHeader("AMS-Company", "CCD")
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
             string rstr = await registryEntry.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, registryEntry.StatusCode, rstr);
 
             var ex = JsonConvert.DeserializeObject<ExpandoObject>(rstr) as IDictionary<string, object>;
-            string recordKey = (string)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["RecordKey"];
+            var recordKey = Guid.Parse((string)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["RecordKey"]);
             Assert.AreEqual(nextKey, recordKey);
             string returnValue = (string)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["MessageData"];
             return returnValue;

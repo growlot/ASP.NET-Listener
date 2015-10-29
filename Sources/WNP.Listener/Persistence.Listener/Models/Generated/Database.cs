@@ -451,13 +451,13 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
     
 	[TableName("TransactionRegistry")]
-	[PrimaryKey("TransactionId")]
+	[PrimaryKey("RecordKey", autoIncrement=false)]
 	[ExplicitColumns]
     public partial class TransactionRegistryEntity : ListenerDB.Record<TransactionRegistryEntity>  
     {
 		[Column] public int TransactionId { get; set; }
-		[Column] public int? ParentTransactionId { get; set; }
-		[Column] public string RecordKey { get; set; }
+		[Column] public Guid? BatchKey { get; set; }
+		[Column] public Guid RecordKey { get; set; }
 		[Column] public int EnabledOperationId { get; set; }
 		[Column] public int TransactionStatusId { get; set; }
 		[Column] public string TransactionKey { get; set; }
@@ -472,10 +472,11 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
     
 	[TableName("TransactionMessageData")]
+	[PrimaryKey("RecordKey", autoIncrement=false)]
 	[ExplicitColumns]
     public partial class TransactionMessageDatumEntity : ListenerDB.Record<TransactionMessageDatumEntity>  
     {
-		[Column] public string RecordKey { get; set; }
+		[Column] public Guid RecordKey { get; set; }
 		[Column] public string MessageData { get; set; }
 	}
 }

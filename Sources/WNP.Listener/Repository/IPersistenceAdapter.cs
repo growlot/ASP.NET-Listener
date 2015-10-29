@@ -91,6 +91,16 @@ namespace AMSLLC.Listener.Repository
         Task InsertAsync<TEntity>(TEntity entity);
 
         /// <summary>
+        /// Inserts the entity asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the t entity.</typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="primaryColumnName">Name of the primary column.</param>
+        /// <returns>Task.</returns>
+        Task InsertAsync<TEntity>(TEntity entity, string tableName, string primaryColumnName);
+
+        /// <summary>
         /// Executes the scalar operation asynchronously.
         /// </summary>
         /// <typeparam name="TValue">The type of the result value.</typeparam>
@@ -146,5 +156,11 @@ namespace AMSLLC.Listener.Repository
         /// </returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is expected design.")]
         Task<List<TRet>> ProjectionAsync<T1, T2, T3, T4, TRet>(Func<T1, T2, T3, T4, TRet> func, string query, params object[] args);
+
+        /// <summary>
+        /// Begins the transaction.
+        /// </summary>
+        /// <returns>Task&lt;ITransactionProxy&gt;.</returns>
+        Task<ITransactionProxy> BeginTransaction();
     }
 }

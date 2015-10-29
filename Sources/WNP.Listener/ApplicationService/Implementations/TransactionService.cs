@@ -15,6 +15,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     using Communication;
     using Domain;
     using Domain.Listener.Transaction;
+    using Model;
     using Newtonsoft.Json;
     using Repository;
 
@@ -24,9 +25,9 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     public class TransactionService : ITransactionService
     {
         /// <inheritdoc/>
-        public async Task<string> Open(OpenTransactionCommand requestMessage)
+        public async Task<Guid> Open(OpenTransactionCommand requestMessage)
         {
-            string returnValue = null;
+            Guid returnValue = Guid.Empty;
             using (var scope = ApplicationServiceScope.Create())
             {
                 var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
@@ -44,7 +45,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
 
                 var memento = new TransactionRegistryMemento(
                     0,
-                    null,
+                    Guid.Empty,
                     null,
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey,
@@ -85,9 +86,78 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         /// <param name="requestMessage">The request message.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<string> Open(OpenBatchTransactionCommand requestMessage)
+        public async Task<Guid> Open(OpenBatchTransactionCommand requestMessage)
         {
-            throw new System.NotImplementedException();
+            Guid returnValue = Guid.Empty;
+            using (var scope = ApplicationServiceScope.Create())
+            {
+                var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
+
+                var fieldConfigurationMemento = await transactionRepository.GetFieldConfigurationsAsync(
+                    requestMessage.CompanyCode,
+                    requestMessage.SourceApplicationKey);
+
+                var enabledOperations = await transactionRepository.GetEnabledOperations();
+                var enabledOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
+                && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0
+                && string.Compare(s.OperationName, requestMessage.OperationKey, StringComparison.InvariantCulture) == 0);
+
+                List<TransactionRegistryMemento> batch = new List<TransactionRegistryMemento>();
+                foreach (BatchTransactionEntry transaction in requestMessage.Batch)
+                {
+                    var enabledChildOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0 && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0 && string.Compare(s.OperationName, transaction.OperationKey, StringComparison.InvariantCulture) == 0);
+
+                    batch.Add(new TransactionRegistryMemento(
+                        0,
+                        Guid.Empty,
+                        null,
+                        requestMessage.CompanyCode,
+                        requestMessage.SourceApplicationKey,
+                        transaction.OperationKey,
+                        TransactionStatusType.InProgress,
+                        transaction.User,
+                        scope.ScopeCreated,
+                        null,
+                        transaction.Data,
+                        null,
+                        null,
+                        enabledChildOperation.EnabledOperationId,
+                        null));
+                }
+
+                var memento = new TransactionRegistryMemento(
+                    0,
+                    Guid.Empty,
+                    null,
+                    requestMessage.CompanyCode,
+                    requestMessage.SourceApplicationKey,
+                    requestMessage.OperationKey,
+                    TransactionStatusType.InProgress,
+                    requestMessage.User,
+                    scope.ScopeCreated,
+                    null,
+                    requestMessage.Data,
+                    null,
+                    null,
+                    enabledOperation.EnabledOperationId,
+                    batch);
+
+                var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
+                ((IOriginator)transactionRegistry).SetMemento(memento);
+
+                var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EnabledOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
+                {
+                    var item = new FieldConfiguration();
+                    ((IOriginator)item).SetMemento(s);
+                    return item;
+                }));
+
+                transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
+
+                await transactionRepository.CreateTransactionRegistryAsync(transactionRegistry);
+            }
+
+            return returnValue;
         }
 
         /// <inheritdoc/>
@@ -112,7 +182,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     Task.WhenAll(
                         transactionExecution.Process(data));
 
-                await sourceRepository.UpdateHashAsync(transactionExecution.Id, transactionExecution.TransactionHash);
+                await sourceRepository.UpdateHashAsync(requestMessage.RecordKey, transactionExecution.TransactionHash);
             }
         }
 

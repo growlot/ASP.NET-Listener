@@ -42,7 +42,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
         }
 
-        public IHttpActionResult Get([FromODataUri] string key)
+        public IHttpActionResult Get([FromODataUri] Guid key)
         {
             try
             {

@@ -6,6 +6,8 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
+    using System;
+
     /// <summary>
     /// Transaction data ready
     /// </summary>
@@ -23,6 +25,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <value>
         /// The transaction record key.
         /// </value>
-        public string RecordKey { get; set; }
+        public Guid RecordKey { get; set; }
     }
 }

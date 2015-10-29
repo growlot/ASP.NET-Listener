@@ -121,21 +121,21 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             var memento = new TransactionExecutionMemento(
                 1,
-                recordKey,
+                Guid.Parse(recordKey),
                 1,
                 new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Always) },
                 fieldConfigurations, null);
 
-            transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(recordKey))
+            transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(Guid.Parse(recordKey)))
                 .Returns(
-                    (string taId) => Task.FromResult((IMemento)memento));
+                    (Guid taId) => Task.FromResult((IMemento)memento));
 
             transactionRepositoryMock.Setup(s => s.GetHashCountAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(
                     (int i, string h) => Task.FromResult(0));
 
             // var dn = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(testMessageData));
-            transactionRepositoryMock.Setup(s => s.GetTransactionDataAsync(recordKey))
+            transactionRepositoryMock.Setup(s => s.GetTransactionDataAsync(Guid.Parse(recordKey)))
                 .Returns(Task.FromResult(JsonConvert.SerializeObject(testMessageData)));
 
             var domainBuilderMock = new Mock<DomainBuilder>() { CallBase = true };
@@ -155,7 +155,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             var communicationHandler = new Mock<ICommunicationHandler>();
             object commHandlerData = null;
-            string actualKey = null;
+            Guid? actualKey = null;
             communicationHandler.Setup(s => s.Handle(It.IsAny<object>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()))
                 .Callback((object data, IConnectionConfiguration conn, IProtocolConfiguration pcfg) =>
                 {
@@ -188,7 +188,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
             await
                 service.Process(new ProcessTransactionCommand
                 {
-                    RecordKey = recordKey
+                    RecordKey = Guid.Parse(recordKey)
                 });
 
             transactionExecutionDomain.Verify(
@@ -223,12 +223,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                  foo =>
                      foo.Handle(
                          It.Is<object>(
-                             data =>
-                                     string.Compare(
-                                         ((TransactionDataReady)data).RecordKey,
-                                     recordKey,
-                                     StringComparison.InvariantCulture) == 0
-                                     ),
+                             data => ((TransactionDataReady)data).RecordKey == Guid.Parse(recordKey)),
                          It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once(),
                  "Handler invoked with unexpected data: expected/actual key:{0}/{1}".FormatWith(recordKey, actualKey));
         }

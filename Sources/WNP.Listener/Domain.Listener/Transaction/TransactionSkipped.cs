@@ -6,6 +6,8 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
+    using System;
+
     /// <summary>
     /// Transaction Skipped event data
     /// </summary>
@@ -15,7 +17,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Initializes a new instance of the <see cref="TransactionSkipped" /> class.
         /// </summary>
         /// <param name="recordKey">The record key.</param>
-        public TransactionSkipped(string recordKey)
+        public TransactionSkipped(Guid recordKey)
         {
             this.RecordKey = recordKey;
         }
@@ -24,6 +26,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the transaction key.
         /// </summary>
         /// <value>The transaction key.</value>
-        public string RecordKey { get; }
+        public Guid RecordKey { get; }
     }
 }

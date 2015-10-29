@@ -81,6 +81,7 @@
     <Compile Include="PocoCachedAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionDataRepository.cs" />
+    <Compile Include="TransactionProxy.cs" />
     <Compile Include="TransactionRepository.cs" />
   </ItemGroup>
   <ItemGroup>

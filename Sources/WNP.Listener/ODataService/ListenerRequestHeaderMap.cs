@@ -14,7 +14,7 @@ namespace AMSLLC.Listener.ODataService
             this.Add("EntityCategory", typeof(string));
             this.Add("EntityKey", typeof(string));
             this.Add("OperationKey", typeof(string));
-            this.Add("RecordKey", typeof(string));
+            this.Add("RecordKey", typeof(Guid));
             this.Add("Details", typeof(string));
             this.Add("Message", typeof(string));
         }

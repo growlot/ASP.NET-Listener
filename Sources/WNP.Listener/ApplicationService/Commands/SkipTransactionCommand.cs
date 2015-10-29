@@ -3,6 +3,8 @@
 // </copyright>
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
+    using System;
+
     /// <summary>
     /// Skip transaction command
     /// </summary>
@@ -12,6 +14,6 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// Gets or sets the record key.
         /// </summary>
         /// <value>The record key.</value>
-        public string RecordKey { get; set; }
+        public Guid RecordKey { get; set; }
     }
 }

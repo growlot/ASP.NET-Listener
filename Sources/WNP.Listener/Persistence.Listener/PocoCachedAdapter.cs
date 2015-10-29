@@ -33,6 +33,15 @@ namespace AMSLLC.Listener.Persistence.Listener
             this._dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Begins the transaction.
+        /// </summary>
+        /// <returns>Task&lt;ITransaction&gt;.</returns>
+        public async Task<ITransactionProxy> BeginTransaction()
+        {
+            return new TransactionProxy(await this._dbContext.GetTransactionAsync());
+        }
+
         public Task<List<TEntity>> GetListAsync<TEntity>(string query, params object[] args)
         {
             return this.ReadOrAdd((db, a) => a == null ? db.FetchAsync<TEntity>(query) : db.FetchAsync<TEntity>(query, a),
@@ -81,6 +90,11 @@ namespace AMSLLC.Listener.Persistence.Listener
         public Task InsertAsync<TEntity>(TEntity entity)
         {
             return this._dbContext.InsertAsync(entity);
+        }
+
+        public Task InsertAsync<TEntity>(TEntity entity, string tableName, string primaryColumnName)
+        {
+            return this._dbContext.InsertAsync(tableName, primaryColumnName, entity);
         }
 
         public Task<TValue> ExecuteScalarAsync<TValue>(string query, params object[] args)

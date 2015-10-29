@@ -27,8 +27,8 @@ namespace AMSLLC.Listener.ODataService
         /// <inheritdoc/>
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            this.MapPetaPocoEntity<TransactionRegistryEntity, string>(modelBuilder, a => a.RecordKey);
-            this.MapPetaPocoEntity<TransactionMessageDatumEntity, string>(modelBuilder, a => a.RecordKey);
+            this.MapPetaPocoEntity<TransactionRegistryEntity, Guid>(modelBuilder, a => a.RecordKey);
+            this.MapPetaPocoEntity<TransactionMessageDatumEntity, Guid>(modelBuilder, a => a.RecordKey);
 
             base.OnModelCreating(modelBuilder);
         }

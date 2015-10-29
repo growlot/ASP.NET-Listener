@@ -6,6 +6,7 @@
 
 namespace AMSLLC.Listener.ApplicationService
 {
+    using System;
     using System.Threading.Tasks;
     using Commands;
 
@@ -19,14 +20,14 @@ namespace AMSLLC.Listener.ApplicationService
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
         /// <returns>The string.</returns>
-        Task<string> Open(OpenTransactionCommand requestMessage);
+        Task<Guid> Open(OpenTransactionCommand requestMessage);
 
         /// <summary>
         /// Opens the given batch transaction
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
-        Task<string> Open(OpenBatchTransactionCommand requestMessage);
+        Task<Guid> Open(OpenBatchTransactionCommand requestMessage);
 
         /// <summary>
         /// Processes the specified request message.

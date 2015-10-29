@@ -20,9 +20,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
         public override void Up()
         {
             this.Create.Table("TransactionRegistry")
-                .WithColumn("TransactionId").AsInt32().NotNullable().PrimaryKey().Identity().Indexed()
-                .WithColumn("ParentTransactionId").AsInt32().Nullable()
-                .WithColumn("RecordKey").AsString(60).NotNullable().Indexed()
+                .WithColumn("TransactionId").AsInt32().NotNullable().Identity().Indexed()
+                .WithColumn("BatchKey").AsGuid().Nullable()
+                .WithColumn("RecordKey").AsGuid().NotNullable().PrimaryKey()
                 .WithColumn("EnabledOperationId").AsInt32().NotNullable()
                 .WithColumn("TransactionStatusId").AsInt32().NotNullable()
                 .WithColumn("TransactionKey").AsString(255).NotNullable().Indexed()
@@ -35,6 +35,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("CreatedDateTime").AsDateTime().NotNullable()
                 .WithColumn("UpdatedDateTime").AsDateTime().Nullable();
 
+            // this.Create.PrimaryKey("PK_TranRegi").OnTable("TransactionRegistry").Columns("TransactionId", "RecordKey");
             this.Create.ForeignKey("FK_TranRegi_TranStat")
                 .FromTable("TransactionRegistry").ForeignColumn("TransactionStatusId")
                 .ToTable("TransactionStatus").PrimaryColumn("TransactionStatusId");
@@ -44,8 +45,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .ToTable("EnabledOperation").PrimaryColumn("EnabledOperationId");
 
             this.Create.ForeignKey("FK_TranRegi_Pare")
-                .FromTable("TransactionRegistry").ForeignColumn("ParentTransactionId")
-                .ToTable("TransactionRegistry").PrimaryColumn("TransactionId");
+                .FromTable("TransactionRegistry").ForeignColumn("BatchKey")
+                .ToTable("TransactionRegistry").PrimaryColumn("RecordKey");
         }
     }
 }

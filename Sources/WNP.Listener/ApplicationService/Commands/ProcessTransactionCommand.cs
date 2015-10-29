@@ -5,6 +5,8 @@
 // //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
+    using System;
+
     /// <summary>
     /// Process transaction command
     /// </summary>
@@ -16,6 +18,6 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// <value>
         /// The record key.
         /// </value>
-        public string RecordKey { get; set; }
+        public Guid RecordKey { get; set; }
     }
 }

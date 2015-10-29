@@ -37,7 +37,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="childTransactions">The child transactions.</param>
         public TransactionRegistryMemento(
             int transactionId,
-            string recordKey,
+            Guid recordKey,
             string transactionKey,
             string companyCode,
             string applicationKey,
@@ -85,7 +85,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the record key.
         /// </summary>
         /// <value>The record key.</value>
-        public string RecordKey { get; private set; }
+        public Guid RecordKey { get; private set; }
 
         /// <summary>
         /// Gets the company code.

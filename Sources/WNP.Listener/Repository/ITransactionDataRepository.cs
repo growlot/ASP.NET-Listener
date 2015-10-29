@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.Repository
 {
+    using System;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -17,6 +18,6 @@ namespace AMSLLC.Listener.Repository
         /// <param name="recordId">The record identifier.</param>
         /// <param name="data">The data.</param>
         /// <returns>Task.</returns>
-        Task SaveDataAsync(string recordId, object data);
+        Task SaveDataAsync(Guid recordId, object data);
     }
 }

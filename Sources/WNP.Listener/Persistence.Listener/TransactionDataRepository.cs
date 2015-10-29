@@ -47,7 +47,7 @@ namespace AMSLLC.Listener.Persistence.Listener
         /// <param name="recordId">The record identifier.</param>
         /// <param name="data">The data.</param>
         /// <returns>Task.</returns>
-        public Task SaveDataAsync(string recordId, object data)
+        public Task SaveDataAsync(Guid recordId, object data)
         {
             return this.persistence.InsertAsync(new TransactionMessageDatumEntity { RecordKey = recordId, MessageData = JsonConvert.SerializeObject(data) });
         }

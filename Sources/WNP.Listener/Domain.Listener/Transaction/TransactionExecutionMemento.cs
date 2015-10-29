@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -22,7 +23,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
         /// <param name="fieldConfigurations">The field configurations.</param>
         /// <param name="childTransactions">The child transactions.</param>
-        public TransactionExecutionMemento(int transactionId, string recordKey, int enabledOperationId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration, IEnumerable<FieldConfigurationMemento> fieldConfigurations, IEnumerable<TransactionExecutionMemento> childTransactions)
+        public TransactionExecutionMemento(int transactionId, Guid recordKey, int enabledOperationId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration, IEnumerable<FieldConfigurationMemento> fieldConfigurations, IEnumerable<TransactionExecutionMemento> childTransactions)
         {
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
@@ -42,7 +43,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the transaction identifier.
         /// </summary>
         /// <value>The transaction identifier.</value>
-        public string RecordKey { get; set; }
+        public Guid RecordKey { get; set; }
 
         /// <summary>
         /// Gets the endpoint configurations.
