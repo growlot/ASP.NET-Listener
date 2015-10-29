@@ -64,6 +64,10 @@ namespace AMSLLC.Listener.ODataService
                 var openAction = b.Action("Open");
                 this.ConfigureHeader(openAction, builder);
                 openAction.Returns<string>();
+
+                var openBatchAction = b.Action("Batch");
+                this.ConfigureHeader(openBatchAction, builder);
+                openBatchAction.Returns<string>();
             });
 
             this.PrepareODataController<TransactionMessageDatumEntity, Guid>(builder, a => a.RecordKey);

@@ -142,6 +142,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 this.SummaryBuilder.Build(this.Data, this.Summary, fieldConfigurations[this.EnabledOperationId]);
             }
 
+            if (string.IsNullOrWhiteSpace(this.TransactionKey) && this.ChildTransactions.Any())
+            {
+                this.TransactionKey = "Batch";
+            }
+
             this.Status = TransactionStatusType.InProgress;
             foreach (var childTransactionRegistryEntity in this.ChildTransactions)
             {

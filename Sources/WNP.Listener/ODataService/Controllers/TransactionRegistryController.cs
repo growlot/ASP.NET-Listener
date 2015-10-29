@@ -7,6 +7,8 @@
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
+    using System.Collections.Generic;
+    using System.Dynamic;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Http;
@@ -15,6 +17,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Web.OData.Routing;
     using ApplicationService;
     using ApplicationService.Commands;
+    using ApplicationService.Model;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using Persistence.Listener;
     using Serilog;
 
@@ -86,6 +91,52 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     Data = data,
                     User = this.User?.Identity.Name
                 };
+
+                return this.Ok(await this._transactionService.Open(message));
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Opens new Listener transaction.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The key of new transaction</returns>
+        [HttpPost]
+        [ODataRoute("Batch")]
+        public async Task<IHttpActionResult> Batch(ODataActionParameters parameters)
+        {
+            try
+            {
+                string data = (string)this.Request.Properties["ListenerRequestBody"];
+
+                var message = new OpenBatchTransactionCommand()
+                {
+                    CompanyCode = this.CompanyCode,
+                    SourceApplicationKey = this.ApplicationKey,
+                    User = this.User?.Identity.Name
+                };
+
+                var body = JsonConvert.DeserializeObject<ExpandoObject>(data) as IDictionary<string, object>;
+                if (body.ContainsKey("Body"))
+                {
+                    var bodyArray = body["Body"] as List<object>;
+                    if (bodyArray == null)
+                    {
+                        throw new InvalidOperationException("Batch body not found");
+                    }
+
+                    foreach (var jToken in bodyArray.Cast<IDictionary<string, object>>())
+                    {
+                        message.Batch.Add(new BatchTransactionEntry { OperationKey = jToken["OperationKey"]?.ToString(), Data = JsonConvert.SerializeObject(jToken) });
+                    }
+                }
+
+
 
                 return this.Ok(await this._transactionService.Open(message));
             }

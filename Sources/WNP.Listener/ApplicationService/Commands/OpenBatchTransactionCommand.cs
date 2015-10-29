@@ -26,22 +26,10 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string SourceApplicationKey { get; set; }
 
         /// <summary>
-        /// Gets or sets the operation key.
-        /// </summary>
-        /// <value>The operation key.</value>
-        public string OperationKey { get; set; }
-
-        /// <summary>
         /// Gets or sets the user.
         /// </summary>
         /// <value>The user.</value>
         public string User { get; set; }
-
-        /// <summary>
-        /// Gets or sets the data.
-        /// </summary>
-        /// <value>The data.</value>
-        public string Data { get; set; }
 
         /// <summary>
         /// Gets the batch.

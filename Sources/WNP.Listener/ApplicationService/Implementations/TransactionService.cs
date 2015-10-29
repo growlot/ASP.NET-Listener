@@ -24,6 +24,8 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     /// </summary>
     public class TransactionService : ITransactionService
     {
+        private const string BatchOperationName = "Batch";
+
         /// <inheritdoc/>
         public async Task<Guid> Open(OpenTransactionCommand requestMessage)
         {
@@ -85,7 +87,6 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public async Task<Guid> Open(OpenBatchTransactionCommand requestMessage)
         {
             Guid returnValue = Guid.Empty;
@@ -100,7 +101,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 var enabledOperations = await transactionRepository.GetEnabledOperations();
                 var enabledOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0
-                && string.Compare(s.OperationName, requestMessage.OperationKey, StringComparison.InvariantCulture) == 0);
+                && string.Compare(s.OperationName, BatchOperationName, StringComparison.InvariantCulture) == 0);
 
                 List<TransactionRegistryMemento> batch = new List<TransactionRegistryMemento>();
                 foreach (BatchTransactionEntry transaction in requestMessage.Batch)
@@ -131,12 +132,12 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     null,
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey,
-                    requestMessage.OperationKey,
+                    BatchOperationName,
                     TransactionStatusType.InProgress,
                     requestMessage.User,
                     scope.ScopeCreated,
                     null,
-                    requestMessage.Data,
+                    null,
                     null,
                     null,
                     enabledOperation.EnabledOperationId,
@@ -155,6 +156,8 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
 
                 await transactionRepository.CreateTransactionRegistryAsync(transactionRegistry);
+
+                returnValue = transactionRegistry.RecordKey;
             }
 
             return returnValue;

@@ -160,7 +160,7 @@ WHERE EO.EnabledOperationId IN (@operations)";
 
                     foreach (var childTransactionRegistryEntity in transactionRegistry.ChildTransactions)
                     {
-                        await this.persistence.InsertAsync(new TransactionRegistryEntity // "TransactionRegistry", "TransactionId",
+                        await this.persistence.InsertAsync(new // "TransactionRegistry", "TransactionId",
                         {
                             CreatedDateTime = childTransactionRegistryEntity.CreatedDateTime,
                             BatchKey = transactionRegistry.RecordKey,
@@ -168,13 +168,10 @@ WHERE EO.EnabledOperationId IN (@operations)";
                             TransactionStatusId = (int)childTransactionRegistryEntity.Status,
                             EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
                             Data = childTransactionRegistryEntity.Data,
-                            UpdatedDateTime = null,
                             AppUser = transactionRegistry.UserName,
-                            Message = null,
-                            Details = null,
                             TransactionKey = childTransactionRegistryEntity.TransactionKey,
                             Summary = SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
-                        });
+                        }, "TransactionRegistry", "TransactionId");
                     }
 
                     tr.Commit();

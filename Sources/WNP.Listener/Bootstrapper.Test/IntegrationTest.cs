@@ -33,6 +33,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
         // [TestCleanup()]
         // public void Cleanup() { }
+
+        #region Test
         [TestMethod]
         public async Task OpenAndSucceedTransactionTest()
         {
@@ -155,6 +157,85 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             }
         }
 
+        [TestMethod]
+        public async Task OpenAndSucceedBatchAsRoot()
+        {
+            using (var server = TestServer.Create<Startup>())
+            {
+                var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+                var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+                var nextKey = Guid.NewGuid();
+                var keyStack = new Queue<string>();
+                keyStack.Enqueue(nextKey.ToString("D"));
+                for (int i = 0; i < 100; i++)
+                {
+                    keyStack.Enqueue(Guid.NewGuid().ToString("D"));
+                }
+
+                
+                //bool firstRequest = true;
+                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
+                var entityKey = Guid.NewGuid().ToString("D");
+                string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}}}}";
+                object receivedData = string.Empty;
+
+                var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+                var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+
+                communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.Is<TransactionDataReady>(dr => dr.RecordKey == nextKey), It.IsAny<ProtocolConfiguration>()))
+                    .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
+                    {
+                        receivedData = data.Data;
+                    });
+
+                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
+
+                var responseMessage = await OpenBatchTransaction(server, entityKey);
+                Assert.AreEqual(nextKey, responseMessage);
+            }
+        }
+
+        [TestMethod]
+        public async Task OpenAndSucceedBatchByIndividual()
+        {
+            Assert.Inconclusive("Implement this");
+        }
+
+        [TestMethod]
+        public async Task OpenAndFailBatchAsRoot()
+        {
+            Assert.Inconclusive("Implement this");
+        }
+
+        [TestMethod]
+        public async Task OpenAndFailBatchAsIndividual()
+        {
+            Assert.Inconclusive("Implement this");
+        }
+
+        [TestMethod]
+        public async Task OpenAndSkipBatchAsRoot()
+        {
+            Assert.Inconclusive("Implement this");
+        }
+
+        [TestMethod]
+        public async Task RetryBatch()
+        {
+            Assert.Inconclusive("Implement this");
+        }
+
+        [TestMethod]
+        public async Task ForceRetryBatch()
+        {
+            Assert.Inconclusive("Implement this");
+        }
+
+        #endregion
+
+        #region Helper methods
+
         private static async Task SucceedTransaction(TestServer server, Guid nextKey)
         {
             HttpResponseMessage succeedResponse =
@@ -181,8 +262,9 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                     server.CreateRequest($"listener/TransactionRegistry({nextKey})/AMSLLC.Listener.Fail()").And(
                             request =>
                                 request.Content =
-                                    new ObjectContent(typeof(FailureData),
-                                        new FailureData()
+                                    new ObjectContent(
+                                        typeof(FailureData),
+                                        new FailureData
                                         {
                                             Message = "Test Failure Message",
                                             Details = "Test Failure Details"
@@ -219,6 +301,87 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                 request.Content =
                                     new ObjectContent(
                                         typeof(InstallMeterRequestMessage),
+                                        requestMessage,
+                                        new JsonMediaTypeFormatter { SerializerSettings = settings },
+                                        mediaType))
+                        .AddHeader("AMS-Company", "CCD")
+                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
+                        .PostAsync();
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var expando = JsonConvert.DeserializeObject<ExpandoObject>(responseBody) as IDictionary<string, object>;
+            var responseMessage = Guid.Parse(expando["value"].ToString());
+            return responseMessage;
+        }
+
+        private static async Task<Guid> OpenBatchTransaction(TestServer server, string entityKey)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+            var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
+            mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
+
+            var requestMessage = new BatchRequestMessage();
+
+            Dictionary<string, List<string>> operations = new Dictionary<string, List<string>>
+            {
+                {
+                    "ElectricMeters", new List<string>
+                    {
+                        "Install"
+                    }
+                },
+                {
+                    "Circuits", new List<string>
+                    {
+                        "Add"
+                    }
+                },
+                {
+                    "Sites", new List<string>
+                    {
+                        "Add"
+                    }
+                },
+                {
+                    "Users", new List<string>
+                    {
+                        "Add"
+                    }
+                },
+                {
+                    "Vehicles", new List<string>
+                    {
+                        "Add"
+                    }
+                }
+            };
+
+            for (int i = 0; i < operations.Keys.Count; i++)
+            {
+                requestMessage.Body.Add(new BatchTransactionEntry
+                {
+                    EntityCategory = operations.Keys.ElementAt(i),
+                    OperationKey = operations[operations.Keys.ElementAt(i)].First()
+                });
+                requestMessage.Body.Add(new BatchTransactionEntry
+                {
+                    EntityCategory = operations.Keys.ElementAt(operations.Keys.Count - i - 1),
+                    OperationKey = operations[operations.Keys.ElementAt(operations.Keys.Count - i - 1)].First()
+                });
+            }
+
+            HttpResponseMessage response =
+                await
+                    server.CreateRequest("listener/Batch")
+                        .And(
+                            request =>
+                                request.Content =
+                                    new ObjectContent(
+                                        typeof(BatchRequestMessage),
                                         requestMessage,
                                         new JsonMediaTypeFormatter { SerializerSettings = settings },
                                         mediaType))
@@ -276,7 +439,9 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             string returnValue = (string)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["MessageData"];
             return returnValue;
         }
+        #endregion
 
+        #region Test models
         private class
             InstallMeterRequestMessage
         {
@@ -291,11 +456,28 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             public string OperationKey { get; set; }
         }
 
+        private class BatchRequestMessage
+        {
+            public List<BatchTransactionEntry> Body { get; } = new List<BatchTransactionEntry>();
+        }
+
+        private class BatchTransactionEntry
+        {
+            public string UserName { get; set; }
+
+            public string EntityCategory { get; set; }
+
+            public string EntityKey { get; set; }
+
+            public object OperationKey { get; set; }
+        }
+
         private class FailureData
         {
             public string Message { get; set; }
 
             public string Details { get; set; }
         }
+        #endregion
     }
 }

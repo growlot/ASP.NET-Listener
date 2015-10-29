@@ -20,18 +20,54 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            var record = new
+            var records = new[]
             {
-                EntityCategoryOperationId = 1,
-                EntityCategoryId = 1,
-                OperationId = 1
+                new
+                {
+                    EntityCategoryOperationId = 1,
+                    EntityCategoryId = 1,
+                    OperationId = 1
+                },
+                new
+                {
+                    EntityCategoryOperationId = 2,
+                    EntityCategoryId = 2,
+                    OperationId = 3
+                },
+                new
+                {
+                    EntityCategoryOperationId = 3,
+                    EntityCategoryId = 3,
+                    OperationId = 3
+                },
+                new
+                {
+                    EntityCategoryOperationId = 4,
+                    EntityCategoryId = 4,
+                    OperationId = 3
+                },
+                new
+                {
+                    EntityCategoryOperationId = 5,
+                    EntityCategoryId = 5,
+                    OperationId = 3
+                },
+                new
+                {
+                    EntityCategoryOperationId = 6,
+                    EntityCategoryId = 6,
+                    OperationId = 2
+                }
             };
 
-            this.IfSqlServer().Insert.IntoTable("EntityCategoryOperation").WithIdentityInsert()
-                .Row(record);
+            foreach (var record in records)
+            {
+                this.IfSqlServer().Insert.IntoTable("EntityCategoryOperation").WithIdentityInsert()
+                    .Row(record);
 
-            this.IfOracle().Insert.IntoTable("EntityCategoryOperation")
-                .Row(record);
+                this.IfOracle().Insert.IntoTable("EntityCategoryOperation")
+                    .Row(record);
+            }
         }
 
         /// <summary>

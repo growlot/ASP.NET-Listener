@@ -26,7 +26,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("EnabledOperationId").AsInt32().NotNullable()
                 .WithColumn("TransactionStatusId").AsInt32().NotNullable()
                 .WithColumn("TransactionKey").AsString(255).NotNullable().Indexed()
-                .WithColumn("Data").AsString(int.MaxValue).NotNullable()
+                .WithColumn("Data").AsString(int.MaxValue).Nullable()
                 .WithColumn("Summary").AsXml().Nullable()
                 .WithColumn("AppUser").AsString(100).Nullable()
                 .WithColumn("TransactionHash").AsString(50).Nullable().Indexed()

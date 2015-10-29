@@ -20,17 +20,30 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            var record = new
+            var records = new[]
             {
-                FieldConfigurationId = 1,
-                CompanyId = 0,
-                Name = "Default [Install Meter] Field Configuration"
+                new
+                {
+                    FieldConfigurationId = 1,
+                    CompanyId = 0,
+                    Name = "Default [Install Meter] Field Configuration"
+                },
+                new
+                {
+                    FieldConfigurationId = 2,
+                    CompanyId = 0,
+                    Name = "Batch root field configuration"
+                }
             };
-            this.IfSqlServer().Insert.IntoTable("FieldConfiguration").WithIdentityInsert()
-                .Row(record);
 
-            this.IfOracle().Insert.IntoTable("FieldConfiguration")
-                .Row(record);
+            foreach (var record in records)
+            {
+                this.IfSqlServer().Insert.IntoTable("FieldConfiguration").WithIdentityInsert()
+                    .Row(record);
+
+                this.IfOracle().Insert.IntoTable("FieldConfiguration")
+                    .Row(record);
+            }
         }
 
         /// <summary>

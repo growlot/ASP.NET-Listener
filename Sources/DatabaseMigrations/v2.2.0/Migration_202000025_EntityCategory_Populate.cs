@@ -51,6 +51,12 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     EntityCategoryId = 5,
                     Name = "Vehicles",
                     DisplayName = "Vehicles"
+                },
+                new
+                {
+                    EntityCategoryId = 6,
+                    Name = "Batch",
+                    DisplayName = "Batch"
                 }
             };
 
