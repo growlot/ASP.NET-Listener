@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using Communication;
 
     /// <summary>
     /// Transaction execution memento
@@ -25,6 +26,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="childTransactions">The child transactions.</param>
         /// <param name="data">The data.</param>
         /// <param name="duplicates">The duplicates.</param>
+        /// <param name="status">The status.</param>
         public TransactionExecutionMemento(
             int transactionId,
             Guid recordKey,
@@ -33,7 +35,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             IEnumerable<FieldConfigurationMemento> fieldConfigurations,
             IEnumerable<TransactionExecutionMemento> childTransactions,
             object data,
-            IEnumerable<Guid> duplicates)
+            IEnumerable<Guid> duplicates,
+            TransactionStatusType status)
         {
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
@@ -43,6 +46,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.ChildTransactions = new ReadOnlyCollection<TransactionExecutionMemento>(new List<TransactionExecutionMemento>(childTransactions ?? new TransactionExecutionMemento[0]));
             this.Data = data;
             this.DuplicateRecords = new ReadOnlyCollection<Guid>(new List<Guid>(duplicates));
+            this.Status = status;
         }
 
         /// <summary>
@@ -92,5 +96,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The data.</value>
         public object Data { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
+        /// <value>The status.</value>
+        public TransactionStatusType Status { get; set; }
     }
 }

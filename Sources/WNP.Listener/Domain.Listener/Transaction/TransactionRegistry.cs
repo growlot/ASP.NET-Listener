@@ -147,13 +147,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 this.TransactionKey = "Batch";
             }
 
-            this.Status = TransactionStatusType.InProgress;
+            this.Status = TransactionStatusType.Pending;
             foreach (var childTransactionRegistryEntity in this.ChildTransactions)
             {
                 childTransactionRegistryEntity.RecordKey = Guid.Parse(this.KeyBuilder.Create());
                 childTransactionRegistryEntity.CreatedDateTime = createdDateTime;
                 childTransactionRegistryEntity.TransactionKey = this.TransactionKeyBuilder.Create(childTransactionRegistryEntity.Data, fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]);
-                childTransactionRegistryEntity.Status = TransactionStatusType.InProgress;
+                childTransactionRegistryEntity.Status = TransactionStatusType.Pending;
                 this.SummaryBuilder.Build(childTransactionRegistryEntity.Data, childTransactionRegistryEntity.Summary, fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]);
             }
         }
@@ -164,7 +164,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="scopeDateTime">The scope date time.</param>
         public void Succeed(DateTime scopeDateTime)
         {
-            foreach (var source in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.InProgress))
+            foreach (var source in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Processing))
             {
                 source.Status = TransactionStatusType.Success;
                 source.UpdatedDateTime = scopeDateTime;
@@ -188,6 +188,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             this.UpdatedDateTime = scopeDateTime;
             this.Status = TransactionStatusType.Skipped;
+        }
+
+        /// <summary>
+        /// Processing specified transaction
+        /// </summary>
+        /// <param name="scopeDateTime">The scope date time.</param>
+        public void Processing(DateTime scopeDateTime)
+        {
+            this.UpdatedDateTime = scopeDateTime;
+            this.Status = TransactionStatusType.Processing;
         }
 
         /// <summary>

@@ -221,9 +221,9 @@ WHERE EO.EnabledOperationId IN (@operations)";
                                 null,
                                 string.IsNullOrWhiteSpace(ctr.Data)
                                     ? null
-                                    : JsonConvert.DeserializeObject<ExpandoObject>(ctr.Data), duplicates.Where(d => string.Compare((string)d.TransactionKey, ctr.TransactionKey, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != ctr.RecordKey).Select(s => (Guid)s.RecordKey))),
+                                    : JsonConvert.DeserializeObject<ExpandoObject>(ctr.Data), duplicates.Where(d => string.Compare((string)d.TransactionKey, ctr.TransactionKey, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != ctr.RecordKey).Select(s => (Guid)s.RecordKey), (TransactionStatusType)ctr.TransactionStatusId)),
                     string.IsNullOrWhiteSpace(tr.Data) ? null : JsonConvert.DeserializeObject<ExpandoObject>(tr.Data),
-                    duplicates.Where(d => string.Compare((string)d.TransactionKey, tr.TransactionKey, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.RecordKey).Select(s => (Guid)s.RecordKey));
+                    duplicates.Where(d => string.Compare((string)d.TransactionKey, tr.TransactionKey, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.RecordKey).Select(s => (Guid)s.RecordKey), (TransactionStatusType)tr.TransactionStatusId);
             }
 
 

@@ -10,23 +10,33 @@ namespace AMSLLC.Listener.Communication
     public enum TransactionStatusType
     {
         /// <summary>
+        /// Transaction is pending
+        /// </summary>
+        Pending = 1,
+
+        /// <summary>
+        /// Transaction being processed
+        /// </summary>
+        Processing = 4,
+
+        /// <summary>
         /// The transaction finished successfully
         /// </summary>
         Success = 0,
 
         /// <summary>
-        /// The transaction is currently in progress
-        /// </summary>
-        InProgress = 1,
-
-        /// <summary>
-        /// The transaction has failed
+        /// The transaction failed
         /// </summary>
         Failed = 2,
 
         /// <summary>
-        /// The transaction was skipped
+        /// Transaction has been skipped
         /// </summary>
-        Skipped = 3
+        Skipped = 3,
+
+        /// <summary>
+        /// Transaction is invalid. Indicates transactions, which should not be retried
+        /// </summary>
+        Invalid = 5
     }
 }

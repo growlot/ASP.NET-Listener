@@ -52,7 +52,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey,
                     requestMessage.OperationKey,
-                    TransactionStatusType.InProgress,
+                    TransactionStatusType.Pending,
                     requestMessage.User,
                     scope.ScopeCreated,
                     null,
@@ -115,7 +115,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                         requestMessage.CompanyCode,
                         requestMessage.SourceApplicationKey,
                         transaction.OperationKey,
-                        TransactionStatusType.InProgress,
+                        TransactionStatusType.Pending,
                         transaction.User,
                         scope.ScopeCreated,
                         null,
@@ -133,7 +133,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey,
                     BatchOperationName,
-                    TransactionStatusType.InProgress,
+                    TransactionStatusType.Pending,
                     requestMessage.User,
                     scope.ScopeCreated,
                     null,
@@ -244,6 +244,25 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
                 transactionRegistry.Skip(scope.ScopeCreated);
+                await sourceRepository.UpdateTransactionRegistryAsync(transactionRegistry);
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task Processing(
+            ProcessingTransactionCommand requestMessage)
+        {
+            using (var scope = ApplicationServiceScope.Create())
+            {
+                var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
+                var memento =
+                    await
+                        sourceRepository.GetRegistryEntry(requestMessage.RecordKey);
+                var transactionRegistry =
+                    scope.DomainBuilder.Create<TransactionRegistry>();
+                ((IOriginator)transactionRegistry).SetMemento(memento);
+
+                transactionRegistry.Processing(scope.ScopeCreated);
                 await sourceRepository.UpdateTransactionRegistryAsync(transactionRegistry);
             }
         }

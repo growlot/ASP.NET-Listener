@@ -167,7 +167,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         private ICollection<IDomainEvent> ProcessBatch()
         {
             var returnValue = new List<IDomainEvent>();
-            foreach (var childTransactionEntity in this.ChildTransactions)
+            foreach (var childTransactionEntity in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
             {
                 returnValue.AddRange(ProcessTransaction(childTransactionEntity));
             }

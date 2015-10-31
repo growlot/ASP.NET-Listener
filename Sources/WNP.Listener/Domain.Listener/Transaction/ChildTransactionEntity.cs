@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using Communication;
 
     /// <summary>
     /// Child transaction entity
@@ -63,6 +64,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public Collection<Guid> DuplicateTransactions { get; } = new Collection<Guid>();
 
         /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
+        /// <value>The status.</value>
+        public TransactionStatusType Status { get; set; }
+
+        /// <summary>
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
@@ -73,6 +80,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Id = myMemento.RecordKey;
             this.EnabledOperationId = myMemento.EnabledOperationId;
             this.Data = myMemento.Data;
+            this.Status = myMemento.Status;
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(s =>
             {

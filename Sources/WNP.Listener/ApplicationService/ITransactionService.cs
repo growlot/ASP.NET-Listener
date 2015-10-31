@@ -56,5 +56,12 @@ namespace AMSLLC.Listener.ApplicationService
         /// <param name="requestMessage">The request message.</param>
         /// <returns>The emtpy task</returns>
         Task Skipped(SkipTransactionCommand requestMessage);
+
+        /// <summary>
+        /// Processing specified transaction
+        /// </summary>
+        /// <param name="requestMessage">The request message.</param>
+        /// <returns>Task.</returns>
+        Task Processing(ProcessingTransactionCommand requestMessage);
     }
 }

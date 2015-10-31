@@ -56,7 +56,19 @@ namespace AMSLLC.Listener.ApplicationService
             this.domainEventBus.SubscribeAsync<TransactionDataReady>(domainEvent =>
             {
                 var dispatcher = ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>("communication-{0}".FormatWith(domainEvent.Endpoint.Protocol));
-                return dispatcher.Handle(domainEvent, domainEvent.Endpoint.ConnectionConfiguration, domainEvent.Endpoint.ProtocolConfiguration);
+                return this.transactionService.Processing(
+                    new ProcessingTransactionCommand
+                    {
+                        RecordKey = domainEvent.RecordKey
+                    })
+                    .ContinueWith(
+                        t =>
+                            t.IsCompleted
+                                ? dispatcher.Handle(
+                                    domainEvent,
+                                    domainEvent.Endpoint.ConnectionConfiguration,
+                                    domainEvent.Endpoint.ProtocolConfiguration)
+                                : t);
             });
         }
     }

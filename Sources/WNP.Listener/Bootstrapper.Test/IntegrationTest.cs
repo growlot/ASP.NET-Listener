@@ -101,7 +101,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             var transactionStatusId = await GetTransactionStatus(_server, nextKey);
 
-            Assert.AreEqual(0L, transactionStatusId);
+            Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId);
 
             var transactionMessageData = await GetTransactionData(_server, nextKey);
             Assert.AreEqual(expectedMessage, transactionMessageData);
@@ -235,7 +235,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             var transactionStatusId = await GetTransactionStatus(_server, nextKey);
 
-            Assert.AreEqual(0L, transactionStatusId);
+            Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId);
 
         }
 
