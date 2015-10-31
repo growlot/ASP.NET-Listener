@@ -78,6 +78,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="ApplicationServiceConfigurator.cs" />
+    <Compile Include="Commands\CancelTransactionsCommand.cs" />
     <Compile Include="Commands\OpenBatchTransactionCommand.cs" />
     <Compile Include="Commands\ProcessingTransactionCommand.cs" />
     <Compile Include="ISaga.cs" />

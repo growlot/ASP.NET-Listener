@@ -37,6 +37,12 @@ namespace AMSLLC.Listener.Communication
         /// <summary>
         /// Transaction is invalid. Indicates transactions, which should not be retried
         /// </summary>
-        Invalid = 5
+        Invalid = 5,
+
+        /// <summary>
+        /// Transaction is canceled. Canceled transactions where not attempted to be processed nor they are going to be in a future
+        /// Example of canceled transaction: Child transaction has been canceled if batch root transaction has been skipped
+        /// </summary>
+        Canceled = 6
     }
 }

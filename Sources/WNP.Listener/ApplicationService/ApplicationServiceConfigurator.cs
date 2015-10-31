@@ -54,6 +54,9 @@ namespace AMSLLC.Listener.ApplicationService
             this.domainEventBus.SubscribeAsync<TransactionSkipped>(
                 domainEvent => this.transactionService.Skipped(new SkipTransactionCommand { RecordKey = domainEvent.RecordKey }));
 
+            this.domainEventBus.SubscribeAsync<TransactionsCanceled>(
+                domainEvent => this.transactionService.Cancel(new CancelTransactionsCommand(domainEvent.RecordKeys)));
+
             this.domainEventBus.SubscribeAsync<TransactionDataReady>(
                 domainEvent =>
                 {

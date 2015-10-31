@@ -63,5 +63,13 @@ namespace AMSLLC.Listener.ApplicationService
         /// <param name="requestMessage">The request message.</param>
         /// <returns>Task.</returns>
         Task Processing(ProcessingTransactionCommand requestMessage);
+
+        /// <summary>
+        /// Cancels the provided list of transactions
+        /// </summary>
+        /// <param name="requestMessage">The request message.</param>
+        /// <returns>Task.</returns>
+        Task Cancel(
+            CancelTransactionsCommand requestMessage);
     }
 }

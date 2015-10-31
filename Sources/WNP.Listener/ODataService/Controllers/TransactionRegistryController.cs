@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.Listener;
     using Serilog;
 
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal)]
+    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal | AllowedLogicalOperators.And | AllowedLogicalOperators.Or)]
     public class TransactionRegistryController : ODataController
     {
         private readonly ListenerODataContext _dbContext;

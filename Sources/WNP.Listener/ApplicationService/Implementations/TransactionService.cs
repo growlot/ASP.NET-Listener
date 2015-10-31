@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Dynamic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -264,6 +265,31 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
 
                 transactionRegistry.Processing(scope.ScopeCreated);
                 await sourceRepository.UpdateTransactionRegistryAsync(transactionRegistry);
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task Cancel(
+            CancelTransactionsCommand requestMessage)
+        {
+            using (var scope = ApplicationServiceScope.Create())
+            {
+                var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
+                Collection<TransactionRegistry> modifiedRegistries = new Collection<TransactionRegistry>();
+                foreach (var recordKey in requestMessage.RecordKeys)
+                {
+                    var memento =
+                        await
+                            sourceRepository.GetRegistryEntry(recordKey);
+                    var transactionRegistry =
+                        scope.DomainBuilder.Create<TransactionRegistry>();
+                    ((IOriginator)transactionRegistry).SetMemento(memento);
+
+                    transactionRegistry.Cancel(scope.ScopeCreated);
+                    modifiedRegistries.Add(transactionRegistry);
+                }
+
+                await sourceRepository.UpdateTransactionRegistryBulkAsync(modifiedRegistries);
             }
         }
     }

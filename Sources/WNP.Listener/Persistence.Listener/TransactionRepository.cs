@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Dynamic;
     using System.Linq;
     using System.Resources;
@@ -305,6 +306,7 @@ FROM EnabledOperation EO
             return await this.persistence.ProjectionAsync<EnabledOperationEntity, ApplicationEntity, CompanyEntity, OperationEntity, EnabledOperationLookup>((eo, a, c, o) => new EnabledOperationLookup(c.ExternalCode, a.RecordKey, o.Name, eo.EnabledOperationId), select);
         }
 
+
         /// <inheritdoc/>
         public async Task<IMemento> GetRegistryEntry(Guid recordKey)
         {
@@ -349,6 +351,87 @@ WHERE TR.RecordKey = @0";
         {
             Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app, cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, tr.IncomingHash, cmp.ExternalCode, app.RecordKey, op.Name, (TransactionStatusType)tr.TransactionStatusId, tr.AppUser, tr.CreatedDateTime, tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details, tr.EnabledOperationId, childTransactions);
             return callback;
+        }
+
+        /// <inheritdoc/>
+        public async Task UpdateTransactionRegistryBulkAsync(
+            Collection<TransactionRegistry> modifiedRegistries)
+        {
+            if (modifiedRegistries.Count == 1)
+            {
+                var transactionRegistry = modifiedRegistries.Single();
+                var entity = new TransactionRegistryEntity
+                {
+                    TransactionId = transactionRegistry.Id,
+                    TransactionStatusId = (int)transactionRegistry.Status,
+                    UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                    AppUser = transactionRegistry.UserName,
+                    Message = transactionRegistry.Message,
+                    Details = transactionRegistry.Details
+                };
+
+                await this.persistence.UpdateAsync(
+                    entity,
+                    transactionRegistry.RecordKey,
+                    new[]
+                    {
+                        "TransactionStatusId",
+                        "UpdatedDateTime",
+                        "AppUser",
+                        "Message",
+                        "Details"
+                    });
+            }
+            else
+            {
+                using (var tr = await this.persistence.BeginTransaction())
+                {
+                    foreach (var transactionRegistry in modifiedRegistries)
+                    {
+                        var entity = new TransactionRegistryEntity
+                        {
+                            TransactionId = transactionRegistry.Id,
+                            TransactionStatusId = (int)transactionRegistry.Status,
+                            UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                            AppUser = transactionRegistry.UserName,
+                            Message = transactionRegistry.Message,
+                            Details = transactionRegistry.Details
+                        };
+
+                        await this.persistence.UpdateAsync(
+                            entity,
+                            transactionRegistry.RecordKey,
+                            new[]
+                            {
+                                "TransactionStatusId",
+                                "UpdatedDateTime",
+                                "AppUser",
+                                "Message",
+                                "Details"
+                            });
+                    }
+
+                    //await this.InsertRoot(transactionRegistry);
+
+                    //foreach (var childTransactionRegistryEntity in transactionRegistry.ChildTransactions)
+                    //{
+                    //    await this.persistence.InsertAsync(new // "TransactionRegistry", "TransactionId",
+                    //    {
+                    //        CreatedDateTime = childTransactionRegistryEntity.CreatedDateTime,
+                    //        BatchKey = transactionRegistry.RecordKey,
+                    //        RecordKey = childTransactionRegistryEntity.RecordKey,
+                    //        TransactionStatusId = (int)childTransactionRegistryEntity.Status,
+                    //        EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
+                    //        Data = childTransactionRegistryEntity.Data,
+                    //        AppUser = transactionRegistry.UserName,
+                    //        TransactionKey = childTransactionRegistryEntity.TransactionKey,
+                    //        Summary = SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
+                    //    }, "TransactionRegistry", "TransactionId");
+                    //}
+
+                    tr.Commit();
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -426,24 +509,6 @@ WHERE TR.RecordKey = @0";
                         "Details"
                             });
                     }
-
-                    //await this.InsertRoot(transactionRegistry);
-
-                    //foreach (var childTransactionRegistryEntity in transactionRegistry.ChildTransactions)
-                    //{
-                    //    await this.persistence.InsertAsync(new // "TransactionRegistry", "TransactionId",
-                    //    {
-                    //        CreatedDateTime = childTransactionRegistryEntity.CreatedDateTime,
-                    //        BatchKey = transactionRegistry.RecordKey,
-                    //        RecordKey = childTransactionRegistryEntity.RecordKey,
-                    //        TransactionStatusId = (int)childTransactionRegistryEntity.Status,
-                    //        EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
-                    //        Data = childTransactionRegistryEntity.Data,
-                    //        AppUser = transactionRegistry.UserName,
-                    //        TransactionKey = childTransactionRegistryEntity.TransactionKey,
-                    //        Summary = SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
-                    //    }, "TransactionRegistry", "TransactionId");
-                    //}
 
                     tr.Commit();
                 }

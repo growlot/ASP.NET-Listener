@@ -234,6 +234,9 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId);
 
+            var childStatuses = await GetChildTransactionStatus(_server, nextKey);
+            Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Success));
+
         }
 
         [TestMethod]
@@ -245,7 +248,38 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         [TestMethod]
         public async Task OpenAndFailBatchAsRoot()
         {
-            Assert.Inconclusive("Implement this");
+            var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            var nextKey = Guid.NewGuid();
+            var keyStack = new Queue<string>();
+            keyStack.Enqueue(nextKey.ToString("D"));
+            for (int i = 0; i < 100; i++)
+            {
+                keyStack.Enqueue(Guid.NewGuid().ToString("D"));
+            }
+
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
+
+            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+
+            communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.IsAny<TransactionDataReady>(), It.IsAny<ProtocolConfiguration>()));
+
+            di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+            di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
+
+            var transactionRecordKey1 = await OpenBatchTransaction(_server);
+            Assert.AreEqual(nextKey, transactionRecordKey1);
+
+            await FailTransaction(_server, transactionRecordKey1, "Batch Failure Message", "Batch failure details");
+
+            var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+            Assert.AreEqual(TransactionStatusType.Failed, (TransactionStatusType)transactionStatusId1);
+
+            communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Never);
+
+            var childStatuses = await GetChildTransactionStatus(_server, nextKey);
+            Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Canceled));
         }
 
         [TestMethod]
@@ -301,6 +335,9 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             Assert.AreEqual(TransactionStatusType.Skipped, (TransactionStatusType)transactionStatusId2);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Exactly(10));
+
+            var childStatuses = await GetChildTransactionStatus(_server, transactionRecordKey2);
+            Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Canceled));
         }
 
         [TestMethod]
@@ -349,8 +386,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         typeof(FailureData),
                                         new FailureData
                                         {
-                                            Message = "Test Failure Message",
-                                            Details = "Test Failure Details"
+                                            Message = message,
+                                            Details = details
                                         },
                                         new JsonMediaTypeFormatter { SerializerSettings = settings },
                                         mediaType))
@@ -506,6 +543,29 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             long transactionStatusId =
                 (long)((ex["value"] as List<object>).Single() as IDictionary<string, object>)["TransactionStatusId"];
             return transactionStatusId;
+        }
+
+        private static async Task<Dictionary<Guid, long>> GetChildTransactionStatus(TestServer server, Guid nextKey)
+        {
+            Dictionary<Guid, long> returnValue = new Dictionary<Guid, long>();
+            HttpResponseMessage registryEntry =
+                await
+                    server.CreateRequest($"listener/TransactionRegistry?$filter=BatchKey%20eq%20{nextKey}")
+                        .AddHeader("AMS-Company", "CCD")
+                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
+            string rstr = await registryEntry.Content.ReadAsStringAsync();
+            Assert.AreEqual(HttpStatusCode.OK, registryEntry.StatusCode, rstr);
+
+            var ex = JsonConvert.DeserializeObject<ExpandoObject>(rstr) as IDictionary<string, object>;
+            var items = ex["value"] as List<object>;
+            foreach (var e in items)
+            {
+                long transactionStatusId = (long)(e as IDictionary<string, object>)["TransactionStatusId"];
+                Guid recordKey = Guid.Parse((string)(e as IDictionary<string, object>)["RecordKey"]);
+                returnValue.Add(recordKey, transactionStatusId);
+            }
+
+            return returnValue;
         }
 
         private static async Task<string> GetTransactionData(TestServer server, Guid nextKey)

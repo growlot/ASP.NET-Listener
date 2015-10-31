@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Repository
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Threading.Tasks;
     using Domain;
     using Domain.Listener.Transaction;
@@ -97,5 +98,13 @@ namespace AMSLLC.Listener.Repository
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This is expected to be too complex for property")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review this")]
         Task<List<EnabledOperationLookup>> GetEnabledOperations();
+
+        /// <summary>
+        /// Updates the transaction registry bulk asynchronously.
+        /// </summary>
+        /// <param name="modifiedRegistries">The modified registries.</param>
+        /// <returns>Task.</returns>
+        Task UpdateTransactionRegistryBulkAsync(
+            Collection<TransactionRegistry> modifiedRegistries);
     }
 }

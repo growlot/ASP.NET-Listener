@@ -183,15 +183,19 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             var returnValue = new List<IDomainEvent>();
 
-            // string hashCode = this.hashBuilder.Create(
-            //    this.ChildTransactions
-            //            .ToDictionary<ChildTransactionEntity, object, FieldConfigurationCollection>(
-            //                childTransactionRegistryEntity => childTransactionRegistryEntity.Data,
-            //                childTransactionRegistryEntity =>
-            //                   new FieldConfigurationCollection(childTransactionRegistryEntity.FieldConfigurations)),
-            //    f => f.OutgoingSequence);
             if (this.DuplicateTransactions.Any())
             {
+                var canceled = new TransactionsCanceled();
+                foreach (var source in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
+                {
+                    canceled.RecordKeys.Add(source.RecordKey);
+                }
+
+                if (canceled.RecordKeys.Any())
+                {
+                    returnValue.Add(canceled);
+                }
+
                 returnValue.Add(new TransactionSkipped(this.RecordKey));
             }
             else

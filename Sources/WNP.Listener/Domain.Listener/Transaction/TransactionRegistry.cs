@@ -229,6 +229,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         }
 
         /// <summary>
+        /// Cancels the transaction
+        /// </summary>
+        /// <param name="scopeDateTime">The scope date time.</param>
+        public void Cancel(DateTime scopeDateTime)
+        {
+            this.UpdatedDateTime = scopeDateTime;
+            this.Status = TransactionStatusType.Canceled;
+        }
+
+        /// <summary>
         /// Fails the current transaction
         /// </summary>
         /// <param name="scopeDateTime">The scope date time.</param>
@@ -236,6 +246,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="details">The details.</param>
         public void Fail(DateTime scopeDateTime, string message, string details)
         {
+            foreach (var source in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
+            {
+                source.Status = TransactionStatusType.Canceled;
+                source.UpdatedDateTime = scopeDateTime;
+            }
+
             this.UpdatedDateTime = scopeDateTime;
             this.Status = TransactionStatusType.Failed;
             this.Message = message;
