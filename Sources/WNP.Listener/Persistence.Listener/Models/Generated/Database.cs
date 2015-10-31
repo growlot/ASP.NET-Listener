@@ -379,8 +379,8 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public int FieldConfigurationId { get; set; }
 		[Column] public string FieldName { get; set; }
 		[Column] public int? ValueMapId { get; set; }
-		[Column] public short? HashSequence { get; set; }
-		[Column] public short? KeySequence { get; set; }
+		[Column] public short? OutgoingSequence { get; set; }
+		[Column] public short? IncomingSequence { get; set; }
 		[Column] public bool IncludeInSummary { get; set; }
 		[Column] public string MapToName { get; set; }
 	}
@@ -460,11 +460,11 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public Guid RecordKey { get; set; }
 		[Column] public int EnabledOperationId { get; set; }
 		[Column] public int TransactionStatusId { get; set; }
-		[Column] public string TransactionKey { get; set; }
+		[Column] public string IncomingHash { get; set; }
 		[Column] public string Data { get; set; }
 		[Column] public string Summary { get; set; }
 		[Column] public string AppUser { get; set; }
-		[Column] public string TransactionHash { get; set; }
+		[Column] public string OutgoingHash { get; set; }
 		[Column] public string Message { get; set; }
 		[Column] public string Details { get; set; }
 		[Column] public DateTime CreatedDateTime { get; set; }

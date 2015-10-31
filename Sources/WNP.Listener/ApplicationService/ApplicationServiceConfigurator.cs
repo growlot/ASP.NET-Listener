@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.ApplicationService
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using CommandHandlers;
     using Commands;
@@ -53,23 +54,30 @@ namespace AMSLLC.Listener.ApplicationService
             this.domainEventBus.SubscribeAsync<TransactionSkipped>(
                 domainEvent => this.transactionService.Skipped(new SkipTransactionCommand { RecordKey = domainEvent.RecordKey }));
 
-            this.domainEventBus.SubscribeAsync<TransactionDataReady>(domainEvent =>
-            {
-                var dispatcher = ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>("communication-{0}".FormatWith(domainEvent.Endpoint.Protocol));
-                return this.transactionService.Processing(
-                    new ProcessingTransactionCommand
-                    {
-                        RecordKey = domainEvent.RecordKey
-                    })
-                    .ContinueWith(
-                        t =>
-                            t.IsCompleted
-                                ? dispatcher.Handle(
-                                    domainEvent,
-                                    domainEvent.Endpoint.ConnectionConfiguration,
-                                    domainEvent.Endpoint.ProtocolConfiguration)
+            this.domainEventBus.SubscribeAsync<TransactionDataReady>(
+                domainEvent =>
+                {
+                    return this.transactionService.Processing(
+                        new ProcessingTransactionCommand
+                        {
+                            RecordKey = domainEvent.RecordKey
+                        }).ContinueWith(
+                            t => t.IsCompleted
+                                ? Task.WhenAll(
+                                    domainEvent.Endpoint.Select(
+                                        ep =>
+                                        {
+                                            var dispatcher =
+                                                ApplicationIntegration.DependencyResolver
+                                                    .ResolveNamed<ICommunicationHandler>(
+                                                        "communication-{0}".FormatWith(ep.Protocol));
+                                            return dispatcher.Handle(
+                                                domainEvent,
+                                                ep.ConnectionConfiguration,
+                                                ep.ProtocolConfiguration);
+                                        }))
                                 : t);
-            });
+                });
         }
     }
 }

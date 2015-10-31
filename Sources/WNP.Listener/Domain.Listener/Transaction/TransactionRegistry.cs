@@ -21,12 +21,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Initializes a new instance of the <see cref="TransactionRegistry" /> class.
         /// </summary>
         /// <param name="keyBuilder">The key builder.</param>
-        /// <param name="transactionKeyBuilder">The transaction key builder.</param>
+        /// <param name="transactionHashBuilder">The transaction key builder.</param>
         /// <param name="summaryBuilder">The summary builder.</param>
-        public TransactionRegistry(IRecordKeyBuilder keyBuilder, ITransactionKeyBuilder transactionKeyBuilder, ISummaryBuilder summaryBuilder)
+        public TransactionRegistry(IRecordKeyBuilder keyBuilder, ITransactionHashBuilder transactionHashBuilder, ISummaryBuilder summaryBuilder)
         {
             this.KeyBuilder = keyBuilder;
-            this.TransactionKeyBuilder = transactionKeyBuilder;
+            this.TransactionHashBuilder = transactionHashBuilder;
             this.SummaryBuilder = summaryBuilder;
         }
 
@@ -100,7 +100,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the transaction key.
         /// </summary>
         /// <value>The transaction key.</value>
-        public string TransactionKey { get; private set; }
+        public string IncomingHash { get; private set; }
 
         /// <summary>
         /// Gets the summary.
@@ -122,7 +122,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
         private IRecordKeyBuilder KeyBuilder { get; }
 
-        private ITransactionKeyBuilder TransactionKeyBuilder { get; }
+        private ITransactionHashBuilder TransactionHashBuilder { get; }
 
         private ISummaryBuilder SummaryBuilder { get; }
 
@@ -136,23 +136,51 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             this.RecordKey = Guid.Parse(this.KeyBuilder.Create());
             this.CreatedDateTime = createdDateTime;
-            if (fieldConfigurations != null && fieldConfigurations.ContainsKey(this.EnabledOperationId))
+            if (fieldConfigurations != null)
             {
-                this.TransactionKey = this.TransactionKeyBuilder.Create(this.Data, fieldConfigurations[this.EnabledOperationId]);
-                this.SummaryBuilder.Build(this.Data, this.Summary, fieldConfigurations[this.EnabledOperationId]);
+                var hashElements =
+                    this.ChildTransactions
+                        .ToDictionary<ChildTransactionRegistryEntity, object, FieldConfigurationCollection>(
+                            childTransactionRegistryEntity => childTransactionRegistryEntity.Data,
+                            childTransactionRegistryEntity =>
+                               new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]));
+
+                if (!hashElements.Any() && fieldConfigurations.ContainsKey(this.EnabledOperationId))
+                {
+                    // assuming non-batch transaction
+                    hashElements.Add(this.Data, new FieldConfigurationCollection(fieldConfigurations[this.EnabledOperationId]));
+                }
+
+                this.IncomingHash =
+                    this.TransactionHashBuilder.Create(
+                        hashElements,
+                        f => f.IncomingSequence);
+
+                if (fieldConfigurations.ContainsKey(this.EnabledOperationId))
+                {
+                    this.SummaryBuilder.Build(this.Data, this.Summary, fieldConfigurations[this.EnabledOperationId]);
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(this.TransactionKey) && this.ChildTransactions.Any())
-            {
-                this.TransactionKey = "Batch";
-            }
-
+            // if (string.IsNullOrWhiteSpace(this.TransactionKey) && this.ChildTransactions.Any())
+            // {
+            //     this.TransactionKey = "Batch";
+            // }
             this.Status = TransactionStatusType.Pending;
             foreach (var childTransactionRegistryEntity in this.ChildTransactions)
             {
                 childTransactionRegistryEntity.RecordKey = Guid.Parse(this.KeyBuilder.Create());
                 childTransactionRegistryEntity.CreatedDateTime = createdDateTime;
-                childTransactionRegistryEntity.TransactionKey = this.TransactionKeyBuilder.Create(childTransactionRegistryEntity.Data, fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]);
+                childTransactionRegistryEntity.IncomingHash =
+                    this.TransactionHashBuilder.Create(
+                        new Dictionary<object, FieldConfigurationCollection>
+                        {
+                            {
+                                childTransactionRegistryEntity.Data,
+                               new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId])
+                            }
+                        },
+                        f => f.IncomingSequence);
                 childTransactionRegistryEntity.Status = TransactionStatusType.Pending;
                 this.SummaryBuilder.Build(childTransactionRegistryEntity.Data, childTransactionRegistryEntity.Summary, fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]);
             }
@@ -234,7 +262,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Message = myMemento.Message;
             this.Details = myMemento.Details;
             this.Id = myMemento.TransactionId;
-            this.TransactionKey = myMemento.TransactionKey;
+            this.IncomingHash = myMemento.IncomingHash;
             this.EnabledOperationId = myMemento.EnabledOperationId;
             this.ChildTransactions = new ReadOnlyCollection<ChildTransactionRegistryEntity>(myMemento.ChildTransactions.Select(s =>
             {

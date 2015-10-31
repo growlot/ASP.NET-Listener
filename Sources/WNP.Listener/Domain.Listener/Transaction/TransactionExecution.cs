@@ -7,7 +7,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
     using Communication;
@@ -24,12 +23,19 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         private readonly IDomainEventBus domainEventBus;
 
         /// <summary>
+        /// The hash builder
+        /// </summary>
+        private readonly ITransactionHashBuilder hashBuilder;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="TransactionExecution" /> class.
         /// </summary>
         /// <param name="domainEventBus">The domain event bus.</param>
-        public TransactionExecution(IDomainEventBus domainEventBus)
+        /// <param name="hashBuilder">The hash builder.</param>
+        public TransactionExecution(IDomainEventBus domainEventBus, ITransactionHashBuilder hashBuilder)
         {
             this.domainEventBus = domainEventBus;
+            this.hashBuilder = hashBuilder;
         }
 
         /// <summary>
@@ -48,7 +54,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the hash code.
         /// </summary>
         /// <value>The hash code.</value>
-        public string TransactionHash { get; set; }
+        public string OutgoingHash { get; set; }
 
         /// <summary>
         /// Gets the endpoint configurations.
@@ -92,7 +98,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <returns>System.Threading.Tasks.Task.</returns>
         public virtual Task Process()
         {
-            var endpointExecutionData = this.ChildTransactions.Any() ? this.ProcessBatch() : ProcessTransaction(this);
+            var endpointExecutionData = this.ChildTransactions.Any() ? this.ProcessBatch() : ProcessTransaction(this, this.hashBuilder);
             return this.domainEventBus.PublishBulk(endpointExecutionData);
         }
 
@@ -128,37 +134,46 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             }
         }
 
-        private static ICollection<IDomainEvent> ProcessTransaction(ITransactionExecutionData transactionExecutionData)
+        private static ICollection<IDomainEvent> ProcessTransaction(ITransactionExecutionData transactionExecutionData, ITransactionHashBuilder hashBuilder)
         {
             var returnValue = new List<IDomainEvent>();
             var processor = ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
 
             var preparedData = processor.Process(transactionExecutionData.Data, transactionExecutionData.FieldConfigurations);
-            foreach (var cfg in transactionExecutionData.EndpointConfigurations)
-            {
-                transactionExecutionData.TransactionHash = preparedData.Hash;
-                if (transactionExecutionData.DuplicateTransactions.Any())
+            string hashCode = hashBuilder.Create(
+                new Dictionary<object, FieldConfigurationCollection>
                 {
-                    returnValue.Add(new TransactionSkipped(transactionExecutionData.RecordKey));
-                    break;
-                }
-                else
-                {
-                    var eventData = new TransactionDataReady
                     {
-                        Data = new TransactionMessage
-                        {
-                            Data = preparedData.Data
-                        },
-                        RecordKey = transactionExecutionData.RecordKey,
-                        TransactionHash = transactionExecutionData.TransactionHash,
-                        Endpoint = cfg
-                    };
+                        transactionExecutionData.Data,
+                        new FieldConfigurationCollection(transactionExecutionData.FieldConfigurations)
+                    }
+                },
+                f => f.OutgoingSequence);
 
-                    returnValue.Add(eventData);
+            transactionExecutionData.OutgoingHash = hashCode;
 
-                    // domainEventBus.Publish(eventData);
+            if (transactionExecutionData.DuplicateTransactions.Any())
+            {
+                returnValue.Add(new TransactionSkipped(transactionExecutionData.RecordKey));
+            }
+            else
+            {
+                var eventData = new TransactionDataReady
+                {
+                    Data = new TransactionMessage
+                    {
+                        Data = preparedData.Data
+                    },
+                    RecordKey = transactionExecutionData.RecordKey,
+                    TransactionHash = transactionExecutionData.OutgoingHash
+                };
+
+                foreach (var cfg in transactionExecutionData.EndpointConfigurations)
+                {
+                    eventData.Endpoint.Add(cfg);
                 }
+
+                returnValue.Add(eventData);
             }
 
             return returnValue;
@@ -169,7 +184,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             var returnValue = new List<IDomainEvent>();
             foreach (var childTransactionEntity in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
             {
-                returnValue.AddRange(ProcessTransaction(childTransactionEntity));
+                returnValue.AddRange(ProcessTransaction(childTransactionEntity, this.hashBuilder));
             }
 
             return returnValue;

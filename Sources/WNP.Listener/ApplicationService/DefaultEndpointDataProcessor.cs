@@ -23,25 +23,6 @@ namespace AMSLLC.Listener.ApplicationService
     public class DefaultEndpointDataProcessor : IEndpointDataProcessor
     {
         /// <summary>
-        /// Gets the SHA-1 hash.
-        /// </summary>
-        /// <param name="data">The data that needs to be hashed.</param>
-        /// <returns>The has of the data</returns>
-        public static string GetHash(string data)
-        {
-            string result;
-            byte[] hash;
-
-            using (SHA1 sha = new SHA1CryptoServiceProvider())
-            {
-                hash = sha.ComputeHash(Encoding.UTF8.GetBytes(data));
-            }
-
-            result = BitConverter.ToString(hash).Replace("-", string.Empty);
-            return result;
-        }
-
-        /// <summary>
         /// Prepare data for the endpoint.
         /// </summary>
         /// <param name="data">The data.</param>
@@ -57,7 +38,6 @@ namespace AMSLLC.Listener.ApplicationService
             IEndpointDataProcessorResult returnValue = new EndpointDataProcessorResult();
             bool remap = fieldConfigurations.Any(f => !string.IsNullOrWhiteSpace(f.MapToName));
             returnValue.Data = remap ? DynamicUtilities.ConvertToDynamic(data) : data;
-            Dictionary<short, object> hashElements = new Dictionary<short, object>();
             foreach (var fieldConfiguration in fieldConfigurations)
             {
                 Action<DataPropertyInfo, object, string> action = (targetProperty, owner, propRef) =>
@@ -67,11 +47,6 @@ namespace AMSLLC.Listener.ApplicationService
                     if (fieldConfiguration.ValueMap != null && fieldConfiguration.ValueMap.ContainsKey(targetKey))
                     {
                         targetValue = fieldConfiguration.ValueMap[targetKey];
-                    }
-
-                    if (fieldConfiguration.HashSequence.HasValue)
-                    {
-                        hashElements.Add(fieldConfiguration.HashSequence.Value, targetValue);
                     }
 
                     if (remap)
@@ -93,17 +68,6 @@ namespace AMSLLC.Listener.ApplicationService
 
                 DynamicUtilities.ProcessProperty(data, fieldConfiguration.Name, null, action);
             }
-
-            List<KeyValuePair<short, object>> hashSorted =
-                hashElements.Where(s => s.Value != null).OrderBy(s => s.Key).ToList();
-            StringBuilder hashSourceBuilder = new StringBuilder();
-            for (int i = 0; i < hashSorted.Count; i++)
-            {
-                var hashElement = hashSorted[i].Value;
-                hashSourceBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}_", JsonConvert.SerializeObject(hashElement));
-            }
-
-            returnValue.Hash = GetHash(hashSourceBuilder.ToString());
 
             return returnValue;
         }

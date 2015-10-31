@@ -33,13 +33,19 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the key sequence.
         /// </summary>
         /// <value>The key sequence.</value>
-        public short? KeySequence { get; set; }
+        public short? IncomingSequence { get; set; }
 
         /// <summary>
         /// Gets or sets the hash sequence.
         /// </summary>
         /// <value>The hash sequence.</value>
-        public short? HashSequence { get; set; }
+        public short? OutgoingSequence { get; set; }
+
+        /// <summary>
+        /// Gets or sets the include in summary.
+        /// </summary>
+        /// <value>The include in summary.</value>
+        public bool IncludeInSummary { get; set; }
 
         /// <summary>
         /// Sets the memento.
@@ -59,8 +65,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             var myMemento = (FieldConfigurationMemento)memento;
             this.Name = myMemento.Name;
             this.MapToName = myMemento.MapToName;
-            this.HashSequence = myMemento.HashSequence;
-            this.KeySequence = myMemento.KeySequence;
+            this.OutgoingSequence = myMemento.OutgoingSequence;
+            this.IncomingSequence = myMemento.IncomingSequence;
+            this.IncludeInSummary = myMemento.IncludeInSummary;
             if (myMemento.ValueMap != null)
             {
                 foreach (var valueMap in myMemento.ValueMap)

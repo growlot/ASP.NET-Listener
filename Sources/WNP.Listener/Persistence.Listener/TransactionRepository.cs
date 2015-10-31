@@ -92,13 +92,13 @@ namespace AMSLLC.Listener.Persistence.Listener
             return this.persistence.UpdateAsync(
                 new TransactionRegistryEntity
                 {
-                    TransactionHash = hashCode.Value,
+                    OutgoingHash = hashCode.Value,
                     RecordKey = hashCode.Key
                 },
                 hashCode.Key,
                 new[]
                 {
-                    "TransactionHash"
+                    "OutgoingHash"
                 });
         }
 
@@ -143,10 +143,10 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
                 recordKeys.Add(recordKey);
             }
 
-            var transactionKeys = childTr.Select(s => s.TransactionKey).ToList();
+            var transactionKeys = childTr.Select(s => s.IncomingHash).ToList();
             if (!transactionKeys.Any())
             {
-                transactionKeys.Add(tr.TransactionKey);
+                transactionKeys.Add(tr.IncomingHash);
             }
 
             Func
@@ -189,7 +189,7 @@ WHERE EO.EnabledOperationId IN (@operations)";
             if (endpoints != null)
             {
 
-                select = @"SELECT TransactionKey, RecordKey FROM TransactionRegistry WHERE TransactionKey IN (@transactionKeys) AND TransactionStatusId IN (@successStatus)";
+                select = @"SELECT IncomingHash, RecordKey FROM TransactionRegistry WHERE IncomingHash IN (@transactionKeys) AND TransactionStatusId IN (@successStatus)";
 
                 var duplicates = await this.persistence.GetListAsync<dynamic>(
                     select, false,
@@ -221,9 +221,9 @@ WHERE EO.EnabledOperationId IN (@operations)";
                                 null,
                                 string.IsNullOrWhiteSpace(ctr.Data)
                                     ? null
-                                    : JsonConvert.DeserializeObject<ExpandoObject>(ctr.Data), duplicates.Where(d => string.Compare((string)d.TransactionKey, ctr.TransactionKey, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != ctr.RecordKey).Select(s => (Guid)s.RecordKey), (TransactionStatusType)ctr.TransactionStatusId)),
+                                    : JsonConvert.DeserializeObject<ExpandoObject>(ctr.Data), duplicates.Where(d => string.Compare((string)d.IncomingHash, ctr.IncomingHash, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != ctr.RecordKey).Select(s => (Guid)s.RecordKey), (TransactionStatusType)ctr.TransactionStatusId)),
                     string.IsNullOrWhiteSpace(tr.Data) ? null : JsonConvert.DeserializeObject<ExpandoObject>(tr.Data),
-                    duplicates.Where(d => string.Compare((string)d.TransactionKey, tr.TransactionKey, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.RecordKey).Select(s => (Guid)s.RecordKey), (TransactionStatusType)tr.TransactionStatusId);
+                    duplicates.Where(d => string.Compare((string)d.IncomingHash, tr.IncomingHash, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.RecordKey).Select(s => (Guid)s.RecordKey), (TransactionStatusType)tr.TransactionStatusId);
             }
 
 
@@ -253,7 +253,7 @@ WHERE EO.EnabledOperationId IN (@operations)";
                             EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
                             Data = childTransactionRegistryEntity.Data,
                             AppUser = transactionRegistry.UserName,
-                            TransactionKey = childTransactionRegistryEntity.TransactionKey,
+                            IncomingHash = childTransactionRegistryEntity.IncomingHash,
                             Summary = SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
                         }, "TransactionRegistry", "TransactionId");
                     }
@@ -287,7 +287,7 @@ WHERE EO.EnabledOperationId IN (@operations)";
                 AppUser = transactionRegistry.UserName,
                 Message = transactionRegistry.Message,
                 Details = transactionRegistry.Details,
-                TransactionKey = transactionRegistry.TransactionKey,
+                IncomingHash = transactionRegistry.IncomingHash,
                 Summary = SerializationUtilities.DictionaryToXml(transactionRegistry.Summary)
             }, "TransactionRegistry", "TransactionId");
         }
@@ -347,7 +347,7 @@ WHERE TR.RecordKey = @0";
 
         private static Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> CreateRegistryEntryProjectionCallback(IEnumerable<TransactionRegistryMemento> childTransactions)
         {
-            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app, cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, tr.TransactionKey, cmp.ExternalCode, app.RecordKey, op.Name, (TransactionStatusType)tr.TransactionStatusId, tr.AppUser, tr.CreatedDateTime, tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details, tr.EnabledOperationId, childTransactions);
+            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app, cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, tr.IncomingHash, cmp.ExternalCode, app.RecordKey, op.Name, (TransactionStatusType)tr.TransactionStatusId, tr.AppUser, tr.CreatedDateTime, tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details, tr.EnabledOperationId, childTransactions);
             return callback;
         }
 
@@ -459,7 +459,7 @@ WHERE TR.RecordKey = @0";
         /// <inheritdoc/>
         public Task<int> GetHashCountAsync(int enabledOperationId, string hash)
         {
-            return this.persistence.ExecuteScalarAsync<int>("SELECT COUNT(TransactionHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND TransactionHash = @1", enabledOperationId, hash);
+            return this.persistence.ExecuteScalarAsync<int>("SELECT COUNT(OutgoingHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND OutgoingHash = @1", enabledOperationId, hash);
         }
 
         /// <inheritdoc/>
@@ -496,7 +496,7 @@ WHERE TR.RecordKey = @0";
                 }
             }
 
-            return new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.HashSequence, fieldConfigurationEntry.KeySequence, valueMap, enabledOperationId, operationKey);
+            return new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.OutgoingSequence, fieldConfigurationEntry.IncomingSequence, valueMap, enabledOperationId, operationKey, fieldConfigurationEntry.IncludeInSummary);
         }
     }
 }

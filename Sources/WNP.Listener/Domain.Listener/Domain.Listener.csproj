@@ -85,6 +85,7 @@
     <Compile Include="Transaction\EnabledOperationLookup.cs" />
     <Compile Include="Transaction\EndpointDataProcessorResult.cs" />
     <Compile Include="Transaction\FieldConfiguration.cs" />
+    <Compile Include="Transaction\FieldConfigurationCollection.cs" />
     <Compile Include="Transaction\FieldConfigurationMemento.cs" />
     <Compile Include="Transaction\IConnectionConfigurationBuilder.cs" />
     <Compile Include="Transaction\IEndpointDataProcessor.cs" />
@@ -92,7 +93,7 @@
     <Compile Include="Transaction\IProtocolConfigurationBuilder.cs" />
     <Compile Include="Transaction\ISummaryBuilder.cs" />
     <Compile Include="Transaction\ITransactionExecutionData.cs" />
-    <Compile Include="Transaction\ITransactionKeyBuilder.cs" />
+    <Compile Include="Transaction\ITransactionHashBuilder.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfiguration.cs" />
     <Compile Include="Transaction\IntegrationEndpointConfigurationMemento.cs" />
     <Compile Include="Transaction\IRecordKeyBuilder.cs" />

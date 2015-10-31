@@ -22,7 +22,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="recordKey">The record key.</param>
-        /// <param name="transactionKey">The transaction key.</param>
+        /// <param name="incomingHash">The incoming hash.</param>
         /// <param name="companyCode">The company code.</param>
         /// <param name="applicationKey">The application key.</param>
         /// <param name="operationKey">The operation key.</param>
@@ -38,7 +38,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public TransactionRegistryMemento(
             int transactionId,
             Guid recordKey,
-            string transactionKey,
+            string incomingHash,
             string companyCode,
             string applicationKey,
             string operationKey,
@@ -64,7 +64,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Data = data;
             this.Message = message;
             this.Details = details;
-            this.TransactionKey = transactionKey;
+            this.IncomingHash = incomingHash;
             this.EnabledOperationId = enabledOperationId;
             this.ChildTransactions = new ReadOnlyCollection<TransactionRegistryMemento>(new List<TransactionRegistryMemento>(childTransactions ?? new TransactionRegistryMemento[0]));
         }
@@ -73,7 +73,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the transaction key.
         /// </summary>
         /// <value>The transaction key.</value>
-        public string TransactionKey { get; set; }
+        public string IncomingHash { get; set; }
 
         /// <summary>
         /// Gets or sets the transaction identifier.

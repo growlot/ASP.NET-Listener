@@ -84,37 +84,37 @@ namespace AMSLLC.Listener.ApplicationService.Test
             };
 
             var fieldConfigurations = new List<FieldConfigurationMemento>();
-            fieldConfigurations.Add(new FieldConfigurationMemento("Value", "Value1", null, null, null, 0, null));
+            fieldConfigurations.Add(new FieldConfigurationMemento("Value", "Value1", null, null, null, 0, null, false));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ComplexProperty.AnotherValue",
                 "ComplexProperty.CorrectValue",
                 null,
                 null,
-                null, 0, null));
+                null, 0, null, false));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ComplexProperty.NestedData.AnotherValue",
                 "Flatten",
                 null,
                 null,
-                stringMap, 0, null));
+                stringMap, 0, null, false));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ArrayProperty.AnotherValue",
                 "ArrayProperty[].SimpleArrayProperty",
                 null,
                 null,
-                null, 0, null));
+                null, 0, null, false));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ArrayProperty.NestedData.AnotherValue",
                 "ArrayProperty[].NestedData.NestedArrayProperty",
                 null,
                 null,
-                null, 0, null));
+                null, 0, null, false));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ArrayProperty.NestedData.NestedArray.Value",
                 "ArrayProperty[].NestedData.NestedArray[].DeepValue",
                 null,
                 null,
-                integerMap, 0, null));
+                integerMap, 0, null, false));
 
             var memento = new TransactionExecutionMemento(
                 1,
@@ -288,13 +288,13 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 null,
                 null,
                 null,
-                stringMap, 0, null));
+                stringMap, 0, null, false));
             fieldConfigurations.Add(new FieldConfigurationMemento(
                 "ArrayProperty.NestedData.NestedArray.Value",
                 null,
                 null,
                 null,
-                integerMap, 0, null));
+                integerMap, 0, null, false));
 
             DefaultEndpointDataProcessor p = new DefaultEndpointDataProcessor();
             IntegrationEndpointConfiguration cfg = new IntegrationEndpointConfiguration();

@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the transaction hash.
         /// </summary>
         /// <value>The transaction hash.</value>
-        string TransactionHash { get; set; }
+        string OutgoingHash { get; set; }
 
         /// <summary>
         /// Gets or sets the enabled operation identifier.

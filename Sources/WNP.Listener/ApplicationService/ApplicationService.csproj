@@ -107,7 +107,7 @@
     <Compile Include="RepositoryManager.cs" />
     <Compile Include="ErrorMessage.cs" />
     <Compile Include="SummaryBuilder.cs" />
-    <Compile Include="TransactionKeyBuilder.cs" />
+    <Compile Include="TransactionHashBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">

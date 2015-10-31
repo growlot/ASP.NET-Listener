@@ -6,12 +6,13 @@ namespace AMSLLC.Listener.ApplicationService
 {
     using System.Collections.Generic;
     using System.Dynamic;
+    using System.Linq;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using Utilities;
 
     /// <summary>
-    /// Implments <see cref="ISummaryBuilder"/>
+    /// Implements <see cref="ISummaryBuilder" />
     /// </summary>
     public class SummaryBuilder : ISummaryBuilder
     {
@@ -21,7 +22,6 @@ namespace AMSLLC.Listener.ApplicationService
         /// <param name="data">The data.</param>
         /// <param name="summary">The summary generation function.</param>
         /// <param name="fieldConfigurations">The field configurations.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public void Build(object data, Dictionary<string, object> summary, IEnumerable<FieldConfiguration> fieldConfigurations)
         {
             object workData = data;
@@ -33,7 +33,7 @@ namespace AMSLLC.Listener.ApplicationService
 
             if (fieldConfigurations != null)
             {
-                foreach (var fieldConfiguration in fieldConfigurations)
+                foreach (var fieldConfiguration in fieldConfigurations.Where(f => f.IncludeInSummary))
                 {
                     DynamicUtilities.ProcessProperty(
                         workData,
@@ -42,10 +42,8 @@ namespace AMSLLC.Listener.ApplicationService
                         (targetProperty, owner, propRef) =>
                         {
                             var targetValue = targetProperty.GetValue(owner);
-                            if (fieldConfiguration.HashSequence.HasValue)
-                            {
-                                summary.Add(fieldConfiguration.Name, targetValue);
-                            }
+
+                            summary.Add(fieldConfiguration.Name, targetValue);
                         });
                 }
             }

@@ -18,19 +18,21 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="mapToName">Name of the map to.</param>
-        /// <param name="hashSequence">The hash sequence.</param>
-        /// <param name="keySequence">The key sequence.</param>
+        /// <param name="outgoingSequence">The sequence number in the outgoing data hash code.</param>
+        /// <param name="incomingSequence">The sequence number in the incoming data hash code</param>
         /// <param name="valueMap">The value map.</param>
         /// <param name="enabledOperationId">The enabled operation identifier.</param>
         /// <param name="operationKey">The operation key.</param>
-        public FieldConfigurationMemento(string name, string mapToName, short? hashSequence, short? keySequence, Dictionary<string, object> valueMap, int enabledOperationId, string operationKey)
+        /// <param name="includeInSummary">if set to <c>true</c> [include in summary].</param>
+        public FieldConfigurationMemento(string name, string mapToName, short? outgoingSequence, short? incomingSequence, Dictionary<string, object> valueMap, int enabledOperationId, string operationKey, bool includeInSummary)
         {
             this.Name = name;
             this.MapToName = mapToName;
-            this.HashSequence = hashSequence;
-            this.KeySequence = keySequence;
+            this.OutgoingSequence = outgoingSequence;
+            this.IncomingSequence = incomingSequence;
             this.OperationKey = operationKey;
             this.EnabledOperationId = enabledOperationId;
+            this.IncludeInSummary = includeInSummary;
             if (valueMap != null)
             {
                 foreach (var o in valueMap)
@@ -39,6 +41,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [include in summary].
+        /// </summary>
+        /// <value><c>true</c> if [include in summary]; otherwise, <c>false</c>.</value>
+        public bool IncludeInSummary { get; set; }
 
         /// <summary>
         /// Gets the enabled operation identifier.
@@ -50,7 +58,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets the key sequence.
         /// </summary>
         /// <value>The key sequence.</value>
-        public short? KeySequence { get; private set; }
+        public short? IncomingSequence { get; private set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -74,7 +82,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the include in hash.
         /// </summary>
         /// <value>The include in hash.</value>
-        public short? HashSequence { get; private set; }
+        public short? OutgoingSequence { get; private set; }
 
         /// <summary>
         /// Gets the operation key.

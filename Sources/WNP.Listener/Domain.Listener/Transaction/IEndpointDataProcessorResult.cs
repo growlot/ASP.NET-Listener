@@ -16,11 +16,5 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The data.</value>
         object Data { get; set; }
-
-        /// <summary>
-        /// Gets or sets the data hash.
-        /// </summary>
-        /// <value>The hash.</value>
-        string Hash { get; set; }
     }
 }

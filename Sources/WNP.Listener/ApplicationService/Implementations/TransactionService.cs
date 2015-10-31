@@ -183,10 +183,10 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
 
                 var hashList =
                     new Dictionary<Guid, string>(
-                        transactionExecution.ChildTransactions.ToDictionary(s => s.RecordKey, s => s.TransactionHash))
+                        transactionExecution.ChildTransactions.ToDictionary(s => s.RecordKey, s => s.OutgoingHash))
                     {
                         {
-                            transactionExecution.RecordKey, transactionExecution.TransactionHash
+                            transactionExecution.RecordKey, transactionExecution.OutgoingHash
                         }
                     };
 

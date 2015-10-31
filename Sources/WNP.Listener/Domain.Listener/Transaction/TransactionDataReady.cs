@@ -7,6 +7,7 @@
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Transaction data ready
@@ -37,6 +38,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the endpoint.
         /// </summary>
         /// <value>The endpoint.</value>
-        public IntegrationEndpointConfiguration Endpoint { get; set; }
+        public ICollection<IntegrationEndpointConfiguration> Endpoint { get; } = new List<IntegrationEndpointConfiguration>();
     }
 }

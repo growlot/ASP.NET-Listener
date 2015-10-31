@@ -35,7 +35,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Gets or sets the transaction key.
         /// </summary>
         /// <value>The transaction key.</value>
-        public string TransactionKey { get; set; }
+        public string IncomingHash { get; set; }
 
         /// <summary>
         /// Gets or sets the data.
@@ -86,7 +86,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.CreatedDateTime = myMemento.CreatedDateTime;
             this.Data = myMemento.Data;
             this.Id = myMemento.TransactionId;
-            this.TransactionKey = myMemento.TransactionKey;
+            this.IncomingHash = myMemento.IncomingHash;
             this.EnabledOperationId = myMemento.EnabledOperationId;
             this.UpdatedDateTime = myMemento.UpdatedDateTime;
             this.Message = myMemento.Message;
