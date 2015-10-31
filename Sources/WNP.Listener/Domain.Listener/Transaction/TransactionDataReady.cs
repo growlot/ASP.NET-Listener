@@ -26,5 +26,17 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// The transaction record key.
         /// </value>
         public Guid RecordKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hash code.
+        /// </summary>
+        /// <value>The hash code.</value>
+        public string TransactionHash { get; set; }
+
+        /// <summary>
+        /// Gets or sets the endpoint.
+        /// </summary>
+        /// <value>The endpoint.</value>
+        public IntegrationEndpointConfiguration Endpoint { get; set; }
     }
 }

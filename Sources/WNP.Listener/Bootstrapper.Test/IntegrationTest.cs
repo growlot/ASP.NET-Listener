@@ -13,11 +13,14 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Net.Http.Formatting;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
+    using ApplicationService;
+    using Bus;
     using Communication;
     using Communication.Jms;
     using Core;
     using Core.Ninject;
     using Core.Ninject.Test;
+    using Domain;
     using Domain.Listener.Transaction;
     using Microsoft.Owin.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,6 +31,20 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     [TestClass]
     public class IntegrationTest
     {
+        private static TestServer _server;
+
+        [ClassInitialize]
+        public static void ClassInit(TestContext context)
+        {
+            _server = TestServer.Create<Startup>();
+        }
+
+        [ClassCleanup]
+        public static void ClassCleanup()
+        {
+            _server.Dispose();
+        }
+
         // [TestInitialize()]
         // public void Initialize() { }
 
@@ -38,162 +55,188 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         [TestMethod]
         public async Task OpenAndSucceedTransactionTest()
         {
-            using (var server = TestServer.Create<Startup>())
-            {
-                var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
-                var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
-                var nextKey = Guid.NewGuid();
-                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey.ToString("D"));
-                var entityKey = Guid.NewGuid().ToString("D");
-                string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}}}}";
-                object receivedData = string.Empty;
 
-                var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
-                var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
-                //var transactionMessageDataRepository = new Mock<TransactionDataRepository> { CallBase = true };
-                communicationHandlerMock.Setup(
-                    s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.Is<TransactionDataReady>(dr => dr.RecordKey == nextKey), It.IsAny<ProtocolConfiguration>()))
-                    //.Returns(Task.CompletedTask)
-                    .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
-                    {
-                        //var rData = (TransactionDataReady)data;
-                        receivedData = data.Data;
-                        //transactionMessageDataRepository.Object.SaveDataAsync(rData.RecordKey, rData.Data);
-                    });
+            var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            var nextKey = Guid.NewGuid();
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey.ToString("D"));
+            var entityKey = Guid.NewGuid().ToString("D");
+            string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}}}}";
+            object receivedData = string.Empty;
 
-                //\"RecordKey\":\"{nextKey}\"
+            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+            //var transactionMessageDataRepository = new Mock<TransactionDataRepository> { CallBase = true };
+            communicationHandlerMock.Setup(
+                s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.Is<TransactionDataReady>(dr => dr.RecordKey == nextKey), It.IsAny<ProtocolConfiguration>()))
+                //.Returns(Task.CompletedTask)
+                .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
+                {
+                    //var rData = (TransactionDataReady)data;
+                    receivedData = data.Data;
+                    //transactionMessageDataRepository.Object.SaveDataAsync(rData.RecordKey, rData.Data);
+                });
 
-                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
-                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
-                //di.Kernel.Rebind<ITransactionDataRepository>().ToConstant(transactionMessageDataRepository.Object);
+            //\"RecordKey\":\"{nextKey}\"
 
-                var responseMessage = await OpenTransaction(server, entityKey);
-                Assert.AreEqual(nextKey, responseMessage);
+            di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+            di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
 
-                await ProcessTransaction(server, nextKey);
-                communicationHandler.Verify(
-                    s =>
-                        s.Handle(
-                            It.Is<TransactionDataReady>(
-                                ready =>
-                                    string.Compare(JsonConvert.SerializeObject(ready.Data), expectedMessage,
-                                        StringComparison.InvariantCulture) == 0), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
-                    Times.Once, "Received unexpected {0}{1}Expected: {2}".FormatWith(JsonConvert.SerializeObject(receivedData), Environment.NewLine, expectedMessage));
+            //di.Kernel.Rebind<ITransactionDataRepository>().ToConstant(transactionMessageDataRepository.Object);
 
-                await SucceedTransaction(server, nextKey);
+            var responseMessage = await OpenTransaction(_server, entityKey);
+            Assert.AreEqual(nextKey, responseMessage);
 
-                var transactionStatusId = await GetTransactionStatus(server, nextKey);
+            await ProcessTransaction(_server, nextKey);
+            communicationHandler.Verify(
+                s =>
+                    s.Handle(
+                        It.Is<TransactionDataReady>(
+                            ready =>
+                                string.Compare(JsonConvert.SerializeObject(ready.Data), expectedMessage,
+                                    StringComparison.InvariantCulture) == 0), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
+                Times.Once, "Received unexpected {0}{1}Expected: {2}".FormatWith(JsonConvert.SerializeObject(receivedData), Environment.NewLine, expectedMessage));
 
-                Assert.AreEqual(0L, transactionStatusId);
+            await SucceedTransaction(_server, nextKey);
 
-                var transactionMessageData = await GetTransactionData(server, nextKey);
-                Assert.AreEqual(expectedMessage, transactionMessageData);
-                //transactionMessageDataRepository.Verify(s => s.SaveDataAsync(nextKey, It.Is<object>((obj) => string.CompareOrdinal(JsonConvert.SerializeObject(obj), expectedMessage) == 0)), Times.Once);
-            }
+            var transactionStatusId = await GetTransactionStatus(_server, nextKey);
+
+            Assert.AreEqual(0L, transactionStatusId);
+
+            var transactionMessageData = await GetTransactionData(_server, nextKey);
+            Assert.AreEqual(expectedMessage, transactionMessageData);
+            //transactionMessageDataRepository.Verify(s => s.SaveDataAsync(nextKey, It.Is<object>((obj) => string.CompareOrdinal(JsonConvert.SerializeObject(obj), expectedMessage) == 0)), Times.Once);
+
         }
 
         [TestMethod]
         public async Task OpenAndSkipTransactionTest()
         {
-            using (var server = TestServer.Create<Startup>())
-            {
-                var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
-                var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
-                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
-                var entityKey = Guid.NewGuid().ToString("D");
-                var communicationHandler = new Mock<ICommunicationHandler>();
-                communicationHandler.Setup(
-                    s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()))
-                    .Returns(Task.CompletedTask);
+            var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
+            var entityKey = Guid.NewGuid().ToString("D");
+            var communicationHandler = new Mock<ICommunicationHandler>();
+            communicationHandler.Setup(
+                s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()))
+                .Returns(Task.CompletedTask);
 
-                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
-                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
+            di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+            di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
 
-                var transactionRecordKey1 = await OpenTransaction(server, entityKey);
-                var transactionRecordKey2 = await OpenTransaction(server, entityKey);
+            var transactionRecordKey1 = await OpenTransaction(_server, entityKey);
+            var transactionRecordKey2 = await OpenTransaction(_server, entityKey);
 
-                await ProcessTransaction(server, transactionRecordKey1);
-                await ProcessTransaction(server, transactionRecordKey2);
+            await ProcessTransaction(_server, transactionRecordKey1);
+            await SucceedTransaction(_server, transactionRecordKey1);
 
-                await SucceedTransaction(server, transactionRecordKey1);
+            await ProcessTransaction(_server, transactionRecordKey2);
 
-                var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKey1);
-                Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId1);
+            var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+            Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId1);
 
-                var transactionStatusId2 = await GetTransactionStatus(server, transactionRecordKey2);
-                Assert.AreEqual((long)TransactionStatusType.Skipped, transactionStatusId2);
+            var transactionStatusId2 = await GetTransactionStatus(_server, transactionRecordKey2);
+            Assert.AreEqual((long)TransactionStatusType.Skipped, transactionStatusId2);
 
-                communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
-            }
+            communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
+
         }
 
         [TestMethod]
         public async Task OpenAndFailTransactionTest()
         {
-            using (var server = TestServer.Create<Startup>())
-            {
-                var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
-                var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
-                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
-                var entityKey = Guid.NewGuid().ToString("D");
-                var communicationHandler = new Mock<ICommunicationHandler>();
-                communicationHandler.Setup(
-                    s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()))
-                    .Returns(Task.CompletedTask);
+            var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
+            var entityKey = Guid.NewGuid().ToString("D");
+            var communicationHandler = new Mock<ICommunicationHandler>();
+            communicationHandler.Setup(
+                s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()))
+                .Returns(Task.CompletedTask);
 
-                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
-                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
+            di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+            di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
 
-                var recordKey = await OpenTransaction(server, entityKey);
+            var recordKey = await OpenTransaction(_server, entityKey);
 
-                await ProcessTransaction(server, recordKey);
+            await ProcessTransaction(_server, recordKey);
 
-                await FailTransaction(server, recordKey, "Test Failure Message", "Test Failure Details");
+            await FailTransaction(_server, recordKey, "Test Failure Message", "Test Failure Details");
 
-                var transactionStatusId1 = await GetTransactionStatus(server, recordKey);
-                Assert.AreEqual((long)TransactionStatusType.Failed, transactionStatusId1);
+            var transactionStatusId1 = await GetTransactionStatus(_server, recordKey);
+            Assert.AreEqual((long)TransactionStatusType.Failed, transactionStatusId1);
 
-                communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
-            }
+            communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
+
         }
 
         [TestMethod]
         public async Task OpenAndSucceedBatchAsRoot()
         {
-            using (var server = TestServer.Create<Startup>())
+            var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            var nextKey = Guid.NewGuid();
+            var keyStack = new Queue<string>();
+            keyStack.Enqueue(nextKey.ToString("D"));
+            for (int i = 0; i < 100; i++)
             {
-                var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
-                var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
-                var nextKey = Guid.NewGuid();
-                var keyStack = new Queue<string>();
-                keyStack.Enqueue(nextKey.ToString("D"));
-                for (int i = 0; i < 100; i++)
-                {
-                    keyStack.Enqueue(Guid.NewGuid().ToString("D"));
-                }
-
-                
-                //bool firstRequest = true;
-                transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
-                var entityKey = Guid.NewGuid().ToString("D");
-                string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}}}}";
-                object receivedData = string.Empty;
-
-                var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
-                var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
-
-                communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.Is<TransactionDataReady>(dr => dr.RecordKey == nextKey), It.IsAny<ProtocolConfiguration>()))
-                    .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
-                    {
-                        receivedData = data.Data;
-                    });
-
-                di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
-                di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
-
-                var responseMessage = await OpenBatchTransaction(server, entityKey);
-                Assert.AreEqual(nextKey, responseMessage);
+                keyStack.Enqueue(Guid.NewGuid().ToString("D"));
             }
+
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
+            var entityKey = Guid.NewGuid().ToString("D");
+            string expectedMessageTemplate = "{{\"Data\":{{\"UserName\":\"ListenerUser\",\"EntityCategory\":\"{0}\",\"EntityKey\":\"{1}\",\"OperationKey\":\"{2}\"}}}}";
+
+            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+
+            Dictionary<Guid, object> receivedData = new Dictionary<Guid, object>();
+
+            communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.IsAny<TransactionDataReady>(), It.IsAny<ProtocolConfiguration>()))
+                .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
+                {
+                    receivedData.Add(data.RecordKey, data.Data);
+                });
+
+            di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+            di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
+
+            var responseMessage = await OpenBatchTransaction(_server);
+            Assert.AreEqual(nextKey, responseMessage);
+
+            await ProcessTransaction(_server, nextKey);
+
+            Assert.AreEqual(10, receivedData.Count);
+
+            List<string> messages = new List<string>();
+            foreach (var o in receivedData)
+            {
+                var data = (o.Value as TransactionMessage).Data as IDictionary<string, object>;
+                var msg = expectedMessageTemplate.FormatWith(
+                    data["EntityCategory"],
+                    data["EntityKey"],
+                    data["OperationKey"]);
+                messages.Add(msg);
+            }
+
+            communicationHandler.Verify(
+                s =>
+                    s.Handle(
+                        It.Is<TransactionDataReady>(
+                            ready => messages.Count(m =>
+                                string.Compare(JsonConvert.SerializeObject(ready.Data), m,
+                                    StringComparison.InvariantCulture) == 0) == 1), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
+                Times.AtLeastOnce, "Received unexpected message. Should be in: {0}".FormatWith(string.Join(Environment.NewLine, messages)));
+
+
+            communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Exactly(10));
+
+            await SucceedTransaction(_server, nextKey);
+
+            var transactionStatusId = await GetTransactionStatus(_server, nextKey);
+
+            Assert.AreEqual(0L, transactionStatusId);
+
         }
 
         [TestMethod]
@@ -315,7 +358,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             return responseMessage;
         }
 
-        private static async Task<Guid> OpenBatchTransaction(TestServer server, string entityKey)
+        private static async Task<Guid> OpenBatchTransaction(TestServer server)
         {
             var settings = new JsonSerializerSettings
             {
@@ -365,12 +408,14 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 requestMessage.Body.Add(new BatchTransactionEntry
                 {
                     EntityCategory = operations.Keys.ElementAt(i),
-                    OperationKey = operations[operations.Keys.ElementAt(i)].First()
+                    OperationKey = operations[operations.Keys.ElementAt(i)].First(),
+                    EntityKey = Guid.NewGuid().ToString()
                 });
                 requestMessage.Body.Add(new BatchTransactionEntry
                 {
                     EntityCategory = operations.Keys.ElementAt(operations.Keys.Count - i - 1),
-                    OperationKey = operations[operations.Keys.ElementAt(operations.Keys.Count - i - 1)].First()
+                    OperationKey = operations[operations.Keys.ElementAt(operations.Keys.Count - i - 1)].First(),
+                    EntityKey = Guid.NewGuid().ToString()
                 });
             }
 

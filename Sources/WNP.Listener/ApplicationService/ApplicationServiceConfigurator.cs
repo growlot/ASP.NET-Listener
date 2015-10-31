@@ -4,8 +4,12 @@
 
 namespace AMSLLC.Listener.ApplicationService
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using CommandHandlers;
     using Commands;
+    using Communication;
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
@@ -48,6 +52,12 @@ namespace AMSLLC.Listener.ApplicationService
         {
             this.domainEventBus.SubscribeAsync<TransactionSkipped>(
                 domainEvent => this.transactionService.Skipped(new SkipTransactionCommand { RecordKey = domainEvent.RecordKey }));
+
+            this.domainEventBus.SubscribeAsync<TransactionDataReady>(domainEvent =>
+            {
+                var dispatcher = ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>("communication-{0}".FormatWith(domainEvent.Endpoint.Protocol));
+                return dispatcher.Handle(domainEvent, domainEvent.Endpoint.ConnectionConfiguration, domainEvent.Endpoint.ProtocolConfiguration);
+            });
         }
     }
 }

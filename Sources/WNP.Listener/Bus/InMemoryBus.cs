@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Bus
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using ApplicationService;
     using Domain;
@@ -165,6 +166,34 @@ namespace AMSLLC.Listener.Bus
             {
                 CommandAsyncHandlers[typeof(TCommand)].Add(x => handler((TCommand)x));
             }
+        }
+
+        /// <summary>
+        /// Publishes the specified domain events in a parallel manner.
+        /// </summary>
+        /// <typeparam name="TEvent">The type of the t event.</typeparam>
+        /// <param name="domainEvents">The domain events.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="System.ArgumentNullException">Domain events must be specified in order to publish it.</exception>
+        Task IDomainEventBus.PublishBulk<TEvent>(ICollection<TEvent> domainEvents)
+        {
+            if (domainEvents == null)
+            {
+                throw new ArgumentNullException(nameof(domainEvents), "Domain events must be specified in order to publish it.");
+            }
+
+            /*Parallel.ForEach(domainEvents, new ParallelOptions { MaxDegreeOfParallelism = parallelDegree }, @event =>
+            {
+                if (DomainEventHandlers.ContainsKey(@event.GetType()))
+                {
+                    foreach (var handler in DomainEventHandlers[@event.GetType()])
+                    {
+                        handler(@event);
+                    }
+                }
+            });*/
+
+            return Task.WhenAll(domainEvents.SelectMany(d => ((IDomainEventBus)this).PublishAsync(d)));
         }
     }
 }

@@ -7,7 +7,6 @@ namespace AMSLLC.Listener.Bootstrapper
     using System;
     using ApplicationService;
     using ApplicationService.Implementations;
-    using ApplicationService.Validator;
     using Bus;
     using Communication;
     using Communication.Jms;
@@ -56,7 +55,6 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<IEndpointDataProcessor>().To<DefaultEndpointDataProcessor>().InSingletonScope();
             this.Kernel.Bind<IConnectionConfigurationBuilder>().To<JmsConnectionConfigurationBuilder>().InSingletonScope().Named("connection-builder-jms");
             this.Kernel.Bind<IProtocolConfigurationBuilder>().To<Communication.Jms.ProtocolConfigurationBuilder>().InSingletonScope().Named("protocol-builder-jms");
-            this.Kernel.Bind<IUniqueHashValidator>().To<UniqueHashValidator>();
 
             // -------------------------
             // Communication bindings

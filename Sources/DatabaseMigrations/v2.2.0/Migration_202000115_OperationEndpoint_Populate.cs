@@ -20,18 +20,30 @@ namespace AMSLLC.Listener.DatabaseMigrations
         /// </summary>
         public override void Up()
         {
-            var record = new
+            var records = new object[]
             {
-                OperationEndpointId = 1,
-                EnabledOperationId = 1,
-                EndpointId = 1
+                new
+                {
+                    OperationEndpointId = 1,
+                    EnabledOperationId = 1,
+                    EndpointId = 1
+                },
+                new
+                {
+                    OperationEndpointId = 2,
+                    EnabledOperationId = 3,
+                    EndpointId = 1
+                }
             };
 
-            this.IfSqlServer().Insert.IntoTable("OperationEndpoint").WithIdentityInsert()
-                .Row(record);
+            foreach (var record in records)
+            {
+                this.IfSqlServer().Insert.IntoTable("OperationEndpoint").WithIdentityInsert()
+                    .Row(record);
 
-            this.IfOracle().Insert.IntoTable("OperationEndpoint")
-                .Row(record);
+                this.IfOracle().Insert.IntoTable("OperationEndpoint")
+                    .Row(record);
+            }
         }
 
         /// <summary>

@@ -57,12 +57,14 @@ namespace AMSLLC.Listener.Repository
         /// <returns>The empty task</returns>
         Task UpdateTransactionRegistryAsync(TransactionRegistry transactionRegistry);
 
+        /*
         /// <summary>
         /// Gets the transaction data.
         /// </summary>
         /// <param name="recordKey">The transaction record key.</param>
         /// <returns>The transaction data.</returns>
         Task<string> GetTransactionDataAsync(Guid recordKey);
+        */
 
         /// <summary>
         /// Gets the hash count.
@@ -75,10 +77,9 @@ namespace AMSLLC.Listener.Repository
         /// <summary>
         /// Updates the hash.
         /// </summary>
-        /// <param name="recordKey">The record key.</param>
-        /// <param name="hash">The hash.</param>
+        /// <param name="hashCodes">The hash codes.</param>
         /// <returns>The empty task</returns>
-        Task UpdateHashAsync(Guid recordKey, string hash);
+        Task UpdateHashAsync(Dictionary<Guid, string> hashCodes);
 
         /// <summary>
         /// Gets the field configurations.

@@ -156,6 +156,10 @@
       <Project>{e3183353-f97e-4ee2-84d7-d81ce2707ff7}</Project>
       <Name>Bootstrapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bus\Bus.csproj">
+      <Project>{92D5D64C-DA0A-4D9F-9ACA-29AAF58133C1}</Project>
+      <Name>Bus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Communication.Jms\Communication.Jms.csproj">
       <Project>{0213748A-3255-4704-84EA-8821B311A3A2}</Project>
       <Name>Communication.Jms</Name>

@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Dynamic;
     using System.Linq;
     using System.Threading.Tasks;
     using ApplicationService;
@@ -64,13 +65,9 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             var transactionRepositoryMock = new Mock<ITransactionRepository>();
 
-            var validatorMock = new Mock<IUniqueHashValidator>();
-            validatorMock.Setup(s => s.ValidateAsync(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            validatorMock.Setup(s => s.Valid).Returns(true);
-
             var domainEventBus = new Mock<IDomainEventBus>();
 
-            var transactionExecutionDomain = new Mock<TransactionExecution>(validatorMock.Object, domainEventBus.Object) { CallBase = true };
+            var transactionExecutionDomain = new Mock<TransactionExecution>(domainEventBus.Object) { CallBase = true };
             transactionExecutionDomain.As<IOriginator>();
             transactionExecutionDomain.As<IWithDomainBuilder>();
             var integrationEndpointConfiguration = new Mock<IntegrationEndpointConfiguration>();
@@ -124,7 +121,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 Guid.Parse(recordKey),
                 1,
                 new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Always) },
-                fieldConfigurations, null);
+                fieldConfigurations, null, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(testMessageData)), null);
 
             transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(Guid.Parse(recordKey)))
                 .Returns(
@@ -135,8 +132,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                     (int i, string h) => Task.FromResult(0));
 
             // var dn = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(testMessageData));
-            transactionRepositoryMock.Setup(s => s.GetTransactionDataAsync(Guid.Parse(recordKey)))
-                .Returns(Task.FromResult(JsonConvert.SerializeObject(testMessageData)));
+            //transactionRepositoryMock.Setup(s => s.GetTransactionDataAsync(Guid.Parse(recordKey)))
+            //    .Returns(Task.FromResult(JsonConvert.SerializeObject(testMessageData)));
 
             var domainBuilderMock = new Mock<DomainBuilder>() { CallBase = true };
             transactionExecutionDomain.Setup(t => t.DomainBuilder).Returns(domainBuilderMock.Object);
@@ -168,7 +165,6 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             di.Initialize(container =>
             {
-                container.Bind<IUniqueHashValidator>().ToConstant(validatorMock.Object);
                 container.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
                 container.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
                 container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
@@ -192,7 +188,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 });
 
             transactionExecutionDomain.Verify(
-                foo => foo.Process(It.IsAny<object>()), Times.Once());
+                foo => foo.Process(), Times.Once());
             jmsConnectionBuilder.Verify(f => f.Create(It.Is<IMemento>(data => data != null)), Times.Once);
             jmsEndpointProcessorMock.Verify(
                 f =>

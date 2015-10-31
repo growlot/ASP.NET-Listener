@@ -173,19 +173,24 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     await
                         sourceRepository.GetExecutionContextAsync(requestMessage.RecordKey);
 
-                var dataString = await sourceRepository.GetTransactionDataAsync(requestMessage.RecordKey);
+                // var dataString = await sourceRepository.GetTransactionDataAsync(requestMessage.RecordKey);
                 var transactionExecution =
                     scope.DomainBuilder.Create<TransactionExecution>();
 
                 ((IOriginator)transactionExecution).SetMemento(memento);
 
-                ExpandoObject data = string.IsNullOrWhiteSpace(dataString) ? null : JsonConvert.DeserializeObject<ExpandoObject>(dataString);
+                await transactionExecution.Process();
 
-                await
-                    Task.WhenAll(
-                        transactionExecution.Process(data));
+                var hashList =
+                    new Dictionary<Guid, string>(
+                        transactionExecution.ChildTransactions.ToDictionary(s => s.RecordKey, s => s.TransactionHash))
+                    {
+                        {
+                            transactionExecution.RecordKey, transactionExecution.TransactionHash
+                        }
+                    };
 
-                await sourceRepository.UpdateHashAsync(requestMessage.RecordKey, transactionExecution.TransactionHash);
+                await sourceRepository.UpdateHashAsync(hashList);
             }
         }
 

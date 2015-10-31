@@ -23,7 +23,17 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
         /// <param name="fieldConfigurations">The field configurations.</param>
         /// <param name="childTransactions">The child transactions.</param>
-        public TransactionExecutionMemento(int transactionId, Guid recordKey, int enabledOperationId, IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration, IEnumerable<FieldConfigurationMemento> fieldConfigurations, IEnumerable<TransactionExecutionMemento> childTransactions)
+        /// <param name="data">The data.</param>
+        /// <param name="duplicates">The duplicates.</param>
+        public TransactionExecutionMemento(
+            int transactionId,
+            Guid recordKey,
+            int enabledOperationId,
+            IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration,
+            IEnumerable<FieldConfigurationMemento> fieldConfigurations,
+            IEnumerable<TransactionExecutionMemento> childTransactions,
+            object data,
+            IEnumerable<Guid> duplicates)
         {
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
@@ -31,6 +41,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.EnabledOperationId = enabledOperationId;
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfigurationMemento>(new List<FieldConfigurationMemento>(fieldConfigurations));
             this.ChildTransactions = new ReadOnlyCollection<TransactionExecutionMemento>(new List<TransactionExecutionMemento>(childTransactions ?? new TransactionExecutionMemento[0]));
+            this.Data = data;
+            this.DuplicateRecords = new ReadOnlyCollection<Guid>(new List<Guid>(duplicates));
         }
 
         /// <summary>
@@ -68,5 +80,17 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The child transactions.</value>
         public ReadOnlyCollection<TransactionExecutionMemento> ChildTransactions { get; private set; }
+
+        /// <summary>
+        /// Gets the duplicate records.
+        /// </summary>
+        /// <value>The duplicate records.</value>
+        public ReadOnlyCollection<Guid> DuplicateRecords { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the data.
+        /// </summary>
+        /// <value>The data.</value>
+        public object Data { get; set; }
     }
 }

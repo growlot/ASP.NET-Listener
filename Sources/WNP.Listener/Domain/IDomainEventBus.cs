@@ -4,6 +4,7 @@
 namespace AMSLLC.Listener.Domain
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -47,6 +48,16 @@ namespace AMSLLC.Listener.Domain
         /// <param name="domainEvent">The domain event.</param>
         /// <returns>The empty task.</returns>
         Task[] PublishAsync<TEvent>(TEvent domainEvent)
+            where TEvent : IDomainEvent;
+
+        /// <summary>
+        /// Publishes the specified domain events in a parallel manner.
+        /// </summary>
+        /// <typeparam name="TEvent">The type of the t event.</typeparam>
+        /// <param name="domainEvents">The domain events.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="System.ArgumentNullException">Domain events must be specified in order to publish it.</exception>
+        Task PublishBulk<TEvent>(ICollection<TEvent> domainEvents)
             where TEvent : IDomainEvent;
     }
 }

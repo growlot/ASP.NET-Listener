@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
     using Communication;
@@ -15,23 +16,19 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction execution
     /// </summary>
-    public class TransactionExecution : Entity<int>, IWithDomainBuilder, IAggregateRoot
+    public class TransactionExecution : Entity<int>, IWithDomainBuilder, IAggregateRoot, ITransactionExecutionData
     {
-        private readonly DomainValidatorDictionary validatorRegistry = new DomainValidatorDictionary();
-
         /// <summary>
         /// The domain event bus
         /// </summary>
-        private IDomainEventBus domainEventBus;
+        private readonly IDomainEventBus domainEventBus;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionExecution" /> class.
         /// </summary>
-        /// <param name="hashValidator">The hash validator.</param>
         /// <param name="domainEventBus">The domain event bus.</param>
-        public TransactionExecution(IUniqueHashValidator hashValidator, IDomainEventBus domainEventBus)
+        public TransactionExecution(IDomainEventBus domainEventBus)
         {
-            this.validatorRegistry.Add(typeof(IUniqueHashValidator), hashValidator);
             this.domainEventBus = domainEventBus;
         }
 
@@ -78,53 +75,25 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public virtual IDomainBuilder DomainBuilder { get; set; }
 
         /// <summary>
-        /// Gets the hash validator.
+        /// Gets the data.
         /// </summary>
-        /// <value>The hash validator.</value>
-        protected IUniqueHashValidator HashValidator => this.validatorRegistry[typeof(IUniqueHashValidator)] as IUniqueHashValidator;
+        /// <value>The data.</value>
+        public object Data { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the duplicate transactions.
+        /// </summary>
+        /// <value>The duplicate hash count.</value>
+        public Collection<Guid> DuplicateTransactions { get; } = new Collection<Guid>();
 
         /// <summary>
         /// Processes the specified transaction.
         /// </summary>
-        /// <param name="data">The data.</param>
-        /// <returns>Task.</returns>
-        public virtual Task[] Process(object data)
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        public virtual Task Process()
         {
-            var returnValue = new Task[this.EndpointConfigurations.Count];
-            var processor = ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
-
-            var preparedData = processor.Process(data, this.FieldConfigurations);
-            for (int i = 0; i < this.EndpointConfigurations.Count; i++)
-            {
-                var cfg = this.EndpointConfigurations[i];
-                this.TransactionHash = preparedData.Hash;
-                returnValue[i] = this.HashValidator.ValidateAsync(this.EnabledOperationId, preparedData.Hash).ContinueWith(t =>
-                {
-                    if (!this.HashValidator.Valid && cfg.Trigger == EndpointTriggerType.Changed)
-                    {
-                        var tasks = this.domainEventBus.PublishAsync(new TransactionSkipped(this.RecordKey));
-                        if (tasks.Any())
-                        {
-                            return Task.Factory.ContinueWhenAll(tasks, (tt) => tt);
-                        }
-                        return Task.Factory.StartNew(() => { });
-                    }
-
-                    var dispatcher = ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>("communication-{0}".FormatWith(cfg.Protocol));
-
-                    var eventData = new TransactionDataReady
-                    {
-                        Data = new TransactionMessage { Data = preparedData.Data },
-                        RecordKey = this.RecordKey
-                    };
-
-                    this.domainEventBus.Publish(eventData);
-
-                    return dispatcher.Handle(eventData, cfg.ConnectionConfiguration, cfg.ProtocolConfiguration);
-                });
-            }
-
-            return returnValue;
+            var endpointExecutionData = this.ChildTransactions.Any() ? this.ProcessBatch() : ProcessTransaction(this);
+            return this.domainEventBus.PublishBulk(endpointExecutionData);
         }
 
         /// <summary>
@@ -138,7 +107,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Id = myMemento.TransactionId;
             this.EnabledOperationId = myMemento.EnabledOperationId;
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
-
+            this.Data = myMemento.Data;
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(s =>
             {
                 var itm = new FieldConfiguration();
@@ -148,10 +117,62 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
             this.ChildTransactions = new ReadOnlyCollection<ChildTransactionEntity>(new List<ChildTransactionEntity>(myMemento.ChildTransactions.Select(s =>
             {
-                var itm = new ChildTransactionEntity();
+                var itm = new ChildTransactionEntity { DomainBuilder = this.DomainBuilder };
                 ((IOriginator)itm).SetMemento(s);
                 return itm;
             })));
+
+            foreach (var duplicateRecord in myMemento.DuplicateRecords)
+            {
+                this.DuplicateTransactions.Add(duplicateRecord);
+            }
+        }
+
+        private static ICollection<IDomainEvent> ProcessTransaction(ITransactionExecutionData transactionExecutionData)
+        {
+            var returnValue = new List<IDomainEvent>();
+            var processor = ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
+
+            var preparedData = processor.Process(transactionExecutionData.Data, transactionExecutionData.FieldConfigurations);
+            foreach (var cfg in transactionExecutionData.EndpointConfigurations)
+            {
+                transactionExecutionData.TransactionHash = preparedData.Hash;
+                if (transactionExecutionData.DuplicateTransactions.Any())
+                {
+                    returnValue.Add(new TransactionSkipped(transactionExecutionData.RecordKey));
+                    break;
+                }
+                else
+                {
+                    var eventData = new TransactionDataReady
+                    {
+                        Data = new TransactionMessage
+                        {
+                            Data = preparedData.Data
+                        },
+                        RecordKey = transactionExecutionData.RecordKey,
+                        TransactionHash = transactionExecutionData.TransactionHash,
+                        Endpoint = cfg
+                    };
+
+                    returnValue.Add(eventData);
+
+                    // domainEventBus.Publish(eventData);
+                }
+            }
+
+            return returnValue;
+        }
+
+        private ICollection<IDomainEvent> ProcessBatch()
+        {
+            var returnValue = new List<IDomainEvent>();
+            foreach (var childTransactionEntity in this.ChildTransactions)
+            {
+                returnValue.AddRange(ProcessTransaction(childTransactionEntity));
+            }
+
+            return returnValue;
         }
     }
 }
