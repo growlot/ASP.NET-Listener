@@ -144,10 +144,10 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
             }
 
             var transactionKeys = childTr.Select(s => s.IncomingHash).ToList();
-            if (!transactionKeys.Any())
-            {
-                transactionKeys.Add(tr.IncomingHash);
-            }
+            //if (!transactionKeys.Any())
+            //{
+            transactionKeys.Add(tr.IncomingHash);
+            //}
 
             Func
                 <EndpointEntity, OperationEndpointEntity, EnabledOperationEntity,

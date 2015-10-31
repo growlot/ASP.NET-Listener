@@ -101,7 +101,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             var transactionStatusId = await GetTransactionStatus(_server, nextKey);
 
-            Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId);
+            Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId);
 
             var transactionMessageData = await GetTransactionData(_server, nextKey);
             Assert.AreEqual(expectedMessage, transactionMessageData);
@@ -133,10 +133,10 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             await ProcessTransaction(_server, transactionRecordKey2);
 
             var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
-            Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId1);
+            Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId1);
 
             var transactionStatusId2 = await GetTransactionStatus(_server, transactionRecordKey2);
-            Assert.AreEqual((long)TransactionStatusType.Skipped, transactionStatusId2);
+            Assert.AreEqual(TransactionStatusType.Skipped, (TransactionStatusType)transactionStatusId2);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
 
@@ -164,7 +164,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             await FailTransaction(_server, recordKey, "Test Failure Message", "Test Failure Details");
 
             var transactionStatusId1 = await GetTransactionStatus(_server, recordKey);
-            Assert.AreEqual((long)TransactionStatusType.Failed, transactionStatusId1);
+            Assert.AreEqual(TransactionStatusType.Failed, (TransactionStatusType)transactionStatusId1);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
 
@@ -184,7 +184,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             }
 
             transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
-            var entityKey = Guid.NewGuid().ToString("D");
             string expectedMessageTemplate = "{{\"Data\":{{\"UserName\":\"ListenerUser\",\"EntityCategory\":\"{0}\",\"EntityKey\":\"{1}\",\"OperationKey\":\"{2}\"}}}}";
 
             var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
@@ -208,16 +207,15 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             Assert.AreEqual(10, receivedData.Count);
 
-            List<string> messages = new List<string>();
-            foreach (var o in receivedData)
-            {
-                var data = (o.Value as TransactionMessage).Data as IDictionary<string, object>;
-                var msg = expectedMessageTemplate.FormatWith(
-                    data["EntityCategory"],
-                    data["EntityKey"],
-                    data["OperationKey"]);
-                messages.Add(msg);
-            }
+            List<string> messages =
+                receivedData.Select(o => (o.Value as TransactionMessage).Data as IDictionary<string, object>)
+                    .Select(
+                        data =>
+                            expectedMessageTemplate.FormatWith(
+                                data["EntityCategory"],
+                                data["EntityKey"],
+                                data["OperationKey"]))
+                    .ToList();
 
             communicationHandler.Verify(
                 s =>
@@ -228,14 +226,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                     StringComparison.InvariantCulture) == 0) == 1), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
                 Times.AtLeastOnce, "Received unexpected message. Should be in: {0}".FormatWith(string.Join(Environment.NewLine, messages)));
 
-
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Exactly(10));
 
             await SucceedTransaction(_server, nextKey);
 
             var transactionStatusId = await GetTransactionStatus(_server, nextKey);
 
-            Assert.AreEqual((long)TransactionStatusType.Success, transactionStatusId);
+            Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId);
 
         }
 
@@ -260,7 +257,50 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         [TestMethod]
         public async Task OpenAndSkipBatchAsRoot()
         {
-            Assert.Inconclusive("Implement this");
+            var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            var nextKey = Guid.NewGuid();
+            var keyStack = new Queue<string>();
+            keyStack.Enqueue(nextKey.ToString("D"));
+            for (int i = 0; i < 100; i++)
+            {
+                keyStack.Enqueue(Guid.NewGuid().ToString("D"));
+            }
+
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
+
+            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+
+            communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.IsAny<TransactionDataReady>(), It.IsAny<ProtocolConfiguration>()));
+
+            di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+            di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
+
+            List<string> entityKeys = new List<string>();
+            for (int i = 0; i < 100; i++)
+            {
+                entityKeys.Add(Guid.NewGuid().ToString("D"));
+            }
+
+            var transactionRecordKey1 = await OpenBatchTransaction(_server, entityKeys);
+            Assert.AreEqual(nextKey, transactionRecordKey1);
+
+            var transactionRecordKey2 = await OpenBatchTransaction(_server, entityKeys);
+            Assert.AreNotEqual(nextKey, transactionRecordKey2);
+
+            await ProcessTransaction(_server, transactionRecordKey1);
+            await SucceedTransaction(_server, transactionRecordKey1);
+
+            await ProcessTransaction(_server, transactionRecordKey2);
+
+            var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+            Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId1);
+
+            var transactionStatusId2 = await GetTransactionStatus(_server, transactionRecordKey2);
+            Assert.AreEqual(TransactionStatusType.Skipped, (TransactionStatusType)transactionStatusId2);
+
+            communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Exactly(10));
         }
 
         [TestMethod]
@@ -358,7 +398,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             return responseMessage;
         }
 
-        private static async Task<Guid> OpenBatchTransaction(TestServer server)
+        private static async Task<Guid> OpenBatchTransaction(TestServer server, ICollection<string> entityKeys = null)
         {
             var settings = new JsonSerializerSettings
             {
@@ -409,13 +449,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 {
                     EntityCategory = operations.Keys.ElementAt(i),
                     OperationKey = operations[operations.Keys.ElementAt(i)].First(),
-                    EntityKey = Guid.NewGuid().ToString()
+                    EntityKey = entityKeys == null ? Guid.NewGuid().ToString() : entityKeys.ElementAt(requestMessage.Body.Count)
                 });
                 requestMessage.Body.Add(new BatchTransactionEntry
                 {
                     EntityCategory = operations.Keys.ElementAt(operations.Keys.Count - i - 1),
                     OperationKey = operations[operations.Keys.ElementAt(operations.Keys.Count - i - 1)].First(),
-                    EntityKey = Guid.NewGuid().ToString()
+                    EntityKey = entityKeys == null ? Guid.NewGuid().ToString() : entityKeys.ElementAt(requestMessage.Body.Count)
                 });
             }
 

@@ -182,9 +182,26 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         private ICollection<IDomainEvent> ProcessBatch()
         {
             var returnValue = new List<IDomainEvent>();
-            foreach (var childTransactionEntity in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
+
+            // string hashCode = this.hashBuilder.Create(
+            //    this.ChildTransactions
+            //            .ToDictionary<ChildTransactionEntity, object, FieldConfigurationCollection>(
+            //                childTransactionRegistryEntity => childTransactionRegistryEntity.Data,
+            //                childTransactionRegistryEntity =>
+            //                   new FieldConfigurationCollection(childTransactionRegistryEntity.FieldConfigurations)),
+            //    f => f.OutgoingSequence);
+            if (this.DuplicateTransactions.Any())
             {
-                returnValue.AddRange(ProcessTransaction(childTransactionEntity, this.hashBuilder));
+                returnValue.Add(new TransactionSkipped(this.RecordKey));
+            }
+            else
+            {
+                foreach (
+                    var childTransactionEntity in
+                        this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
+                {
+                    returnValue.AddRange(ProcessTransaction(childTransactionEntity, this.hashBuilder));
+                }
             }
 
             return returnValue;
