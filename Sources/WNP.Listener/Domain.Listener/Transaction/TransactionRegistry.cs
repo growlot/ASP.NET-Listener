@@ -164,6 +164,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="scopeDateTime">The scope date time.</param>
         public void Succeed(DateTime scopeDateTime)
         {
+            foreach (var source in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.InProgress))
+            {
+                source.Status = TransactionStatusType.Success;
+                source.UpdatedDateTime = scopeDateTime;
+            }
+
             if (this.ChildTransactions.Any()
                 && !this.ChildTransactions.All(s => s.Status == TransactionStatusType.Success || s.Status == TransactionStatusType.Skipped))
             {

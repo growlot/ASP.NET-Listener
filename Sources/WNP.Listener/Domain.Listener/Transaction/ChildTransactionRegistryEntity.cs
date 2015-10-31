@@ -56,6 +56,24 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public int EnabledOperationId { get; set; }
 
         /// <summary>
+        /// Gets or sets the updated date time.
+        /// </summary>
+        /// <value>The updated date time.</value>
+        public DateTime? UpdatedDateTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message.
+        /// </summary>
+        /// <value>The message.</value>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// Gets or sets the details.
+        /// </summary>
+        /// <value>The details.</value>
+        public string Details { get; set; }
+
+        /// <summary>
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
@@ -70,6 +88,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Id = myMemento.TransactionId;
             this.TransactionKey = myMemento.TransactionKey;
             this.EnabledOperationId = myMemento.EnabledOperationId;
+            this.UpdatedDateTime = myMemento.UpdatedDateTime;
+            this.Message = myMemento.Message;
+            this.Details = myMemento.Details;
         }
     }
 }

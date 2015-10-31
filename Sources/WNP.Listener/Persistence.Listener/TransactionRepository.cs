@@ -352,22 +352,102 @@ WHERE TR.RecordKey = @0";
         }
 
         /// <inheritdoc/>
-        public Task UpdateTransactionRegistryAsync(TransactionRegistry transactionRegistry)
+        public async Task UpdateTransactionRegistryAsync(TransactionRegistry transactionRegistry)
         {
-            var entity = new TransactionRegistryEntity
+            if (!transactionRegistry.ChildTransactions.Any())
             {
-                TransactionId = transactionRegistry.Id,
-                TransactionStatusId = (int)transactionRegistry.Status,
-                UpdatedDateTime = transactionRegistry.UpdatedDateTime,
-                AppUser = transactionRegistry.UserName,
-                Message = transactionRegistry.Message,
-                Details = transactionRegistry.Details
-            };
+                var entity = new TransactionRegistryEntity
+                {
+                    TransactionId = transactionRegistry.Id,
+                    TransactionStatusId = (int)transactionRegistry.Status,
+                    UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                    AppUser = transactionRegistry.UserName,
+                    Message = transactionRegistry.Message,
+                    Details = transactionRegistry.Details
+                };
 
-            return this.persistence.UpdateAsync(
-                entity,
-                transactionRegistry.RecordKey,
-                new[] { "TransactionStatusId", "UpdatedDateTime", "AppUser", "Message", "Details" });
+                await this.persistence.UpdateAsync(
+                    entity,
+                    transactionRegistry.RecordKey,
+                    new[]
+                    {
+                        "TransactionStatusId",
+                        "UpdatedDateTime",
+                        "AppUser",
+                        "Message",
+                        "Details"
+                    });
+            }
+            else
+            {
+                using (var tr = await this.persistence.BeginTransaction())
+                {
+                    var entity = new TransactionRegistryEntity
+                    {
+                        TransactionId = transactionRegistry.Id,
+                        TransactionStatusId = (int)transactionRegistry.Status,
+                        UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                        AppUser = transactionRegistry.UserName,
+                        Message = transactionRegistry.Message,
+                        Details = transactionRegistry.Details
+                    };
+
+                    await this.persistence.UpdateAsync(
+                        entity,
+                        transactionRegistry.RecordKey,
+                        new[]
+                        {
+                        "TransactionStatusId",
+                        "UpdatedDateTime",
+                        "AppUser",
+                        "Message",
+                        "Details"
+                        });
+
+                    foreach (var childTransactionRegistryEntity in transactionRegistry.ChildTransactions)
+                    {
+                        var centity = new TransactionRegistryEntity
+                        {
+                            TransactionId = childTransactionRegistryEntity.Id,
+                            TransactionStatusId = (int)childTransactionRegistryEntity.Status,
+                            UpdatedDateTime = childTransactionRegistryEntity.UpdatedDateTime,
+                            Message = childTransactionRegistryEntity.Message,
+                            Details = childTransactionRegistryEntity.Details
+                        };
+
+                        await this.persistence.UpdateAsync(
+                            centity,
+                            childTransactionRegistryEntity.RecordKey,
+                            new[]
+                            {
+                        "TransactionStatusId",
+                        "UpdatedDateTime",
+                        "Message",
+                        "Details"
+                            });
+                    }
+
+                    //await this.InsertRoot(transactionRegistry);
+
+                    //foreach (var childTransactionRegistryEntity in transactionRegistry.ChildTransactions)
+                    //{
+                    //    await this.persistence.InsertAsync(new // "TransactionRegistry", "TransactionId",
+                    //    {
+                    //        CreatedDateTime = childTransactionRegistryEntity.CreatedDateTime,
+                    //        BatchKey = transactionRegistry.RecordKey,
+                    //        RecordKey = childTransactionRegistryEntity.RecordKey,
+                    //        TransactionStatusId = (int)childTransactionRegistryEntity.Status,
+                    //        EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
+                    //        Data = childTransactionRegistryEntity.Data,
+                    //        AppUser = transactionRegistry.UserName,
+                    //        TransactionKey = childTransactionRegistryEntity.TransactionKey,
+                    //        Summary = SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
+                    //    }, "TransactionRegistry", "TransactionId");
+                    //}
+
+                    tr.Commit();
+                }
+            }
         }
 
         /// <inheritdoc/>
