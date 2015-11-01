@@ -84,6 +84,7 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="DomainEventHandlers\SiteCreatedEventHandler.cs" />
     <Compile Include="FluentColumnMap.cs" />
     <Compile Include="FluentMapperExtensions.cs" />
     <Compile Include="FluentMapper{T}.cs" />
@@ -488,6 +489,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{b650a448-fc3b-4c43-a59a-b1ad3500abd2}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Domain.WNP\Domain.WNP.csproj">
       <Project>{960f9f7b-d3a8-405c-86ce-0287de7096f4}</Project>
       <Name>Domain.WNP</Name>

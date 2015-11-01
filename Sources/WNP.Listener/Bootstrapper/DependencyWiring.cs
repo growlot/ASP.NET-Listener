@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Bootstrapper
 {
     using System;
+    using System.Web;
     using ApplicationService;
     using ApplicationService.Implementations;
     using Bus;
@@ -22,9 +23,11 @@ namespace AMSLLC.Listener.Bootstrapper
     using ODataService.Services.FilterTransformer;
     using ODataService.Services.Impl;
     using ODataService.Services.Impl.FilterTransformer;
+    using Persistence.DomainEventHandlers;
     using Persistence.Listener;
     using Persistence.WNP;
     using Repository;
+    using Repository.WNP;
     using Serilog;
 
     /// <summary>
@@ -93,17 +96,32 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>();
 
             // -------------------------
-            // Persistence bindings
+            // Repository.WNP bindings
+            // -------------------------
+            this.Kernel.Bind<HttpContextExtensions>().ToSelf().InRequestScope(); // .To<WNPUnitOfWork>().InRequestScope(); //
+            this.Kernel.Bind<IWNPUnitOfWork>().To<WNPUnitOfWork>().InSingletonScope();
+
+            // -------------------------
+            // Persistence.Listener bindings
+            // -------------------------
+            this.Kernel.Bind<ListenerDbContext>().ToSelf().InRequestScope().WithConstructorArgument("connectionStringName", "ListenerDB");
+
+            // -------------------------
+            // Persistence.WNP bindings
             // -------------------------
             this.Kernel.Bind<WNPDBContext>()
                 .ToSelf()
                 .InRequestScope()
                 .WithConstructorArgument("connectionStringName", "WNPDatabase");
 
-            // -------------------------
-            // Persistence.Listener bindings
-            // -------------------------
-            this.Kernel.Bind<ListenerDbContext>().ToSelf().InRequestScope().WithConstructorArgument("connectionStringName", "ListenerDB");
+            this.Kernel.Bind<WNPUnitOfWork>()
+                .ToSelf()
+                .InRequestScope();
+
+            this.Kernel.Bind<SiteCreatedEventHandler>()
+                .ToSelf()
+                .InRequestScope()
+                .WithConstructorArgument("user", "username");
 
             // -------------------------
             // OData service bindings
@@ -114,6 +132,7 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();
             this.Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
             this.Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
+            this.Kernel.Bind<CurrentUnitOfWork>().ToSelf().InRequestScope();
         }
     }
 }

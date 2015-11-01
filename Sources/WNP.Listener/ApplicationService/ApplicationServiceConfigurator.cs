@@ -14,6 +14,8 @@ namespace AMSLLC.Listener.ApplicationService
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
+    using Domain.WNP.OwnerAggregate;
+    using Persistence.DomainEventHandlers;
 
     /// <summary>
     /// Configures application services by registering command handlers
@@ -38,16 +40,16 @@ namespace AMSLLC.Listener.ApplicationService
         }
 
         /// <summary>
-        /// Registers command handlers for all commands.
+        /// Registers command handlers for commands.
         /// </summary>
         public void RegisterCommandHandlers()
         {
-            this.commandBus.SubscribeAsync<CreateSiteCommand>(
-                command => ApplicationIntegration.DependencyResolver.ResolveType<CreateSiteCommandHandler>().Handle(command));
+            this.commandBus.Subscribe<CreateSiteCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<CreateSiteCommandHandler>().HandleAsync(command));
         }
 
         /// <summary>
-        /// Registers the handlers for all Saga's.
+        /// Registers the saga handlers for domain events.
         /// </summary>
         public void RegisterSagaHandlers()
         {
@@ -81,6 +83,15 @@ namespace AMSLLC.Listener.ApplicationService
                                         }))
                                 : t);
                 });
+        }
+
+        /// <summary>
+        /// Registers the persistence handlers for domain events.
+        /// </summary>
+        public void RegisterPersistenceHandlers()
+        {
+            this.domainEventBus.SubscribeAsync<SiteCreatedEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteCreatedEventHandler>().HandleAsync(domainEvent));
         }
     }
 }

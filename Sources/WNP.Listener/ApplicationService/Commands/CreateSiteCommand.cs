@@ -29,29 +29,80 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets the address.
+        /// Gets or sets the country.
         /// </summary>
         /// <value>
-        /// The address.
+        /// The country.
         /// </value>
-        public PhysicalAddress Address { get; set; }
+        public string Country { get; set; }
 
         /// <summary>
-        /// Gets the account.
+        /// Gets or sets the state.
         /// </summary>
         /// <value>
-        /// The account.
+        /// The state.
         /// </value>
-        public BillingAccount Account { get; set; }
+        public string State { get; set; }
+
+        /// <summary>
+        /// Gets or sets the city.
+        /// </summary>
+        /// <value>
+        /// The city.
+        /// </value>
+        public string City { get; set; }
+
+        /// <summary>
+        /// Gets or sets the address1.
+        /// </summary>
+        /// <value>
+        /// The address1.
+        /// </value>
+        public string Address1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the address2.
+        /// </summary>
+        /// <value>
+        /// The address2.
+        /// </value>
+        public string Address2 { get; set; }
+
+        /// <summary>
+        /// The zip
+        /// </summary>
+        public string Zip { get; set; }
 
         /// <summary>
         /// Gets the premise number.
-        /// Usually premisse number is generated and assigned to site by billing system (CIS, CSS, etc.).
-        /// If it is set, it must be unique, but if site is not assigned to any billing account then premise number might be empty.
         /// </summary>
         /// <value>
         /// The premise number.
         /// </value>
         public string PremiseNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the billing account.
+        /// </summary>
+        /// <value>
+        /// The name of the billing account.
+        /// </value>
+        public string BillingAccountName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the billing account number.
+        /// </summary>
+        /// <value>
+        /// The billing account number.
+        /// </value>
+        public string BillingAccountNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the site identifier. This is a return value and will be set in command handler on successfull completion.
+        /// </summary>
+        /// <value>
+        /// The site identifier.
+        /// </value>
+        public string ReturnedSiteId { get; set; }
     }
 }

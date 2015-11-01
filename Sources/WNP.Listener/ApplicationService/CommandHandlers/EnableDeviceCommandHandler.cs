@@ -19,7 +19,7 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
     public class EnableDeviceCommandHandler : ICommandHandler<EnableDeviceCommand>
     {
         /// <inheritdoc/>
-        public Task Handle(EnableDeviceCommand command)
+        public Task HandleAsync(EnableDeviceCommand command)
         {
             if (command == null)
             {

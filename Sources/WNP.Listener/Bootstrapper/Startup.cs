@@ -69,6 +69,7 @@ namespace AMSLLC.Listener.Bootstrapper
             var applicationServerConfigurator = diAdapter.ResolveType<ApplicationServiceConfigurator>();
             applicationServerConfigurator.RegisterCommandHandlers();
             applicationServerConfigurator.RegisterSagaHandlers();
+            applicationServerConfigurator.RegisterPersistenceHandlers();
 
             config.EnsureInitialized();
         }
