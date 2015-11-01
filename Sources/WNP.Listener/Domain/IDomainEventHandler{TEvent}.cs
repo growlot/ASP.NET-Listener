@@ -22,6 +22,6 @@ namespace AMSLLC.Listener.Domain
         /// <returns>
         /// The empty task.
         /// </returns>
-        Task Handle(TEvent domainEvent);
+        Task HandleAsync(TEvent domainEvent);
     }
 }

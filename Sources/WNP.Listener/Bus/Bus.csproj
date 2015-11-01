@@ -100,6 +100,10 @@
       <Project>{7937eb80-3944-4ab3-96e3-4745cfc5e21a}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{cf40fb68-247d-4024-a8e9-3b707973ad11}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

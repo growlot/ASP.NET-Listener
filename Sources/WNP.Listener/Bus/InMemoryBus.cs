@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.Bus
     using System.Threading.Tasks;
     using ApplicationService;
     using Domain;
+    using Utilities;
 
     /// <summary>
     /// bla
@@ -29,16 +30,10 @@ namespace AMSLLC.Listener.Bus
             new Dictionary<Type, List<Func<IDomainEvent, Task>>>();
 
         /// <summary>
-        /// The command handlers collection.
-        /// </summary>
-        private static readonly Dictionary<Type, List<Action<ICommand>>> CommandHandlers =
-            new Dictionary<Type, List<Action<ICommand>>>();
-
-        /// <summary>
         /// The async command handlers collection.
         /// </summary>
-        private static readonly Dictionary<Type, List<Func<ICommand, Task>>> CommandAsyncHandlers =
-            new Dictionary<Type, List<Func<ICommand, Task>>>();
+        private static readonly Dictionary<Type, Func<ICommand, Task>> CommandAsyncHandlers =
+            new Dictionary<Type, Func<ICommand, Task>>();
 
         void IDomainEventBus.Publish<TEvent>(TEvent domainEvent)
         {
@@ -56,23 +51,7 @@ namespace AMSLLC.Listener.Bus
             }
         }
 
-        void ICommandBus.Publish<TCommand>(TCommand command)
-        {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command), "Command must be specified in order to publish it.");
-            }
-
-            if (CommandHandlers.ContainsKey(command.GetType()))
-            {
-                foreach (var handler in CommandHandlers[command.GetType()])
-                {
-                    handler(command);
-                }
-            }
-        }
-
-        Task[] IDomainEventBus.PublishAsync<TEvent>(TEvent domainEvent)
+        async Task IDomainEventBus.PublishAsync<TEvent>(TEvent domainEvent)
         {
             if (domainEvent == null)
             {
@@ -88,13 +67,11 @@ namespace AMSLLC.Listener.Bus
                     returnValue[i] = handlers[i](domainEvent);
                 }
 
-                return returnValue;
+                await Task.WhenAll(returnValue);
             }
-
-            return new Task[0];
         }
 
-        Task[] ICommandBus.PublishAsync<TCommand>(TCommand command)
+        Task ICommandBus.PublishAsync<TCommand>(TCommand command)
         {
             if (command == null)
             {
@@ -103,17 +80,10 @@ namespace AMSLLC.Listener.Bus
 
             if (CommandAsyncHandlers.ContainsKey(command.GetType()))
             {
-                var handlers = CommandAsyncHandlers[command.GetType()];
-                Task[] returnValue = new Task[handlers.Count];
-                for (int i = 0; i < handlers.Count; i++)
-                {
-                    returnValue[i] = handlers[i](command);
-                }
-
-                return returnValue;
+                return CommandAsyncHandlers[command.GetType()](command);
             }
 
-            return new Task[0];
+            return Task.CompletedTask;
         }
 
         void IDomainEventBus.Subscribe<TEvent>(Action<TEvent> handler)
@@ -126,19 +96,6 @@ namespace AMSLLC.Listener.Bus
             if (!DomainEventHandlers[typeof(TEvent)].Contains(x => handler((TEvent)x)))
             {
                 DomainEventHandlers[typeof(TEvent)].Add(x => handler((TEvent)x));
-            }
-        }
-
-        void ICommandBus.Subscribe<TCommand>(Action<TCommand> handler)
-        {
-            if (!CommandHandlers.ContainsKey(typeof(TCommand)))
-            {
-                CommandHandlers.Add(typeof(TCommand), new List<Action<ICommand>>());
-            }
-
-            if (!CommandHandlers[typeof(TCommand)].Contains(x => handler((TCommand)x)))
-            {
-                CommandHandlers[typeof(TCommand)].Add(x => handler((TCommand)x));
             }
         }
 
@@ -155,17 +112,14 @@ namespace AMSLLC.Listener.Bus
             }
         }
 
-        void ICommandBus.SubscribeAsync<TCommand>(Func<TCommand, Task> handler)
+        void ICommandBus.Subscribe<TCommand>(Func<TCommand, Task> handler)
         {
-            if (!CommandAsyncHandlers.ContainsKey(typeof(TCommand)))
+            if (CommandAsyncHandlers.ContainsKey(typeof(TCommand)))
             {
-                CommandAsyncHandlers.Add(typeof(TCommand), new List<Func<ICommand, Task>>());
+                throw new InvalidOperationException(StringUtilities.Invariant($"Handler for command type {typeof(TCommand)} is alrady registered. Command can have only one handler."));
             }
 
-            if (!CommandAsyncHandlers[typeof(TCommand)].Contains(x => handler((TCommand)x)))
-            {
-                CommandAsyncHandlers[typeof(TCommand)].Add(x => handler((TCommand)x));
-            }
+            CommandAsyncHandlers.Add(typeof(TCommand), x => handler((TCommand)x));
         }
 
         /// <summary>

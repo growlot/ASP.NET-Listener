@@ -24,6 +24,6 @@ namespace AMSLLC.Listener.ApplicationService
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>The empty task.</returns>
-        Task Handle(TCommand command);
+        Task HandleAsync(TCommand command);
     }
 }

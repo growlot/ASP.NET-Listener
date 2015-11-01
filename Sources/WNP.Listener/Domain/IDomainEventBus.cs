@@ -47,7 +47,7 @@ namespace AMSLLC.Listener.Domain
         /// <typeparam name="TEvent">The type of the domain event.</typeparam>
         /// <param name="domainEvent">The domain event.</param>
         /// <returns>The empty task.</returns>
-        Task[] PublishAsync<TEvent>(TEvent domainEvent)
+        Task PublishAsync<TEvent>(TEvent domainEvent)
             where TEvent : IDomainEvent;
 
         /// <summary>
