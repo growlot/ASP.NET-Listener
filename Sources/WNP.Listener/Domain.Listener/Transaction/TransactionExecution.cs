@@ -15,7 +15,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction execution
     /// </summary>
-    public class TransactionExecution : Entity<int>, IWithDomainBuilder, IAggregateRoot, ITransactionExecutionData
+    public class TransactionExecution : AggregateRoot<int>, IWithDomainBuilder, ITransactionExecutionData
     {
         /// <summary>
         /// The domain event bus

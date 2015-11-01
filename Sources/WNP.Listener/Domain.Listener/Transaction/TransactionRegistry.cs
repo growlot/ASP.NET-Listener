@@ -15,7 +15,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction Registry domain model
     /// </summary>
-    public class TransactionRegistry : Entity<int>, IAggregateRoot
+    public class TransactionRegistry : AggregateRoot<int>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRegistry" /> class.

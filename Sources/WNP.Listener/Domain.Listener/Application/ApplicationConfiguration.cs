@@ -14,7 +14,7 @@ namespace AMSLLC.Listener.Domain.Listener.Application
     /// <summary>
     /// Represents application configuration in listener transaction bounded context
     /// </summary>
-    public class ApplicationConfiguration : Entity<int>, IAggregateRoot
+    public class ApplicationConfiguration : AggregateRoot<int>
     {
         /// <summary>
         /// The device types that are supported by this application.

@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Transaction configuration
     /// </summary>
-    public class TransactionConfiguration : Entity<int>, IAggregateRoot
+    public class TransactionConfiguration : AggregateRoot<int>
     {
         /// <summary>
         /// Restores objects state from provided memento.
