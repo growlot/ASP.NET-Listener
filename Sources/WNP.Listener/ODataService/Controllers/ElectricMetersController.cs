@@ -11,10 +11,10 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System;
     using Base;
     using MetadataService;
-    using Persistence.WNP;
+    using Repository.WNP;
     using Persistence.WNP.Metadata;
-    using Services;
     using Services.FilterTransformer;
+    using ApplicationService;
 
     /// <summary>
     /// Controller for electric meters
@@ -29,12 +29,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// Initializes a new instance of the <see cref="ElectricMetersController" /> class.
         /// </summary>
         /// <param name="metadataService">The metadata service.</param>
-        /// <param name="dbContext">The database context.</param>
+        /// <param name="unitOfWork">The unit of work.</param>
         /// <param name="filterTransformer">The filter transformer.</param>
-        /// <param name="convertor">The convertor.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
-        public ElectricMetersController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator)
-                    : base(metadataService, dbContext, filterTransformer, actionConfigurator)
+        public ElectricMetersController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus)
+                    : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus)
         {
         }
 

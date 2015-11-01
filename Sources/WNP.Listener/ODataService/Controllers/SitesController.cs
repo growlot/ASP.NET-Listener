@@ -7,6 +7,7 @@
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
+    using System.Globalization;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -15,14 +16,13 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using ApplicationService.Commands;
     using Base;
     using MetadataService;
-    using Newtonsoft.Json.Linq;
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
-    using Services;
+    using Repository.WNP;
     using Services.FilterTransformer;
-    using Newtonsoft.Json;
-    using Domain.WNP.SiteAggregate;
     using Utilities;
+    using System.Web;
+    using ApplicationService;
 
     /// <summary>
     /// Controller for Sites.
@@ -30,16 +30,16 @@ namespace AMSLLC.Listener.ODataService.Controllers
     public class SitesController : WNPEntityController
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SitesController"/> class.
+        /// Initializes a new instance of the <see cref="SitesController" /> class.
         /// </summary>
         /// <param name="metadataService">The metadata service.</param>
-        /// <param name="dbContext">The database context.</param>
+        /// <param name="unitOfWork">The database context.</param>
         /// <param name="filterTransformer">The filter transformer.</param>
-        /// <param name="convertor">The convertor.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
-        public SitesController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator)
-
-            : base(metadataService, dbContext, filterTransformer, actionConfigurator)
+        /// <param name="commandBus">The command bus.</param>
+        /// <param name="test">The test.</param>
+        public SitesController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, CurrentUnitOfWork test)
+            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus, test)
         {
         }
 
@@ -57,111 +57,40 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
             }
 
-            // constructing oData options since we can not using generic return type
-            // without first generating Controller dynamically
             var queryOptions = this.ConstructQueryOptions();
-
-            // we can infer model type from the ODataQueryOptions
-            // we created earlier
             var oDataModelType = queryOptions.Context.ElementClrType;
-
-            // create actual object that was sent over the wire
-            var requestContent = this.CreateResult(oDataModelType);
-
-            var method = typeof(JsonConvert).GetGenericMethod("DeserializeObject", new Type[] { typeof(string) });
-            requestContent = method.MakeGenericMethod(oDataModelType).Invoke(null, new object[] { this.GetRequestContents(this.Request) });
-
-            var getEntityMethod = oDataModelType.GetMethod("GetEntity");
-
-            SiteEntity site = (SiteEntity)getEntityMethod.Invoke(requestContent, new object[] { });
-
-            if (!string.IsNullOrWhiteSpace(site.PremiseNo))
-            {
-                var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
-                var sql = Sql.Builder
-                    .Select(modelMapping.ModelToColumnMappings.Values.ToArray())
-                    .From(DBMetadata.Site.FullTableName)
-                    .Where($"{DBMetadata.Site.PremiseNo}=@0", site.PremiseNo);
-
-                var existingEnitty = this.dbContext.FirstOrDefault<SiteEntity>(sql);
-                if (existingEnitty != null)
-                {
-                    var httpResponse = this.ResponseMessage(new HttpResponseMessage(System.Net.HttpStatusCode.SeeOther));
-                    httpResponse.Response.Headers.Location = new Uri(StringUtilities.Invariant($"{this.Request.RequestUri}('{existingEnitty.PremiseNo}')"));
-                    return Task.FromResult<IHttpActionResult>(httpResponse);
-                }
-            }
-
-            if (site.CreateBy != null
-                || site.CreateDate != null
-                || site.ModBy != null
-                || site.ModDate != null
-                || site.Owner != null
-                || site.Site != null)
-            {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest("Field can not be set in the call"));
-            }
-
-            PhysicalAddress siteAddres = null;
-            if (site.SiteAddress != null
-                || site.SiteAddress2 != null
-                || site.SiteCity != null
-                || site.SiteCountry != null
-                || site.SiteState != null
-                || site.SiteZipcode != null)
-            {
-                siteAddres = new PhysicalAddressBuilder()
-                    .WithAddressLine1(site.SiteAddress)
-                    .WithAddressLine2(site.SiteAddress2)
-                    .WithCity(site.SiteCity)
-                    .WithCountry(site.SiteCountry)
-                    .WithState(site.SiteState)
-                    .WithZipCode(site.SiteZipcode);
-            }
-
-            BillingAccount account = null;
-            if (site.AccountName != null
-                || site.AccountNo != null)
-            {
-                account = new BillingAccount(site.AccountName, site.AccountNo);
-            }
-
-            var serviceRequest = new CreateSiteCommand()
-            {
-                Account = account,
-                Address = siteAddres,
-                Description = site.SiteDescription,
-                Owner = 0,
-                PremiseNumber = site.PremiseNo
-            };
-
-            ////var requestData = (IDictionary<string, object>)request;
-            ////foreach (var key in requestData.Keys)
-            ////{
-            ////    var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key.ToLowerInvariant()]);
-            ////    property.SetValue(entityInstance, convertor.Convert(rawData[key], property.PropertyType));
-            ////}
-
-            ////result.Add(entityInstance);
-
-            ////// convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
-            ////for (int i = 0; i < sqlWhere.PositionalParameters.Length; i++)
-            ////{
-            ////    DateTimeOffset? parameter = sqlWhere.PositionalParameters[i] as DateTimeOffset?;
-
-            ////    if (parameter != null)
-            ////    {
-            ////        DateTime localTime = new DateTime(parameter.Value.ToLocalTime().Ticks);
-            ////        DateTime localTimeAsUtc = DateTime.SpecifyKind(localTime, DateTimeKind.Utc);
-            ////        sqlWhere.PositionalParameters[i] = (DateTimeOffset)localTimeAsUtc;
-            ////    }
-            ////}
-
-            ////return CreateOkResponse(oDataModelType, result);
-            return Task.FromResult<IHttpActionResult>(this.Ok());
+            var site = this.GetRequestEntity<SiteEntity>(oDataModelType);
+            return this.CreateSite(site);
         }
 
-        public Task<IHttpActionResult> Get([FromODataUri] int key)
+        private async Task<IHttpActionResult> CreateSite(SiteEntity site)
+        {
+            var createSiteCommand = new CreateSiteCommand()
+            {
+                Address1 = site.SiteAddress,
+                Address2 = site.SiteAddress2,
+                BillingAccountName = site.AccountName,
+                BillingAccountNumber = site.AccountNo,
+                City = site.SiteCity,
+                Country = site.SiteCountry,
+                Description = site.SiteDescription,
+                Owner = this.Owner,
+                PremiseNumber = site.PremiseNo,
+                State = site.SiteState,
+                Zip = site.SiteZipcode
+            };
+
+            await this.commandBus.PublishAsync(createSiteCommand);
+
+            return this.PrepareCreatedResponse(site.SiteDescription);
+        }
+
+        /// <summary>
+        /// Gets the specified Site by key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public Task<IHttpActionResult> Get([FromODataUri] string key)
         {
             // we can infer model type from the ODataQueryOptions
             // we created earlier
@@ -170,28 +99,20 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
             }
 
-            // constructing oData options since we can not using generic return type
-            // without first generating Controller dynamically
-            var queryOptions = this.ConstructQueryOptions();
+            this.unitOfWork = (IWNPUnitOfWork)this.Request.GetUnitOfWork();
 
-            // we can infer model type from the ODataQueryOptions
-            // we created earlier
+            var queryOptions = this.ConstructQueryOptions();
             var oDataModelType = queryOptions.Context.ElementClrType;
 
-            var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
-            var sql = Sql.Builder
-                .Select(modelMapping.ModelToColumnMappings.Values.ToArray())
-                .From(DBMetadata.Site.FullTableName)
-                .Where($"{DBMetadata.Site.PremiseNo}=@0", key);
+            var existingEntity = this.GetExisting(key, oDataModelType);
 
-            var existingEnitty = this.dbContext.FirstOrDefault<SiteEntity>(sql);
-            if (existingEnitty != null)
+            if (existingEntity != null)
             {
                 // create actual object that was sent over the wire
                 var responseContent = this.CreateResult(oDataModelType);
 
                 var setFromEntityMethod = oDataModelType.GetMethod("SetFromEntity");
-                setFromEntityMethod.Invoke(responseContent, new object[] { existingEnitty });
+                setFromEntityMethod.Invoke(responseContent, new object[] { existingEntity });
 
                 return Task.FromResult(this.CreateOkResponse(oDataModelType, responseContent));
             }
@@ -199,27 +120,78 @@ namespace AMSLLC.Listener.ODataService.Controllers
             return Task.FromResult<IHttpActionResult>(this.NotFound());
         }
 
-        /// <summary>
-        /// Updates specified Site.
-        /// </summary>
-        /// <param name="key">The site identifier.</param>
-        /// <returns>The result as HTTP response.</returns>
-        public Task<IHttpActionResult> Put([FromODataUri] int key)
+        private IHttpActionResult PrepareCreatedResponse(string description)
         {
-            throw new NotImplementedException();
+            var createdSite = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, description);
+
+            if (createdSite == null)
+            {
+                throw new InvalidOperationException(StringUtilities.Invariant($"Can not prepare response for Create opreation, because Site with Owner [{this.Owner}] and Description [{description}] was not found."));
+            }
+
+            // create actual object that was sent over the wire
+            var responseContent = this.CreateResult(this.EdmEntityClrType);
+
+            var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
+            setFromEntityMethod.Invoke(responseContent, new object[] { createdSite });
+
+            return this.CreateCreatedResponse(this.EdmEntityClrType, responseContent);
         }
 
-        public Task<IHttpActionResult> Patch([FromODataUri] int key)
+        private SiteEntity GetExisting(string key, Type oDataModelType)
         {
-            throw new NotImplementedException();
+            var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
+
+            var premiseNumberFieldName = modelMapping.ColumnToModelMappings[DBMetadata.Site.PremiseNo.ToUpperInvariant()];
+
+            Sql sql = null;
+            if (modelMapping.FieldInfo[premiseNumberFieldName].IsPrimaryKey)
+            {
+                sql = Sql.Builder
+                    .Select(modelMapping.ModelToColumnMappings.Values.ToArray())
+                    .From(DBMetadata.Site.FullTableName)
+                    .Where($"{DBMetadata.Site.PremiseNo}=@0", key);
+            }
+            else
+            {
+                sql = Sql.Builder
+                    .Select(modelMapping.ModelToColumnMappings.Values.ToArray())
+                    .From(DBMetadata.Site.FullTableName)
+                    .Where($"{DBMetadata.Site.Site}=@0", int.Parse(key, CultureInfo.InvariantCulture));
+            }
+
+            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<SiteEntity>(sql);
         }
 
-        private string GetRequestContents(HttpRequestMessage request)
+        public Task<IHttpActionResult> Patch([FromODataUri] string key)
         {
-            HttpContent requestContent = this.Request.Content;
-            string content = requestContent.ReadAsStringAsync().Result;
+            if (!this.ModelState.IsValid)
+            {
+                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
+            }
 
-            return content;
+            var queryOptions = this.ConstructQueryOptions();
+            var oDataModelType = queryOptions.Context.ElementClrType;
+
+            // create actual object that was sent over the wire
+            var requestContent = this.CreateResult(oDataModelType);
+
+            var site = this.GetRequestEntity<SiteEntity>(oDataModelType);
+            var existingEntity = this.GetExisting(key, oDataModelType);
+
+            if (existingEntity != null)
+            {
+                // do update
+                var httpResponse = this.ResponseMessage(new HttpResponseMessage(System.Net.HttpStatusCode.SeeOther));
+                httpResponse.Response.Headers.Location = new Uri(StringUtilities.Invariant($"{this.Request.RequestUri}('{existingEntity.PremiseNo}')"));
+                return Task.FromResult<IHttpActionResult>(httpResponse);
+            }
+            else
+            {
+                // do insert
+            }
+
+            return Task.FromResult(this.CreateUpdatedResponse(oDataModelType, requestContent));
         }
     }
 }

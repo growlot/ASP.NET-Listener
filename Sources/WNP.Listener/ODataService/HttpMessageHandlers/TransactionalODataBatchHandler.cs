@@ -7,17 +7,22 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
     using System;
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.OData.Batch;
-    using Persistence;
+    using Domain;
+    using Repository.WNP;
 
     /// <summary>
     /// Custom OData batch handler that ensures that changeset is executed in single transaction.
     /// </summary>
     public class TransactionalODataBatchHandler : DefaultODataBatchHandler
     {
+        private const string UnitOfWorkPropertyName = "UnitOfWork";
+        private IUnitOfWork unitOfWork;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionalODataBatchHandler"/> class.
         /// </summary>
@@ -27,8 +32,37 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
         {
         }
 
+        /// <inheritdoc/>
+        public override async Task<HttpResponseMessage> ProcessBatchAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            this.ValidateRequest(request);
+
+            this.unitOfWork = request.GetUnitOfWork();
+
+            IList<ODataBatchRequestItem> subRequests = await this.ParseBatchRequestsAsync(request, cancellationToken);
+
+            try
+            {
+                IList<ODataBatchResponseItem> responses = await this.ExecuteRequestMessagesAsync(subRequests, cancellationToken);
+                return await this.CreateResponseMessageAsync(responses, request, cancellationToken);
+            }
+            finally
+            {
+                foreach (ODataBatchRequestItem subRequest in subRequests)
+                {
+                    request.RegisterForDispose(subRequest.GetResourcesForDisposal());
+                    request.RegisterForDispose(subRequest);
+                }
+            }
+        }
+
         /// <summary>
-        /// Executes the batch request and associates a <see cref="WNPDBContext"/> instance with all the requests of
+        /// Executes the batch request and associates a <see cref="IUnitOfWork"/> instance with all the requests of
         /// a single changeset and wraps the execution of the whole changeset within a transaction.
         /// </summary>
         /// <param name="requests">The <see cref="ODataBatchRequestItem"/> instances of this batch request.</param>
@@ -78,9 +112,7 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Create a new <see cref="WNPDBContext"/> instance, associate it with each of the requests, start a new
-        /// transaction, execute the changeset and then commit or rollback the transaction depending on
-        /// whether the responses were all successful or not.
+        /// Associates <see cref="IUnitOfWork"/> instance with each of the requests.
         /// </summary>
         /// <param name="changeSet">The change set.</param>
         /// <param name="responses">The responses.</param>
@@ -93,28 +125,13 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
         {
             ChangeSetResponseItem changeSetResponse;
 
-            ////using (var context = new WNPDBContext("WNPDatabase"))
-            ////{
-            ////    foreach (HttpRequestMessage request in changeSet.Requests)
-            ////    {
-            ////        request.SetContext(context);
-            ////    }
+            foreach (HttpRequestMessage request in changeSet.Requests)
+            {
+                request.SetUnitOfWork(this.unitOfWork);
+            }
 
-            ////    using (DbContextTransaction transaction = context.Database.BeginTransaction())
-            ////    {
-                    changeSetResponse = (ChangeSetResponseItem)await changeSet.SendRequestAsync(this.Invoker, cancellation);
-                    responses.Add(changeSetResponse);
-
-                ////    if (changeSetResponse.Responses.All(r => r.IsSuccessStatusCode))
-                ////    {
-                ////        transaction.Commit();
-                ////    }
-                ////    else
-                ////    {
-                ////        transaction.Rollback();
-                ////    }
-                ////}
-            ////}
+            changeSetResponse = (ChangeSetResponseItem)await changeSet.SendRequestAsync(this.Invoker, cancellation);
+            responses.Add(changeSetResponse);
         }
     }
 }

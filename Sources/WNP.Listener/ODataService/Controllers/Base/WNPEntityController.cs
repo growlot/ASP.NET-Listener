@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Net.Http;
     using System.Reflection;
     using System.Runtime.Caching;
     using System.Threading.Tasks;
@@ -17,21 +18,27 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Web.OData.Routing;
     using MetadataService;
     using Microsoft.OData.Edm;
+    using Newtonsoft.Json;
     using Persistence.WNP;
-    using Services;
+    using Repository.WNP;
     using Services.FilterTransformer;
     using Utilities;
+    using System.Web;
+    using ApplicationService;
 
     public abstract class WNPEntityController : WNPController, IBoundActionsContainer
     {
         private readonly ODataValidationSettings defaultODataValidationSettings;
 
+
         protected WNPEntityController(
             IMetadataProvider metadataService,
-            WNPDBContext dbContext,
+            IWNPUnitOfWork unitofwork,
             IFilterTransformer filterTransformer,
-            IActionConfigurator actionConfigurator)
-            : base(metadataService, dbContext, filterTransformer, actionConfigurator)
+            IActionConfigurator actionConfigurator,
+            ICommandBus commandBus,
+            CurrentUnitOfWork test = null)
+            : base(metadataService, unitofwork, filterTransformer, actionConfigurator, commandBus, test)
         {
             this.defaultODataValidationSettings = new ODataValidationSettings()
             {
@@ -80,9 +87,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             }
 
             if (!string.IsNullOrWhiteSpace(sqlWhere.Clause))
+            {
                 sql = sql.Where(sqlWhere.Clause, sqlWhere.PositionalParameters);
+            }
 
-            var dbResults = this.dbContext.SkipTake<dynamic>(skip, top, sql);
+            var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql);
 
             foreach (var record in dbResults)
             {
@@ -121,11 +130,15 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             var actionsContainerType = this.metadataService.GetModelMapping(this.metadataService.GetEntityType(entityName)).ActionsContainer;
             if (actionsContainerType == null)
+            {
                 return this.NotFound();
+            }
 
             KeyValuePathSegment keySegment = null;
             if (!isCollectionWide)
+            {
                 keySegment = oDataPath.Segments[1] as KeyValuePathSegment;
+            }
 
             return await this.InvokeAction(actionsContainerType, actionName, keySegment);
         }
@@ -149,6 +162,47 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <returns>The typed HTTP 200 result.</returns>
         protected IHttpActionResult CreateOkResponse(Type oDataModelType, object result)
                     => (IHttpActionResult)this.GetOkMethod(oDataModelType).Invoke(this, new[] { result });
+
+        /// <summary>
+        /// Creates the typed Updated response from specified result object.
+        /// </summary>
+        /// <param name="oDataModelType">Type of the OData model.</param>
+        /// <param name="result">The result object.</param>
+        /// <returns>The typed Updated result.</returns>
+        protected IHttpActionResult CreateUpdatedResponse(Type oDataModelType, object result)
+                    => (IHttpActionResult)this.GetUpdatedMethod(oDataModelType).Invoke(this, new[] { result });
+
+        /// <summary>
+        /// Creates the typed Created response from specified result object.
+        /// </summary>
+        /// <param name="oDataModelType">Type of the OData model.</param>
+        /// <param name="result">The result object.</param>
+        /// <returns>The typed Updated result.</returns>
+        protected IHttpActionResult CreateCreatedResponse(Type oDataModelType, object result)
+                    => (IHttpActionResult)this.GetCreatedMethod(oDataModelType).Invoke(this, new[] { result });
+
+        /// <summary>
+        /// Gets the statically typed entity from requet.
+        /// </summary>
+        /// <typeparam name="TEntity">The static type of the entity.</typeparam>
+        /// <param name="oDataModelType">The dynamic type of the OData entity.</param>
+        /// <returns>The statically typed entity.</returns>
+        protected TEntity GetRequestEntity<TEntity>(Type oDataModelType)
+        {
+            // create actual object that was sent over the wire
+            var requestContent = this.CreateResult(oDataModelType);
+
+            var method = typeof(JsonConvert).GetGenericMethod("DeserializeObject", new Type[] { typeof(string) });
+            requestContent = method.MakeGenericMethod(oDataModelType).Invoke(null, new object[] { this.GetRequestContents(this.Request) });
+
+            var getEntityMethod = oDataModelType.GetMethod("GetEntity");
+
+            TEntity site = (TEntity)getEntityMethod.Invoke(requestContent, new object[] { });
+            return site;
+        }
+
+        private string GetRequestContents(HttpRequestMessage request)
+            => this.Request.Content.ReadAsStringAsync().Result;
 
         private string[] GetDBColumnsList(SelectExpandQueryOption queryOptions, Dictionary<string, string> mapping)
             => queryOptions?.RawSelect.Split(',').Select(item => mapping[item]).ToArray() ?? mapping.Values.ToArray();
@@ -186,6 +240,26 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 () => this.GetType()
                         .GetGenericMethod("Ok")
                         .MakeGenericMethod(oDataModelType));
+
+        /// <summary>
+        /// Gets the Updated method for specified OData model type and adds it to the cash for faster future retrieval.
+        /// </summary>
+        /// <param name="oDataModelType">Type of the OData model.</param>
+        /// <returns>The OK method for specified OData model type.</returns>
+        private MethodInfo GetUpdatedMethod(Type oDataModelType)
+            => MemoryCache.Default.GetOrAddExisting(
+                StringUtilities.Invariant($"WNPController.UpdatedMethod<{oDataModelType.FullName}>"),
+                () => this.GetType()
+                        .GetGenericMethod("Updated")
+                        .MakeGenericMethod(oDataModelType));
+
+
+        private MethodInfo GetCreatedMethod(Type oDataModelType)
+            => MemoryCache.Default.GetOrAddExisting(
+                StringUtilities.Invariant($"WNPController.CreatedMethod<{oDataModelType.FullName}>"),
+                () => this.GetType()
+                    .GetGenericMethod("Created", new Type[] { null })
+                    .MakeGenericMethod(oDataModelType));
 
         private IList CreateResultList(Type oDataModelType)
             => (IList) Activator.CreateInstance(this.GetGenericListType(oDataModelType));

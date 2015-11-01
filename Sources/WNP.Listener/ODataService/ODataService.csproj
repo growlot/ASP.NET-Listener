@@ -161,6 +161,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
@@ -192,6 +193,8 @@
     <Compile Include="Controllers\UnboundActionsController.cs" />
     <Compile Include="Controllers\Base\WNPController.cs" />
     <Compile Include="Controllers\Base\WNPEntityController.cs" />
+    <Compile Include="CurrentUnitOfWork.cs" />
+    <Compile Include="HttpMessageHandlers\UnitOfWorkHandler.cs" />
     <Compile Include="ListenerODataContext.cs" />
     <Compile Include="ListenerRequestHeaderMap.cs" />
     <Compile Include="HttpMessageHandlers\ListenerMessageHandler.cs" />
@@ -209,6 +212,8 @@
     <Compile Include="Services\Impl\ODataRouteManagerImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FilterTransformer\ISupportedODataFunctionToSql.cs" />
+    <Compile Include="TypeExtensions\HttpRequestMessageExtensions.cs" />
+    <Compile Include="TypeExtensions\HttpContextExtensions.cs" />
     <Compile Include="WNPGenericRoutingConvention.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +264,10 @@
     <ProjectReference Include="..\Persistence.WNP\Persistence.WNP.csproj">
       <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>
       <Name>Persistence.WNP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository.WNP\Repository.WNP.csproj">
+      <Project>{2643c152-d7b8-4633-a540-8ee3a1db8e45}</Project>
+      <Name>Repository.WNP</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{cf40fb68-247d-4024-a8e9-3b707973ad11}</Project>

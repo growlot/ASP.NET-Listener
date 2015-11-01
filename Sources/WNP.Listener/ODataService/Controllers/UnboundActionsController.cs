@@ -4,11 +4,11 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
+    using ApplicationService;
     using Base;
     using MetadataService;
     using MetadataService.Attributes;
-    using Persistence.WNP;
-    using Services;
+    using Repository.WNP;
     using Services.FilterTransformer;
 
     /// <summary>
@@ -21,16 +21,16 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// Initializes a new instance of the <see cref="UnboundActionsController"/> class.
         /// </summary>
         /// <param name="metadataService">The metadata service.</param>
-        /// <param name="dbContext">The database context.</param>
+        /// <param name="unitOfWork">The unit of work.</param>
         /// <param name="filterTransformer">The filter transformer.</param>
-        /// <param name="convertor">The convertor.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
         public UnboundActionsController(
             IMetadataProvider metadataService,
-            WNPDBContext dbContext,
+            IWNPUnitOfWork unitOfWork,
             IFilterTransformer filterTransformer,
-            IActionConfigurator actionConfigurator)
-            : base(metadataService, dbContext, filterTransformer, actionConfigurator)
+            IActionConfigurator actionConfigurator,
+            ICommandBus commandBus)
+            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus) 
         {
         }
 

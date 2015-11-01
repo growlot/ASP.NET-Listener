@@ -1,6 +1,4 @@
-﻿using AMSLLC.Listener.MetadataService.Attributes;
-
-namespace AMSLLC.Listener.ODataService.Controllers.Base
+﻿namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
     using System;
     using System.Collections.Generic;
@@ -15,30 +13,49 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
     using MetadataService;
+    using MetadataService.Attributes;
     using Microsoft.OData.Edm;
     using Microsoft.OData.Edm.Library;
     using Newtonsoft.Json;
     using Persistence.WNP;
     using Serilog;
-    using Services;
     using Services.FilterTransformer;
     using Utilities;
+    using Repository.WNP;
+    using System.Net.Http;
+    using System.Web;
+    using Core;
+    using ApplicationService;
 
+    /// <summary>
+    /// Base implementation of OData controller for WNP.
+    /// </summary>
     [EnableQuery]
     public abstract class WNPController : ODataController
     {
+        /// <summary>
+        /// The metadata service
+        /// </summary>
         protected readonly IMetadataProvider metadataService;
+
         protected readonly IFilterTransformer filterTransformer;
         protected readonly IActionConfigurator actionConfigurator;
 
-        protected readonly WNPDBContext dbContext;
+        protected IWNPUnitOfWork unitOfWork;
 
-        protected WNPController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator)
+        protected readonly ICommandBus commandBus;
+
+        protected int Owner { get; set; }
+
+        protected Type EdmEntityClrType { get; set; }
+
+        protected WNPController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, CurrentUnitOfWork test = null)
         {
             this.metadataService = metadataService;
-            this.dbContext = dbContext;
+            this.unitOfWork = unitOfWork;
             this.filterTransformer = filterTransformer;
             this.actionConfigurator = actionConfigurator;
+            this.commandBus = commandBus;
         }
 
         public async Task<IHttpActionResult> UnboundActionHandler()
@@ -69,23 +86,29 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             var methodInfo = actionsContainerType.GetMethod(actionName);
             if (methodInfo == null)
+            {
                 return this.NotFound();
+            }
 
             // check the number of parameters
             var parametersInfo = methodInfo.GetParameters();
             if (this.GetRequiredParametersCount(parametersInfo) > jsonParameters.Count)
+            {
                 return
                     this.BadRequest($"Invalid number of non-optional parameters. Expected: {parametersInfo.Length}. Got: {jsonParameters.Count}.");
+            }
 
             var missingParameter =
                 parametersInfo.FirstOrDefault(
                     parameterInfo =>
                         !jsonParameters.ContainsKey(parameterInfo.Name) && !parameterInfo.IsOptional &&
                         parameterInfo.CustomAttributes.All(
-                            data => data.AttributeType != typeof (BoundEntityKeyAttribute)));
+                            data => data.AttributeType != typeof(BoundEntityKeyAttribute)));
 
             if (missingParameter != null)
+            {
                 return this.BadRequest($"Non-optional parameter {missingParameter.Name} not found in request body.");
+            }
 
             // if we have a key, we can optionally bind it to the appropriate action parameter
             if (keySegment != null)
@@ -93,12 +116,14 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 var keyValue = JsonConvert.DeserializeObject(keySegment.Value);
                 var entityKeyParameter =
                     parametersInfo.FirstOrDefault(
-                        info => info.CustomAttributes.Any(data => data.AttributeType == typeof (BoundEntityKeyAttribute)));
+                        info => info.CustomAttributes.Any(data => data.AttributeType == typeof(BoundEntityKeyAttribute)));
 
                 if (entityKeyParameter != null)
                 {
                     if (jsonParameters.ContainsKey(entityKeyParameter.Name))
+                    {
                         return this.BadRequest($"Parameter {entityKeyParameter.Name} is entity key.");
+                    }
 
                     jsonParameters.Add(entityKeyParameter.Name, keyValue);
                 }
@@ -114,7 +139,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 var result = methodInfo.InvokeWithNamedParameters(actionsContainer, jsonParameters);
 
                 if (methodInfo.ReturnType != typeof(void))
+                {
                     return this.CreateSimpleOkResponse(methodInfo.ReturnType, result);
+                }
 
                 return this.Ok();
             }
@@ -131,7 +158,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             parameters.Count(
                 info =>
                     !info.IsOptional &&
-                    info.CustomAttributes.All(data => data.AttributeType != typeof (BoundEntityKeyAttribute)));
+                    info.CustomAttributes.All(data => data.AttributeType != typeof(BoundEntityKeyAttribute)));
 
         private IHttpActionResult CreateSimpleOkResponse(Type dataType, object result)
             => (IHttpActionResult)this.GetSimpleOkMethod(dataType).Invoke(this, new[] { result });
@@ -152,14 +179,13 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var oDataProperties = this.Request.ODataProperties();
             var oDataPath = oDataProperties.Path;
             var model = oDataProperties.Model;
+            Type edmEntityClrType;
 
             if (oDataProperties.Path.PathTemplate == "~/entityset/key/action" || oDataProperties.Path.PathTemplate == "~/entityset/action")
             {
                 var entitySetName = oDataProperties.Path.Segments[0] as EntitySetPathSegment;
                 var edmType = entitySetName.GetEdmType(null);
-                var type = this.metadataService.GetEntityType(((IEdmCollectionType)edmType).ElementType.ShortQualifiedName());
-
-                return new ODataQueryOptions(new ODataQueryContext(model, type, oDataPath), this.Request);
+                edmEntityClrType = this.metadataService.GetEntityType(((IEdmCollectionType)edmType).ElementType.ShortQualifiedName());
             }
             else
             {
@@ -188,10 +214,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         throw new ArgumentOutOfRangeException();
                 }
 
-                var type = this.metadataService.ODataModelAssembly.GetType(modelTypeFullName);                
-
-                return new ODataQueryOptions(new ODataQueryContext(model, type, oDataPath), this.Request);
+                edmEntityClrType = this.metadataService.ODataModelAssembly.GetType(modelTypeFullName);
             }
-        }        
+
+            this.EdmEntityClrType = edmEntityClrType;
+            return new ODataQueryOptions(new ODataQueryContext(model, edmEntityClrType, oDataPath), this.Request);
+        }
     }
 }
