@@ -1184,7 +1184,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 							PocoColumn pc;
 							if (pd.Columns.TryGetValue(primaryKeyName, out pc))
 							{
-								pc.SetValue(poco, pc.ChangeType(id));
+                                pc.SetValue(poco, pc.ChangeType(id));
 							}
 						}
 
@@ -3418,7 +3418,12 @@ namespace AMSLLC.Listener.Persistence.WNP
 			public bool ForceToUtc;
 			public virtual void SetValue(object target, object val) { PropertyInfo.SetValue(target, val, null); }
 			public virtual object GetValue(object target) { return PropertyInfo.GetValue(target, null); }
-			public virtual object ChangeType(object val) { return Convert.ChangeType(val, PropertyInfo.PropertyType); }
+			public virtual object ChangeType(object val)
+            {
+                Type t = Nullable.GetUnderlyingType(PropertyInfo.PropertyType) ?? PropertyInfo.PropertyType;
+                return (val == null) ? null : Convert.ChangeType(val, t);
+//                    Convert.ChangeType(val, PropertyInfo.PropertyType);
+            }
 		}
 
 		class PocoData
