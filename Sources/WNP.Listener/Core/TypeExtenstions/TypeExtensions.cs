@@ -43,7 +43,7 @@ namespace System
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="name">The name.</param>
-        /// <param name="parameterTypes">The parameter types.</param>
+        /// <param name="parameterTypes">The parameter types. Use null for generic types.</param>
         /// <returns>The generic method.</returns>
         [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this argument can't be null.")]
         public static MethodInfo GetGenericMethod(this Type type, string name, Type[] parameterTypes)
@@ -72,7 +72,13 @@ namespace System
                     return true;
                 }
 
-                // If one is null, but not both, return false.
+                // use null type when checking with generic.
+                if (left != null && (left.IsGenericParameter && right == null))
+                {
+                    return true;
+                }
+
+                // If non generic case and one is null, but not both, return false.
                 if ((left == null) || (right == null))
                 {
                     return false;
