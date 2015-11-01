@@ -12,7 +12,7 @@ namespace AMSLLC.Listener.Domain
     /// <summary>
     /// The abstract ValueObject class that provides common implementation for equality and hashing functions
     /// </summary>
-    /// <typeparam name="T">ValueObject type</typeparam>
+    /// <typeparam name="T">The type of value object.</typeparam>
     public abstract class ValueObject<T> : IEquatable<T>
         where T : ValueObject<T>
     {
