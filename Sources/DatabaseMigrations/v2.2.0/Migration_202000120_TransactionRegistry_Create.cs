@@ -7,6 +7,7 @@
 namespace AMSLLC.Listener.DatabaseMigrations
 {
     using FluentMigrator;
+    using FluentMigrator.Runner.Extensions;
 
     /// <summary>
     /// Database migration step
@@ -44,9 +45,13 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .FromTable("TransactionRegistry").ForeignColumn("EnabledOperationId")
                 .ToTable("EnabledOperation").PrimaryColumn("EnabledOperationId");
 
-            this.Create.ForeignKey("FK_TranRegi_Pare")
-                .FromTable("TransactionRegistry").ForeignColumn("BatchKey")
-                .ToTable("TransactionRegistry").PrimaryColumn("RecordKey");
+            // this.Create.ForeignKey("FK_TranRegi_Pare")
+            //    .FromTable("TransactionRegistry").ForeignColumn("BatchKey")
+            //    .ToTable("TransactionRegistry").PrimaryColumn("RecordKey");
+            // this.Create.PrimaryKey("FK_Tran_Reg_Prim").OnTable("TransactionRegistry").Columns("RecordKey", "BatchKey").NonClustered();
+            this.IfSqlServer().Execute.Sql(@"CREATE NONCLUSTERED INDEX IX_BatchKey
+                ON TransactionRegistry (BatchKey)
+                WHERE BatchKey IS NOT NULL");
         }
     }
 }

@@ -21,7 +21,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Update.Table("TransactionStatus").Set(new
             {
                 TransactionStatusId = 1,
-                Description = "Pending"
+                Description = "Processing"
             }).Where(new
             {
                 TransactionStatusId = 1,
@@ -33,7 +33,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 new
                 {
                     TransactionStatusId = 4,
-                    Description = "Processing"
+                    Description = "Pending"
                 },
                 new
                 {

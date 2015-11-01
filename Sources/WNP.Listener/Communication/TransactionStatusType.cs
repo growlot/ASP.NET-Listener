@@ -12,12 +12,12 @@ namespace AMSLLC.Listener.Communication
         /// <summary>
         /// Transaction is pending
         /// </summary>
-        Pending = 1,
+        Pending = 4,
 
         /// <summary>
         /// Transaction being processed
         /// </summary>
-        Processing = 4,
+        Processing = 1,
 
         /// <summary>
         /// The transaction finished successfully

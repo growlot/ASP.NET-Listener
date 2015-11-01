@@ -315,13 +315,13 @@ FROM EnabledOperation EO
             Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = CreateRegistryEntryProjectionCallback(null);
 
             var selectChildren = @"
-SELECT TR1.*, A.*, C.*, O.*
-FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.RecordKey = TR1.BatchKey
-    INNER JOIN EnabledOperation EO ON TR1.EnabledOperationId = EO.EnabledOperationId
+SELECT TR.*, A.*, C.*, O.*
+    FROM TransactionRegistry TR
+    INNER JOIN EnabledOperation EO ON TR.EnabledOperationId = EO.EnabledOperationId
     INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
     INNER JOIN Company C ON EO.CompanyId = C.CompanyId
     INNER JOIN Operation O ON EO.OperationId = O.OperationId
-WHERE TR.RecordKey = @0";
+WHERE TR.BatchKey = @0";
 
             var childTransactions = await this.persistence.ProjectionAsync(
                  callback,

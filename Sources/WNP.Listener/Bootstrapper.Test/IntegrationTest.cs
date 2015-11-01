@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Bootstrapper.Test
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
@@ -12,6 +13,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Net.Http;
     using System.Net.Http.Formatting;
     using System.Net.Http.Headers;
+    using System.Threading;
     using System.Threading.Tasks;
     using ApplicationService;
     using Bus;
@@ -189,12 +191,15 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
             var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
 
-            Dictionary<Guid, object> receivedData = new Dictionary<Guid, object>();
+            ConcurrentDictionary<Guid, object> receivedData = new ConcurrentDictionary<Guid, object>();
 
             communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.IsAny<TransactionDataReady>(), It.IsAny<ProtocolConfiguration>()))
                 .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
                 {
-                    receivedData.Add(data.RecordKey, data.Data);
+                    while (!receivedData.TryAdd(data.RecordKey, data.Data))
+                    {
+                        Thread.Sleep(100);
+                    }
                 });
 
             di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
@@ -239,11 +244,50 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
         }
 
-        [TestMethod]
-        public async Task OpenAndSucceedBatchByIndividual()
-        {
-            Assert.Inconclusive("Implement this");
-        }
+        //[TestMethod]
+        //public async Task OpenAndSucceedBatchByIndividual()
+        //{
+        //    var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+        //    var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+        //    var nextKey = Guid.NewGuid();
+        //    var keyStack = new Queue<string>();
+        //    keyStack.Enqueue(nextKey.ToString("D"));
+        //    for (int i = 0; i < 100; i++)
+        //    {
+        //        keyStack.Enqueue(Guid.NewGuid().ToString("D"));
+        //    }
+
+        //    transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
+
+        //    var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+        //    var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+
+        //    communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.IsAny<TransactionDataReady>(), It.IsAny<ProtocolConfiguration>()));
+
+        //    di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+        //    di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
+
+        //    var transactionRecordKey1 = await OpenBatchTransaction(_server);
+        //    Assert.AreEqual(nextKey, transactionRecordKey1);
+
+        //    var childStatuses = await GetChildTransactionStatus(_server, transactionRecordKey1);
+        //    long transactionStatusId1 = 0;
+        //    for (int i = 0; i < childStatuses.Count; i++)
+        //    {
+        //        await SucceedTransaction(_server, childStatuses.ElementAt(i).Key);
+        //        if (i < 3)
+        //        {
+        //            // Checking few first iterations for unexpected status changes
+        //            transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+        //            Assert.AreEqual(TransactionStatusType.Processing, (TransactionStatusType)transactionStatusId1);
+        //        }
+        //    }
+
+        //    communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Never);
+
+        //    transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+        //    Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId1);
+        //}
 
         [TestMethod]
         public async Task OpenAndFailBatchAsRoot()

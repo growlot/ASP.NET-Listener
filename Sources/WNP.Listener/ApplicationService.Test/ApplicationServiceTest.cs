@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using System.Linq;
     using System.Threading.Tasks;
     using ApplicationService;
+    using Bus;
     using Commands;
     using Communication;
     using Core;
@@ -65,9 +66,21 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             var transactionRepositoryMock = new Mock<ITransactionRepository>();
 
+            var busImpl = new InMemoryBus();
+            var domainBusImpl = busImpl as IDomainEventBus;
             var domainEventBus = new Mock<IDomainEventBus>();
 
-            var transactionExecutionDomain = new Mock<TransactionExecution>(domainEventBus.Object) { CallBase = true };
+            domainEventBus.Setup(s => s.Subscribe(It.IsAny<Action<IDomainEvent>>())).Callback((Action<IDomainEvent> evt) => domainBusImpl.Subscribe(evt));
+            domainEventBus.Setup(s => s.SubscribeAsync(It.IsAny<Func<IDomainEvent, Task>>())).Callback((Func<IDomainEvent, Task> evt) => domainBusImpl.SubscribeAsync(evt));
+
+            domainEventBus.Setup(s => s.Publish(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.Publish(evt));
+            domainEventBus.Setup(s => s.PublishAsync(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.PublishAsync(evt)).Returns(new Task[0]);
+            domainEventBus.Setup(s => s.PublishBulk(It.IsAny<ICollection<IDomainEvent>>())).Callback((ICollection<IDomainEvent> evt) => domainBusImpl.PublishBulk(evt)).Returns(Task.CompletedTask);
+
+
+            var hashBuilder = new Mock<ITransactionHashBuilder>();
+
+            var transactionExecutionDomain = new Mock<TransactionExecution>(domainEventBus.Object, hashBuilder.Object) { CallBase = true };
             transactionExecutionDomain.As<IOriginator>();
             transactionExecutionDomain.As<IWithDomainBuilder>();
             var integrationEndpointConfiguration = new Mock<IntegrationEndpointConfiguration>();
@@ -121,7 +134,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 Guid.Parse(recordKey),
                 1,
                 new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Always) },
-                fieldConfigurations, null, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(testMessageData)), null, TransactionStatusType.Pending);
+                fieldConfigurations, null, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(testMessageData)), new List<Guid>(), TransactionStatusType.Pending);
 
             transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(Guid.Parse(recordKey)))
                 .Returns(
@@ -165,6 +178,9 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             di.Initialize(container =>
             {
+                container.Bind<ITransactionHashBuilder>().To<TransactionHashBuilder>().InSingletonScope();
+                container.Bind<ICommandBus>().ToConstant(busImpl).InSingletonScope();
+                container.Bind<IDomainEventBus>().ToConstant(busImpl).InSingletonScope();
                 container.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
                 container.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
                 container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
@@ -175,9 +191,14 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 container.Bind<IConnectionConfigurationBuilder>().ToConstant(jmsConnectionBuilder.Object).InSingletonScope().Named("connection-builder-jms");
                 container.Bind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
                 container.Bind<IProtocolConfigurationBuilder>().ToConstant(builderMock.Object).Named("protocol-builder-jms");
+                container.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
             });
 
             ApplicationIntegration.SetDependencyInjectionResolver(di);
+
+            var configurator = di.ResolveType<ApplicationServiceConfigurator>();
+            configurator.RegisterCommandHandlers();
+            configurator.RegisterSagaHandlers();
 
             var service = di.ResolveType<ITransactionService>();
 

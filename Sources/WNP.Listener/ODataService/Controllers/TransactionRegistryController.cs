@@ -194,7 +194,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="parameters">The parameters.</param>
         /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
         [HttpPost]
-        //[ODataRoute("(Message={message},Details={details})")]
         public async Task<IHttpActionResult> Fail([FromODataUri] Guid key, ODataActionParameters parameters)
         {
             try

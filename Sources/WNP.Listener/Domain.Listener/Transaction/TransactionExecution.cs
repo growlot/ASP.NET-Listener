@@ -200,6 +200,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             }
             else
             {
+                // if (this.Status == TransactionStatusType.Pending)
+                // {
+                //     this.Status = TransactionStatusType.Processing;
+                // }
                 foreach (
                     var childTransactionEntity in
                         this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))

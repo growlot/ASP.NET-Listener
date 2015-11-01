@@ -162,10 +162,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 }
             }
 
-            // if (string.IsNullOrWhiteSpace(this.TransactionKey) && this.ChildTransactions.Any())
-            // {
-            //     this.TransactionKey = "Batch";
-            // }
             this.Status = TransactionStatusType.Pending;
             foreach (var childTransactionRegistryEntity in this.ChildTransactions)
             {

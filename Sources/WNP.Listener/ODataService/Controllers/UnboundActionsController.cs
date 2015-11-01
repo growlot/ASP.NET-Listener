@@ -1,9 +1,12 @@
-﻿using AMSLLC.Listener.MetadataService.Attributes;
+﻿// <copyright file="UnboundActionsController.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using Base;
     using MetadataService;
+    using MetadataService.Attributes;
     using Persistence.WNP;
     using Services;
     using Services.FilterTransformer;
@@ -26,8 +29,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
             IMetadataProvider metadataService,
             WNPDBContext dbContext,
             IFilterTransformer filterTransformer,
+            IAutoConvertor convertor,
             IActionConfigurator actionConfigurator)
-            : base(metadataService, dbContext, filterTransformer, actionConfigurator) { }
+            : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
+        {
+        }
 
         /// <summary>
         /// Test for unbound Action.
@@ -35,7 +41,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="mystr">The mystr.</param>
         /// <returns>Same string.</returns>
         [UnboundAction]
-        public string Test(string mystr)
+        public string Test(
+            string mystr)
         {
             return mystr;
         }
