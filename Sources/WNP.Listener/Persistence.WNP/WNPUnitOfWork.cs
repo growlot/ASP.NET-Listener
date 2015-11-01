@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.Persistence.WNP
 {
+    using System;
     using Repository.WNP;
 
     /// <summary>
@@ -11,21 +12,35 @@ namespace AMSLLC.Listener.Persistence.WNP
     /// </summary>
     public class WNPUnitOfWork : IWNPUnitOfWork
     {
-        private WNPDBContext dbContext = new WNPDBContext("WNPDatabase");
+        private WNPDBContext dbContext;
         private IOwnerRepository ownerRepository;
         private ISiteRepository siteRepository;
 
-        private WNPUnitOfWork()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WNPUnitOfWork" /> class.
+        /// </summary>
+        /// <param name="dbContext">The database context.</param>
+        public WNPUnitOfWork(WNPDBContext dbContext)
         {
+            this.dbContext = dbContext;
             this.dbContext.BeginTransaction();
         }
 
         /// <summary>
-        /// Gets the owner repository.
+        /// Gets the database context.
         /// </summary>
         /// <value>
-        /// The owner repository.
+        /// The database context.
         /// </value>
+        public WNPDBContext DbContext
+        {
+            get
+            {
+                return this.dbContext;
+            }
+        }
+
+        /// <inheritdoc/>
         public IOwnerRepository OwnerRepository
         {
             get
@@ -39,13 +54,7 @@ namespace AMSLLC.Listener.Persistence.WNP
             }
         }
 
-        /// <summary>
-        /// Gets the sites repository.
-        /// </summary>
-        /// <value>
-        /// The sites repository.
-        /// </value>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <inheritdoc/>
         public ISiteRepository SitesRepository
         {
             get
@@ -59,20 +68,31 @@ namespace AMSLLC.Listener.Persistence.WNP
             }
         }
 
-        /// <summary>
-        /// Commits this unit of work.
-        /// </summary>
+        /// <inheritdoc/>
         public void Commit()
         {
             this.dbContext.CompleteTransaction();
         }
 
-        /// <summary>
-        /// Rollbacks this unit of work.
-        /// </summary>
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            if (this.dbContext != null)
+            {
+                this.dbContext.Dispose();
+            }
+        }
+
+        /// <inheritdoc/>
         public void Rollback()
         {
             this.dbContext.AbortTransaction();
+        }
+
+        /// <inheritdoc/>
+        public void SaveChanges()
+        {
+            throw new NotImplementedException();
         }
     }
 }
