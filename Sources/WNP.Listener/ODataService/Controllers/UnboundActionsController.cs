@@ -29,9 +29,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
             IMetadataProvider metadataService,
             WNPDBContext dbContext,
             IFilterTransformer filterTransformer,
-            IAutoConvertor convertor,
             IActionConfigurator actionConfigurator)
-            : base(metadataService, dbContext, filterTransformer, convertor, actionConfigurator)
+            : base(metadataService, dbContext, filterTransformer, actionConfigurator)
         {
         }
 
