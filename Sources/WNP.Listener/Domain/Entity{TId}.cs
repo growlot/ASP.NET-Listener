@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Entity{T}.cs" company="Advanced Metering Services LLC">
+// <copyright file="Entity{TId}.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -11,8 +11,8 @@ namespace AMSLLC.Listener.Domain
     /// Base entity implementation that ensures identifier field is implemented
     /// and that entities can be compared by using this identifier field
     /// </summary>
-    /// <typeparam name="T">The type of identity</typeparam>
-    public abstract class Entity<T> : IEntity<T>, IEquatable<Entity<T>>
+    /// <typeparam name="TId">The type of identity</typeparam>
+    public abstract class Entity<TId> : IEntity<TId>, IEquatable<Entity<TId>>
     {
         /// <summary>
         /// Gets or sets the entity identifier.
@@ -20,7 +20,7 @@ namespace AMSLLC.Listener.Domain
         /// <value>
         /// The entity identifier.
         /// </value>
-        public virtual T Id { get; protected set; }
+        public virtual TId Id { get; protected set; }
 
         /// <summary>
         /// Determines whether the specified <see cref="object" />, is equal to this instance.
@@ -31,7 +31,7 @@ namespace AMSLLC.Listener.Domain
         /// </returns>
         public override bool Equals(object obj)
         {
-            Entity<T> entity = obj as Entity<T>;
+            Entity<TId> entity = obj as Entity<TId>;
             if (entity != null)
             {
                 return this.Equals(entity);
@@ -49,7 +49,7 @@ namespace AMSLLC.Listener.Domain
         public override int GetHashCode()
         {
             // If non persisted instance, use base hash code calculation
-            if (this.Id.Equals(default(T)))
+            if (this.Id.Equals(default(TId)))
             {
                 return base.GetHashCode();
             }
@@ -64,7 +64,7 @@ namespace AMSLLC.Listener.Domain
         /// <returns>
         /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
         /// </returns>
-        public bool Equals(Entity<T> other)
+        public bool Equals(Entity<TId> other)
         {
             if (other == null)
             {
@@ -78,7 +78,7 @@ namespace AMSLLC.Listener.Domain
             }
 
             // If both are different non persisted instances, return false
-            if (this.Id.Equals(default(T)) && other.Id.Equals(default(T)))
+            if (this.Id.Equals(default(TId)) && other.Id.Equals(default(TId)))
             {
                 return false;
             }

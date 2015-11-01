@@ -73,18 +73,15 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="AggregateRoot{TId}.cs" />
+    <Compile Include="Entity{TId}.cs" />
     <Compile Include="IAggregateRoot.cs" />
     <Compile Include="IDomainEventHandler{TEvent}.cs" />
     <Compile Include="IDomainBuilder.cs" />
     <Compile Include="IDomainEventBus.cs" />
+    <Compile Include="IEntity{TId}.cs" />
     <Compile Include="ISpecification{TEntity,TId}.cs" />
-    <Compile Include="Entity{T}.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IEntity{T}.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="IDomainEvent.cs" />
     <Compile Include="IMemento.cs" />
     <Compile Include="IOriginator.cs" />
