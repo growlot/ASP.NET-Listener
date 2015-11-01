@@ -140,7 +140,7 @@ foreach(Table tbl in from t in tables where !t.Ignore select t)
 	tbl.ClassName = Humanize(tbl.Name, true) + ClassSuffix;
 #>
     
-	[TableName("<#=tbl.Name#>")]
+	[TableName("wndba.<#=tbl.Name#>")]
 <# if (tbl.PK!=null && tbl.PK.IsAutoIncrement) { #>
 <# if (tbl.SequenceName==null) { #>
 	[PrimaryKey("<#=tbl.PK.Name#>")]
@@ -162,6 +162,7 @@ foreach(Column col in from c in tbl.Columns where !c.Ignore select c)
 
 	// Mark all columns as nullable
 	col.IsNullable = true;
+
 		// Column bindings
 #>
 <# if (TrackModifiedColumns) { #>
