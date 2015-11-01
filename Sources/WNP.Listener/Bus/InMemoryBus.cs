@@ -51,7 +51,7 @@ namespace AMSLLC.Listener.Bus
             }
         }
 
-        async Task IDomainEventBus.PublishAsync<TEvent>(TEvent domainEvent)
+        Task IDomainEventBus.PublishAsync<TEvent>(TEvent domainEvent)
         {
             if (domainEvent == null)
             {
@@ -67,8 +67,10 @@ namespace AMSLLC.Listener.Bus
                     returnValue[i] = handlers[i](domainEvent);
                 }
 
-                await Task.WhenAll(returnValue);
+                return Task.WhenAll(returnValue);
             }
+
+            return Task.CompletedTask;
         }
 
         Task ICommandBus.PublishAsync<TCommand>(TCommand command)
@@ -136,18 +138,7 @@ namespace AMSLLC.Listener.Bus
                 throw new ArgumentNullException(nameof(domainEvents), "Domain events must be specified in order to publish it.");
             }
 
-            /*Parallel.ForEach(domainEvents, new ParallelOptions { MaxDegreeOfParallelism = parallelDegree }, @event =>
-            {
-                if (DomainEventHandlers.ContainsKey(@event.GetType()))
-                {
-                    foreach (var handler in DomainEventHandlers[@event.GetType()])
-                    {
-                        handler(@event);
-                    }
-                }
-            });*/
-
-            return Task.WhenAll(domainEvents.SelectMany(d => (IEnumerable<Task>)((IDomainEventBus)this).PublishAsync(d)));
+            return Task.WhenAll(domainEvents.Select(d => ((IDomainEventBus)this).PublishAsync(d)));
         }
     }
 }
