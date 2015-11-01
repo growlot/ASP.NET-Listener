@@ -5,14 +5,18 @@
 namespace AMSLLC.Listener.Bootstrapper
 {
     using System.Web.Http;
+
+    using AMSLLC.Listener.Bootstrapper.Owin;
+
     using ApplicationService;
     using Core;
     using Core.Ninject;
+
     using global::Owin;
-    using Microsoft.Owin.Diagnostics;
+
     using Ninject;
     using Ninject.Web.Common.OwinHost;
-    using Ninject.Web.WebApi.OwinHost;
+
     using ODataService;
     using Owin.Middleware;
     using Serilog;
@@ -52,18 +56,19 @@ namespace AMSLLC.Listener.Bootstrapper
 
         private void InitOwinHost(IAppBuilder app, NinjectDependencyInjectionAdapter diAdapter)
         {
-            var config = diAdapter.ResolveType<HttpConfiguration>();
+            app.UseRequestScopeContext();
 
-            var odataServiceConfigurator = diAdapter.ResolveType<ODataServiceConfigurator>();
-            odataServiceConfigurator.Configure(config);
+            diAdapter.Initialize(container => app.UseNinjectMiddleware(() => container));
+
+            var config = diAdapter.ResolveType<HttpConfiguration>();
+            app.UseNinjectWebApi(config);
+
+            var oDataServiceConfigurator = diAdapter.ResolveType<ODataServiceConfigurator>();
+            oDataServiceConfigurator.Configure(config);
 
             var applicationServerConfigurator = diAdapter.ResolveType<ApplicationServiceConfigurator>();
             applicationServerConfigurator.RegisterCommandHandlers();
             applicationServerConfigurator.RegisterSagaHandlers();
-
-            app.UseRequestScopeContext();
-            app.UseErrorPage(ErrorPageOptions.ShowAll);
-            diAdapter.Initialize(container => app.UseNinjectMiddleware(() => container).UseNinjectWebApi(config));
 
             config.EnsureInitialized();
         }

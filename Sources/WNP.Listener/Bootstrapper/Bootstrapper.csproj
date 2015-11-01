@@ -172,6 +172,9 @@
     <Compile Include="ListenerBoostrapper.cs" />
     <Compile Include="ObjectExtensios.cs" />
     <Compile Include="OwinRequestProfilerProvider.cs" />
+    <Compile Include="Owin\OwinRequestScopeProvider.cs" />
+    <Compile Include="Owin\OwinWebApiAppBuilderExtensions.cs" />
+    <Compile Include="Owin\OwinWebApiModule.cs" />
     <Compile Include="Owin\Middleware\AppBuilderOwinRequestScopeContextMiddlewareExtensions.cs" />
     <Compile Include="Owin\Middleware\IOwinRequestScopeContext.cs" />
     <Compile Include="Owin\Middleware\OwinRequestScopeContextMiddleware.cs" />
