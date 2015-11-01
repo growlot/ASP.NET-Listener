@@ -11,12 +11,19 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
     /// <summary>
     /// Root aggregate for a Site
     /// </summary>
-    public class Site : Entity<int>, IAggregateRoot
+    public class Site : AggregateRoot<int>
     {
         /// <summary>
         /// The domain event bus
         /// </summary>
         private IDomainEventBus domainEventBus = ApplicationIntegration.DependencyResolver.ResolveType<IDomainEventBus>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Site"/> class.
+        /// </summary>
+        public Site()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Site"/> class.
@@ -109,6 +116,23 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         {
             var siteMemento = (SiteMemento)memento;
             this.Id = siteMemento.Id;
+            this.Description = siteMemento.Description;
+            this.PremiseNumber = siteMemento.PremiseNumber;
+            if (!string.IsNullOrWhiteSpace(siteMemento.Address1))
+            {
+                this.Address = new PhysicalAddressBuilder()
+                    .CreatePhysicalAddress(siteMemento.Address1)
+                    .WithAddressLine2(siteMemento.Address2)
+                    .WithCity(siteMemento.City)
+                    .WithCountry(siteMemento.Country)
+                    .WithState(siteMemento.State)
+                    .WithZipCode(siteMemento.Zip);
+            }
+
+            if (!string.IsNullOrWhiteSpace(siteMemento.BillingAccountNumber))
+            {
+                this.Account = new BillingAccount(siteMemento.BillingAccountName, siteMemento.BillingAccountNumber);
+            }
         }
     }
 }

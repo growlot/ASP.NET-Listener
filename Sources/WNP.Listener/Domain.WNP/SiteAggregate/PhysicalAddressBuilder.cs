@@ -64,12 +64,12 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             if (addressBuilder != null)
             {
                 return new PhysicalAddress(
-                    addressBuilder.country,
-                    addressBuilder.state,
-                    addressBuilder.city,
-                    addressBuilder.address1,
-                    addressBuilder.address2,
-                    addressBuilder.zip);
+                    country: addressBuilder.country,
+                    state: addressBuilder.state,
+                    city: addressBuilder.city,
+                    address1: addressBuilder.address1,
+                    address2: addressBuilder.address2,
+                    zip: addressBuilder.zip);
             }
 
             return null;
@@ -78,9 +78,14 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <summary>
         /// Creates the physical address.
         /// </summary>
-        /// <returns>The physical address bulder object</returns>
-        public PhysicalAddressBuilder CreatePhysicalAddress()
+        /// <param name="address1">The first address line.</param>
+        /// <returns>
+        /// The physical address bulder object
+        /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "address1", Justification = "Short method in Builder class.")]
+        public PhysicalAddressBuilder CreatePhysicalAddress(string address1)
         {
+            this.address1 = address1;
             return this;
         }
 
@@ -117,18 +122,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         public PhysicalAddressBuilder WithCity(string city)
         {
             this.city = city;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds first address line to address definition.
-        /// </summary>
-        /// <param name="address1">The first address line.</param>
-        /// <returns>The physical address bulder object.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "address1", Justification = "Short method in Builder class.")]
-        public PhysicalAddressBuilder WithAddressLine1(string address1)
-        {
-            this.address1 = address1;
             return this;
         }
 

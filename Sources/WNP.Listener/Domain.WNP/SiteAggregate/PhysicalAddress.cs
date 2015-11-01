@@ -5,11 +5,16 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
+    using System;
     using System.Text;
 
     /// <summary>
     /// Physical address object value type
     /// </summary>
+    /// <remarks>
+    /// At least first address line needs to be specified for address to be valid.
+    /// Address can be converted to string. Converstion is based on the country code, and will pvoride different address format that is specific to this country.
+    /// </remarks>
     public sealed class PhysicalAddress : ValueObject<PhysicalAddress>
     {
         /// <summary>
@@ -53,6 +58,11 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <param name="zip">The zip.</param>
         public PhysicalAddress(string country, string state, string city, string address1, string address2, string zip)
         {
+            if (string.IsNullOrWhiteSpace(address1))
+            {
+                throw new ArgumentException("Address must have at least first address line specified.", nameof(address1));
+            }
+
             this.country = country;
             this.state = state;
             this.city = city;
