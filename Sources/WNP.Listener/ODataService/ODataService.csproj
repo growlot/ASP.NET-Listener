@@ -213,7 +213,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FilterTransformer\ISupportedODataFunctionToSql.cs" />
     <Compile Include="TypeExtensions\HttpRequestMessageExtensions.cs" />
-    <Compile Include="TypeExtensions\HttpContextExtensions.cs" />
     <Compile Include="WNPGenericRoutingConvention.cs" />
   </ItemGroup>
   <ItemGroup>

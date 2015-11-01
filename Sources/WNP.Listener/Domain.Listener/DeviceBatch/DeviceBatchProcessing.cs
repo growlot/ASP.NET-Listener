@@ -7,7 +7,7 @@ namespace AMSLLC.Listener.Domain.Listener.DeviceBatch
     /// <summary>
     /// Device batch processing
     /// </summary>
-    public class DeviceBatchProcessing : Entity<int>, IAggregateRoot
+    public class DeviceBatchProcessing : AggregateRoot<int>
     {
         /// <summary>
         /// Split batch into separate transactions

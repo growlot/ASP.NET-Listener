@@ -13,7 +13,7 @@ namespace AMSLLC.Listener.Bus
     using Utilities;
 
     /// <summary>
-    /// bla
+    /// Implements <see cref="IDomainEventBus"/> and <see cref="ICommandBus"/> in memory.
     /// </summary>
     public sealed class InMemoryBus : IDomainEventBus, ICommandBus
     {
@@ -147,7 +147,7 @@ namespace AMSLLC.Listener.Bus
                 }
             });*/
 
-            return Task.WhenAll(domainEvents.SelectMany(d => ((IDomainEventBus)this).PublishAsync(d)));
+            return Task.WhenAll(domainEvents.SelectMany(d => (IEnumerable<Task>)((IDomainEventBus)this).PublishAsync(d)));
         }
     }
 }

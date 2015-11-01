@@ -74,7 +74,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
             domainEventBus.Setup(s => s.SubscribeAsync(It.IsAny<Func<IDomainEvent, Task>>())).Callback((Func<IDomainEvent, Task> evt) => domainBusImpl.SubscribeAsync(evt));
 
             domainEventBus.Setup(s => s.Publish(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.Publish(evt));
-            domainEventBus.Setup(s => s.PublishAsync(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.PublishAsync(evt)).Returns(new Task[0]);
+            domainEventBus.Setup(s => s.PublishAsync(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.PublishAsync(evt)).Returns(Task.CompletedTask);
             domainEventBus.Setup(s => s.PublishBulk(It.IsAny<ICollection<IDomainEvent>>())).Callback((ICollection<IDomainEvent> evt) => domainBusImpl.PublishBulk(evt)).Returns(Task.CompletedTask);
 
 

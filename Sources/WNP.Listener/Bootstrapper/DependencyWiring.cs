@@ -98,7 +98,6 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Repository.WNP bindings
             // -------------------------
-            this.Kernel.Bind<HttpContextExtensions>().ToSelf().InRequestScope(); // .To<WNPUnitOfWork>().InRequestScope(); //
             this.Kernel.Bind<IWNPUnitOfWork>().To<WNPUnitOfWork>().InSingletonScope();
 
             // -------------------------
