@@ -76,6 +76,7 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IOwnerRepository.cs" />
     <Compile Include="ISiteRepository.cs" />
     <Compile Include="IWnpRepository.cs" />
