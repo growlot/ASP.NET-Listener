@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Bootstrapper
 {
     using System;
     using ApplicationService;
+    using ApplicationService.BatchBuilder;
     using ApplicationService.Implementations;
     using Bus;
     using Communication;
@@ -13,6 +14,7 @@ namespace AMSLLC.Listener.Bootstrapper
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
+    using global::Persistence.Poco;
     using MetadataService;
     using MetadataService.Implementations;
     using Ninject.Modules;
@@ -25,6 +27,7 @@ namespace AMSLLC.Listener.Bootstrapper
     using Persistence.Listener;
     using Persistence.WNP;
     using Persistence.WNP.DomainEventHandlers;
+    using Persistence.WNPAsync;
     using Repository;
     using Repository.WNP;
     using Serilog;
@@ -85,15 +88,18 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<ICommandBus>().To<InMemoryBus>().InSingletonScope();
             this.Kernel.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
             this.Kernel.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
+            this.Kernel.Bind<IBatchBuilder>().To<MeterTestResultBatchBuilder>().InSingletonScope();
             this.Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
 
             // -------------------------
             // Repository bindings
             // -------------------------
-            this.Kernel.Bind<IPersistenceAdapter>().To<PocoCachedAdapter>().InRequestScope();
+            this.Kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>().InRequestScope();
+            this.Kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>().InRequestScope();
             this.Kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
             this.Kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
-            this.Kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>();
+            this.Kernel.Bind<IWnpBatchRepository>().To<WnpRepository>();
+            this.Kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>().InRequestScope();
 
             // -------------------------
             // Repository.WNP bindings
@@ -112,6 +118,7 @@ namespace AMSLLC.Listener.Bootstrapper
                 .ToSelf()
                 .InRequestScope()
                 .WithConstructorArgument("connectionStringName", "WNPDatabase");
+            this.Kernel.Bind<WnpAsyncDbContext>().ToSelf().InRequestScope().WithConstructorArgument("connectionStringName", "WNPDatabase");
 
             this.Kernel.Bind<WNPUnitOfWork>()
                 .ToSelf()

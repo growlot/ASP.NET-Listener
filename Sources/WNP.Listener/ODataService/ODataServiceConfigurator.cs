@@ -69,6 +69,10 @@ namespace AMSLLC.Listener.ODataService
                 this.ConfigureHeader(openBatchAction, builder);
                 openBatchAction.Returns<string>();
 
+                var buildBatchAction = b.Action("BuildBatch");
+                this.ConfigureHeader(buildBatchAction, builder);
+                buildBatchAction.Returns<string>();
+
                 configuration.Ignore(p => p.TransactionId);
             });
 

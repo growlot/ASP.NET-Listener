@@ -6,12 +6,14 @@ namespace AMSLLC.Listener.Persistence.Listener
 {
     using System;
     using System.Threading.Tasks;
+    using Core;
     using Newtonsoft.Json;
     using Repository;
 
     /// <summary>
     /// Transaction data repository
     /// </summary>
+    [WithinListenerContext]
     public class TransactionDataRepository : ITransactionDataRepository
     {
         private readonly IPersistenceAdapter persistence;
@@ -23,15 +25,6 @@ namespace AMSLLC.Listener.Persistence.Listener
         public TransactionDataRepository(IPersistenceAdapter persistence)
         {
             this.persistence = persistence;
-        }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="TransactionDataRepository" /> class.
-        /// </summary>
-        ~TransactionDataRepository()
-        {
-            // Finalizer calls Dispose(false)
-            this.Dispose(false);
         }
 
         /// <inheritdoc/>
@@ -47,16 +40,33 @@ namespace AMSLLC.Listener.Persistence.Listener
         /// <param name="recordId">The record identifier.</param>
         /// <param name="data">The data.</param>
         /// <returns>Task.</returns>
-        public Task SaveDataAsync(Guid recordId, object data)
+        public Task SaveDataAsync(
+            Guid recordId,
+            object data)
         {
-            return this.persistence.InsertAsync(new TransactionMessageDatumEntity { RecordKey = recordId, MessageData = JsonConvert.SerializeObject(data) });
+            return this.persistence.InsertAsync(
+                new TransactionMessageDatumEntity
+                {
+                    RecordKey = recordId,
+                    MessageData = JsonConvert.SerializeObject(data)
+                });
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="TransactionDataRepository" /> class.
+        /// </summary>
+        ~TransactionDataRepository()
+        {
+            // Finalizer calls Dispose(false)
+            this.Dispose(false);
         }
 
         /// <summary>
         /// Disposes the specified disposing.
         /// </summary>
         /// <param name="disposing">The disposing.</param>
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(
+            bool disposing)
         {
             if (disposing)
             {

@@ -79,8 +79,11 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IOwnerRepository.cs" />
     <Compile Include="ISiteRepository.cs" />
-    <Compile Include="IWnpRepository.cs" />
+    <Compile Include="IWnpBatchRepository.cs" />
     <Compile Include="IWNPUnitOfWork.cs" />
+    <Compile Include="Model\Meter.cs" />
+    <Compile Include="Model\MeterTest.cs" />
+    <Compile Include="Model\MeterTestCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

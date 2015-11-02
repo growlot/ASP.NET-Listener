@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ListenerClient")]
+[assembly: AssemblyTitle("Persistence.WNPAsync")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ListenerClient")]
+[assembly: AssemblyProduct("Persistence.WNPAsync")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("055a6e40-06e3-40b8-90f6-b81336a356a3")]
+[assembly: Guid("6b57711d-f549-4d80-ab52-2c22ffa113a2")]
 
 // Version information for an assembly consists of the following four values:
 //

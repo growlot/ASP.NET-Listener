@@ -1,45 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="WnpAsyncDbContext.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
-namespace AMSLLC.Listener.Persistence.Listener
+namespace AMSLLC.Listener.Persistence.WNPAsync
 {
     using System.Data;
     using System.Data.Common;
     using global::Persistence.Poco;
     using Serilog;
 
-    public class ListenerDbContext : PocoDbContext
+    /// <summary>
+    /// WnpAsync db context
+    /// </summary>
+    public class WnpAsyncDbContext : PocoDbContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListenerDbContext"/> class.
+        /// Initializes a new instance of the <see cref="WnpAsyncDbContext"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="providerName">Name of the provider.</param>
-        public ListenerDbContext(string connectionString,
+        public WnpAsyncDbContext(string connectionString,
             string providerName)
             : base(connectionString, providerName)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListenerDbContext"/> class.
+        /// Initializes a new instance of the <see cref="WnpAsyncDbContext" /> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="provider">The provider.</param>
-        public ListenerDbContext(string connectionString,
-            DbProviderFactory provider)
-            : base(connectionString, provider)
+        public WnpAsyncDbContext(string connectionString,
+                    DbProviderFactory provider)
+                    : base(connectionString, provider)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListenerDbContext"/> class.
+        /// Initializes a new instance of the <see cref="WnpAsyncDbContext"/> class.
         /// </summary>
         /// <param name="connectionStringName">Name of the connection string.</param>
-        public ListenerDbContext(string connectionStringName)
+        public WnpAsyncDbContext(string connectionStringName)
             : base(connectionStringName)
         {
         }

@@ -83,9 +83,11 @@
     <Compile Include="CommandHandlers\UpdateSiteAddressCommandHandler.cs" />
     <Compile Include="Commands\UpdateSiteAddressCommand.cs" />
     <Compile Include="Commands\UpdateSiteBillingAccountCommand.cs" />
+    <Compile Include="BatchBuilder\MeterTestResultBatchBuilder.cs" />
     <Compile Include="Commands\CancelTransactionsCommand.cs" />
     <Compile Include="Commands\OpenBatchTransactionCommand.cs" />
     <Compile Include="Commands\ProcessingTransactionCommand.cs" />
+    <Compile Include="IBatchBuilder.cs" />
     <Compile Include="ISaga.cs" />
     <Compile Include="Implementations\ApplicationServiceScope.cs" />
     <Compile Include="CommandHandlers\CreateSiteCommandHandler.cs" />

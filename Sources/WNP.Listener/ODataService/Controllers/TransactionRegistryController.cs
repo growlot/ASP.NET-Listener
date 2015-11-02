@@ -27,6 +27,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     {
         private readonly ListenerODataContext _dbContext;
         private readonly ITransactionService _transactionService;
+        private readonly IBatchBuilder _meterBatchBuilder;
 
         public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
         public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
@@ -36,10 +37,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="dbctx">The db context.</param>
         /// <param name="transactionService">The transaction service.</param>
-        public TransactionRegistryController(ListenerODataContext dbctx, ITransactionService transactionService)
+        /// <param name="meterBatchBuilder">The meter batch builder.</param>
+        public TransactionRegistryController(ListenerODataContext dbctx, ITransactionService transactionService, IBatchBuilder meterBatchBuilder)
         {
             this._dbContext = dbctx;
             this._transactionService = transactionService;
+            this._meterBatchBuilder = meterBatchBuilder;
         }
 
         public IQueryable<TransactionRegistryEntity> Get()
@@ -101,7 +104,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         }
 
         /// <summary>
-        /// Opens new Listener transaction.
+        /// Opens new batch listener transaction.
         /// </summary>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The key of new transaction</returns>
@@ -135,9 +138,31 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     }
                 }
 
-
-
                 return this.Ok(await this._transactionService.Open(message));
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Opens new batch listener transaction.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The key of new transaction</returns>
+        [HttpPost]
+        [ODataRoute("BuildBatch")]
+        public async Task<IHttpActionResult> BuildBatch(ODataActionParameters parameters)
+        {
+            try
+            {
+                var batchKey = (string)parameters["batchKey"];
+
+                var records = await this._meterBatchBuilder.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
+
+                return this.Ok(await Task.WhenAll(records.Select(r => this._transactionService.Open(r))));
             }
             catch (Exception exc)
             {

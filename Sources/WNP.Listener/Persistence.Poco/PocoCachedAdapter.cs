@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace AMSLLC.Listener.Persistence.Listener
+namespace Persistence.Poco
 {
     using System;
     using System.Collections.Concurrent;
@@ -12,15 +12,15 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+    using AMSLLC.Listener.Repository;
     using AsyncPoco;
-    using Repository;
 
     public class PocoCachedAdapter : IPersistenceAdapter
     {
         private static readonly ConcurrentDictionary<string, object> _innerCache =
             new ConcurrentDictionary<string, object>();
 
-        private readonly ListenerDbContext _dbContext;
+        private readonly Database _dbContext;
 
         private readonly SemaphoreSlim cacheLock = new SemaphoreSlim(1);
 
@@ -28,7 +28,7 @@ namespace AMSLLC.Listener.Persistence.Listener
         /// Initializes a new instance of the <see cref="PocoCachedAdapter"/> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
-        public PocoCachedAdapter(ListenerDbContext dbContext)
+        public PocoCachedAdapter(Database dbContext)
         {
             this._dbContext = dbContext;
         }
@@ -44,7 +44,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 
         public Task<List<TEntity>> GetListAsync<TEntity>(string query, params object[] args)
         {
-            return this.ReadOrAdd((db, a) => a == null ? db.FetchAsync<TEntity>(query) : db.FetchAsync<TEntity>(query, a),
+            return this.ReadOrAdd<List<TEntity>>((db, a) => a == null ? db.FetchAsync<TEntity>(query) : db.FetchAsync<TEntity>(query, a),
                 args);
         }
 
@@ -55,7 +55,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 
         public Task<TEntity> GetAsync<TEntity>(string query, params object[] args)
         {
-            return this.ReadOrAdd((db, a) => a == null ? db.SingleAsync<TEntity>(query) : db.SingleAsync<TEntity>(query, a),
+            return this.ReadOrAdd<TEntity>((db, a) => a == null ? db.SingleAsync<TEntity>(query) : db.SingleAsync<TEntity>(query, a),
                 args);
         }
 
@@ -120,7 +120,7 @@ namespace AMSLLC.Listener.Persistence.Listener
                 func, query, args);
         }
 
-        private async Task<TEntity> ReadOrAdd<TEntity>(Func<ListenerDbContext, object[], Task<TEntity>> selector,
+        private async Task<TEntity> ReadOrAdd<TEntity>(Func<Database, object[], Task<TEntity>> selector,
             params object[] args)
         {
             string key = $"{typeof(TEntity)}_{string.Join("_", args)}";

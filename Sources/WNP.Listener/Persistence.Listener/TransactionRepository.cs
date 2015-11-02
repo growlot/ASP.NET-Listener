@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="TransactionRepository.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="TransactionRepository.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Persistence.Listener
 {
@@ -13,16 +11,18 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System.Linq;
     using System.Threading.Tasks;
     using Communication;
+    using Core;
     using Domain;
     using Domain.Listener.Transaction;
     using Models;
     using Newtonsoft.Json;
-    using Utilities;
     using Repository;
+    using Utilities;
 
     /// <summary>
     /// Implements <see cref="ITransactionRepository"/> for AsyncPoco
     /// </summary>
+    [WithinListenerContext]
     public class TransactionRepository : ITransactionRepository
     {
         private readonly IPersistenceAdapter persistence;
@@ -36,29 +36,23 @@ namespace AMSLLC.Listener.Persistence.Listener
             this.persistence = persistence;
         }
 
-        /// <summary>
-        /// Finalizes an instance of the <see cref="TransactionRepository" /> class.
-        /// </summary>
-        ~TransactionRepository()
-        {
-            // Finalizer calls Dispose(false)
-            this.Dispose(false);
-        }
-
         /// <inheritdoc/>
-        public Task CreateAsync(TransactionExecution transaction)
+        public Task CreateAsync(
+            TransactionExecution transaction)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public Task UpdateAsync(TransactionExecution transaction)
+        public Task UpdateAsync(
+            TransactionExecution transaction)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public async Task UpdateHashAsync(Dictionary<Guid, string> hashCodes)
+        public async Task UpdateHashAsync(
+            Dictionary<Guid, string> hashCodes)
         {
             // Single update, transaction scope removed
             // await
@@ -86,51 +80,64 @@ namespace AMSLLC.Listener.Persistence.Listener
             }
         }
 
-        private Task UpdateHashCode(
-            KeyValuePair<Guid, string> hashCode)
-        {
-            return this.persistence.UpdateAsync(
-                new TransactionRegistryEntity
-                {
-                    OutgoingHash = hashCode.Value,
-                    RecordKey = hashCode.Key
-                },
-                hashCode.Key,
-                new[]
-                {
-                    "OutgoingHash"
-                });
-        }
-
         /// <inheritdoc/>
-        public async Task<Dictionary<string, IEnumerable<IMemento>>> GetFieldConfigurationsAsync(string companyCode, string sourceApplicationKey)
+        public async Task<Dictionary<string, IEnumerable<IMemento>>> GetFieldConfigurationsAsync(
+            string companyCode,
+            string sourceApplicationKey)
         {
-            var valueMapEntries = await this.persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
+            var valueMapEntries =
+                await this.persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
             var valueMaps = await this.persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
 
-            var select = @"SELECT FCE.*, O.*, EO.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
+            var select =
+                @"SELECT FCE.*, O.*, EO.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
 INNER JOIN Company C ON EO.CompanyId = C.CompanyId
 INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1";
 
-            var fieldConfigurationEntries = await this.persistence.ProjectionAsync((FieldConfigurationEntryEntity ent, OperationEntity operation, EnabledOperationEntity enabledOperation) => PrepareFieldConfiguration(ent, valueMapEntries, valueMaps, enabledOperation.EnabledOperationId, operation.Name), select,
-                       companyCode,
-                       sourceApplicationKey);//.GetListAsync<FieldConfigurationEntryEntity>(
-                                             //);
+            var fieldConfigurationEntries =
+                await this.persistence.ProjectionAsync(
+                    (FieldConfigurationEntryEntity ent,
+                        OperationEntity operation,
+                        EnabledOperationEntity enabledOperation) =>
+                        PrepareFieldConfiguration(
+                            ent,
+                            valueMapEntries,
+                            valueMaps,
+                            enabledOperation.EnabledOperationId,
+                            operation.Name),
+                    select,
+                    companyCode,
+                    sourceApplicationKey); //.GetListAsync<FieldConfigurationEntryEntity>(
+            //);
 
-            return fieldConfigurationEntries.GroupBy(o => o.OperationKey).ToDictionary(g => g.Key, g => g.ToList().Cast<IMemento>()); //;
+            return fieldConfigurationEntries.GroupBy(o => o.OperationKey)
+                .ToDictionary(g => g.Key, g => g.ToList().Cast<IMemento>()); //;
         }
 
         /// <inheritdoc/>
-        public async Task<IMemento> GetExecutionContextAsync(Guid recordKey)
+        public async Task<IMemento> GetExecutionContextAsync(
+            Guid recordKey)
         {
             TransactionExecutionMemento returnValue = null;
             var protocols = await this.persistence.GetListAsync<ProtocolTypeEntity>("SELECT * FROM ProtocolType");
-            var valueMapEntries = await this.persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
+            var valueMapEntries =
+                await this.persistence.GetListAsync<ValueMapEntryEntity>("SELECT * FROM ValueMapEntry");
             var valueMaps = await this.persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
 
-            var tr = await this.persistence.GetAsync<TransactionRegistryEntity>("SELECT * FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
+            // var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
 
-            var childTr = await this.persistence.GetListAsync<TransactionRegistryEntity>("SELECT TR1.* FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.RecordKey = TR1.BatchKey WHERE TR.RecordKey = @0", false, recordKey);
+            var tr =
+                await
+                    this.persistence.GetAsync<TransactionRegistryEntity>(
+                        "SELECT * FROM TransactionRegistry WHERE RecordKey = @0",
+                        recordKey);
+
+            var childTr =
+                await
+                    this.persistence.GetListAsync<TransactionRegistryEntity>(
+                        "SELECT TR1.* FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.RecordKey = TR1.BatchKey WHERE TR.RecordKey = @0",
+                        false,
+                        recordKey);
             var enabledOperations = childTr.Select(s => s.EnabledOperationId).ToList();
             enabledOperations.Add(tr.EnabledOperationId);
 
@@ -146,16 +153,16 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
             transactionKeys.Add(tr.IncomingHash);
             //}
 
-            Func
-                <EndpointEntity, OperationEndpointEntity, EnabledOperationEntity,
-                    IECWrapper> callback = (ee,
-                        oe,
-                        eo) =>
-                        new IECWrapper(new IntegrationEndpointConfigurationMemento(
-                            protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name,
-                            ee.ConnectionConfiguration,
-                            ee.AdapterConfiguration,
-                            (EndpointTriggerType)ee.EndpointTriggerTypeId), eo.EnabledOperationId);
+            Func<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IECWrapper> callback = (ee,
+                oe,
+                eo) =>
+                new IECWrapper(
+                    new IntegrationEndpointConfigurationMemento(
+                        protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name,
+                        ee.ConnectionConfiguration,
+                        ee.AdapterConfiguration,
+                        (EndpointTriggerType)ee.EndpointTriggerTypeId),
+                    eo.EnabledOperationId);
 
             var select = @"
 SELECT DISTINCT E.*, OE.*, EO.*
@@ -167,7 +174,13 @@ FROM
     LEFT JOIN FieldConfiguration FC ON EO.FieldConfigurationId = FC.FieldConfigurationId 
 WHERE TR.RecordKey IN (@records)";
 
-            var endpoints = await this.persistence.ProjectionAsync(callback, select, new { records = recordKeys.ToArray() });
+            var endpoints = await this.persistence.ProjectionAsync(
+                callback,
+                select,
+                new
+                {
+                    records = recordKeys.ToArray()
+                });
 
             select = @"
 SELECT DISTINCT FCE.*, EO.*, O.*
@@ -178,18 +191,31 @@ FROM FieldConfigurationEntry FCE
 WHERE EO.EnabledOperationId IN (@operations)";
 
             //var fieldConfigurationEntries = await this.persistence.ProjectionAsync<FieldConfigurationEntryEntity>(select, new { operations = enabledOperations.Distinct().ToArray() });
-            var fieldConfigurationEntries = await this.persistence.ProjectionAsync((FieldConfigurationEntryEntity ent, EnabledOperationEntity enabledOperation, OperationEntity operation) => PrepareFieldConfiguration(ent, valueMapEntries, valueMaps, enabledOperation.EnabledOperationId, operation.Name), select,
-                        new { operations = enabledOperations.Distinct().ToArray() });
-
-
+            var fieldConfigurationEntries =
+                await this.persistence.ProjectionAsync(
+                    (FieldConfigurationEntryEntity ent,
+                        EnabledOperationEntity enabledOperation,
+                        OperationEntity operation) =>
+                        PrepareFieldConfiguration(
+                            ent,
+                            valueMapEntries,
+                            valueMaps,
+                            enabledOperation.EnabledOperationId,
+                            operation.Name),
+                    select,
+                    new
+                    {
+                        operations = enabledOperations.Distinct().ToArray()
+                    });
 
             if (endpoints != null)
             {
-
-                select = @"SELECT IncomingHash, RecordKey FROM TransactionRegistry WHERE IncomingHash IN (@transactionKeys) AND TransactionStatusId IN (@successStatus)";
+                select =
+                    @"SELECT IncomingHash, RecordKey FROM TransactionRegistry WHERE IncomingHash IN (@transactionKeys) AND TransactionStatusId IN (@successStatus)";
 
                 var duplicates = await this.persistence.GetListAsync<dynamic>(
-                    select, false,
+                    select,
+                    false,
                     new
                     {
                         transactionKeys = transactionKeys.ToArray(),
@@ -199,13 +225,12 @@ WHERE EO.EnabledOperationId IN (@operations)";
                         }
                     });
 
-
-
                 returnValue = new TransactionExecutionMemento(
                     tr.TransactionId,
                     recordKey,
                     tr.EnabledOperationId,
-                    endpoints.Where(e => e.EnabledOperationId == tr.EnabledOperationId).Select(s => s.IntegrationEndpointConfigurationMemento),
+                    endpoints.Where(e => e.EnabledOperationId == tr.EnabledOperationId)
+                        .Select(s => s.IntegrationEndpointConfigurationMemento),
                     fieldConfigurationEntries.Where(fc => fc.EnabledOperationId == tr.EnabledOperationId),
                     childTr.Select(
                         ctr =>
@@ -213,22 +238,39 @@ WHERE EO.EnabledOperationId IN (@operations)";
                                 ctr.TransactionId,
                                 ctr.RecordKey,
                                 ctr.EnabledOperationId,
-                                endpoints.Where(e => e.EnabledOperationId == ctr.EnabledOperationId).Select(s => s.IntegrationEndpointConfigurationMemento),
-                                fieldConfigurationEntries.Where(fc => fc.EnabledOperationId == ctr.EnabledOperationId),
+                                endpoints.Where(e => e.EnabledOperationId == ctr.EnabledOperationId)
+                                    .Select(s => s.IntegrationEndpointConfigurationMemento),
+                                fieldConfigurationEntries.Where(
+                                    fc => fc.EnabledOperationId == ctr.EnabledOperationId),
                                 null,
                                 string.IsNullOrWhiteSpace(ctr.Data)
                                     ? null
-                                    : JsonConvert.DeserializeObject<ExpandoObject>(ctr.Data), duplicates.Where(d => string.Compare((string)d.IncomingHash, ctr.IncomingHash, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != ctr.RecordKey).Select(s => (Guid)s.RecordKey), (TransactionStatusType)ctr.TransactionStatusId)),
+                                    : JsonConvert.DeserializeObject<ExpandoObject>(ctr.Data),
+                                duplicates.Where(
+                                    d =>
+                                        string.Compare(
+                                            (string)d.IncomingHash,
+                                            ctr.IncomingHash,
+                                            StringComparison.InvariantCulture) == 0 &&
+                                        (Guid)d.RecordKey != ctr.RecordKey).Select(s => (Guid)s.RecordKey),
+                                (TransactionStatusType)ctr.TransactionStatusId)),
                     string.IsNullOrWhiteSpace(tr.Data) ? null : JsonConvert.DeserializeObject<ExpandoObject>(tr.Data),
-                    duplicates.Where(d => string.Compare((string)d.IncomingHash, tr.IncomingHash, StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.RecordKey).Select(s => (Guid)s.RecordKey), (TransactionStatusType)tr.TransactionStatusId);
+                    duplicates.Where(
+                        d =>
+                            string.Compare(
+                                (string)d.IncomingHash,
+                                tr.IncomingHash,
+                                StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.RecordKey)
+                        .Select(s => (Guid)s.RecordKey),
+                    (TransactionStatusType)tr.TransactionStatusId);
             }
-
 
             return returnValue;
         }
 
         /// <inheritdoc/>
-        public async Task CreateTransactionRegistryAsync(TransactionRegistry transactionRegistry)
+        public async Task CreateTransactionRegistryAsync(
+            TransactionRegistry transactionRegistry)
         {
             //await this.GetEnabledOperations();
             bool transactional = transactionRegistry.ChildTransactions.Any();
@@ -241,18 +283,22 @@ WHERE EO.EnabledOperationId IN (@operations)";
 
                     foreach (var childTransactionRegistryEntity in transactionRegistry.ChildTransactions)
                     {
-                        await this.persistence.InsertAsync(new // "TransactionRegistry", "TransactionId",
-                        {
-                            CreatedDateTime = childTransactionRegistryEntity.CreatedDateTime,
-                            BatchKey = transactionRegistry.RecordKey,
-                            RecordKey = childTransactionRegistryEntity.RecordKey,
-                            TransactionStatusId = (int)childTransactionRegistryEntity.Status,
-                            EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
-                            Data = childTransactionRegistryEntity.Data,
-                            AppUser = transactionRegistry.UserName,
-                            IncomingHash = childTransactionRegistryEntity.IncomingHash,
-                            Summary = SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
-                        }, "TransactionRegistry", "TransactionId");
+                        await this.persistence.InsertAsync(
+                            new // "TransactionRegistry", "TransactionId",
+                            {
+                                CreatedDateTime = childTransactionRegistryEntity.CreatedDateTime,
+                                BatchKey = transactionRegistry.RecordKey,
+                                RecordKey = childTransactionRegistryEntity.RecordKey,
+                                TransactionStatusId = (int)childTransactionRegistryEntity.Status,
+                                EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
+                                Data = childTransactionRegistryEntity.Data,
+                                AppUser = transactionRegistry.UserName,
+                                IncomingHash = childTransactionRegistryEntity.IncomingHash,
+                                Summary =
+                                    SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
+                            },
+                            "TransactionRegistry",
+                            "TransactionId");
                     }
 
                     tr.Commit();
@@ -264,29 +310,6 @@ WHERE EO.EnabledOperationId IN (@operations)";
             }
 
             // Single insert, transaction scope removed
-
-
-
-
-
-        }
-
-        private Task InsertRoot(TransactionRegistry transactionRegistry)
-        {
-            return this.persistence.InsertAsync(new  // "TransactionRegistry", "TransactionId",
-            {
-                CreatedDateTime = transactionRegistry.CreatedDateTime,
-                RecordKey = transactionRegistry.RecordKey,
-                TransactionStatusId = (int)transactionRegistry.Status,
-                EnabledOperationId = transactionRegistry.EnabledOperationId,
-                Data = transactionRegistry.Data,
-                UpdatedDateTime = transactionRegistry.UpdatedDateTime,
-                AppUser = transactionRegistry.UserName,
-                Message = transactionRegistry.Message,
-                Details = transactionRegistry.Details,
-                IncomingHash = transactionRegistry.IncomingHash,
-                Summary = SerializationUtilities.DictionaryToXml(transactionRegistry.Summary)
-            }, "TransactionRegistry", "TransactionId");
         }
 
         /// <inheritdoc/>
@@ -299,16 +322,31 @@ FROM EnabledOperation EO
     INNER JOIN Company C ON C.CompanyId = EO.CompanyId 
     INNER JOIN Operation O ON O.OperationId = EO.OperationId";
             //@select, transactionRegistry.ApplicationKey, transactionRegistry.CompanyCode, transactionRegistry.OperationKey
-            return await this.persistence.ProjectionAsync<EnabledOperationEntity, ApplicationEntity, CompanyEntity, OperationEntity, EnabledOperationLookup>((eo, a, c, o) => new EnabledOperationLookup(c.ExternalCode, a.RecordKey, o.Name, eo.EnabledOperationId), select);
+            return
+                await
+                    this.persistence
+                        .ProjectionAsync
+                        <EnabledOperationEntity, ApplicationEntity, CompanyEntity, OperationEntity,
+                            EnabledOperationLookup>(
+                                (eo,
+                                    a,
+                                    c,
+                                    o) =>
+                                    new EnabledOperationLookup(
+                                        c.ExternalCode,
+                                        a.RecordKey,
+                                        o.Name,
+                                        eo.EnabledOperationId),
+                                select);
         }
 
-
         /// <inheritdoc/>
-        public async Task<IMemento> GetRegistryEntry(Guid recordKey)
+        public async Task<IMemento> GetRegistryEntry(
+            Guid recordKey)
         {
-
-
-            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = CreateRegistryEntryProjectionCallback(null);
+            Func
+                <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity,
+                    TransactionRegistryMemento> callback = CreateRegistryEntryProjectionCallback(null);
 
             var selectChildren = @"
 SELECT TR.*, A.*, C.*, O.*
@@ -319,10 +357,7 @@ SELECT TR.*, A.*, C.*, O.*
     INNER JOIN Operation O ON EO.OperationId = O.OperationId
 WHERE TR.BatchKey = @0";
 
-            var childTransactions = await this.persistence.ProjectionAsync(
-                 callback,
-                 selectChildren,
-                 recordKey);
+            var childTransactions = await this.persistence.ProjectionAsync(callback, selectChildren, recordKey);
 
             var select = @"
 SELECT TR.*, A.*, C.*, O.*
@@ -335,18 +370,9 @@ WHERE TR.RecordKey = @0";
 
             callback = CreateRegistryEntryProjectionCallback(childTransactions);
 
-            var registryEntities = await this.persistence.ProjectionAsync(
-                callback,
-                select,
-                recordKey);
+            var registryEntities = await this.persistence.ProjectionAsync(callback, select, recordKey);
 
             return registryEntities.SingleOrDefault();
-        }
-
-        private static Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> CreateRegistryEntryProjectionCallback(IEnumerable<TransactionRegistryMemento> childTransactions)
-        {
-            Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> callback = (tr, app, cmp, op) => new TransactionRegistryMemento(tr.TransactionId, tr.RecordKey, tr.IncomingHash, cmp.ExternalCode, app.RecordKey, op.Name, (TransactionStatusType)tr.TransactionStatusId, tr.AppUser, tr.CreatedDateTime, tr.UpdatedDateTime, tr.Data, tr.Message, tr.Details, tr.EnabledOperationId, childTransactions);
-            return callback;
         }
 
         /// <inheritdoc/>
@@ -431,7 +457,8 @@ WHERE TR.RecordKey = @0";
         }
 
         /// <inheritdoc/>
-        public async Task UpdateTransactionRegistryAsync(TransactionRegistry transactionRegistry)
+        public async Task UpdateTransactionRegistryAsync(
+            TransactionRegistry transactionRegistry)
         {
             if (!transactionRegistry.ChildTransactions.Any())
             {
@@ -476,11 +503,11 @@ WHERE TR.RecordKey = @0";
                         transactionRegistry.RecordKey,
                         new[]
                         {
-                        "TransactionStatusId",
-                        "UpdatedDateTime",
-                        "AppUser",
-                        "Message",
-                        "Details"
+                            "TransactionStatusId",
+                            "UpdatedDateTime",
+                            "AppUser",
+                            "Message",
+                            "Details"
                         });
 
                     foreach (var childTransactionRegistryEntity in transactionRegistry.ChildTransactions)
@@ -499,10 +526,10 @@ WHERE TR.RecordKey = @0";
                             childTransactionRegistryEntity.RecordKey,
                             new[]
                             {
-                        "TransactionStatusId",
-                        "UpdatedDateTime",
-                        "Message",
-                        "Details"
+                                "TransactionStatusId",
+                                "UpdatedDateTime",
+                                "Message",
+                                "Details"
                             });
                     }
 
@@ -512,15 +539,15 @@ WHERE TR.RecordKey = @0";
         }
 
         /// <inheritdoc/>
-        public Task<string> GetTransactionDataAsync(Guid recordKey)
+        public Task<int> GetHashCountAsync(
+            int enabledOperationId,
+            string hash)
         {
-            return this.persistence.ExecuteScalarAsync<string>("SELECT Data FROM TransactionRegistry WHERE RecordKey = @0", recordKey);
-        }
-
-        /// <inheritdoc/>
-        public Task<int> GetHashCountAsync(int enabledOperationId, string hash)
-        {
-            return this.persistence.ExecuteScalarAsync<int>("SELECT COUNT(OutgoingHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND OutgoingHash = @1", enabledOperationId, hash);
+            return
+                this.persistence.ExecuteScalarAsync<int>(
+                    "SELECT COUNT(OutgoingHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND OutgoingHash = @1",
+                    enabledOperationId,
+                    hash);
         }
 
         /// <inheritdoc/>
@@ -531,17 +558,111 @@ WHERE TR.RecordKey = @0";
         }
 
         /// <summary>
+        /// Finalizes an instance of the <see cref="TransactionRepository" /> class.
+        /// </summary>
+        ~TransactionRepository()
+        {
+            // Finalizer calls Dispose(false)
+            this.Dispose(false);
+        }
+
+        private Task UpdateHashCode(
+            KeyValuePair<Guid, string> hashCode)
+        {
+            return this.persistence.UpdateAsync(
+                new TransactionRegistryEntity
+                {
+                    OutgoingHash = hashCode.Value,
+                    RecordKey = hashCode.Key
+                },
+                hashCode.Key,
+                new[]
+                {
+                    "OutgoingHash"
+                });
+        }
+
+        private Task InsertRoot(
+            TransactionRegistry transactionRegistry)
+        {
+            return this.persistence.InsertAsync(
+                new // "TransactionRegistry", "TransactionId",
+                {
+                    CreatedDateTime = transactionRegistry.CreatedDateTime,
+                    RecordKey = transactionRegistry.RecordKey,
+                    TransactionStatusId = (int)transactionRegistry.Status,
+                    EnabledOperationId = transactionRegistry.EnabledOperationId,
+                    Data = transactionRegistry.Data,
+                    UpdatedDateTime = transactionRegistry.UpdatedDateTime,
+                    AppUser = transactionRegistry.UserName,
+                    Message = transactionRegistry.Message,
+                    Details = transactionRegistry.Details,
+                    IncomingHash = transactionRegistry.IncomingHash,
+                    Summary = SerializationUtilities.DictionaryToXml(transactionRegistry.Summary)
+                },
+                "TransactionRegistry",
+                "TransactionId");
+        }
+
+        private static
+            Func
+                <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity,
+                    TransactionRegistryMemento> CreateRegistryEntryProjectionCallback(
+            IEnumerable<TransactionRegistryMemento> childTransactions)
+        {
+            Func
+                <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity,
+                    TransactionRegistryMemento> callback = (tr,
+                        app,
+                        cmp,
+                        op) =>
+                        new TransactionRegistryMemento(
+                            tr.TransactionId,
+                            tr.RecordKey,
+                            tr.IncomingHash,
+                            cmp.ExternalCode,
+                            app.RecordKey,
+                            op.Name,
+                            (TransactionStatusType)tr.TransactionStatusId,
+                            tr.AppUser,
+                            tr.CreatedDateTime,
+                            tr.UpdatedDateTime,
+                            tr.Data,
+                            tr.Message,
+                            tr.Details,
+                            tr.EnabledOperationId,
+                            childTransactions);
+            return callback;
+        }
+
+        /// <inheritdoc/>
+        public Task<string> GetTransactionDataAsync(
+            Guid recordKey)
+        {
+            return
+                this.persistence.ExecuteScalarAsync<string>(
+                    "SELECT Data FROM TransactionRegistry WHERE RecordKey = @0",
+                    recordKey);
+        }
+
+        /// <summary>
         /// Disposes the specified disposing.
         /// </summary>
         /// <param name="disposing">The disposing.</param>
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(
+            bool disposing)
         {
             if (disposing)
             {
             }
         }
 
-        private static FieldConfigurationMemento PrepareFieldConfiguration(FieldConfigurationEntryEntity fieldConfigurationEntry, IEnumerable<ValueMapEntryEntity> valueMapEntries, IEnumerable<ValueMapEntity> valueMaps, int enabledOperationId, string operationKey)
+        private static FieldConfigurationMemento PrepareFieldConfiguration(
+            FieldConfigurationEntryEntity fieldConfigurationEntry,
+            IEnumerable<ValueMapEntryEntity> valueMapEntries,
+            IEnumerable<ValueMapEntity> valueMaps,
+            int enabledOperationId,
+            string operationKey)
         {
             Dictionary<string, object> valueMap = new Dictionary<string, object>();
             if (fieldConfigurationEntry.ValueMapId.HasValue)
@@ -552,12 +673,22 @@ WHERE TR.RecordKey = @0";
                     var mapType = valueMaps.Single(m => m.ValueMapId == map.First().ValueMapId);
                     foreach (var valueMapEntry in map)
                     {
-                        valueMap.Add(valueMapEntry.RecordKey ?? string.Empty, Converters.ConvertFromString(valueMapEntry.Value, mapType.ValueType));
+                        valueMap.Add(
+                            valueMapEntry.RecordKey ?? string.Empty,
+                            Converters.ConvertFromString(valueMapEntry.Value, mapType.ValueType));
                     }
                 }
             }
 
-            return new FieldConfigurationMemento(fieldConfigurationEntry.FieldName, fieldConfigurationEntry.MapToName, fieldConfigurationEntry.OutgoingSequence, fieldConfigurationEntry.IncomingSequence, valueMap, enabledOperationId, operationKey, fieldConfigurationEntry.IncludeInSummary);
+            return new FieldConfigurationMemento(
+                fieldConfigurationEntry.FieldName,
+                fieldConfigurationEntry.MapToName,
+                fieldConfigurationEntry.OutgoingSequence,
+                fieldConfigurationEntry.IncomingSequence,
+                valueMap,
+                enabledOperationId,
+                operationKey,
+                fieldConfigurationEntry.IncludeInSummary);
         }
     }
 }

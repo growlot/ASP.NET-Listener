@@ -51,6 +51,25 @@ namespace AMSLLC.Listener.Bus
             }
         }
 
+<<<<<<< HEAD
+=======
+        void ICommandBus.Publish<TCommand>(TCommand command)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command), "Command must be specified in order to publish it.");
+            }
+
+            if (CommandHandlers.ContainsKey(command.GetType()))
+            {
+                foreach (var handler in CommandHandlers[command.GetType()])
+                {
+                    handler(command);
+                }
+            }
+        }
+
+>>>>>>> WNP batch updated
         Task IDomainEventBus.PublishAsync<TEvent>(TEvent domainEvent)
         {
             if (domainEvent == null)
@@ -82,7 +101,18 @@ namespace AMSLLC.Listener.Bus
 
             if (CommandAsyncHandlers.ContainsKey(command.GetType()))
             {
+<<<<<<< HEAD
                 return CommandAsyncHandlers[command.GetType()](command);
+=======
+                var handlers = CommandAsyncHandlers[command.GetType()];
+                Task[] returnValue = new Task[handlers.Count];
+                for (int i = 0; i < handlers.Count; i++)
+                {
+                    returnValue[i] = handlers[i](command);
+                }
+
+                return Task.WhenAll(returnValue);
+>>>>>>> WNP batch updated
             }
 
             return Task.CompletedTask;
@@ -138,6 +168,20 @@ namespace AMSLLC.Listener.Bus
                 throw new ArgumentNullException(nameof(domainEvents), "Domain events must be specified in order to publish it.");
             }
 
+<<<<<<< HEAD
+=======
+            /*Parallel.ForEach(domainEvents, new ParallelOptions { MaxDegreeOfParallelism = parallelDegree }, @event =>
+            {
+                if (DomainEventHandlers.ContainsKey(@event.GetType()))
+                {
+                    foreach (var handler in DomainEventHandlers[@event.GetType()])
+                    {
+                        handler(@event);
+                    }
+                }
+            });*/
+
+>>>>>>> WNP batch updated
             return Task.WhenAll(domainEvents.Select(d => ((IDomainEventBus)this).PublishAsync(d)));
         }
     }

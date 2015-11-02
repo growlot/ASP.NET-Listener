@@ -52,6 +52,10 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, PublicKeyToken=51490ee0cc295bc0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\3rdParty\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -248,6 +252,14 @@
     <ProjectReference Include="..\Persistence.Listener\Persistence.Listener.csproj">
       <Project>{5a7fea99-bb93-4bda-91ae-2ddec17e3d21}</Project>
       <Name>Persistence.Listener</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistence.Poco\Persistence.Poco.csproj">
+      <Project>{91D72E44-F89A-4E9D-9646-E44FA0B04778}</Project>
+      <Name>Persistence.Poco</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistence.WNPAsync\Persistence.WNPAsync.csproj">
+      <Project>{6B57711D-F549-4D80-AB52-2C22FFA113A2}</Project>
+      <Name>Persistence.WNPAsync</Name>
     </ProjectReference>
     <ProjectReference Include="..\Persistence.WNP\Persistence.WNP.csproj">
       <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>
