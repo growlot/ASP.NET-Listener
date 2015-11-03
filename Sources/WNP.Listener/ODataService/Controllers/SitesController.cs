@@ -6,13 +6,13 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
-    using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.OData;
+    using ApplicationService;
     using ApplicationService.Commands;
     using Base;
     using MetadataService;
@@ -20,9 +20,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP.Metadata;
     using Repository.WNP;
     using Services.FilterTransformer;
-    using Utilities;
-    using System.Web;
-    using ApplicationService;
 
     /// <summary>
     /// Controller for Sites.
@@ -47,9 +44,30 @@ namespace AMSLLC.Listener.ODataService.Controllers
         public override string GetEntityTableName() => DBMetadata.Site.FullTableName;
 
         /// <summary>
+        /// Gets the specified Site by key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>The Site.</returns>
+        public Task<IHttpActionResult> Get([FromODataUri] string key)
+        {
+            // we can infer model type from the ODataQueryOptions
+            // we created earlier
+            if (!this.ModelState.IsValid)
+            {
+                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
+            }
+
+            var queryOptions = this.ConstructQueryOptions();
+
+            var existingSite = this.GetExisting(key);
+
+            return this.PrepareGetResponse(existingSite);
+        }
+
+        /// <summary>
         /// Adds new Site.
         /// </summary>
-        /// <returns>The newly created Site, or redirect to existing Site resource.</returns>
+        /// <returns>The OData response for newly created Site.</returns>
         public Task<IHttpActionResult> Post()
         {
             if (!this.ModelState.IsValid)
@@ -58,9 +76,86 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             var queryOptions = this.ConstructQueryOptions();
-            var oDataModelType = queryOptions.Context.ElementClrType;
-            var site = this.GetRequestEntity<SiteEntity>(oDataModelType);
+            var site = this.GetRequestEntity<SiteEntity>();
             return this.CreateSite(site);
+        }
+
+        /// <summary>
+        /// Updates existing Site or creates new one if it didn't exist.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="site">The site delta.</param>
+        /// <returns>
+        /// The updated Site.
+        /// </returns>
+        public Task<IHttpActionResult> Patch([FromODataUri] string key)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
+            }
+
+            var queryOptions = this.ConstructQueryOptions();
+            var existingSite = this.GetExisting(key);
+
+            if (existingSite != null)
+            {
+                var siteDelta = this.GetRequestEntityDelta<SiteEntity>();
+                return this.UpdateSite(existingSite, siteDelta);
+            }
+            else
+            {
+                var site = this.GetRequestEntity<SiteEntity>();
+                return this.CreateSite(site);
+            }
+        }
+
+        private async Task<IHttpActionResult> UpdateSite(SiteEntity existingSite, Delta<SiteEntity> siteDelta)
+        {
+            List<Task> commandResults = new List<Task>();
+
+            var changedProperties = siteDelta.GetChangedPropertyNames();
+            object value;
+
+            if (changedProperties.Contains(nameof(SiteEntity.AccountNo))
+                || changedProperties.Contains(nameof(SiteEntity.AccountName)))
+            {
+                var updateSiteBillingAccount = new UpdateSiteBillingAccount()
+                {
+                    Owner = this.Owner,
+                    SiteId = existingSite.Site.Value,
+                    BillingAccountName = siteDelta.TryGetPropertyValue(nameof(SiteEntity.AccountName), out value) ? (string)value : existingSite.AccountName,
+                    BillingAccountNumber = siteDelta.TryGetPropertyValue(nameof(SiteEntity.AccountNo), out value) ? (string)value : existingSite.AccountNo
+                };
+
+                commandResults.Add(this.commandBus.PublishAsync(updateSiteBillingAccount));
+            }
+
+            if (changedProperties.Contains(nameof(SiteEntity.SiteCountry))
+                || changedProperties.Contains(nameof(SiteEntity.SiteState))
+                || changedProperties.Contains(nameof(SiteEntity.SiteCity))
+                || changedProperties.Contains(nameof(SiteEntity.SiteZipcode))
+                || changedProperties.Contains(nameof(SiteEntity.SiteAddress))
+                || changedProperties.Contains(nameof(SiteEntity.SiteAddress2)))
+            {
+                var updateSiteAddress = new UpdateSiteAddress()
+                {
+                    Owner = this.Owner,
+                    SiteId = existingSite.Site.Value,
+                    Country = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteCountry), out value) ? (string)value : existingSite.SiteCountry,
+                    State = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteState), out value) ? (string)value : existingSite.SiteState,
+                    City = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteCity), out value) ? (string)value : existingSite.SiteCity,
+                    Address1 = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteAddress), out value) ? (string)value : existingSite.SiteAddress,
+                    Address2 = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteAddress2), out value) ? (string)value : existingSite.SiteAddress2,
+                    Zip = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteZipcode), out value) ? (string)value : existingSite.SiteZipcode
+                };
+
+                commandResults.Add(this.commandBus.PublishAsync(updateSiteAddress));
+            }
+
+            await Task.WhenAll(commandResults);
+
+            return await this.PrepareUpdatedResponse(existingSite);
         }
 
         private async Task<IHttpActionResult> CreateSite(SiteEntity site)
@@ -82,65 +177,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await this.commandBus.PublishAsync(createSiteCommand);
 
-            return this.PrepareCreatedResponse(site.SiteDescription);
+            var createdSite = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, site.SiteDescription);
+
+            return await this.PrepareCreatedResponse(createdSite);
         }
 
-        /// <summary>
-        /// Gets the specified Site by key.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
-        public Task<IHttpActionResult> Get([FromODataUri] string key)
+        private SiteEntity GetExisting(string key)
         {
-            // we can infer model type from the ODataQueryOptions
-            // we created earlier
-            if (!this.ModelState.IsValid)
-            {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
-            }
-
-            this.unitOfWork = (IWNPUnitOfWork)this.Request.GetUnitOfWork();
-
-            var queryOptions = this.ConstructQueryOptions();
-            var oDataModelType = queryOptions.Context.ElementClrType;
-
-            var existingEntity = this.GetExisting(key, oDataModelType);
-
-            if (existingEntity != null)
-            {
-                // create actual object that was sent over the wire
-                var responseContent = this.CreateResult(oDataModelType);
-
-                var setFromEntityMethod = oDataModelType.GetMethod("SetFromEntity");
-                setFromEntityMethod.Invoke(responseContent, new object[] { existingEntity });
-
-                return Task.FromResult(this.CreateOkResponse(oDataModelType, responseContent));
-            }
-
-            return Task.FromResult<IHttpActionResult>(this.NotFound());
-        }
-
-        private IHttpActionResult PrepareCreatedResponse(string description)
-        {
-            var createdSite = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, description);
-
-            if (createdSite == null)
-            {
-                throw new InvalidOperationException(StringUtilities.Invariant($"Can not prepare response for Create opreation, because Site with Owner [{this.Owner}] and Description [{description}] was not found."));
-            }
-
-            // create actual object that was sent over the wire
-            var responseContent = this.CreateResult(this.EdmEntityClrType);
-
-            var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
-            setFromEntityMethod.Invoke(responseContent, new object[] { createdSite });
-
-            return this.CreateCreatedResponse(this.EdmEntityClrType, responseContent);
-        }
-
-        private SiteEntity GetExisting(string key, Type oDataModelType)
-        {
-            var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
+            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
 
             var premiseNumberFieldName = modelMapping.ColumnToModelMappings[DBMetadata.Site.PremiseNo.ToUpperInvariant()];
 
@@ -161,37 +205,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<SiteEntity>(sql);
-        }
-
-        public Task<IHttpActionResult> Patch([FromODataUri] string key)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
-            }
-
-            var queryOptions = this.ConstructQueryOptions();
-            var oDataModelType = queryOptions.Context.ElementClrType;
-
-            // create actual object that was sent over the wire
-            var requestContent = this.CreateResult(oDataModelType);
-
-            var site = this.GetRequestEntity<SiteEntity>(oDataModelType);
-            var existingEntity = this.GetExisting(key, oDataModelType);
-
-            if (existingEntity != null)
-            {
-                // do update
-                var httpResponse = this.ResponseMessage(new HttpResponseMessage(System.Net.HttpStatusCode.SeeOther));
-                httpResponse.Response.Headers.Location = new Uri(StringUtilities.Invariant($"{this.Request.RequestUri}('{existingEntity.PremiseNo}')"));
-                return Task.FromResult<IHttpActionResult>(httpResponse);
-            }
-            else
-            {
-                // do insert
-            }
-
-            return Task.FromResult(this.CreateUpdatedResponse(oDataModelType, requestContent));
         }
     }
 }

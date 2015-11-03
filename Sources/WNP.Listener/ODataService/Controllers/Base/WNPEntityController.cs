@@ -10,12 +10,17 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Diagnostics;
     using System.Linq;
     using System.Net.Http;
+    using System.Net.Http.Formatting;
     using System.Reflection;
     using System.Runtime.Caching;
     using System.Threading.Tasks;
     using System.Web.Http;
+    using System.Web.OData;
+    using System.Web.OData.Formatter;
+    using System.Web.OData.Formatter.Serialization;
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
+    using ApplicationService;
     using MetadataService;
     using Microsoft.OData.Edm;
     using Newtonsoft.Json;
@@ -23,8 +28,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Repository.WNP;
     using Services.FilterTransformer;
     using Utilities;
-    using System.Web;
-    using ApplicationService;
 
     public abstract class WNPEntityController : WNPController, IBoundActionsContainer
     {
@@ -55,17 +58,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var queryOptions = this.ConstructQueryOptions();
             queryOptions.Validate(this.defaultODataValidationSettings);
 
-            // we can infer model type from the ODataQueryOptions
-            // we created earlier
-            var oDataModelType = queryOptions.Context.ElementClrType;
-
-            var modelMapping = this.metadataService.GetModelMapping(oDataModelType.Name);
+            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
 
             var skip = queryOptions.Skip?.Value ?? 0;
             var top = queryOptions.Top?.Value ?? 10;
-
-            // create actual result object we will be sending over the wire
-            var result = this.CreateResultList(oDataModelType);
 
             var sql =
                 Sql.Builder.Select(this.GetDBColumnsList(queryOptions.SelectExpand, modelMapping.ModelToColumnMappings))
@@ -93,21 +89,24 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql);
 
+            // create actual result object we will be sending over the wire
+            var result = this.CreateResultList();
+
             foreach (var record in dbResults)
             {
-                var entityInstance = this.CreateResult(oDataModelType);
+                var entityInstance = this.CreateEdmEntity();
 
                 var rawData = (IDictionary<string, object>)record;
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                 {
-                    var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[key.ToUpperInvariant()]);
+                    var property = this.EdmEntityClrType.GetProperty(modelMapping.ColumnToModelMappings[key.ToUpperInvariant()]);
                     property.SetValue(entityInstance, Converters.Convert(rawData[key], property.PropertyType));
                 }
 
                 result.Add(entityInstance);
             }
 
-            return this.CreateOkResponseList(oDataModelType, result);
+            return this.CreateOkResponseList(result);
         }
 
         public async Task<IHttpActionResult> EntityActionHandler()
@@ -143,62 +142,130 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return await this.InvokeAction(actionsContainerType, actionName, keySegment);
         }
 
+        /// <inheritdoc/>
         public abstract string GetEntityTableName();
 
         /// <summary>
-        /// Creates the typed OK (HTTP 200) response from specified list of result objects.
+        /// Creates the typed OK response from specified list of result objects.
         /// </summary>
-        /// <param name="oDataModelType">Type of the OData model.</param>
         /// <param name="result">The list of result objects.</param>
-        /// <returns>The typed HTTP 200 result.</returns>
-        protected IHttpActionResult CreateOkResponseList(Type oDataModelType, object result)
-                    => (IHttpActionResult)this.GetOkMethodList(oDataModelType).Invoke(this, new[] { result });
+        /// <returns>The typed OK result.</returns>
+        protected IHttpActionResult CreateOkResponseList(object result)
+                    => (IHttpActionResult)this.GetOkMethodList().Invoke(this, new[] { result });
 
         /// <summary>
-        /// Creates the typed OK (HTTP 200) response from specified result object.
+        /// Prepares the typed Updated response from specified result object.
         /// </summary>
-        /// <param name="oDataModelType">Type of the OData model.</param>
-        /// <param name="result">The result object.</param>
-        /// <returns>The typed HTTP 200 result.</returns>
-        protected IHttpActionResult CreateOkResponse(Type oDataModelType, object result)
-                    => (IHttpActionResult)this.GetOkMethod(oDataModelType).Invoke(this, new[] { result });
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <returns>The OData response for updated entity.</returns>
+        protected Task<IHttpActionResult> PrepareUpdatedResponse<TEntity>(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new InvalidOperationException(StringUtilities.Invariant($"Create failed. Persisted entity not found."));
+            }
+
+            // create actual object that was sent over the wire
+            var responseContent = this.CreateEdmEntity();
+
+            var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
+            setFromEntityMethod.Invoke(responseContent, new object[] { entity });
+
+            var result = (IHttpActionResult)this.GetUpdatedMethod().Invoke(this, new[] { responseContent });
+            return Task.FromResult(result);
+        }
 
         /// <summary>
-        /// Creates the typed Updated response from specified result object.
+        /// Prepares the Created response for specified entity.
         /// </summary>
-        /// <param name="oDataModelType">Type of the OData model.</param>
-        /// <param name="result">The result object.</param>
-        /// <returns>The typed Updated result.</returns>
-        protected IHttpActionResult CreateUpdatedResponse(Type oDataModelType, object result)
-                    => (IHttpActionResult)this.GetUpdatedMethod(oDataModelType).Invoke(this, new[] { result });
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <returns>The OData response for newly created entity.</returns>
+        protected Task<IHttpActionResult> PrepareCreatedResponse<TEntity>(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new InvalidOperationException(StringUtilities.Invariant($"Create failed. Persisted entity not found."));
+            }
+
+            // create actual object that was sent over the wire
+            var responseContent = this.CreateEdmEntity();
+
+            var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
+            setFromEntityMethod.Invoke(responseContent, new object[] { entity });
+
+            var result = (IHttpActionResult)this.GetCreatedMethod().Invoke(this, new[] { responseContent });
+            return Task.FromResult(result);
+        }
 
         /// <summary>
-        /// Creates the typed Created response from specified result object.
+        /// Prepares the Get response for single entity.
         /// </summary>
-        /// <param name="oDataModelType">Type of the OData model.</param>
-        /// <param name="result">The result object.</param>
-        /// <returns>The typed Updated result.</returns>
-        protected IHttpActionResult CreateCreatedResponse(Type oDataModelType, object result)
-                    => (IHttpActionResult)this.GetCreatedMethod(oDataModelType).Invoke(this, new[] { result });
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <returns>The OData response for single entity retrieval.</returns>
+        protected Task<IHttpActionResult> PrepareGetResponse<TEntity>(TEntity entity)
+        {
+            if (entity == null)
+            {
+                return Task.FromResult<IHttpActionResult>(this.NotFound());
+            }
+
+            // create actual object that was sent over the wire
+            var responseContent = this.CreateEdmEntity();
+
+            var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
+            setFromEntityMethod.Invoke(responseContent, new object[] { entity });
+
+            var result = (IHttpActionResult)this.GetOkMethod().Invoke(this, new[] { responseContent });
+            return Task.FromResult(result);
+        }
 
         /// <summary>
-        /// Gets the statically typed entity from requet.
+        /// Gets the statically typed entity from request.
         /// </summary>
         /// <typeparam name="TEntity">The static type of the entity.</typeparam>
-        /// <param name="oDataModelType">The dynamic type of the OData entity.</param>
         /// <returns>The statically typed entity.</returns>
-        protected TEntity GetRequestEntity<TEntity>(Type oDataModelType)
+        protected TEntity GetRequestEntity<TEntity>()
         {
             // create actual object that was sent over the wire
-            var requestContent = this.CreateResult(oDataModelType);
+            var requestContent = this.CreateEdmEntity();
 
             var method = typeof(JsonConvert).GetGenericMethod("DeserializeObject", new Type[] { typeof(string) });
-            requestContent = method.MakeGenericMethod(oDataModelType).Invoke(null, new object[] { this.GetRequestContents(this.Request) });
+            requestContent = method.MakeGenericMethod(this.EdmEntityClrType).Invoke(null, new object[] { this.GetRequestContents(this.Request) });
 
-            var getEntityMethod = oDataModelType.GetMethod("GetEntity");
+            var getEntityMethod = this.EdmEntityClrType.GetMethod("GetEntity");
 
-            TEntity site = (TEntity)getEntityMethod.Invoke(requestContent, new object[] { });
-            return site;
+            TEntity entity = (TEntity)getEntityMethod.Invoke(requestContent, new object[] { });
+            return entity;
+        }
+
+        /// <summary>
+        /// Gets the statically typed entity delta from request.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <returns>
+        /// The statically typed entity delta.
+        /// </returns>
+        protected Delta<TEntity> GetRequestEntityDelta<TEntity>()
+            where TEntity : class, new()
+        {
+            var odataFormatters = ODataMediaTypeFormatters.Create();
+            var deltaType = typeof(Delta<>).MakeGenericType(this.EdmEntityClrType);
+            var delta = this.CreateEdmEntityDelta();
+
+            IEnumerable<MediaTypeFormatter> perRequestFormatters = odataFormatters.Select(
+                (f) => f.GetPerRequestFormatterInstance(deltaType, this.Request, null));
+
+            var edmEnityDelta = this.Request.Content.ReadAsAsync(deltaType, perRequestFormatters).Result;
+
+            var getEntityDeltaMethod = this.EdmEntityClrType.GetMethod("GetEntityDelta");
+
+            var converterObject = this.CreateEdmEntity();
+            Delta<TEntity> entityDelta = (Delta<TEntity>)getEntityDeltaMethod.Invoke(converterObject, new object[] { edmEnityDelta });
+            return entityDelta;
+
         }
 
         private string GetRequestContents(HttpRequestMessage request)
@@ -207,61 +274,48 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         private string[] GetDBColumnsList(SelectExpandQueryOption queryOptions, Dictionary<string, string> mapping)
             => queryOptions?.RawSelect.Split(',').Select(item => mapping[item]).ToArray() ?? mapping.Values.ToArray();
 
-        /// <summary>
-        /// Gets the list type for specified OData model type and adds it to the cash for faster future retrieval.
-        /// </summary>
-        /// <param name="oDataModelType">Type of the OData model.</param>
-        /// <returns>The list type for specified OData model type.</returns>
-        private Type GetGenericListType(Type oDataModelType)
-                    => MemoryCache.Default.GetOrAddExisting(
-                        StringUtilities.Invariant($"WNPController.List<{oDataModelType.FullName}>"),
-                        () => typeof(List<>).MakeGenericType(oDataModelType));
-
-        /// <summary>
-        /// Gets the OK method for specified OData model type and adds it to the cash for faster future retrieval.
-        /// </summary>
-        /// <param name="oDataModelType">Type of the OData model.</param>
-        /// <returns>The OK method for specified OData model type.</returns>
-        private MethodInfo GetOkMethodList(Type oDataModelType)
+        private MethodInfo GetOkMethodList()
             => MemoryCache.Default.GetOrAddExisting(
-                StringUtilities.Invariant($"WNPController.OkListMethod<{oDataModelType.FullName}>"),
+                StringUtilities.Invariant($"WNPController.OkListMethod<{this.EdmEntityClrType.FullName}>"),
                 () => this.GetType()
                         .GetGenericMethod("Ok")
-                        .MakeGenericMethod(this.GetGenericListType(oDataModelType)));
+                        .MakeGenericMethod(this.GetGenericListType()));
 
-        /// <summary>
-        /// Gets the OK method for specified OData model type and adds it to the cash for faster future retrieval.
-        /// </summary>
-        /// <param name="oDataModelType">Type of the OData model.</param>
-        /// <returns>The OK method for specified OData model type.</returns>
-        private MethodInfo GetOkMethod(Type oDataModelType)
+        private MethodInfo GetOkMethod()
             => MemoryCache.Default.GetOrAddExisting(
-                StringUtilities.Invariant($"WNPController.OkMethod<{oDataModelType.FullName}>"),
+                StringUtilities.Invariant($"WNPController.OkMethod<{this.EdmEntityClrType.FullName}>"),
                 () => this.GetType()
                         .GetGenericMethod("Ok")
-                        .MakeGenericMethod(oDataModelType));
+                        .MakeGenericMethod(this.EdmEntityClrType));
 
-        /// <summary>
-        /// Gets the Updated method for specified OData model type and adds it to the cash for faster future retrieval.
-        /// </summary>
-        /// <param name="oDataModelType">Type of the OData model.</param>
-        /// <returns>The OK method for specified OData model type.</returns>
-        private MethodInfo GetUpdatedMethod(Type oDataModelType)
+        private MethodInfo GetUpdatedMethod()
             => MemoryCache.Default.GetOrAddExisting(
-                StringUtilities.Invariant($"WNPController.UpdatedMethod<{oDataModelType.FullName}>"),
+                StringUtilities.Invariant($"WNPController.UpdatedMethod<{this.EdmEntityClrType.FullName}>"),
                 () => this.GetType()
                         .GetGenericMethod("Updated")
-                        .MakeGenericMethod(oDataModelType));
+                        .MakeGenericMethod(this.EdmEntityClrType));
 
-
-        private MethodInfo GetCreatedMethod(Type oDataModelType)
+        private MethodInfo GetCreatedMethod()
             => MemoryCache.Default.GetOrAddExisting(
-                StringUtilities.Invariant($"WNPController.CreatedMethod<{oDataModelType.FullName}>"),
+                StringUtilities.Invariant($"WNPController.CreatedMethod<{this.EdmEntityClrType.FullName}>"),
                 () => this.GetType()
                     .GetGenericMethod("Created", new Type[] { null })
-                    .MakeGenericMethod(oDataModelType));
+                    .MakeGenericMethod(this.EdmEntityClrType));
 
-        private IList CreateResultList(Type oDataModelType)
-            => (IList) Activator.CreateInstance(this.GetGenericListType(oDataModelType));
+        private IList CreateResultList()
+            => (IList)Activator.CreateInstance(this.GetGenericListType());
+
+        private object CreateEdmEntity()
+            => Activator.CreateInstance(this.EdmEntityClrType);
+
+        private object CreateEdmEntityDelta()
+            => MemoryCache.Default.GetOrAddExisting(
+                StringUtilities.Invariant($"WNPController.List<{this.EdmEntityClrType.FullName}>"),
+                () => typeof(Delta<>).MakeGenericType(this.EdmEntityClrType));
+
+        private Type GetGenericListType()
+            => MemoryCache.Default.GetOrAddExisting(
+                StringUtilities.Invariant($"WNPController.List<{this.EdmEntityClrType.FullName}>"),
+                () => typeof(List<>).MakeGenericType(this.EdmEntityClrType));
     }
 }

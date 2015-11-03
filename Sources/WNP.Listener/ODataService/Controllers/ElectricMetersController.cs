@@ -4,17 +4,16 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using AMSLLC.Listener.MetadataService.Attributes;
-
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
+    using AMSLLC.Listener.MetadataService.Attributes;
+    using ApplicationService;
     using Base;
     using MetadataService;
-    using Repository.WNP;
     using Persistence.WNP.Metadata;
+    using Repository.WNP;
     using Services.FilterTransformer;
-    using ApplicationService;
 
     /// <summary>
     /// Controller for electric meters

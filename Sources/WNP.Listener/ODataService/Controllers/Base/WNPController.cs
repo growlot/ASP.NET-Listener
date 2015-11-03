@@ -12,20 +12,16 @@
     using System.Web.OData.Extensions;
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
+    using ApplicationService;
     using MetadataService;
     using MetadataService.Attributes;
     using Microsoft.OData.Edm;
     using Microsoft.OData.Edm.Library;
     using Newtonsoft.Json;
-    using Persistence.WNP;
+    using Repository.WNP;
     using Serilog;
     using Services.FilterTransformer;
     using Utilities;
-    using Repository.WNP;
-    using System.Net.Http;
-    using System.Web;
-    using Core;
-    using ApplicationService;
 
     /// <summary>
     /// Base implementation of OData controller for WNP.
@@ -170,9 +166,6 @@
                     .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
                     .MakeGenericMethod(dataType));
-
-        protected object CreateResult(Type oDataModelType)
-            => Activator.CreateInstance(oDataModelType);
 
         protected ODataQueryOptions ConstructQueryOptions()
         {

@@ -19,7 +19,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using ApplicationService.Commands;
     using ApplicationService.Model;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using Persistence.Listener;
     using Serilog;
 
