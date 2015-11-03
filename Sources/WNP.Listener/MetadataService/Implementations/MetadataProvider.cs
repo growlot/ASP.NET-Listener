@@ -168,7 +168,9 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
             var codeNamespace = new CodeNamespace(this.ODataModelNamespace);
             codeNamespace.Imports.Add(new CodeNamespaceImport("System"));
+            codeNamespace.Imports.Add(new CodeNamespaceImport("System.Linq"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
+            codeNamespace.Imports.Add(new CodeNamespaceImport("System.Web.OData"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("AMSLLC.Listener.Utilities"));
 
             // TODO: we should move the IODataEntity marker interface to another library, think about this
@@ -201,6 +203,14 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 getEntityMethod.ReturnType = new CodeTypeReference(entityName);
                 getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($"var result = new {entityName}();")));
 
+                var getEntityDeltaMethod = new CodeMemberMethod();
+                getEntityDeltaMethod.Attributes = MemberAttributes.Public;
+                getEntityDeltaMethod.Name = "GetEntityDelta";
+                getEntityDeltaMethod.Parameters.Add(new CodeParameterDeclarationExpression(StringUtilities.Invariant($"Delta<{modelClassName}>"), "edmDelta"));
+                getEntityDeltaMethod.ReturnType = new CodeTypeReference(StringUtilities.Invariant($"Delta<{entityName}>"));
+                getEntityDeltaMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($"var result = new Delta<{entityName}>();")));
+                getEntityDeltaMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($"var changedProperties = edmDelta.GetChangedPropertyNames();")));
+
                 var setFromEntityMethod = new CodeMemberMethod();
                 setFromEntityMethod.Attributes = MemberAttributes.Public;
                 setFromEntityMethod.Name = "SetFromEntity";
@@ -226,6 +236,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     codeClass.Members.Add(property);
 
                     var fieldName = WNPDBHelpers.HumanizeField(table.ModelToColumnMappings[field.Key]);
+                    var fieldDataType = table.FieldInfo[fieldName].DataType;
 
                     if (field.Value.DataType == "DateTimeOffset")
                     {
@@ -240,12 +251,24 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                         getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" result.{fieldName} = {field.Key};")));
                     }
 
+                    getEntityDeltaMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($@"
+                        if (changedProperties.Contains(""{field.Key}""))
+                            {{
+                                object value;
+                                edmDelta.TryGetPropertyValue(""{field.Key}"", out value);
+                                result.TrySetPropertyValue(""{fieldName}"", value);
+                            }}
+                    ")));
+
+                    getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" result.{fieldName} = {field.Key};")));
                     setFromEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" this.{field.Key} = ({field.Value.DataType})Converters.Convert(entity.{fieldName}, typeof({field.Value.DataType}));")));
                 }
 
                 getEntityMethod.Statements.Add(new CodeSnippetStatement("return result;"));
+                getEntityDeltaMethod.Statements.Add(new CodeSnippetStatement("return result;"));
 
                 codeClass.Members.Add(getEntityMethod);
+                codeClass.Members.Add(getEntityDeltaMethod);
                 codeClass.Members.Add(setFromEntityMethod);
             }
 
@@ -269,7 +292,9 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 }
 
                 compilerParameters.ReferencedAssemblies.Add("System.dll");
+                compilerParameters.ReferencedAssemblies.Add("System.Core.dll");
                 compilerParameters.ReferencedAssemblies.Add("System.ComponentModel.DataAnnotations.dll");
+                compilerParameters.ReferencedAssemblies.Add("System.Web.OData.dll");
                 compilerParameters.ReferencedAssemblies.Add("AMSLLC.Listener.MetadataService.dll");
                 compilerParameters.ReferencedAssemblies.Add("AMSLLC.Listener.Persistence.WNP.dll");
                 compilerParameters.ReferencedAssemblies.Add("AMSLLC.Listener.Utilities.dll");
