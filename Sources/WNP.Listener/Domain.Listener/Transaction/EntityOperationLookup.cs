@@ -1,4 +1,4 @@
-﻿// <copyright file="EnabledOperationLookup.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="EntityOperationLookup.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
@@ -7,22 +7,35 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     /// <summary>
     /// Enabled Operation lookup entry
     /// </summary>
-    public class EnabledOperationLookup
+    public class EntityOperationLookup
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EnabledOperationLookup" /> class.
+        /// Initializes a new instance of the <see cref="EntityOperationLookup" /> class.
         /// </summary>
         /// <param name="companyCode">The company code.</param>
         /// <param name="applicationKey">The application key.</param>
         /// <param name="operationName">Name of the operation.</param>
+        /// <param name="entityName">Name of the entity.</param>
         /// <param name="enabledOperationId">The enabled operation identifier.</param>
-        public EnabledOperationLookup(string companyCode, string applicationKey, string operationName, int enabledOperationId)
+        public EntityOperationLookup(
+            string companyCode,
+            string applicationKey,
+            string operationName,
+            string entityName,
+            int enabledOperationId)
         {
             this.CompanyCode = companyCode;
             this.ApplicationKey = applicationKey;
             this.OperationName = operationName;
+            this.EntityName = entityName;
             this.EnabledOperationId = enabledOperationId;
         }
+
+        /// <summary>
+        /// Gets or sets the name of the entity.
+        /// </summary>
+        /// <value>The name of the entity.</value>
+        public string EntityName { get; }
 
         /// <summary>
         /// Gets or sets the enabled operation identifier.

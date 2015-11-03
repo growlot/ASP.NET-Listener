@@ -89,6 +89,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 {
                     CompanyCode = this.CompanyCode,
                     OperationKey = parameters["OperationKey"]?.ToString(),
+                    EntityName = parameters["EntityCategory"]?.ToString(),
                     SourceApplicationKey = this.ApplicationKey,
                     Data = data,
                     User = this.User?.Identity.Name
@@ -134,7 +135,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
                     foreach (var jToken in bodyArray.Cast<IDictionary<string, object>>())
                     {
-                        message.Batch.Add(new BatchTransactionEntry { OperationKey = jToken["OperationKey"]?.ToString(), Data = JsonConvert.SerializeObject(jToken) });
+                        message.Batch.Add(new BatchTransactionEntry { OperationKey = jToken["OperationKey"]?.ToString(), EntityCategory = jToken["EntityCategory"]?.ToString(), Data = JsonConvert.SerializeObject(jToken) });
                     }
                 }
 
@@ -150,16 +151,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <summary>
         /// Opens new batch listener transaction.
         /// </summary>
-        /// <param name="parameters">The parameters.</param>
+        /// <param name="batchKey">The batch key.</param>
         /// <returns>The key of new transaction</returns>
         [HttpPost]
         [ODataRoute("BuildBatch")]
-        public async Task<IHttpActionResult> BuildBatch(ODataActionParameters parameters)
+        public async Task<IHttpActionResult> BuildBatch([FromBody]string batchKey)
         {
             try
             {
-                var batchKey = (string)parameters["batchKey"];
-
                 var records = await this._meterBatchBuilder.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
 
                 return this.Ok(await Task.WhenAll(records.Select(r => this._transactionService.Open(r))));

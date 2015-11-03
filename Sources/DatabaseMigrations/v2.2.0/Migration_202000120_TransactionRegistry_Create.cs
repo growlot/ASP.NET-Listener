@@ -24,8 +24,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("TransactionId").AsInt32().NotNullable().Identity().Indexed()
                 .WithColumn("BatchKey").AsGuid().Nullable()
                 .WithColumn("RecordKey").AsGuid().NotNullable().PrimaryKey()
-                .WithColumn("EnabledOperationId").AsInt32().NotNullable()
+                .WithColumn("EntityCategoryOperationId").AsInt32().NotNullable()
                 .WithColumn("TransactionStatusId").AsInt32().NotNullable()
+                .WithColumn("Priority").AsInt32().Nullable()
                 .WithColumn("IncomingHash").AsString(50).NotNullable().Indexed()
                 .WithColumn("Data").AsString(int.MaxValue).Nullable()
                 .WithColumn("Summary").AsXml().Nullable()
@@ -42,8 +43,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .ToTable("TransactionStatus").PrimaryColumn("TransactionStatusId");
 
             this.Create.ForeignKey("FK_TranRegi_EnabOper")
-                .FromTable("TransactionRegistry").ForeignColumn("EnabledOperationId")
-                .ToTable("EnabledOperation").PrimaryColumn("EnabledOperationId");
+                .FromTable("TransactionRegistry").ForeignColumn("EntityCategoryOperationId")
+                .ToTable("EntityCategoryOperation").PrimaryColumn("EntityCategoryOperationId");
 
             // this.Create.ForeignKey("FK_TranRegi_Pare")
             //    .FromTable("TransactionRegistry").ForeignColumn("BatchKey")

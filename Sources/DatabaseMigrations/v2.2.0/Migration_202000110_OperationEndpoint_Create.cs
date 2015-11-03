@@ -21,10 +21,10 @@ namespace AMSLLC.Listener.DatabaseMigrations
         {
             this.Create.Table("OperationEndpoint")
                 .WithColumn("OperationEndpointId").AsInt32().NotNullable().PrimaryKey().Identity()
-                .WithColumn("EnabledOperationId")
+                .WithColumn("EntityCategoryOperationId")
                 .AsInt32()
                 .NotNullable()
-                .ForeignKey("FK_OperEndp_EnabOper", "EnabledOperation", "EnabledOperationId")
+                .ForeignKey("FK_OperEndp_EntCatOper", "EntityCategoryOperation", "EntityCategoryOperationId")
                 .WithColumn("EndpointId")
                 .AsInt32()
                 .NotNullable()

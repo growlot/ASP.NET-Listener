@@ -158,6 +158,22 @@ namespace AMSLLC.Listener.Repository
         Task<List<TRet>> ProjectionAsync<T1, T2, T3, T4, TRet>(Func<T1, T2, T3, T4, TRet> func, string query, params object[] args);
 
         /// <summary>
+        /// Projects retrieved entities to return object.
+        /// </summary>
+        /// <typeparam name="T1">The first enity type</typeparam>
+        /// <typeparam name="T2">The second enity type</typeparam>
+        /// <typeparam name="T3">The third entity type.</typeparam>
+        /// <typeparam name="T4">The forth entity type.</typeparam>
+        /// <typeparam name="T5">The fifth entity type.</typeparam>
+        /// <typeparam name="TRet">The type of the return object.</typeparam>
+        /// <param name="func">The function that maps entities to return type.</param>
+        /// <param name="query">The query.</param>
+        /// <param name="args">The query arguments.</param>
+        /// <returns>The list of retrun objects.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is expected design.")]
+        Task<List<TRet>> ProjectionAsync<T1, T2, T3, T4, T5, TRet>(Func<T1, T2, T3, T4, T5, TRet> func, string query, params object[] args);
+
+        /// <summary>
         /// Begins the transaction.
         /// </summary>
         /// <returns>Task&lt;ITransactionProxy&gt;.</returns>

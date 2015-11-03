@@ -21,17 +21,17 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="outgoingSequence">The sequence number in the outgoing data hash code.</param>
         /// <param name="incomingSequence">The sequence number in the incoming data hash code</param>
         /// <param name="valueMap">The value map.</param>
-        /// <param name="enabledOperationId">The enabled operation identifier.</param>
+        /// <param name="entityCategoryOperationId">The entity category operation identifier.</param>
         /// <param name="operationKey">The operation key.</param>
         /// <param name="includeInSummary">if set to <c>true</c> [include in summary].</param>
-        public FieldConfigurationMemento(string name, string mapToName, short? outgoingSequence, short? incomingSequence, Dictionary<string, object> valueMap, int enabledOperationId, string operationKey, bool includeInSummary)
+        public FieldConfigurationMemento(string name, string mapToName, short? outgoingSequence, short? incomingSequence, Dictionary<string, object> valueMap, int entityCategoryOperationId, string operationKey, bool includeInSummary)
         {
             this.Name = name;
             this.MapToName = mapToName;
             this.OutgoingSequence = outgoingSequence;
             this.IncomingSequence = incomingSequence;
             this.OperationKey = operationKey;
-            this.EnabledOperationId = enabledOperationId;
+            this.EntityCategoryOperationId = entityCategoryOperationId;
             this.IncludeInSummary = includeInSummary;
             if (valueMap != null)
             {
@@ -49,10 +49,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public bool IncludeInSummary { get; set; }
 
         /// <summary>
-        /// Gets the enabled operation identifier.
+        /// Gets the enabled entity operation identifier.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
-        public int EnabledOperationId { get; private set; }
+        public int EntityCategoryOperationId { get; private set; }
 
         /// <summary>
         /// Gets the key sequence.

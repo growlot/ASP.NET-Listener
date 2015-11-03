@@ -31,10 +31,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         string OutgoingHash { get; set; }
 
         /// <summary>
-        /// Gets or sets the enabled operation identifier.
+        /// Gets or sets the enabled entity operation identifier.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
-        int EnabledOperationId { get; }
+        int EntityCategoryOperationId { get; }
 
         /// <summary>
         /// Gets the record key.

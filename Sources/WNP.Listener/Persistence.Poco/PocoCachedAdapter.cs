@@ -120,6 +120,13 @@ namespace Persistence.Poco
                 func, query, args);
         }
 
+        public Task<List<T5>> ProjectionAsync<T, T1, T2, T3, T4, T5>(Func<T, T1, T2, T3, T4, T5> func, string query,
+                    params object[] args)
+        {
+            return this._dbContext.FetchAsync<T5>(new[] { typeof(T), typeof(T1), typeof(T2), typeof(T3), typeof(T4) },
+                func, query, args);
+        }
+
         private async Task<TEntity> ReadOrAdd<TEntity>(Func<Database, object[], Task<TEntity>> selector,
             params object[] args)
         {

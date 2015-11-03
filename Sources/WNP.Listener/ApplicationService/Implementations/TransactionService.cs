@@ -24,6 +24,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     public class TransactionService : ITransactionService
     {
         private const string BatchOperationName = "Batch";
+        private const string BatchEntityCategory = "Batch";
 
         /// <inheritdoc/>
         public async Task<Guid> Open(OpenTransactionCommand requestMessage)
@@ -39,14 +40,16 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey);
 
-                var enabledOperations = await transactionRepository.GetEnabledOperations();
+                var enabledOperations = await transactionRepository.GetEnabledEntityOperations();
                 var enabledOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0
-                && string.Compare(s.OperationName, requestMessage.OperationKey, StringComparison.InvariantCulture) == 0);
+                && string.Compare(s.OperationName, requestMessage.OperationKey, StringComparison.InvariantCulture) == 0
+                && string.Compare(s.EntityName, requestMessage.EntityName, StringComparison.InvariantCulture) == 0);
 
                 var memento = new TransactionRegistryMemento(
                     0,
                     Guid.Empty,
+                    null,
                     null,
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey,
@@ -64,7 +67,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
-                var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EnabledOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
+                var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EntityCategoryOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
                   {
                       var item = new FieldConfiguration();
                       ((IOriginator)item).SetMemento(s);
@@ -97,19 +100,40 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey);
 
-                var enabledOperations = await transactionRepository.GetEnabledOperations();
+                var enabledOperations = await transactionRepository.GetEnabledEntityOperations();
                 var enabledOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0
-                && string.Compare(s.OperationName, BatchOperationName, StringComparison.InvariantCulture) == 0);
+                && string.Compare(s.OperationName, BatchOperationName, StringComparison.InvariantCulture) == 0
+                && string.Compare(s.EntityName, BatchEntityCategory, StringComparison.InvariantCulture) == 0);
 
                 List<TransactionRegistryMemento> batch = new List<TransactionRegistryMemento>();
+
                 foreach (BatchTransactionEntry transaction in requestMessage.Batch)
                 {
-                    var enabledChildOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0 && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0 && string.Compare(s.OperationName, transaction.OperationKey, StringComparison.InvariantCulture) == 0);
+                    var enabledChildOperation =
+                        enabledOperations.Single(
+                            s =>
+                                string.Compare(
+                                    s.ApplicationKey,
+                                    requestMessage.SourceApplicationKey,
+                                    StringComparison.InvariantCulture) == 0 &&
+                                string.Compare(
+                                    s.CompanyCode,
+                                    requestMessage.CompanyCode,
+                                    StringComparison.InvariantCulture) == 0 &&
+                                string.Compare(
+                                    s.OperationName,
+                                    transaction.OperationKey,
+                                    StringComparison.InvariantCulture) == 0 &&
+                                string.Compare(
+                                    s.EntityName,
+                                    transaction.EntityCategory,
+                                    StringComparison.InvariantCulture) == 0);
 
                     batch.Add(new TransactionRegistryMemento(
                         0,
                         Guid.Empty,
+                        transaction.Priority,
                         null,
                         requestMessage.CompanyCode,
                         requestMessage.SourceApplicationKey,
@@ -129,6 +153,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     0,
                     Guid.Empty,
                     null,
+                    null,
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey,
                     BatchOperationName,
@@ -145,7 +170,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
-                var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EnabledOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
+                var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EntityCategoryOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
                 {
                     var item = new FieldConfiguration();
                     ((IOriginator)item).SetMemento(s);

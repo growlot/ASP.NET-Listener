@@ -198,6 +198,10 @@
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Repository.WNP\Repository.WNP.csproj">
+      <Project>{2643C152-D7B8-4633-A540-8EE3A1DB8E45}</Project>
+      <Name>Repository.WNP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{72E29F3F-E27A-4224-9F7B-59C2497D3BF3}</Project>
       <Name>Repository</Name>

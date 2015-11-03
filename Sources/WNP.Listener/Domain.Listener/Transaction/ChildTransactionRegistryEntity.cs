@@ -50,10 +50,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public Dictionary<string, object> Summary { get; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets or sets the enabled operation identifier.
+        /// Gets or sets the entity category operation id.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
-        public int EnabledOperationId { get; set; }
+        public int EntityCategoryOperationId { get; set; }
 
         /// <summary>
         /// Gets or sets the updated date time.
@@ -87,7 +87,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Data = myMemento.Data;
             this.Id = myMemento.TransactionId;
             this.IncomingHash = myMemento.IncomingHash;
-            this.EnabledOperationId = myMemento.EnabledOperationId;
+            this.EntityCategoryOperationId = myMemento.EntityCategoryOperationId;
             this.UpdatedDateTime = myMemento.UpdatedDateTime;
             this.Message = myMemento.Message;
             this.Details = myMemento.Details;

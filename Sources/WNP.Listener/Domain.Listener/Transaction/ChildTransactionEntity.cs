@@ -40,10 +40,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string OutgoingHash { get; set; }
 
         /// <summary>
-        /// Gets the enabled operation identifier.
+        /// Gets the enabled entity operation identifier.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
-        public int EnabledOperationId { get; private set; }
+        public int EntityCategoryOperationId { get; private set; }
 
         /// <summary>
         /// Gets the record key.
@@ -78,7 +78,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         {
             var myMemento = (TransactionExecutionMemento)memento;
             this.Id = myMemento.RecordKey;
-            this.EnabledOperationId = myMemento.EnabledOperationId;
+            this.EntityCategoryOperationId = myMemento.EntityCategoryOperationId;
             this.Data = myMemento.Data;
             this.Status = myMemento.Status;
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());

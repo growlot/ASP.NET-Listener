@@ -405,16 +405,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public string DisplayName { get; set; }
 	}
     
-	[TableName("EntityCategoryOperation")]
-	[PrimaryKey("EntityCategoryOperationId")]
-	[ExplicitColumns]
-    public partial class EntityCategoryOperationEntity : ListenerDB.Record<EntityCategoryOperationEntity>  
-    {
-		[Column] public int EntityCategoryOperationId { get; set; }
-		[Column] public int EntityCategoryId { get; set; }
-		[Column] public int OperationId { get; set; }
-	}
-    
 	[TableName("EnabledOperation")]
 	[PrimaryKey("EnabledOperationId")]
 	[ExplicitColumns]
@@ -424,6 +414,16 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public int ApplicationId { get; set; }
 		[Column] public int CompanyId { get; set; }
 		[Column] public int OperationId { get; set; }
+	}
+    
+	[TableName("EntityCategoryOperation")]
+	[PrimaryKey("EntityCategoryOperationId")]
+	[ExplicitColumns]
+    public partial class EntityCategoryOperationEntity : ListenerDB.Record<EntityCategoryOperationEntity>  
+    {
+		[Column] public int EntityCategoryOperationId { get; set; }
+		[Column] public int EntityCategoryId { get; set; }
+		[Column] public int EnabledOperationId { get; set; }
 		[Column] public int? FieldConfigurationId { get; set; }
 	}
     
@@ -446,7 +446,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     public partial class OperationEndpointEntity : ListenerDB.Record<OperationEndpointEntity>  
     {
 		[Column] public int OperationEndpointId { get; set; }
-		[Column] public int EnabledOperationId { get; set; }
+		[Column] public int EntityCategoryOperationId { get; set; }
 		[Column] public int EndpointId { get; set; }
 	}
     
@@ -458,8 +458,9 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public int TransactionId { get; set; }
 		[Column] public Guid? BatchKey { get; set; }
 		[Column] public Guid RecordKey { get; set; }
-		[Column] public int EnabledOperationId { get; set; }
+		[Column] public int EntityCategoryOperationId { get; set; }
 		[Column] public int TransactionStatusId { get; set; }
+		[Column] public int? Priority { get; set; }
 		[Column] public string IncomingHash { get; set; }
 		[Column] public string Data { get; set; }
 		[Column] public string Summary { get; set; }
@@ -478,5 +479,17 @@ namespace AMSLLC.Listener.Persistence.Listener
     {
 		[Column] public Guid RecordKey { get; set; }
 		[Column] public string MessageData { get; set; }
+	}
+    
+	[TableName("sysdiagrams")]
+	[PrimaryKey("diagram_id")]
+	[ExplicitColumns]
+    public partial class sysdiagramEntity : ListenerDB.Record<sysdiagramEntity>  
+    {
+		[Column] public string name { get; set; }
+		[Column] public int principal_id { get; set; }
+		[Column] public int diagram_id { get; set; }
+		[Column] public int? version { get; set; }
+		[Column] public byte[] definition { get; set; }
 	}
 }

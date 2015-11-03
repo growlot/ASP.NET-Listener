@@ -71,6 +71,7 @@ namespace AMSLLC.Listener.ODataService
 
                 var buildBatchAction = b.Action("BuildBatch");
                 this.ConfigureHeader(buildBatchAction, builder);
+                buildBatchAction.Parameter<string>("batchKey").OptionalParameter = false;
                 buildBatchAction.Returns<string>();
 
                 configuration.Ignore(p => p.TransactionId);

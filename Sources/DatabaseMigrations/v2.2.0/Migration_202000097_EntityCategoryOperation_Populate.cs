@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// // <copyright file="Migration_202000088_EntityCategoryOperation_Populate.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
-// //-----------------------------------------------------------------------
+﻿// <copyright file="Migration_202000097_EntityCategoryOperation_Populate.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.DatabaseMigrations
 {
@@ -12,8 +10,8 @@ namespace AMSLLC.Listener.DatabaseMigrations
     /// <summary>
     /// Database migration step
     /// </summary>
-    [Migration(202000088)]
-    public class Migration_202000088_EntityCategoryOperation_Populate : Migration
+    [Migration(202000097)]
+    public class Migration_202000097_EntityCategoryOperation_Populate : Migration
     {
         /// <summary>
         /// Perform database upgrade action
@@ -26,37 +24,50 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 {
                     EntityCategoryOperationId = 1,
                     EntityCategoryId = 1,
-                    OperationId = 1
+                    EnabledOperationId = 1,
+                    FieldConfigurationId = (int?)1
                 },
                 new
                 {
                     EntityCategoryOperationId = 2,
                     EntityCategoryId = 2,
-                    OperationId = 3
+                    EnabledOperationId = 3,
+                    FieldConfigurationId = (int?)1
                 },
                 new
                 {
                     EntityCategoryOperationId = 3,
                     EntityCategoryId = 3,
-                    OperationId = 3
+                    EnabledOperationId = 3,
+                    FieldConfigurationId = (int?)1
                 },
                 new
                 {
                     EntityCategoryOperationId = 4,
                     EntityCategoryId = 4,
-                    OperationId = 3
+                    EnabledOperationId = 3,
+                    FieldConfigurationId = (int?)1
                 },
                 new
                 {
                     EntityCategoryOperationId = 5,
                     EntityCategoryId = 5,
-                    OperationId = 3
+                    EnabledOperationId = 3,
+                    FieldConfigurationId = (int?)1
                 },
                 new
                 {
                     EntityCategoryOperationId = 6,
                     EntityCategoryId = 6,
-                    OperationId = 2
+                    EnabledOperationId = 2,
+                    FieldConfigurationId = (int?)null
+                },
+                new
+                {
+                    EntityCategoryOperationId = 7,
+                    EntityCategoryId = 7,
+                    EnabledOperationId = 3,
+                    FieldConfigurationId = (int?)1
                 }
             };
 

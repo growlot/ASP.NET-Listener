@@ -27,24 +27,21 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     EnabledOperationId = 1,
                     ApplicationId = 1,
                     CompanyId = 0,
-                    OperationId = 1,
-                    FieldConfigurationId = 1
+                    OperationId = 1
                 },
                 new
                 {
                     EnabledOperationId = 2,
                     ApplicationId = 1,
                     CompanyId = 0,
-                    OperationId = 2,
-                    FieldConfigurationId = (int?)null
+                    OperationId = 2
                 },
                 new
                 {
                     EnabledOperationId = 3,
                     ApplicationId = 1,
                     CompanyId = 0,
-                    OperationId = 3,
-                    FieldConfigurationId = 1
+                    OperationId = 3
                 }
             };
             foreach (var record in records)

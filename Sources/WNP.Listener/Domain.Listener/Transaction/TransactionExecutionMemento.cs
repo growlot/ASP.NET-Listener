@@ -20,7 +20,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="recordKey">The transaction key.</param>
-        /// <param name="enabledOperationId">The enabled operation identifier.</param>
+        /// <param name="entityCategoryOperationId">The entity category operation identifier.</param>
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
         /// <param name="fieldConfigurations">The field configurations.</param>
         /// <param name="childTransactions">The child transactions.</param>
@@ -30,7 +30,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public TransactionExecutionMemento(
             int transactionId,
             Guid recordKey,
-            int enabledOperationId,
+            int entityCategoryOperationId,
             IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration,
             IEnumerable<FieldConfigurationMemento> fieldConfigurations,
             IEnumerable<TransactionExecutionMemento> childTransactions,
@@ -41,7 +41,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
             this.RecordKey = recordKey;
-            this.EnabledOperationId = enabledOperationId;
+            this.EntityCategoryOperationId = entityCategoryOperationId;
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfigurationMemento>(new List<FieldConfigurationMemento>(fieldConfigurations));
             this.ChildTransactions = new ReadOnlyCollection<TransactionExecutionMemento>(new List<TransactionExecutionMemento>(childTransactions ?? new TransactionExecutionMemento[0]));
             this.Data = data;
@@ -68,10 +68,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public ReadOnlyCollection<IntegrationEndpointConfigurationMemento> EndpointConfigurations { get; private set; }
 
         /// <summary>
-        /// Gets the enabled operation identifier.
+        /// Gets the enabled entity category operation identifier.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
-        public int EnabledOperationId { get; private set; }
+        public int EntityCategoryOperationId { get; private set; }
 
         /// <summary>
         /// Gets or sets the field configurations.

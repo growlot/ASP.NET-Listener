@@ -90,7 +90,11 @@ namespace AMSLLC.Listener.Persistence.Listener
             var valueMaps = await this.persistence.GetListAsync<ValueMapEntity>("SELECT * FROM ValueMap");
 
             var select =
-                @"SELECT FCE.*, O.*, EO.* FROM FieldConfigurationEntry FCE INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
+                @"SELECT FCE.*, O.*, ECO.* FROM FieldConfigurationEntry FCE 
+INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId 
+INNER JOIN EntityCategoryOperation ECO ON FC.FieldConfigurationId = ECO.FieldConfigurationId
+INNER JOIN EnabledOperation EO ON EO.EnabledOperationId = ECO.EnabledOperationId 
+INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
 INNER JOIN Company C ON EO.CompanyId = C.CompanyId
 INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = @0 AND A.RecordKey = @1";
 
@@ -98,12 +102,12 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
                 await this.persistence.ProjectionAsync(
                     (FieldConfigurationEntryEntity ent,
                         OperationEntity operation,
-                        EnabledOperationEntity enabledOperation) =>
+                        EntityCategoryOperationEntity entityCategoryOperation) =>
                         PrepareFieldConfiguration(
                             ent,
                             valueMapEntries,
                             valueMaps,
-                            enabledOperation.EnabledOperationId,
+                            entityCategoryOperation.EntityCategoryOperationId,
                             operation.Name),
                     select,
                     companyCode,
@@ -138,8 +142,8 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
                         "SELECT TR1.* FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.RecordKey = TR1.BatchKey WHERE TR.RecordKey = @0",
                         false,
                         recordKey);
-            var enabledOperations = childTr.Select(s => s.EnabledOperationId).ToList();
-            enabledOperations.Add(tr.EnabledOperationId);
+            var entityCategoryOperations = childTr.Select(s => s.EntityCategoryOperationId).ToList();
+            entityCategoryOperations.Add(tr.EntityCategoryOperationId);
 
             var recordKeys = childTr.Select(s => s.RecordKey).ToList();
             if (!recordKeys.Any())
@@ -153,25 +157,25 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
             transactionKeys.Add(tr.IncomingHash);
             //}
 
-            Func<EndpointEntity, OperationEndpointEntity, EnabledOperationEntity, IECWrapper> callback = (ee,
+            Func<EndpointEntity, OperationEndpointEntity, EntityCategoryOperationEntity, IECWrapper> callback = (ee,
                 oe,
-                eo) =>
+                eco) =>
                 new IECWrapper(
                     new IntegrationEndpointConfigurationMemento(
                         protocols.Single(s => s.ProtocolTypeId == ee.ProtocolTypeId).Name,
                         ee.ConnectionConfiguration,
                         ee.AdapterConfiguration,
                         (EndpointTriggerType)ee.EndpointTriggerTypeId),
-                    eo.EnabledOperationId);
+                    eco.EntityCategoryOperationId);
 
             var select = @"
-SELECT DISTINCT E.*, OE.*, EO.*
+SELECT DISTINCT E.*, OE.*, ECO.*
 FROM 
 	Endpoint E 
 	INNER JOIN OperationEndpoint OE ON E.EndpointId = OE.EndpointId
-	INNER JOIN EnabledOperation EO ON OE.EnabledOperationId = EO.EnabledOperationId
-	INNER JOIN TransactionRegistry TR ON TR.EnabledOperationId = EO.EnabledOperationId
-    LEFT JOIN FieldConfiguration FC ON EO.FieldConfigurationId = FC.FieldConfigurationId 
+	INNER JOIN EntityCategoryOperation ECO ON ECO.EntityCategoryOperationId = OE.EntityCategoryOperationId
+	INNER JOIN TransactionRegistry TR ON TR.EntityCategoryOperationId = ECO.EntityCategoryOperationId
+    LEFT JOIN FieldConfiguration FC ON ECO.FieldConfigurationId = FC.FieldConfigurationId 
 WHERE TR.RecordKey IN (@records)";
 
             var endpoints = await this.persistence.ProjectionAsync(
@@ -183,29 +187,30 @@ WHERE TR.RecordKey IN (@records)";
                 });
 
             select = @"
-SELECT DISTINCT FCE.*, EO.*, O.*
+SELECT DISTINCT FCE.*, ECO.*, O.*
 FROM FieldConfigurationEntry FCE 
     INNER JOIN FieldConfiguration FC ON FCE.FieldConfigurationId = FC.FieldConfigurationId 
-    INNER JOIN EnabledOperation EO ON EO.FieldConfigurationId = FC.FieldConfigurationId 
+    INNER JOIN EntityCategoryOperation ECO ON FC.FieldConfigurationId = ECO.FieldConfigurationId
+    INNER JOIN EnabledOperation EO ON EO.EnabledOperationId = ECO.EnabledOperationId 
     INNER JOIN Operation O ON EO.OperationId = O.OperationId
-WHERE EO.EnabledOperationId IN (@operations)";
+WHERE ECO.EntityCategoryOperationId IN (@operations)";
 
             //var fieldConfigurationEntries = await this.persistence.ProjectionAsync<FieldConfigurationEntryEntity>(select, new { operations = enabledOperations.Distinct().ToArray() });
             var fieldConfigurationEntries =
                 await this.persistence.ProjectionAsync(
                     (FieldConfigurationEntryEntity ent,
-                        EnabledOperationEntity enabledOperation,
+                        EntityCategoryOperationEntity enabledOperation,
                         OperationEntity operation) =>
                         PrepareFieldConfiguration(
                             ent,
                             valueMapEntries,
                             valueMaps,
-                            enabledOperation.EnabledOperationId,
+                            enabledOperation.EntityCategoryOperationId,
                             operation.Name),
                     select,
                     new
                     {
-                        operations = enabledOperations.Distinct().ToArray()
+                        operations = entityCategoryOperations.Distinct().ToArray()
                     });
 
             if (endpoints != null)
@@ -228,20 +233,20 @@ WHERE EO.EnabledOperationId IN (@operations)";
                 returnValue = new TransactionExecutionMemento(
                     tr.TransactionId,
                     recordKey,
-                    tr.EnabledOperationId,
-                    endpoints.Where(e => e.EnabledOperationId == tr.EnabledOperationId)
+                    tr.EntityCategoryOperationId,
+                    endpoints.Where(e => e.EntityCategoryOperationId == tr.EntityCategoryOperationId)
                         .Select(s => s.IntegrationEndpointConfigurationMemento),
-                    fieldConfigurationEntries.Where(fc => fc.EnabledOperationId == tr.EnabledOperationId),
+                    fieldConfigurationEntries.Where(fc => fc.EntityCategoryOperationId == tr.EntityCategoryOperationId),
                     childTr.Select(
                         ctr =>
                             new TransactionExecutionMemento(
                                 ctr.TransactionId,
                                 ctr.RecordKey,
-                                ctr.EnabledOperationId,
-                                endpoints.Where(e => e.EnabledOperationId == ctr.EnabledOperationId)
+                                ctr.EntityCategoryOperationId,
+                                endpoints.Where(e => e.EntityCategoryOperationId == ctr.EntityCategoryOperationId)
                                     .Select(s => s.IntegrationEndpointConfigurationMemento),
                                 fieldConfigurationEntries.Where(
-                                    fc => fc.EnabledOperationId == ctr.EnabledOperationId),
+                                    fc => fc.EntityCategoryOperationId == ctr.EntityCategoryOperationId),
                                 null,
                                 string.IsNullOrWhiteSpace(ctr.Data)
                                     ? null
@@ -290,7 +295,7 @@ WHERE EO.EnabledOperationId IN (@operations)";
                                 BatchKey = transactionRegistry.RecordKey,
                                 RecordKey = childTransactionRegistryEntity.RecordKey,
                                 TransactionStatusId = (int)childTransactionRegistryEntity.Status,
-                                EnabledOperationId = childTransactionRegistryEntity.EnabledOperationId,
+                                EntityCategoryOperationId = childTransactionRegistryEntity.EntityCategoryOperationId,
                                 Data = childTransactionRegistryEntity.Data,
                                 AppUser = transactionRegistry.UserName,
                                 IncomingHash = childTransactionRegistryEntity.IncomingHash,
@@ -313,11 +318,14 @@ WHERE EO.EnabledOperationId IN (@operations)";
         }
 
         /// <inheritdoc/>
-        public async Task<List<EnabledOperationLookup>> GetEnabledOperations()
+        public async Task<List<EntityOperationLookup>> GetEnabledEntityOperations()
         {
             var select = @"
-SELECT EO.*, A.*, C.*, O.* 
-FROM EnabledOperation EO 
+SELECT ECO.*, EC.*, A.*, C.*, O.* 
+FROM
+    EntityCategoryOperation ECO  
+    INNER JOIN EntityCategory EC ON ECO.EntityCategoryId = EC.EntityCategoryId
+    INNER JOIN EnabledOperation EO ON ECO.EnabledOperationId = EO.EnabledOperationId
     INNER JOIN Application A ON A.ApplicationId = EO.ApplicationId 
     INNER JOIN Company C ON C.CompanyId = EO.CompanyId 
     INNER JOIN Operation O ON O.OperationId = EO.OperationId";
@@ -326,17 +334,19 @@ FROM EnabledOperation EO
                 await
                     this.persistence
                         .ProjectionAsync
-                        <EnabledOperationEntity, ApplicationEntity, CompanyEntity, OperationEntity,
-                            EnabledOperationLookup>(
-                                (eo,
+                        <EntityCategoryOperationEntity, EntityCategoryEntity, ApplicationEntity, CompanyEntity, OperationEntity,
+                            EntityOperationLookup>(
+                                (eco,
+                                ec,
                                     a,
                                     c,
                                     o) =>
-                                    new EnabledOperationLookup(
+                                    new EntityOperationLookup(
                                         c.ExternalCode,
                                         a.RecordKey,
                                         o.Name,
-                                        eo.EnabledOperationId),
+                                        ec.Name,
+                                        eco.EnabledOperationId),
                                 select);
         }
 
@@ -351,7 +361,8 @@ FROM EnabledOperation EO
             var selectChildren = @"
 SELECT TR.*, A.*, C.*, O.*
     FROM TransactionRegistry TR
-    INNER JOIN EnabledOperation EO ON TR.EnabledOperationId = EO.EnabledOperationId
+    INNER JOIN EntityCategoryOperation ECO ON TR.EntityCategoryOperationId = ECO.EntityCategoryOperationId
+    INNER JOIN EnabledOperation EO ON ECO.EnabledOperationId = EO.EnabledOperationId
     INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
     INNER JOIN Company C ON EO.CompanyId = C.CompanyId
     INNER JOIN Operation O ON EO.OperationId = O.OperationId
@@ -362,7 +373,8 @@ WHERE TR.BatchKey = @0";
             var select = @"
 SELECT TR.*, A.*, C.*, O.*
 FROM TransactionRegistry TR 
-    INNER JOIN EnabledOperation EO ON TR.EnabledOperationId = EO.EnabledOperationId
+    INNER JOIN EntityCategoryOperation ECO ON TR.EntityCategoryOperationId = ECO.EntityCategoryOperationId
+    INNER JOIN EnabledOperation EO ON ECO.EnabledOperationId = EO.EnabledOperationId
     INNER JOIN Application A ON EO.ApplicationId = A.ApplicationId 
     INNER JOIN Company C ON EO.CompanyId = C.CompanyId
     INNER JOIN Operation O ON EO.OperationId = O.OperationId
@@ -540,13 +552,13 @@ WHERE TR.RecordKey = @0";
 
         /// <inheritdoc/>
         public Task<int> GetHashCountAsync(
-            int enabledOperationId,
+            int entityCategoryOperationId,
             string hash)
         {
             return
                 this.persistence.ExecuteScalarAsync<int>(
-                    "SELECT COUNT(OutgoingHash) FROM TransactionRegistry WHERE EnabledOperationId = @0 AND OutgoingHash = @1",
-                    enabledOperationId,
+                    "SELECT COUNT(OutgoingHash) FROM TransactionRegistry WHERE EntityCategoryOperationId = @0 AND OutgoingHash = @1",
+                    entityCategoryOperationId,
                     hash);
         }
 
@@ -591,7 +603,7 @@ WHERE TR.RecordKey = @0";
                     CreatedDateTime = transactionRegistry.CreatedDateTime,
                     RecordKey = transactionRegistry.RecordKey,
                     TransactionStatusId = (int)transactionRegistry.Status,
-                    EnabledOperationId = transactionRegistry.EnabledOperationId,
+                    EntityCategoryOperationId = transactionRegistry.EntityCategoryOperationId,
                     Data = transactionRegistry.Data,
                     UpdatedDateTime = transactionRegistry.UpdatedDateTime,
                     AppUser = transactionRegistry.UserName,
@@ -619,6 +631,7 @@ WHERE TR.RecordKey = @0";
                         new TransactionRegistryMemento(
                             tr.TransactionId,
                             tr.RecordKey,
+                            tr.Priority,
                             tr.IncomingHash,
                             cmp.ExternalCode,
                             app.RecordKey,
@@ -630,7 +643,7 @@ WHERE TR.RecordKey = @0";
                             tr.Data,
                             tr.Message,
                             tr.Details,
-                            tr.EnabledOperationId,
+                            tr.EntityCategoryOperationId,
                             childTransactions);
             return callback;
         }
@@ -661,7 +674,7 @@ WHERE TR.RecordKey = @0";
             FieldConfigurationEntryEntity fieldConfigurationEntry,
             IEnumerable<ValueMapEntryEntity> valueMapEntries,
             IEnumerable<ValueMapEntity> valueMaps,
-            int enabledOperationId,
+            int entityCategoryOperationId,
             string operationKey)
         {
             Dictionary<string, object> valueMap = new Dictionary<string, object>();
@@ -686,7 +699,7 @@ WHERE TR.RecordKey = @0";
                 fieldConfigurationEntry.OutgoingSequence,
                 fieldConfigurationEntry.IncomingSequence,
                 valueMap,
-                enabledOperationId,
+                entityCategoryOperationId,
                 operationKey,
                 fieldConfigurationEntry.IncludeInSummary);
         }

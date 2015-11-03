@@ -21,6 +21,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="recordKey">The record key.</param>
+        /// <param name="priority">The priority.</param>
         /// <param name="incomingHash">The incoming hash.</param>
         /// <param name="companyCode">The company code.</param>
         /// <param name="applicationKey">The application key.</param>
@@ -32,11 +33,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="data">The request data.</param>
         /// <param name="message">The message.</param>
         /// <param name="details">The details.</param>
-        /// <param name="enabledOperationId">The enabled operation identifier.</param>
+        /// <param name="entityCategoryOperationId">The entity category operation identifier.</param>
         /// <param name="childTransactions">The child transactions.</param>
         public TransactionRegistryMemento(
             int transactionId,
             Guid recordKey,
+            int? priority,
             string incomingHash,
             string companyCode,
             string applicationKey,
@@ -48,7 +50,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             string data,
             string message,
             string details,
-            int enabledOperationId,
+            int entityCategoryOperationId,
             IEnumerable<TransactionRegistryMemento> childTransactions)
         {
             this.TransactionId = transactionId;
@@ -64,9 +66,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Message = message;
             this.Details = details;
             this.IncomingHash = incomingHash;
-            this.EnabledOperationId = enabledOperationId;
+            this.EntityCategoryOperationId = entityCategoryOperationId;
+            this.Priority = priority;
             this.ChildTransactions = new ReadOnlyCollection<TransactionRegistryMemento>(new List<TransactionRegistryMemento>(childTransactions ?? new TransactionRegistryMemento[0]));
         }
+
+        /// <summary>
+        /// Gets or sets the priority.
+        /// </summary>
+        /// <value>The priority.</value>
+        public int? Priority { get; set; }
 
         /// <summary>
         /// Gets or sets the transaction key.
@@ -147,10 +156,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Details { get; private set; }
 
         /// <summary>
-        /// Gets the enabled operation identifier.
+        /// Gets the entity category operation identifier.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
-        public int EnabledOperationId { get; private set; }
+        public int EntityCategoryOperationId { get; private set; }
 
         /// <summary>
         /// Gets the child transactions.

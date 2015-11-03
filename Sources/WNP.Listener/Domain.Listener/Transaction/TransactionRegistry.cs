@@ -115,10 +115,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public ReadOnlyCollection<ChildTransactionRegistryEntity> ChildTransactions { get; private set; } = new ReadOnlyCollection<ChildTransactionRegistryEntity>(new ChildTransactionRegistryEntity[0]);
 
         /// <summary>
-        /// Gets or sets the enabled operation identifier.
+        /// Gets or sets the entity category operation id.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
-        public int EnabledOperationId { get; set; }
+        public int EntityCategoryOperationId { get; set; }
 
         private IRecordKeyBuilder KeyBuilder { get; }
 
@@ -132,7 +132,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="createdDateTime">The created date time.</param>
         /// <param name="fieldConfigurations">The field configurations.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review this")]
-        public void Create(DateTime createdDateTime, Dictionary<int, IEnumerable<FieldConfiguration>> fieldConfigurations)
+        public virtual void Create(DateTime createdDateTime, Dictionary<int, IEnumerable<FieldConfiguration>> fieldConfigurations)
         {
             this.RecordKey = Guid.Parse(this.KeyBuilder.Create());
             this.CreatedDateTime = createdDateTime;
@@ -143,12 +143,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                         .ToDictionary<ChildTransactionRegistryEntity, object, FieldConfigurationCollection>(
                             childTransactionRegistryEntity => childTransactionRegistryEntity.Data,
                             childTransactionRegistryEntity =>
-                               new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]));
+                               new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId]));
 
-                if (!hashElements.Any() && fieldConfigurations.ContainsKey(this.EnabledOperationId))
+                if (!hashElements.Any() && fieldConfigurations.ContainsKey(this.EntityCategoryOperationId))
                 {
                     // assuming non-batch transaction
-                    hashElements.Add(this.Data, new FieldConfigurationCollection(fieldConfigurations[this.EnabledOperationId]));
+                    hashElements.Add(this.Data, new FieldConfigurationCollection(fieldConfigurations[this.EntityCategoryOperationId]));
                 }
 
                 this.IncomingHash =
@@ -156,9 +156,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                         hashElements,
                         f => f.IncomingSequence);
 
-                if (fieldConfigurations.ContainsKey(this.EnabledOperationId))
+                if (fieldConfigurations.ContainsKey(this.EntityCategoryOperationId))
                 {
-                    this.SummaryBuilder.Build(this.Data, this.Summary, fieldConfigurations[this.EnabledOperationId]);
+                    this.SummaryBuilder.Build(this.Data, this.Summary, fieldConfigurations[this.EntityCategoryOperationId]);
                 }
             }
 
@@ -173,12 +173,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                         {
                             {
                                 childTransactionRegistryEntity.Data,
-                               new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId])
+                               new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId])
                             }
                         },
                         f => f.IncomingSequence);
                 childTransactionRegistryEntity.Status = TransactionStatusType.Pending;
-                this.SummaryBuilder.Build(childTransactionRegistryEntity.Data, childTransactionRegistryEntity.Summary, fieldConfigurations?[childTransactionRegistryEntity.EnabledOperationId]);
+                this.SummaryBuilder.Build(childTransactionRegistryEntity.Data, childTransactionRegistryEntity.Summary, fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId]);
             }
         }
 
@@ -275,7 +275,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Details = myMemento.Details;
             this.Id = myMemento.TransactionId;
             this.IncomingHash = myMemento.IncomingHash;
-            this.EnabledOperationId = myMemento.EnabledOperationId;
+            this.EntityCategoryOperationId = myMemento.EntityCategoryOperationId;
             this.ChildTransactions = new ReadOnlyCollection<ChildTransactionRegistryEntity>(myMemento.ChildTransactions.Select(s =>
             {
                 var childMemento = (TransactionRegistryMemento)s;

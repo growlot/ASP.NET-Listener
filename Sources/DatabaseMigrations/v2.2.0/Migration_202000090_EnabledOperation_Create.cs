@@ -23,8 +23,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .WithColumn("EnabledOperationId").AsInt32().NotNullable().PrimaryKey().Identity()
                 .WithColumn("ApplicationId").AsInt32().NotNullable()
                 .WithColumn("CompanyId").AsInt32().NotNullable()
-                .WithColumn("OperationId").AsInt32().NotNullable()
-                .WithColumn("FieldConfigurationId").AsInt32().Nullable().ForeignKey("FK_EnabOper_FielConf", "FieldConfiguration", "FieldConfigurationId");
+                .WithColumn("OperationId").AsInt32().NotNullable();
 
             this.Create.ForeignKey("FK_EnabOper_Appl")
                 .FromTable("EnabledOperation").ForeignColumn("ApplicationId")

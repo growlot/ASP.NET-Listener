@@ -11,13 +11,13 @@ namespace AMSLLC.Listener.Persistence.Listener.Models
     /// </summary>
     public class IECWrapper
     {
-        public int EnabledOperationId { get; private set; }
+        public int EntityCategoryOperationId { get; private set; }
         public IntegrationEndpointConfigurationMemento IntegrationEndpointConfigurationMemento { get; private set; }
 
-        public IECWrapper(IntegrationEndpointConfigurationMemento integrationEndpointConfigurationMemento, int enabledOperationId)
+        public IECWrapper(IntegrationEndpointConfigurationMemento integrationEndpointConfigurationMemento, int entityCategoryOperationId)
         {
             this.IntegrationEndpointConfigurationMemento = integrationEndpointConfigurationMemento;
-            this.EnabledOperationId = enabledOperationId;
+            this.EntityCategoryOperationId = entityCategoryOperationId;
         }
     }
 }

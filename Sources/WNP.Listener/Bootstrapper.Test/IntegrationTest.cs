@@ -13,6 +13,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Net.Http;
     using System.Net.Http.Formatting;
     using System.Net.Http.Headers;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Communication;
@@ -25,6 +26,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Moq;
     using Newtonsoft.Json;
     using Repository;
+    using Repository.WNP;
+    using Repository.WNP.Model;
 
     [TestClass]
     public class IntegrationTest
@@ -240,51 +243,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
         }
 
-        //[TestMethod]
-        //public async Task OpenAndSucceedBatchByIndividual()
-        //{
-        //    var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
-        //    var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
-        //    var nextKey = Guid.NewGuid();
-        //    var keyStack = new Queue<string>();
-        //    keyStack.Enqueue(nextKey.ToString("D"));
-        //    for (int i = 0; i < 100; i++)
-        //    {
-        //        keyStack.Enqueue(Guid.NewGuid().ToString("D"));
-        //    }
-
-        //    transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
-
-        //    var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
-        //    var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
-
-        //    communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.IsAny<TransactionDataReady>(), It.IsAny<ProtocolConfiguration>()));
-
-        //    di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
-        //    di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
-
-        //    var transactionRecordKey1 = await OpenBatchTransaction(_server);
-        //    Assert.AreEqual(nextKey, transactionRecordKey1);
-
-        //    var childStatuses = await GetChildTransactionStatus(_server, transactionRecordKey1);
-        //    long transactionStatusId1 = 0;
-        //    for (int i = 0; i < childStatuses.Count; i++)
-        //    {
-        //        await SucceedTransaction(_server, childStatuses.ElementAt(i).Key);
-        //        if (i < 3)
-        //        {
-        //            // Checking few first iterations for unexpected status changes
-        //            transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
-        //            Assert.AreEqual(TransactionStatusType.Processing, (TransactionStatusType)transactionStatusId1);
-        //        }
-        //    }
-
-        //    communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Never);
-
-        //    transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
-        //    Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId1);
-        //}
-
         [TestMethod]
         public async Task OpenAndFailBatchAsRoot()
         {
@@ -392,6 +350,61 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             Assert.Inconclusive("Implement this");
         }
 
+        [TestMethod]
+        public async Task CreateWnpBatch()
+        {
+            var di = (NinjectDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            var nextKey = Guid.NewGuid();
+            var keyStack = new Queue<string>();
+            keyStack.Enqueue(nextKey.ToString("D"));
+            for (int i = 0; i < 100; i++)
+            {
+                keyStack.Enqueue(Guid.NewGuid().ToString("D"));
+            }
+
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
+
+            di.Kernel.Rebind<IRecordKeyBuilder>().ToConstant(transactionRecordKeyBuilder.Object).InSingletonScope();
+            var transactionRegistryMock = new Mock<TransactionRegistry>(di.ResolveType<IRecordKeyBuilder>(), di.ResolveType<ITransactionHashBuilder>(), di.ResolveType<ISummaryBuilder>());
+
+            var domainBuilderMock = new Mock<DomainBuilder> { CallBase = true };
+            domainBuilderMock.Setup(s => s.Create<TransactionRegistry>()).Returns(transactionRegistryMock.Object);
+
+            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+
+            var batchRepository = new Mock<IWnpBatchRepository>();
+            batchRepository.Setup(s => s.GetMeterTestBatchAsync(It.IsAny<string>())).ReturnsAsync(
+                new List<Meter>
+                {
+                    new Meter
+                    {
+                        EquipmentNumber = "EQ1",
+                        Owner = 0,
+                        Tests =
+                        {
+                            new MeterTest
+                            {
+                                StartDate = DateTime.Now.AddDays(-50)
+                            }
+                        }
+                    }
+                });
+
+            di.Kernel.Rebind<IDomainBuilder>().ToConstant(domainBuilderMock.Object);
+            di.Kernel.Rebind<IWnpBatchRepository>().ToConstant(batchRepository.Object);
+            di.Kernel.Rebind<ICommunicationHandler>().ToConstant(communicationHandler.Object).Named("communication-jms");
+
+            var result = await OpenWnpBatchTransaction(_server, "B1");
+
+            transactionRegistryMock.Verify(
+                t => t.Create(It.IsAny<DateTime>(), It.IsAny<Dictionary<int, IEnumerable<FieldConfiguration>>>()),
+                Times.Exactly(5));
+
+            Assert.AreEqual(5, result.Length);
+        }
+
         #endregion
 
         #region Helper methods
@@ -472,6 +485,34 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             string responseBody = await response.Content.ReadAsStringAsync();
             var expando = JsonConvert.DeserializeObject<ExpandoObject>(responseBody) as IDictionary<string, object>;
             var responseMessage = Guid.Parse(expando["value"].ToString());
+            return responseMessage;
+        }
+
+        private static async Task<Guid[]> OpenWnpBatchTransaction(TestServer server, string batchKey)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+            var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
+            mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
+
+            HttpResponseMessage response =
+                await
+                    server.CreateRequest($"listener/BuildBatch").And(request =>
+                               request.Content = new ObjectContent(
+                                        typeof(string),
+                                        batchKey,
+                                        new JsonMediaTypeFormatter { SerializerSettings = settings },
+                                        mediaType))
+                        .AddHeader("AMS-Company", "CCD")
+                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
+                        .PostAsync();
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var expando = JsonConvert.DeserializeObject<ExpandoObject>(responseBody) as IDictionary<string, object>;
+            var responseMessage = (expando["value"] as List<object>).Select(s => Guid.Parse(s.ToString())).ToArray();
             return responseMessage;
         }
 

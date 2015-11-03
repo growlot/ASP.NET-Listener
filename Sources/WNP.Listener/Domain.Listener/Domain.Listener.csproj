@@ -82,7 +82,7 @@
     <Compile Include="Transaction\ChildTransactionEntity.cs" />
     <Compile Include="Transaction\ChildTransactionRegistryEntity.cs" />
     <Compile Include="Transaction\ConnectionConfigurationFactory.cs" />
-    <Compile Include="Transaction\EnabledOperationLookup.cs" />
+    <Compile Include="Transaction\EntityOperationLookup.cs" />
     <Compile Include="Transaction\EndpointDataProcessorResult.cs" />
     <Compile Include="Transaction\FieldConfiguration.cs" />
     <Compile Include="Transaction\FieldConfigurationCollection.cs" />

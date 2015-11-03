@@ -25,13 +25,39 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 new
                 {
                     OperationEndpointId = 1,
-                    EnabledOperationId = 1,
+                    EntityCategoryOperationId = 1,
                     EndpointId = 1
                 },
                 new
                 {
                     OperationEndpointId = 2,
-                    EnabledOperationId = 3,
+                    EntityCategoryOperationId = 2,
+                    EndpointId = 1
+                },
+                new
+                {
+                    OperationEndpointId = 3,
+                    EntityCategoryOperationId = 3,
+                    EndpointId = 1
+                },
+                new
+                {
+                    OperationEndpointId = 4,
+                    EntityCategoryOperationId = 4,
+                    EndpointId = 1
+                },
+                new
+                {
+                    OperationEndpointId = 5,
+                    EntityCategoryOperationId = 5,
+                    EndpointId = 1
+                },
+
+                // No mapping for batch operation @6
+                new
+                {
+                    OperationEndpointId = 7,
+                    EntityCategoryOperationId = 7,
                     EndpointId = 1
                 }
             };

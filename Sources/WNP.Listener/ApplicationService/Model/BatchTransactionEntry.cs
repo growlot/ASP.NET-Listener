@@ -43,6 +43,6 @@ namespace AMSLLC.Listener.ApplicationService.Model
         /// Gets or sets the priority.
         /// </summary>
         /// <value>The priority.</value>
-        public int Priority { get; set; }
+        public int? Priority { get; set; }
     }
 }
