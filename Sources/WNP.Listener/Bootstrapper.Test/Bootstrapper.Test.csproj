@@ -91,6 +91,14 @@
       <HintPath>..\..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Ninject.MockingKernel, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Ninject.MockingKernel.3.2.2.0\lib\net45-full\Ninject.MockingKernel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.MockingKernel.Moq, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Ninject.MockingKernel.Moq.3.2.2.0\lib\net45-full\Ninject.MockingKernel.Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Oracle.ManagedDataAccess.12.1.2400\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
       <Private>True</Private>
@@ -136,6 +144,7 @@
   <ItemGroup>
     <Compile Include="IntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestDependencyInjectionAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\ConnectionStrings.config">
@@ -197,6 +206,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ODataService\ODataService.csproj">
+      <Project>{28DE87B5-514B-4996-B65A-9D8F9E4578E0}</Project>
+      <Name>ODataService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository.WNP\Repository.WNP.csproj">
       <Project>{2643C152-D7B8-4633-A540-8EE3A1DB8E45}</Project>

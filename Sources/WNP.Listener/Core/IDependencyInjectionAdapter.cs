@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.Core
     /// <summary>
     /// Abstracts dependency injection framework.
     /// </summary>
-    public interface IDependencyInjectionAdapter
+    public interface IDependencyInjectionAdapter : IDisposable
     {
         /// <summary>
         /// Gets the object of specified type from DI based on generic type definition.

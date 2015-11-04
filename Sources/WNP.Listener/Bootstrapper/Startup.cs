@@ -21,6 +21,7 @@ namespace AMSLLC.Listener.Bootstrapper
     using Owin.Middleware;
     using Serilog;
     using StackExchange.Profiling;
+    using Topshelf.Hosts;
 
     /// <summary>
     /// Manages application/service startup
@@ -33,13 +34,25 @@ namespace AMSLLC.Listener.Bootstrapper
         /// <param name="app">The application.</param>
         public void Configuration(IAppBuilder app)
         {
-            var diAdapter = new NinjectDependencyInjectionAdapter();
+            var diAdapterExist = ApplicationIntegration.DependencyResolver != null;
+            var diAdapter = (diAdapterExist ? ApplicationIntegration.DependencyResolver : new NinjectDependencyInjectionAdapter()) as INinjectDependencyInjectionAdapter;
+            if (diAdapter == null)
+            {
+                throw new ActivationException("Expecting Ninject as dependency injection container");
+            }
+
             diAdapter.Initialize(container =>
             {
-                container.Load<DependencyWiring>();
+                if (!container.HasModule("DependencyWiring"))
+                {
+                    container.Load<DependencyWiring>();
+                }
             });
 
-            ApplicationIntegration.SetDependencyInjectionResolver(diAdapter);
+            if (!diAdapterExist)
+            {
+                ApplicationIntegration.SetDependencyInjectionResolver(diAdapter);
+            }
 
             this.InitOwinHost(app, diAdapter);
             this.InitProfiler();
@@ -54,7 +67,7 @@ namespace AMSLLC.Listener.Bootstrapper
             MiniProfiler.Settings.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter(true);
         }
 
-        private void InitOwinHost(IAppBuilder app, NinjectDependencyInjectionAdapter diAdapter)
+        private void InitOwinHost(IAppBuilder app, INinjectDependencyInjectionAdapter diAdapter)
         {
             app.UseRequestScopeContext();
 

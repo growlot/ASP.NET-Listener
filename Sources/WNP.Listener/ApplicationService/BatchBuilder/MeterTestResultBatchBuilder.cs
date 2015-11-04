@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.ApplicationService.BatchBuilder
         }
 
         /// <inheritdoc/>
-        public async Task<List<OpenBatchTransactionCommand>> Create(
+        public async Task<ICollection<OpenBatchTransactionCommand>> Create(
             string batchNumber, string companyCode, string applicationKey, string userName)
         {
             List<OpenBatchTransactionCommand> returnValue = new List<OpenBatchTransactionCommand>();

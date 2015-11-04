@@ -1,29 +1,31 @@
-﻿// <copyright file="IBatchBuilder.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="IWnpIntegrationService.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
 namespace AMSLLC.Listener.ApplicationService
 {
-    using System.Collections;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Commands;
-    using Model;
 
     /// <summary>
-    /// Batch builder interface
+    /// Wnp integration service interface
     /// </summary>
-    public interface IBatchBuilder
+    public interface IWnpIntegrationService
     {
         /// <summary>
-        /// Creates the batch using batch number.
+        /// Create batch using data from WNP
         /// </summary>
-        /// <param name="batchNumber">The batch number.</param>
+        /// <param name="batchKey">The batch key.</param>
         /// <param name="companyCode">The company code.</param>
         /// <param name="applicationKey">The application key.</param>
-        /// <param name="userName">Name of the user.</param>
-        /// <returns>Task&lt;List&lt;BatchTransactionEntry&gt;&gt;.</returns>
+        /// <param name="name">The name.</param>
+        /// <returns>Task&lt;IEnumerable&lt;OpenBatchTransactionCommand&gt;&gt;.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review later")]
-        Task<ICollection<OpenBatchTransactionCommand>> Create(string batchNumber, string companyCode, string applicationKey, string userName);
+        Task<ICollection<OpenBatchTransactionCommand>> Create(
+            string batchKey,
+            string companyCode,
+            string applicationKey,
+            string name);
     }
 }

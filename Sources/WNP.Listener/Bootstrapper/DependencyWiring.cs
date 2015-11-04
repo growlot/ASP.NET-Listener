@@ -38,6 +38,9 @@ namespace AMSLLC.Listener.Bootstrapper
     public class DependencyWiring : NinjectModule
     {
         /// <inheritdoc/>
+        public override string Name => "DependencyWiring";
+
+        /// <inheritdoc/>
         public override void Load()
         {
             // -------------------------
@@ -100,6 +103,7 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
             this.Kernel.Bind<IWnpBatchRepository>().To<WnpRepository>();
             this.Kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>().InRequestScope();
+            this.Kernel.Bind<IWnpIntegrationService>().To<WnpIntegrationService>().InSingletonScope();
 
             // -------------------------
             // Repository.WNP bindings

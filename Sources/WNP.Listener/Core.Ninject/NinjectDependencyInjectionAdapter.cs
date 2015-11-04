@@ -10,7 +10,7 @@ namespace AMSLLC.Listener.Core.Ninject
     /// <summary>
     /// Implements <see cref="IDependencyInjectionAdapter"/> for Ninject
     /// </summary>
-    public class NinjectDependencyInjectionAdapter : IDependencyInjectionAdapter
+    public class NinjectDependencyInjectionAdapter : INinjectDependencyInjectionAdapter
     {
         /// <summary>
         /// Gets the kernel.
@@ -50,6 +50,25 @@ namespace AMSLLC.Listener.Core.Ninject
             }
 
             action(this.Kernel);
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the specified disposing.
+        /// </summary>
+        /// <param name="disposing">The disposing.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.Kernel.Dispose();
+            }
         }
     }
 }

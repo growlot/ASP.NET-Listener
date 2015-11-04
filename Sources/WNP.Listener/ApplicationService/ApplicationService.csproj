@@ -88,6 +88,7 @@
     <Compile Include="Commands\OpenBatchTransactionCommand.cs" />
     <Compile Include="Commands\ProcessingTransactionCommand.cs" />
     <Compile Include="IBatchBuilder.cs" />
+    <Compile Include="Implementations\WnpIntegrationService.cs" />
     <Compile Include="ISaga.cs" />
     <Compile Include="Implementations\ApplicationServiceScope.cs" />
     <Compile Include="CommandHandlers\CreateSiteCommandHandler.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="CommandHandlers\EnableDeviceCommandHandler.cs" />
     <Compile Include="Implementations\TransactionService.cs" />
     <Compile Include="ITransactionService.cs" />
+    <Compile Include="IWnpIntegrationService.cs" />
     <Compile Include="Model\BatchTransactionEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryManager.cs" />

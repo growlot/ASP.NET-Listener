@@ -27,7 +27,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     {
         private readonly ListenerODataContext _dbContext;
         private readonly ITransactionService _transactionService;
-        private readonly IBatchBuilder _meterBatchBuilder;
+        private readonly IWnpIntegrationService _wnpIntegrationService;
 
         public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
         public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
@@ -37,12 +37,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="dbctx">The db context.</param>
         /// <param name="transactionService">The transaction service.</param>
-        /// <param name="meterBatchBuilder">The meter batch builder.</param>
-        public TransactionRegistryController(ListenerODataContext dbctx, ITransactionService transactionService, IBatchBuilder meterBatchBuilder)
+        /// <param name="wnpService">The WNP integration service.</param>
+        public TransactionRegistryController(ListenerODataContext dbctx, ITransactionService transactionService, IWnpIntegrationService wnpService)
         {
             this._dbContext = dbctx;
             this._transactionService = transactionService;
-            this._meterBatchBuilder = meterBatchBuilder;
+            this._wnpIntegrationService = wnpService;
         }
 
         public IQueryable<TransactionRegistryEntity> Get()
@@ -159,9 +159,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                var records = await this._meterBatchBuilder.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
+                var records = await this._wnpIntegrationService.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
+                List<Guid> returnValue = new List<Guid>();
+                foreach (OpenBatchTransactionCommand openBatchTransactionCommand in records)
+                {
+                    returnValue.Add(await this._transactionService.Open(openBatchTransactionCommand));
+                }
 
-                return this.Ok(await Task.WhenAll(records.Select(r => this._transactionService.Open(r))));
+                return this.Ok(returnValue);//await Task.WhenAll(records.Select(r => this._transactionService.Open(r)))
             }
             catch (Exception exc)
             {

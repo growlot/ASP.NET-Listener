@@ -4,9 +4,12 @@
 
 namespace AMSLLC.Listener.Core.Ninject.Test
 {
+    using System;
+
     /// <summary>
     /// Implements <see cref="ITestDependencyInjectionAdapter"/> for Ninject
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Not in use. Review if changes")]
     public class NinjectTestDependencyInjectionAdapter : NinjectDependencyInjectionAdapter, ITestDependencyInjectionAdapter
     {
         /// <summary>
