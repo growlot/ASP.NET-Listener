@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
     /// </summary>
     public class SiteBuilder
     {
+        private int owner;
         private string description;
         private string premiseNumber;
         private BillingAccount account;
@@ -39,6 +40,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             if (siteBuilder != null)
             {
                 return Site.CreateSite(
+                    siteBuilder.owner,
                     siteBuilder.description,
                     siteBuilder.premiseNumber,
                     siteBuilder.address,
@@ -98,6 +100,17 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         public SiteBuilder LocatedAt(PhysicalAddress siteAddress)
         {
             this.address = siteAddress;
+            return this;
+        }
+
+        /// <summary>
+        ///  Adds address to site definition.
+        /// </summary>
+        /// <param name="siteOwner">The site owner.</param>
+        /// <returns>The site builder object</returns>
+        public SiteBuilder OwnedBy(int siteOwner)
+        {
+            this.owner = siteOwner;
             return this;
         }
     }

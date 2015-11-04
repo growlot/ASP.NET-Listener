@@ -5,7 +5,6 @@
 namespace AMSLLC.Listener.ApplicationService
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using CommandHandlers;
@@ -15,7 +14,8 @@ namespace AMSLLC.Listener.ApplicationService
     using Domain;
     using Domain.Listener.Transaction;
     using Domain.WNP.OwnerAggregate;
-    using Persistence.DomainEventHandlers;
+    using Domain.WNP.SiteAggregate;
+    using Persistence.WNP.DomainEventHandlers;
 
     /// <summary>
     /// Configures application services by registering command handlers
@@ -46,6 +46,10 @@ namespace AMSLLC.Listener.ApplicationService
         {
             this.commandBus.Subscribe<CreateSiteCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<CreateSiteCommandHandler>().HandleAsync(command));
+            this.commandBus.Subscribe<UpdateSiteBillingAccountCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<UpdateSiteBillingAccountCommandHandler>().HandleAsync(command));
+            this.commandBus.Subscribe<UpdateSiteAddressCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<UpdateSiteAddressCommandHandler>().HandleAsync(command));
         }
 
         /// <summary>
@@ -92,6 +96,10 @@ namespace AMSLLC.Listener.ApplicationService
         {
             this.domainEventBus.SubscribeAsync<SiteCreatedEvent>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteCreatedEventHandler>().HandleAsync(domainEvent));
+            this.domainEventBus.SubscribeAsync<SiteAddressUpdated>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteAddressUpdatedEventHandler>().HandleAsync(domainEvent));
+            this.domainEventBus.SubscribeAsync<SiteBillingAccountUpdated>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteBillingAccountUpdatedEventHandler>().HandleAsync(domainEvent));
         }
     }
 }

@@ -45,30 +45,67 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
-        public Task<IEnumerable<IMemento>> GetCollidingSites(int owner, string sitePremiseNumber, string siteDescription)
+        public Task<IMemento> GetOwnerWithCollidingSites(int owner, string sitePremiseNumber, string siteDescription)
         {
-            var siteEntities = this.dbContext.Fetch<SiteEntity>($"SELECT * FROM {DBMetadata.Site.FullTableName} WHERE {DBMetadata.Site.Owner} = @0 and ({DBMetadata.Site.SiteDescription} = @1 or {DBMetadata.Site.PremiseNo} = @2)", owner, siteDescription, sitePremiseNumber);
+            var select = Sql.Builder.Select("*")
+                .From(DBMetadata.Site.FullTableName)
+                .Where($"{DBMetadata.Site.Owner} = @0", owner);
 
-            IList<SiteMemento> siteMementos = new List<SiteMemento>();
+            if (!string.IsNullOrWhiteSpace(sitePremiseNumber) && !string.IsNullOrWhiteSpace(siteDescription))
+            {
+                select.Where($"{DBMetadata.Site.Owner} = @0 and ({DBMetadata.Site.SiteDescription} = @1 or {DBMetadata.Site.PremiseNo} = @2)", owner, siteDescription, sitePremiseNumber);
+            }
+            else if (!string.IsNullOrWhiteSpace(sitePremiseNumber))
+            {
+                select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.PremiseNo} = @1", owner, sitePremiseNumber);
+            }
+            else if (!string.IsNullOrWhiteSpace(siteDescription))
+            {
+                select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.SiteDescription} = @1", owner, siteDescription);
+            }
+            else
+            {
+                select.Where($"{DBMetadata.Site.Owner} = @0", owner);
+            }
+
+            var siteEntities = this.dbContext.Fetch<SiteEntity>(select);
+
+            var siteMementos = new List<OwnerSiteMemento>();
             foreach (var siteEntity in siteEntities)
             {
-                var siteMemento = new SiteMemento(
+                var siteMemento = new OwnerSiteMemento(
                     site: siteEntity.Site.Value,
                     description: siteEntity.SiteDescription,
-                    country: siteEntity.SiteCountry,
-                    state: siteEntity.SiteState,
-                    city: siteEntity.SiteCity,
-                    address1: siteEntity.SiteAddress,
-                    address2: siteEntity.SiteAddress2,
-                    zip: siteEntity.SiteZipcode,
-                    premiseNumber: siteEntity.PremiseNo,
-                    billingAccountName: siteEntity.AccountName,
-                    billingAccountNumber: siteEntity.AccountNo);
+                    premiseNumber: siteEntity.PremiseNo);
 
                 siteMementos.Add(siteMemento);
             }
 
-            return Task.FromResult((IEnumerable<IMemento>)siteMementos);
+            var ownerMemento = new OwnerMemento(owner, siteMementos);
+
+            return Task.FromResult((IMemento)ownerMemento);
+        }
+
+        /// <inheritdoc/>
+        public Task<IMemento> GetSite(int owner, int siteId)
+        {
+            var siteEntity = this.dbContext.First<SiteEntity>($"SELECT * FROM {DBMetadata.Site.FullTableName} WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1", owner, siteId);
+
+            var siteMemento = new SiteMemento(
+                owner: owner,
+                site: siteEntity.Site.Value,
+                description: siteEntity.SiteDescription,
+                country: siteEntity.SiteCountry,
+                state: siteEntity.SiteState,
+                city: siteEntity.SiteCity,
+                address1: siteEntity.SiteAddress,
+                address2: siteEntity.SiteAddress2,
+                zip: siteEntity.SiteZipcode,
+                premiseNumber: siteEntity.PremiseNo,
+                billingAccountName: siteEntity.AccountName,
+                billingAccountNumber: siteEntity.AccountNo);
+
+            return Task.FromResult((IMemento)siteMemento);
         }
     }
 }

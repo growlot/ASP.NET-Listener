@@ -2,25 +2,20 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Persistence.DomainEventHandlers
+namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
 {
     using System.Threading.Tasks;
     using Core;
     using Domain;
-    using Domain.WNP.OwnerAggregate;
+    using Domain.WNP.SiteAggregate;
     using Repository.WNP;
     using WNP;
-    using WNP.Metadata;
 
     /// <summary>
     /// Persists <see cref="SiteCreatedEvent"/>
     /// </summary>
-    public class SiteCreatedEventHandler : IDomainEventHandler<SiteCreatedEvent>
+    public class SiteCreatedEventHandler : EventPesistenceHandler, IDomainEventHandler<SiteCreatedEvent>
     {
-        private IWNPUnitOfWork unitOfWork;
-        private string user;
-        private IDateTimeProvider timeProvider;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteCreatedEventHandler" /> class.
         /// </summary>
@@ -28,10 +23,8 @@ namespace AMSLLC.Listener.Persistence.DomainEventHandlers
         /// <param name="user">The user who initiated the event.</param>
         /// <param name="timeProvider">The time provider.</param>
         public SiteCreatedEventHandler(IWNPUnitOfWork unitOfWork, string user, IDateTimeProvider timeProvider)
+            : base(unitOfWork, user, timeProvider)
         {
-            this.unitOfWork = unitOfWork;
-            this.user = user;
-            this.timeProvider = timeProvider;
         }
 
         /// <inheritdoc/>
@@ -41,8 +34,8 @@ namespace AMSLLC.Listener.Persistence.DomainEventHandlers
             {
                 AccountName = domainEvent.BillingAccountName,
                 AccountNo = domainEvent.BillingAccountNumber,
-                CreateBy = this.user,
-                CreateDate = this.timeProvider.Now(),
+                CreateBy = this.User,
+                CreateDate = this.TimeProvider.Now(),
                 Owner = domainEvent.Owner,
                 PremiseNo = domainEvent.PremiseNumber,
                 SiteAddress = domainEvent.Address1,
@@ -54,9 +47,7 @@ namespace AMSLLC.Listener.Persistence.DomainEventHandlers
                 SiteZipcode = domainEvent.Zip
             };
 
-            ((WNPUnitOfWork)this.unitOfWork).DbContext.Insert(site);
-
-            return Task.CompletedTask;
+            return this.InsertAsync(site);
         }
     }
 }

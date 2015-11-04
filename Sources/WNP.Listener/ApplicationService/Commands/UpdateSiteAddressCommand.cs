@@ -1,14 +1,14 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CreateSiteCommand.cs" company="Advanced Metering Services LLC">
+// <copyright file="UpdateSiteAddressCommand.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
     /// <summary>
-    /// Information needed for site creation.
+    /// Information needed for site address update.
     /// </summary>
-    public class CreateSiteCommand : ICommand
+    public class UpdateSiteAddressCommand : ICommand
     {
         /// <summary>
         /// Gets or sets the owner.
@@ -19,12 +19,12 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public int Owner { get; set; }
 
         /// <summary>
-        /// Gets the description.
+        /// Gets or sets the site identifier.
         /// </summary>
         /// <value>
-        /// The description.
+        /// The site identifier.
         /// </value>
-        public string Description { get; set; }
+        public int SiteId { get; set; }
 
         /// <summary>
         /// Gets or sets the country.
@@ -70,45 +70,5 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// The zip
         /// </summary>
         public string Zip { get; set; }
-
-        /// <summary>
-        /// Gets the premise number.
-        /// </summary>
-        /// <value>
-        /// The premise number.
-        /// </value>
-        public string PremiseNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the billing account.
-        /// </summary>
-        /// <value>
-        /// The name of the billing account.
-        /// </value>
-        public string BillingAccountName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the billing account number.
-        /// </summary>
-        /// <value>
-        /// The billing account number.
-        /// </value>
-        public string BillingAccountNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the is interconnect.
-        /// </summary>
-        /// <value>
-        /// The is interconnect.
-        /// </value>
-        public string IsInterconnect { get; set; }
-
-        /// <summary>
-        /// Gets or sets the interconnect utility name.
-        /// </summary>
-        /// <value>
-        /// The interconnect utility name.
-        /// </value>
-        public string InterconnectUtilityName { get; set; }
     }
 }

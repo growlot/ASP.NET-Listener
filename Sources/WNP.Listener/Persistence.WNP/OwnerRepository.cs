@@ -5,12 +5,9 @@
 namespace AMSLLC.Listener.Persistence.WNP
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Domain;
     using Domain.WNP.OwnerAggregate;
-    using Domain.WNP.SiteAggregate;
-    using Metadata;
     using Repository.WNP;
 
     /// <summary>
@@ -42,16 +39,6 @@ namespace AMSLLC.Listener.Persistence.WNP
         public Task<IMemento> GetOwner(int owner)
         {
             return Task.FromResult((IMemento)this.dbContext.FirstOrDefault<OwnerMemento>("SELECT owner FROM wndba.towner WHERE owner = @0", owner));
-        }
-
-        /// <inheritdoc/>
-        public async Task<IMemento> GetOwnerWithSites(ISiteRepository siteRepository, int owner, string sitePremiseNumber, string siteDescription)
-        {
-            var ownerEntity = this.dbContext.FirstOrDefault<OwnerEntity>($"SELECT * FROM {DBMetadata.Owner.FullTableName} WHERE {DBMetadata.Owner.Owner} = @0", owner);
-            var siteMementos = await siteRepository.GetCollidingSites(owner, sitePremiseNumber, siteDescription);
-            var ownerMemento = new OwnerMemento(ownerEntity.Owner.Value, siteMementos);
-
-            return ownerMemento;
         }
     }
 }

@@ -17,7 +17,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Web.Http;
     using System.Web.OData;
     using System.Web.OData.Formatter;
-    using System.Web.OData.Formatter.Serialization;
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
     using ApplicationService;
@@ -163,7 +162,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             if (entity == null)
             {
-                throw new InvalidOperationException(StringUtilities.Invariant($"Create failed. Persisted entity not found."));
+                throw new InvalidOperationException(StringUtilities.Invariant($"Update failed. Updated entity not found."));
             }
 
             // create actual object that was sent over the wire

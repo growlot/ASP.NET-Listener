@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
+namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
     /// <summary>
     /// Event generated after new site is added.

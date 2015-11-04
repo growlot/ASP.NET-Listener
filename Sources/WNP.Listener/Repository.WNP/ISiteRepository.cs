@@ -15,6 +15,14 @@ namespace AMSLLC.Listener.Repository.WNP
     public interface ISiteRepository : IRepository
     {
         /// <summary>
+        /// Gets the memento for site agregate.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="siteId">The site identifier.</param>
+        /// <returns>The site memento</returns>
+        Task<IMemento> GetSite(int owner, int siteId);
+
+        /// <summary>
         /// Gets the site by premise number.
         /// </summary>
         /// <param name="premiseNumber">The premise number.</param>
@@ -22,12 +30,12 @@ namespace AMSLLC.Listener.Repository.WNP
         Task<IMemento> GetSiteByPremiseNumber(string premiseNumber);
 
         /// <summary>
-        /// Gets the sites that belong to specified owner and have same premise number or description.
+        /// Gets the owner with sites that belong to this owner and have same premise number or description.
         /// </summary>
         /// <param name="owner">The owner.</param>
         /// <param name="sitePremiseNumber">The site premise number.</param>
         /// <param name="siteDescription">The site description.</param>
-        /// <returns>The list of site mementos.</returns>
-        Task<IEnumerable<IMemento>> GetCollidingSites(int owner, string sitePremiseNumber, string siteDescription);
+        /// <returns>The owner mementos.</returns>
+        Task<IMemento> GetOwnerWithCollidingSites(int owner, string sitePremiseNumber, string siteDescription);
     }
 }

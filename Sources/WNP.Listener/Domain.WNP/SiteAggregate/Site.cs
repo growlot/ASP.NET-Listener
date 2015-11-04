@@ -14,9 +14,31 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
     public class Site : AggregateRoot<int>
     {
         /// <summary>
-        /// The domain event bus
+        /// The owner.
         /// </summary>
-        private IDomainEventBus domainEventBus = ApplicationIntegration.DependencyResolver.ResolveType<IDomainEventBus>();
+        private int owner;
+
+        /// <summary>
+        /// The description.
+        /// </summary>
+        private string description;
+
+        /// <summary>
+        /// The premise number.
+        /// Usually premisse number is generated and assigned to site by billing system (CIS, CSS, etc.).
+        /// If it is set, it must be unique, but if site is not assigned to any billing account then premise number might be empty.
+        /// </summary>
+        private string premiseNumber;
+
+        /// <summary>
+        /// The address.
+        /// </summary>
+        private PhysicalAddress address;
+
+        /// <summary>
+        /// The account.
+        /// </summary>
+        private BillingAccount account;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Site"/> class.
@@ -26,86 +48,107 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Site"/> class.
+        /// Initializes a new instance of the <see cref="Site" /> class.
         /// </summary>
+        /// <param name="owner">The owner.</param>
         /// <param name="description">The description.</param>
         /// <param name="premiseNumber">The premise number.</param>
         /// <param name="address">The address.</param>
         /// <param name="account">The account.</param>
-        private Site(string description, string premiseNumber, PhysicalAddress address, BillingAccount account)
+        private Site(int owner, string description, string premiseNumber, PhysicalAddress address, BillingAccount account)
         {
-            this.Description = description;
-            this.PremiseNumber = premiseNumber;
-            this.Account = account;
-            this.Address = address;
+            this.description = description;
+            this.premiseNumber = premiseNumber;
+            this.account = account;
+            this.address = address;
+
+            this.Events.Add(
+                new SiteCreatedEvent(
+                    owner: owner,
+                    description: this.description,
+                    country: this.address?.Country,
+                    state: this.address?.State,
+                    city: this.address?.City,
+                    address1: this.address?.Address1,
+                    address2: this.address?.Address2,
+                    zip: this.address?.Zip,
+                    premiseNumber: this.premiseNumber,
+                    billingAccountName: this.account?.Name,
+                    billingAccountNumber: this.account?.Number));
         }
-
-        /// <summary>
-        /// Gets the description.
-        /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
-        public string Description { get; private set; }
-
-        /// <summary>
-        /// Gets the address.
-        /// </summary>
-        /// <value>
-        /// The address.
-        /// </value>
-        public PhysicalAddress Address { get; private set; }
-
-        /// <summary>
-        /// Gets the account.
-        /// </summary>
-        /// <value>
-        /// The account.
-        /// </value>
-        public BillingAccount Account { get; private set; }
-
-        /// <summary>
-        /// Gets the premise number.
-        /// Usually premisse number is generated and assigned to site by billing system (CIS, CSS, etc.).
-        /// If it is set, it must be unique, but if site is not assigned to any billing account then premise number might be empty.
-        /// </summary>
-        /// <value>
-        /// The premise number.
-        /// </value>
-        public string PremiseNumber { get; private set; }
 
         /// <summary>
         /// Creates new site.
         /// </summary>
+        /// <param name="owner">The owner.</param>
         /// <param name="description">The description.</param>
         /// <param name="premiseNumber">The premise number.</param>
         /// <param name="address">The address.</param>
         /// <param name="account">The account.</param>
-        /// <returns>The new site.</returns>
-        public static Site CreateSite(string description, string premiseNumber, PhysicalAddress address, BillingAccount account)
+        /// <returns>
+        /// The new site.
+        /// </returns>
+        public static Site CreateSite(int owner, string description, string premiseNumber, PhysicalAddress address, BillingAccount account)
         {
-            return new Site(description, premiseNumber, address, account);
+            return new Site(owner, description, premiseNumber, address, account);
         }
 
         /// <summary>
         /// Updates the site address.
         /// </summary>
         /// <param name="newAddress">The new address.</param>
-        /// <exception cref="System.ArgumentNullException">address;Site must have an address.</exception>
-        /// <exception cref="System.ArgumentException">At least first address line must be specified for a Site.</exception>
+        /// <exception cref="System.ArgumentNullException">newAddress;New Site address is not specified. Please use ClearAddress action to remove address information from site.</exception>
         public void UpdateAddress(PhysicalAddress newAddress)
         {
             if (newAddress == null)
             {
-                throw new ArgumentNullException("newAddress", "Site must have an address.");
+                throw new ArgumentNullException("newAddress", "New site address is not specified. Please use ClearAddress action to remove address information from site.");
             }
 
-            if (string.IsNullOrEmpty(newAddress.Address1))
+            if (newAddress == this.address)
             {
-                throw new ArgumentException("At least first address line must be specified for a Site.");
+                return;
             }
 
-            this.domainEventBus.Publish(new SiteAddressUpdated(this.Id, newAddress));
+            this.address = newAddress;
+            var siteAddressUpdated = new SiteAddressUpdated(
+                owner: this.owner,
+                siteId: this.Id,
+                country: this.address.Country,
+                state: this.address.State,
+                city: this.address.City,
+                address1: this.address.Address1,
+                address2: this.address.Address2,
+                zip: this.address.Zip);
+
+            this.Events.Add(siteAddressUpdated);
+        }
+
+        /// <summary>
+        /// Updates the billing account.
+        /// </summary>
+        /// <param name="newAccount">The new account.</param>
+        /// <exception cref="System.ArgumentNullException">New billing account for the site is not specified. Please use ClearAccount action to remove account information from site.</exception>
+        public void UpdateBillingAccount(BillingAccount newAccount)
+        {
+            if (newAccount == null)
+            {
+                throw new ArgumentNullException(nameof(newAccount), "New billing account for the site is not specified. Please use ClearAccount action to remove account information from site.");
+            }
+
+            if (newAccount == this.account)
+            {
+                return;
+            }
+
+            this.account = newAccount;
+            var siteBillingAccountUpdated = new SiteBillingAccountUpdated(
+                owner: this.owner,
+                siteId: this.Id,
+                accountName: this.account.Name,
+                accountNumber: this.account.Number);
+
+            this.Events.Add(siteBillingAccountUpdated);
         }
 
         /// <summary>
@@ -115,12 +158,13 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         protected override void SetMemento(IMemento memento)
         {
             var siteMemento = (SiteMemento)memento;
+            this.owner = siteMemento.Owner;
             this.Id = siteMemento.Id;
-            this.Description = siteMemento.Description;
-            this.PremiseNumber = siteMemento.PremiseNumber;
+            this.description = siteMemento.Description;
+            this.premiseNumber = siteMemento.PremiseNumber;
             if (!string.IsNullOrWhiteSpace(siteMemento.Address1))
             {
-                this.Address = new PhysicalAddressBuilder()
+                this.address = new PhysicalAddressBuilder()
                     .CreatePhysicalAddress(siteMemento.Address1)
                     .WithAddressLine2(siteMemento.Address2)
                     .WithCity(siteMemento.City)
@@ -131,7 +175,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 
             if (!string.IsNullOrWhiteSpace(siteMemento.BillingAccountNumber))
             {
-                this.Account = new BillingAccount(siteMemento.BillingAccountName, siteMemento.BillingAccountNumber);
+                this.account = new BillingAccount(siteMemento.BillingAccountName, siteMemento.BillingAccountNumber);
             }
         }
     }

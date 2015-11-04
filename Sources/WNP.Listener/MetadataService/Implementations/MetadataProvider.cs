@@ -236,7 +236,6 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     codeClass.Members.Add(property);
 
                     var fieldName = WNPDBHelpers.HumanizeField(table.ModelToColumnMappings[field.Key]);
-                    var fieldDataType = table.FieldInfo[fieldName].DataType;
 
                     if (field.Value.DataType == "DateTimeOffset")
                     {
@@ -260,7 +259,6 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                             }}
                     ")));
 
-                    getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" result.{fieldName} = {field.Key};")));
                     setFromEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" this.{field.Key} = ({field.Value.DataType})Converters.Convert(entity.{fieldName}, typeof({field.Value.DataType}));")));
                 }
 

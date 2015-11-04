@@ -14,43 +14,45 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
     /// </summary>
     public class Owner : AggregateRoot<int>
     {
-        private IList<Site> sites = new List<Site>();
+        private IList<OwnerSite> sites = new List<OwnerSite>();
 
         /// <summary>
-        /// Adds the site. Application Service layer is responsible to check if site already exists before trying to add it.
+        /// Adds the site for this owner.
         /// </summary>
-        /// <param name="siteBuilder">The site builder.</param>
-        public void AddSite(SiteBuilder siteBuilder)
+        /// <param name="account">The account.</param>
+        /// <param name="address">The address.</param>
+        /// <param name="description">The description.</param>
+        /// <param name="premiseNumber">The premise number.</param>
+        /// <returns>
+        /// The new site.
+        /// </returns>
+        public Site AddSite(BillingAccount account, PhysicalAddress address, string description, string premiseNumber)
         {
-            Site newSite = siteBuilder;
+            if (description == null)
+            {
+                throw new ArgumentNullException(nameof(description), "Site can not be created, because site description is required field.");
+            }
 
             foreach (var site in this.sites)
             {
-                if (newSite.Description.Equals(site.Description, StringComparison.OrdinalIgnoreCase))
+                if (description.Equals(site.Description, StringComparison.OrdinalIgnoreCase))
                 {
                     throw new InvalidOperationException("Can not add Site, because description is not unique.");
                 }
 
-                if (newSite.PremiseNumber?.Equals(site.PremiseNumber, StringComparison.OrdinalIgnoreCase) ?? false)
+                if (premiseNumber?.Equals(site.PremiseNumber, StringComparison.OrdinalIgnoreCase) ?? false)
                 {
                     throw new InvalidOperationException("Can not add Site, because premise number is not unique.");
                 }
             }
 
-            this.sites.Add(newSite);
-            this.Events.Add(
-                new SiteCreatedEvent(
-                    owner: this.Id,
-                    description: newSite.Description,
-                    country: newSite.Address?.Country,
-                    state: newSite.Address?.State,
-                    city: newSite.Address?.City,
-                    address1: newSite.Address?.Address1,
-                    address2: newSite.Address?.Address2,
-                    zip: newSite.Address?.Zip,
-                    premiseNumber: newSite.PremiseNumber,
-                    billingAccountName: newSite.Account?.Name,
-                    billingAccountNumber: newSite.Account?.Number));
+            var siteBuilder = new SiteBuilder()
+                .BilledTo(account)
+                .LocatedAt(address)
+                .WithDescription(description)
+                .WithPremiseNumber(premiseNumber);
+
+            return siteBuilder;
         }
 
         /// <summary>
@@ -63,7 +65,7 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
             this.Id = ownerMemento.Owner;
             foreach (IMemento siteMemento in ownerMemento.Sites)
             {
-                var site = new Site();
+                var site = new OwnerSite();
                 ((IOriginator)site).SetMemento(siteMemento);
                 this.sites.Add(site);
             }

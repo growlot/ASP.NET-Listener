@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CreateSiteCommandHandler.cs" company="Advanced Metering Services LLC">
+// <copyright file="UpdateSiteAddressCommandHandler.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -8,38 +8,30 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
     using System.Threading.Tasks;
     using Commands;
     using Domain;
-    using Domain.WNP.OwnerAggregate;
     using Domain.WNP.SiteAggregate;
     using Repository.WNP;
 
     /// <summary>
-    /// Handles Site creation command.
+    /// Handles <see cref="UpdateSiteAddressCommand"/>.
     /// </summary>
-    public class CreateSiteCommandHandler : CommandHandlerBase, ICommandHandler<CreateSiteCommand>
+    public class UpdateSiteAddressCommandHandler : CommandHandlerBase, ICommandHandler<UpdateSiteAddressCommand>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateSiteCommandHandler" /> class.
+        /// Initializes a new instance of the <see cref="UpdateSiteAddressCommandHandler" /> class.
         /// </summary>
         /// <param name="unitOfWork">The unit of work.</param>
         /// <param name="domainEventBus">The domain event bus.</param>
-        public CreateSiteCommandHandler(IWNPUnitOfWork unitOfWork, IDomainEventBus domainEventBus)
+        public UpdateSiteAddressCommandHandler(IWNPUnitOfWork unitOfWork, IDomainEventBus domainEventBus)
             : base(unitOfWork, domainEventBus)
         {
         }
 
         /// <inheritdoc/>
-        public async Task HandleAsync(CreateSiteCommand command)
+        public async Task HandleAsync(UpdateSiteAddressCommand command)
         {
-            IMemento ownerMemento = await this.UnitOfWork.SitesRepository.GetOwnerWithCollidingSites(command.Owner, command.PremiseNumber, command.Description);
-            Owner owner = new Owner();
-            ((IOriginator)owner).SetMemento(ownerMemento);
-
-            BillingAccount account = null;
-            if (command.BillingAccountName != null
-                || command.BillingAccountNumber != null)
-            {
-                account = new BillingAccount(command.BillingAccountName, command.BillingAccountNumber);
-            }
+            IMemento siteMemento = await this.UnitOfWork.SitesRepository.GetSite(command.Owner, command.SiteId);
+            Site site = new Site();
+            ((IOriginator)site).SetMemento(siteMemento);
 
             PhysicalAddress address = null;
             if (!string.IsNullOrWhiteSpace(command.Address1))
@@ -53,7 +45,7 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
                     .WithZipCode(command.Zip);
             }
 
-            var site = owner.AddSite(account, address, command.Description, command.PremiseNumber);
+            site.UpdateAddress(address);
 
             await this.PublishEvents(site);
         }

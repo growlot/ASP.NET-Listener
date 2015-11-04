@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
             }
             else
             {
-                this.Sites = new List<SiteMemento>();
+                this.Sites = new List<OwnerSiteMemento>();
             }
         }
 

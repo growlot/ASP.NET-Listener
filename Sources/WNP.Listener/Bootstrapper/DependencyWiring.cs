@@ -5,7 +5,6 @@
 namespace AMSLLC.Listener.Bootstrapper
 {
     using System;
-    using System.Web;
     using ApplicationService;
     using ApplicationService.Implementations;
     using Bus;
@@ -23,9 +22,9 @@ namespace AMSLLC.Listener.Bootstrapper
     using ODataService.Services.FilterTransformer;
     using ODataService.Services.Impl;
     using ODataService.Services.Impl.FilterTransformer;
-    using Persistence.DomainEventHandlers;
     using Persistence.Listener;
     using Persistence.WNP;
+    using Persistence.WNP.DomainEventHandlers;
     using Repository;
     using Repository.WNP;
     using Serilog;
@@ -98,7 +97,7 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Repository.WNP bindings
             // -------------------------
-            this.Kernel.Bind<IWNPUnitOfWork>().To<WNPUnitOfWork>().InSingletonScope();
+            this.Kernel.Bind<IWNPUnitOfWork>().To<WNPUnitOfWork>().InRequestScope();
 
             // -------------------------
             // Persistence.Listener bindings
@@ -118,6 +117,14 @@ namespace AMSLLC.Listener.Bootstrapper
                 .InRequestScope();
 
             this.Kernel.Bind<SiteCreatedEventHandler>()
+                .ToSelf()
+                .InRequestScope()
+                .WithConstructorArgument("user", "username");
+            this.Kernel.Bind<SiteAddressUpdatedEventHandler>()
+                .ToSelf()
+                .InRequestScope()
+                .WithConstructorArgument("user", "username");
+            this.Kernel.Bind<SiteBillingAccountUpdatedEventHandler>()
                 .ToSelf()
                 .InRequestScope()
                 .WithConstructorArgument("user", "username");

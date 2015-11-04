@@ -101,7 +101,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             if (existingSite != null)
             {
                 var siteDelta = this.GetRequestEntityDelta<SiteEntity>();
-                return this.UpdateSite(existingSite, siteDelta);
+                return this.UpdateSite(existingSite, siteDelta, key);
             }
             else
             {
@@ -110,7 +110,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
         }
 
-        private async Task<IHttpActionResult> UpdateSite(SiteEntity existingSite, Delta<SiteEntity> siteDelta)
+        private async Task<IHttpActionResult> UpdateSite(SiteEntity existingSite, Delta<SiteEntity> siteDelta, string key)
         {
             List<Task> commandResults = new List<Task>();
 
@@ -120,7 +120,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             if (changedProperties.Contains(nameof(SiteEntity.AccountNo))
                 || changedProperties.Contains(nameof(SiteEntity.AccountName)))
             {
-                var updateSiteBillingAccount = new UpdateSiteBillingAccount()
+                var updateSiteBillingAccount = new UpdateSiteBillingAccountCommand()
                 {
                     Owner = this.Owner,
                     SiteId = existingSite.Site.Value,
@@ -138,7 +138,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 || changedProperties.Contains(nameof(SiteEntity.SiteAddress))
                 || changedProperties.Contains(nameof(SiteEntity.SiteAddress2)))
             {
-                var updateSiteAddress = new UpdateSiteAddress()
+                var updateSiteAddress = new UpdateSiteAddressCommand()
                 {
                     Owner = this.Owner,
                     SiteId = existingSite.Site.Value,
@@ -153,9 +153,29 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 commandResults.Add(this.commandBus.PublishAsync(updateSiteAddress));
             }
 
+            if (changedProperties.Contains(nameof(SiteEntity.InterconnectUtility))
+                || changedProperties.Contains(nameof(SiteEntity.IsInterconnect))
+                || changedProperties.Contains(nameof(SiteEntity.PremiseNo))
+                || changedProperties.Contains(nameof(SiteEntity.SiteDescription)))
+            {
+                var updateSiteDetails = new UpdateSiteDetails()
+                {
+                    Owner = this.Owner,
+                    SiteId = existingSite.Site.Value,
+                    Description = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteDescription), out value) ? (string)value : existingSite.SiteDescription,
+                    PremiseNumber = siteDelta.TryGetPropertyValue(nameof(SiteEntity.PremiseNo), out value) ? (string)value : existingSite.PremiseNo,
+                    IsInterconnect = siteDelta.TryGetPropertyValue(nameof(SiteEntity.IsInterconnect), out value) ? (string)value : existingSite.IsInterconnect,
+                    InterconnectUtilityName = siteDelta.TryGetPropertyValue(nameof(SiteEntity.InterconnectUtility), out value) ? (string)value : existingSite.InterconnectUtility
+                };
+
+                commandResults.Add(this.commandBus.PublishAsync(updateSiteDetails));
+            }
+
             await Task.WhenAll(commandResults);
 
-            return await this.PrepareUpdatedResponse(existingSite);
+            var updateEntity = this.GetExisting(key);
+
+            return await this.PrepareUpdatedResponse(updateEntity);
         }
 
         private async Task<IHttpActionResult> CreateSite(SiteEntity site)
@@ -172,7 +192,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 Owner = this.Owner,
                 PremiseNumber = site.PremiseNo,
                 State = site.SiteState,
-                Zip = site.SiteZipcode
+                Zip = site.SiteZipcode,
+                IsInterconnect = site.IsInterconnect,
+                InterconnectUtilityName = site.InterconnectUtility
             };
 
             await this.commandBus.PublishAsync(createSiteCommand);
