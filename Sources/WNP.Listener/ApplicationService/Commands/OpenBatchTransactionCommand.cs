@@ -4,7 +4,6 @@
 
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using Model;
 

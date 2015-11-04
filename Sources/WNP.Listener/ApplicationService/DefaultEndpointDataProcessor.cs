@@ -10,11 +10,8 @@ namespace AMSLLC.Listener.ApplicationService
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
     using System.Text.RegularExpressions;
     using Domain.Listener.Transaction;
-    using Newtonsoft.Json;
     using Utilities;
 
     /// <summary>

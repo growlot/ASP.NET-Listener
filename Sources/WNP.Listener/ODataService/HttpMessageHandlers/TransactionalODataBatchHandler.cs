@@ -13,7 +13,6 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
     using System.Web.Http;
     using System.Web.OData.Batch;
     using Domain;
-    using Repository.WNP;
 
     /// <summary>
     /// Custom OData batch handler that ensures that changeset is executed in single transaction.

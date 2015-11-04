@@ -9,7 +9,6 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Dynamic;
     using System.Linq;
     using System.Threading.Tasks;
     using Commands;
@@ -17,7 +16,6 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     using Domain;
     using Domain.Listener.Transaction;
     using Model;
-    using Newtonsoft.Json;
     using Repository;
 
     /// <summary>

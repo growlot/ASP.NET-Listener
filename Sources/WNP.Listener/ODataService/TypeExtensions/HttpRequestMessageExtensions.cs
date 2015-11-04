@@ -4,10 +4,7 @@
 
 namespace System.Net.Http
 {
-    using AMSLLC.Listener.Core;
     using AMSLLC.Listener.Domain;
-    using AMSLLC.Listener.Persistence.WNP;
-    using AMSLLC.Listener.Repository.WNP;
 
     /// <summary>
     /// Defines custom extensions for <see cref="HttpRequestMessage"/> type

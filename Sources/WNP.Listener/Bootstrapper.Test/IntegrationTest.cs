@@ -15,14 +15,10 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
-    using ApplicationService;
-    using Bus;
     using Communication;
     using Communication.Jms;
     using Core;
     using Core.Ninject;
-    using Core.Ninject.Test;
-    using Domain;
     using Domain.Listener.Transaction;
     using Microsoft.Owin.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

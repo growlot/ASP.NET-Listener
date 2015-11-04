@@ -6,12 +6,10 @@ namespace AMSLLC.Listener.Bootstrapper.Owin
 {
     using System;
     using System.Web.Http;
-    using System.Web.Http.Dependencies;
 
     using Ninject.Modules;
     using Ninject.Web.Common;
     using Ninject.Web.WebApi;
-    using Ninject.Web.WebApi.OwinHost;
 
     /// <summary>
     /// The OWIN web API module.

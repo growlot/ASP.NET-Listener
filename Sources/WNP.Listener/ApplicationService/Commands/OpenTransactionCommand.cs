@@ -5,8 +5,6 @@
 // //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Opent trasnaction command
     /// </summary>

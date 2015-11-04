@@ -4,7 +4,6 @@
 
 namespace AMSLLC.Listener.ListenerClient.BatchBuilder
 {
-    using System;
     using System.Collections.ObjectModel;
     using System.Threading.Tasks;
     using Repository.WNP;

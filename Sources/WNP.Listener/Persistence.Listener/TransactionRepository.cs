@@ -11,7 +11,6 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System.Collections.ObjectModel;
     using System.Dynamic;
     using System.Linq;
-    using System.Resources;
     using System.Threading.Tasks;
     using Communication;
     using Domain;
