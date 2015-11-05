@@ -4,6 +4,7 @@
 
 namespace System
 {
+    using System.Diagnostics.CodeAnalysis;
     using Collections.Generic;
     using Linq;
     using Reflection;
@@ -19,7 +20,7 @@ namespace System
         /// <param name="type">The type.</param>
         /// <param name="name">The name.</param>
         /// <returns>The generic method.</returns>
-        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this argument can't be null.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this argument can't be null.")]
         public static MethodInfo GetGenericMethod(this Type type, string name)
         {
             var methods = type
@@ -45,7 +46,7 @@ namespace System
         /// <param name="name">The name.</param>
         /// <param name="parameterTypes">The parameter types. Use null for generic types.</param>
         /// <returns>The generic method.</returns>
-        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this argument can't be null.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this argument can't be null.")]
         public static MethodInfo GetGenericMethod(this Type type, string name, Type[] parameterTypes)
         {
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
@@ -57,6 +58,33 @@ namespace System
                 {
                     return method;
                 }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Checks if Type is Nullable.
+        /// </summary>
+        /// <param name="type">Type to check.</param>
+        /// <returns>true if type is Nullable, false otherwise</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this parameter can't be null")]
+        public static bool IsNullable(this Type type)
+        {
+            return !type.IsValueType || Nullable.GetUnderlyingType(type) != null;
+        }
+
+        /// <summary>
+        /// Gets default type value.
+        /// </summary>
+        /// <param name="type">Type to get default value of.</param>
+        /// <returns>Default value of the Type provided.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this parameter can't be null")]
+        public static object GetDefault(this Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
             }
 
             return null;

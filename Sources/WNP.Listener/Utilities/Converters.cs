@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Utilities
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Reflection;
     using Core;
     using Serilog;
 
@@ -77,24 +78,53 @@ namespace AMSLLC.Listener.Utilities
         /// <param name="data">The data.</param>
         /// <param name="targetType">Type of the target.</param>
         /// <returns>The data as target type.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800: Do not cast unnecessarily", Justification = "This is method to Convert, we need those casts.")]
         public static object Convert(object data, Type targetType)
         {
+            object result = null;
+
             if (Conversions.ContainsKey(targetType))
             {
                 return Conversions[targetType](data);
             }
-            else
+
+            // If the type is nullable and the result should be null, set a null value.
+            if (targetType.IsNullable() && (data == null || data == DBNull.Value))
             {
-                try
-                {
-                    return System.Convert.ChangeType(data, targetType, CultureInfo.InvariantCulture);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e, "Invalid cast from {RawDataType} to {TargetType}", data?.GetType(), targetType);
-                    throw;
-                }
+                result = targetType.GetDefault();
+                return result;
             }
+
+            // Convert.ChangeType fails on Nullable<T> types.  We want to try to cast to the underlying type anyway.
+            var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+            try
+            {
+                // Just one edge case we might want to handle.
+                if (underlyingType == typeof(Guid))
+                {
+                    if (data is string)
+                    {
+                        data = new Guid((string)data);
+                    }
+
+                    if (data is byte[])
+                    {
+                        data = new Guid((byte[])data);
+                    }
+
+                    result = System.Convert.ChangeType(data, underlyingType, CultureInfo.InvariantCulture);
+                }
+
+                result = System.Convert.ChangeType(data, underlyingType, CultureInfo.InvariantCulture);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Invalid cast from {RawDataType} to {TargetType}", data?.GetType(), targetType);
+                throw;
+            }
+
+            return result;
         }
 
         /// <summary>
