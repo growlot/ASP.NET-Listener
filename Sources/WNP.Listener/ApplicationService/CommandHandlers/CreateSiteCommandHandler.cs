@@ -53,7 +53,9 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
                     .WithZipCode(command.Zip);
             }
 
-            var site = owner.AddSite(account, address, command.Description, command.PremiseNumber);
+            var interconnectInfo = new InterconnectSite(command.IsInterconnect, command.InterconnectUtilityName);
+
+            var site = owner.AddSite(account, address, command.Description, command.PremiseNumber, interconnectInfo);
 
             await this.PublishEvents(site);
         }

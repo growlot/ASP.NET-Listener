@@ -101,7 +101,7 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// <value>
         /// The is interconnect.
         /// </value>
-        public string IsInterconnect { get; set; }
+        public bool IsInterconnect { get; set; }
 
         /// <summary>
         /// Gets or sets the interconnect utility name.

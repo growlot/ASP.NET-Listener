@@ -23,10 +23,11 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
         /// <param name="address">The address.</param>
         /// <param name="description">The description.</param>
         /// <param name="premiseNumber">The premise number.</param>
+        /// <param name="interconnectInfo">The interconnect information.</param>
         /// <returns>
         /// The new site.
         /// </returns>
-        public Site AddSite(BillingAccount account, PhysicalAddress address, string description, string premiseNumber)
+        public Site AddSite(BillingAccount account, PhysicalAddress address, string description, string premiseNumber, InterconnectSite interconnectInfo)
         {
             if (description == null)
             {
@@ -50,7 +51,8 @@ namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
                 .BilledTo(account)
                 .LocatedAt(address)
                 .WithDescription(description)
-                .WithPremiseNumber(premiseNumber);
+                .WithPremiseNumber(premiseNumber)
+                .ConnectedToUtility(interconnectInfo);
 
             return siteBuilder;
         }

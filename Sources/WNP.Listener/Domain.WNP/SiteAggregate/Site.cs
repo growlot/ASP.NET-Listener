@@ -40,6 +40,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// </summary>
         private BillingAccount account;
 
+        private InterconnectSite interconnectInfo;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Site"/> class.
         /// </summary>
@@ -55,12 +57,20 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <param name="premiseNumber">The premise number.</param>
         /// <param name="address">The address.</param>
         /// <param name="account">The account.</param>
-        private Site(int owner, string description, string premiseNumber, PhysicalAddress address, BillingAccount account)
+        /// <param name="interconnectInfo">The site interconnect information.</param>
+        private Site(
+            int owner,
+            string description,
+            string premiseNumber,
+            PhysicalAddress address,
+            BillingAccount account,
+            InterconnectSite interconnectInfo)
         {
             this.description = description;
             this.premiseNumber = premiseNumber;
             this.account = account;
             this.address = address;
+            this.interconnectInfo = interconnectInfo;
 
             this.Events.Add(
                 new SiteCreatedEvent(
@@ -74,7 +84,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
                     zip: this.address?.Zip,
                     premiseNumber: this.premiseNumber,
                     billingAccountName: this.account?.Name,
-                    billingAccountNumber: this.account?.Number));
+                    billingAccountNumber: this.account?.Number,
+                    isInterconnect: this.interconnectInfo.IsInterconnect,
+                    interconnectUtilityName: this.interconnectInfo.Name));
         }
 
         /// <summary>
@@ -85,12 +97,19 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <param name="premiseNumber">The premise number.</param>
         /// <param name="address">The address.</param>
         /// <param name="account">The account.</param>
+        /// <param name="interconnectInfo">The site interconnect information.</param>
         /// <returns>
         /// The new site.
         /// </returns>
-        public static Site CreateSite(int owner, string description, string premiseNumber, PhysicalAddress address, BillingAccount account)
+        public static Site CreateSite(
+            int owner,
+            string description,
+            string premiseNumber,
+            PhysicalAddress address,
+            BillingAccount account,
+            InterconnectSite interconnectInfo)
         {
-            return new Site(owner, description, premiseNumber, address, account);
+            return new Site(owner, description, premiseNumber, address, account, interconnectInfo);
         }
 
         /// <summary>
@@ -162,6 +181,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             this.Id = siteMemento.Id;
             this.description = siteMemento.Description;
             this.premiseNumber = siteMemento.PremiseNumber;
+            this.interconnectInfo = new InterconnectSite(siteMemento.IsInterconnect, siteMemento.InterconnectUtilityName);
             if (!string.IsNullOrWhiteSpace(siteMemento.Address1))
             {
                 this.address = new PhysicalAddressBuilder()

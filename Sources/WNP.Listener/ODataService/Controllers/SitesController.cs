@@ -193,7 +193,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 PremiseNumber = site.PremiseNo,
                 State = site.SiteState,
                 Zip = site.SiteZipcode,
-                IsInterconnect = site.IsInterconnect,
+                IsInterconnect = site.IsInterconnect == "Y" ? true : false,
                 InterconnectUtilityName = site.InterconnectUtility
             };
 

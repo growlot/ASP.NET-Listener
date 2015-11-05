@@ -47,6 +47,8 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             };
 
             var columnList = new List<string>();
+            columnList.Add(DBMetadata.Site.ModBy);
+            columnList.Add(DBMetadata.Site.ModDate);
             columnList.Add(DBMetadata.Site.SiteAddress);
             columnList.Add(DBMetadata.Site.SiteAddress2);
             columnList.Add(DBMetadata.Site.SiteCountry);

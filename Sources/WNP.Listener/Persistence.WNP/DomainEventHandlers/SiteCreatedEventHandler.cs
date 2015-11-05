@@ -44,7 +44,9 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
                 SiteCountry = domainEvent.Country,
                 SiteDescription = domainEvent.Description,
                 SiteState = domainEvent.State,
-                SiteZipcode = domainEvent.Zip
+                SiteZipcode = domainEvent.Zip,
+                InterconnectUtility = domainEvent.InterconnectUtilityName,
+                IsInterconnect = domainEvent.IsInterconnect ? "Y" : "N"
             };
 
             return this.InsertAsync(site);

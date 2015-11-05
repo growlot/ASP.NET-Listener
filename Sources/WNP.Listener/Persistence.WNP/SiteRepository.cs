@@ -103,7 +103,9 @@ namespace AMSLLC.Listener.Persistence.WNP
                 zip: siteEntity.SiteZipcode,
                 premiseNumber: siteEntity.PremiseNo,
                 billingAccountName: siteEntity.AccountName,
-                billingAccountNumber: siteEntity.AccountNo);
+                billingAccountNumber: siteEntity.AccountNo,
+                interconnectUtilityName: siteEntity.InterconnectUtility,
+                isInterconnect: siteEntity.IsInterconnect == "Y" ? true : false);
 
             return Task.FromResult((IMemento)siteMemento);
         }

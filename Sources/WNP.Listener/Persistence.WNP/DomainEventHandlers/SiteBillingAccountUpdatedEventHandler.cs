@@ -43,6 +43,8 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             };
 
             var columnList = new List<string>();
+            columnList.Add(DBMetadata.Site.ModBy);
+            columnList.Add(DBMetadata.Site.ModDate);
             columnList.Add(DBMetadata.Site.AccountName);
             columnList.Add(DBMetadata.Site.AccountNo);
 

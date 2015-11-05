@@ -25,6 +25,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <param name="premiseNumber">The premise number.</param>
         /// <param name="billingAccountName">Name of the billing account.</param>
         /// <param name="billingAccountNumber">The billing account number.</param>
+        /// <param name="isInterconnect">Is this site interconnect site with other utility.</param>
+        /// <param name="interconnectUtilityName">Name of the interconnect utility.</param>
         public SiteMemento(
             int owner,
             int site,
@@ -37,7 +39,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             string zip,
             string premiseNumber,
             string billingAccountName,
-            string billingAccountNumber)
+            string billingAccountNumber,
+            bool isInterconnect,
+            string interconnectUtilityName)
         {
             this.Owner = owner;
             this.Id = site;
@@ -51,6 +55,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             this.PremiseNumber = premiseNumber;
             this.BillingAccountName = billingAccountName;
             this.BillingAccountNumber = billingAccountNumber;
+            this.IsInterconnect = isInterconnect;
+            this.InterconnectUtilityName = interconnectUtilityName;
         }
 
         /// <summary>
@@ -145,5 +151,21 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// The billing account number.
         /// </value>
         internal string BillingAccountNumber { get; private set; }
+
+        /// <summary>
+        /// Gets the is interconnect.
+        /// </summary>
+        /// <value>
+        /// The is interconnect.
+        /// </value>
+        internal bool IsInterconnect { get; private set; }
+
+        /// <summary>
+        /// Gets the interconnect utility name.
+        /// </summary>
+        /// <value>
+        /// The interconnect utility name.
+        /// </value>
+        internal string InterconnectUtilityName { get; private set; }
     }
 }

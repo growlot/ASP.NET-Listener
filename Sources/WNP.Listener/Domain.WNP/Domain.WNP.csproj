@@ -69,6 +69,8 @@
     <Compile Include="OwnerAggregate\Owner.cs" />
     <Compile Include="OwnerAggregate\OwnerMemento.cs" />
     <Compile Include="OwnerAggregate\OwnerSite.cs" />
+    <Compile Include="SiteAggregate\InterconnectSite.cs" />
+    <Compile Include="SiteAggregate\GeoLocation.cs" />
     <Compile Include="SiteAggregate\SiteCreatedEvent.cs" />
     <Compile Include="OwnerAggregate\OwnerSiteMemento.cs" />
     <Compile Include="SiteAggregate\BillingAccount.cs" />

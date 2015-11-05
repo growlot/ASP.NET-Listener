@@ -15,6 +15,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         private string premiseNumber;
         private BillingAccount account;
         private PhysicalAddress address;
+        private InterconnectSite interconnectInfo;
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="SiteBuilder"/> to <see cref="Site"/>.
@@ -44,7 +45,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
                     siteBuilder.description,
                     siteBuilder.premiseNumber,
                     siteBuilder.address,
-                    siteBuilder.account);
+                    siteBuilder.account,
+                    siteBuilder.interconnectInfo);
             }
 
             return null;
@@ -56,6 +58,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <returns>The site builder object.</returns>
         public SiteBuilder CreateSite()
         {
+            this.interconnectInfo = new InterconnectSite();
             return this;
         }
 
@@ -111,6 +114,19 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         public SiteBuilder OwnedBy(int siteOwner)
         {
             this.owner = siteOwner;
+            return this;
+        }
+
+        /// <summary>
+        /// Connecteds to utility.
+        /// </summary>
+        /// <param name="siteInterconnectInfo">The site interconnect information.</param>
+        /// <returns>
+        /// The site builder object
+        /// </returns>
+        public SiteBuilder ConnectedToUtility(InterconnectSite siteInterconnectInfo)
+        {
+            this.interconnectInfo = siteInterconnectInfo;
             return this;
         }
     }
