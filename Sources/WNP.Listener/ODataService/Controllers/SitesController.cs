@@ -6,6 +6,7 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
@@ -84,7 +85,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// Updates existing Site or creates new one if it didn't exist.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <param name="site">The site delta.</param>
         /// <returns>
         /// The updated Site.
         /// </returns>
@@ -158,17 +158,18 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 || changedProperties.Contains(nameof(SiteEntity.PremiseNo))
                 || changedProperties.Contains(nameof(SiteEntity.SiteDescription)))
             {
-                var updateSiteDetails = new UpdateSiteDetails()
-                {
-                    Owner = this.Owner,
-                    SiteId = existingSite.Site.Value,
-                    Description = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteDescription), out value) ? (string)value : existingSite.SiteDescription,
-                    PremiseNumber = siteDelta.TryGetPropertyValue(nameof(SiteEntity.PremiseNo), out value) ? (string)value : existingSite.PremiseNo,
-                    IsInterconnect = siteDelta.TryGetPropertyValue(nameof(SiteEntity.IsInterconnect), out value) ? (string)value : existingSite.IsInterconnect,
-                    InterconnectUtilityName = siteDelta.TryGetPropertyValue(nameof(SiteEntity.InterconnectUtility), out value) ? (string)value : existingSite.InterconnectUtility
-                };
+                throw new NotImplementedException("Update of the properties InterconnectUtility, IsInterconnect, PremisNo, SiteDescription is not yet implemented");
+                ////var updateSiteDetails = new UpdateSiteDetails()
+                ////{
+                ////    Owner = this.Owner,
+                ////    SiteId = existingSite.Site.Value,
+                ////    Description = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteDescription), out value) ? (string)value : existingSite.SiteDescription,
+                ////    PremiseNumber = siteDelta.TryGetPropertyValue(nameof(SiteEntity.PremiseNo), out value) ? (string)value : existingSite.PremiseNo,
+                ////    IsInterconnect = siteDelta.TryGetPropertyValue(nameof(SiteEntity.IsInterconnect), out value) ? (string)value : existingSite.IsInterconnect,
+                ////    InterconnectUtilityName = siteDelta.TryGetPropertyValue(nameof(SiteEntity.InterconnectUtility), out value) ? (string)value : existingSite.InterconnectUtility
+                ////};
 
-                commandResults.Add(this.commandBus.PublishAsync(updateSiteDetails));
+                ////commandResults.Add(this.commandBus.PublishAsync(updateSiteDetails));
             }
 
             await Task.WhenAll(commandResults);
