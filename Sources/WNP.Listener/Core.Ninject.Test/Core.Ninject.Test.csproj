@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="NinjectTestDependencyInjectionAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestDependencyInjectionAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\FxCopRuleSets\stylecop.json">

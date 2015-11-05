@@ -92,6 +92,10 @@
       <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
       <Name>Communication</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core.Ninject.Test\Core.Ninject.Test.csproj">
+      <Project>{253C8DC2-7E79-4E86-A799-E4909D9FE25E}</Project>
+      <Name>Core.Ninject.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core.Ninject\Core.Ninject.csproj">
       <Project>{D9DC3880-1557-45FE-828E-120D9670C50A}</Project>
       <Name>Core.Ninject</Name>

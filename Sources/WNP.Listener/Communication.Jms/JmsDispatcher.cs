@@ -63,7 +63,7 @@ namespace AMSLLC.Listener.Communication.Jms
         /// <param name="protocolConfiguration">The protocol configuration.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentException">eventData must be of type {0}.FormatWith(typeof(TransactionDataReady).FullName)</exception>
-        public Task Handle(object requestData, IConnectionConfiguration connectionConfiguration, IProtocolConfiguration protocolConfiguration)
+        public async Task Handle(object requestData, IConnectionConfiguration connectionConfiguration, IProtocolConfiguration protocolConfiguration)
         {
             var request = requestData as TransactionDataReady;
             var cfg = connectionConfiguration as JmsConnectionConfiguration;
@@ -80,24 +80,9 @@ namespace AMSLLC.Listener.Communication.Jms
                 throw new ArgumentException("{0} must be of type {1}".FormatWith(nameof(connectionConfiguration), typeof(JmsConnectionConfiguration).FullName));
             }
 
-            return this.transactionDataRepository.SaveDataAsync(request.RecordKey, request.Data).ContinueWith((t) =>
-            {
-                if (t.IsCompleted)
-                {
-                    this.PutMessage(cfg, request, jmsAdapterConfiguration);
-                }
-                else
-                {
-                    if (t.Exception != null)
-                    {
-                        Log.Error(t.Exception.Flatten(), "Failed to persist transaction data");
-                    }
-                    else
-                    {
-                        Log.Error(t.IsCanceled ? "Canceled transaction data persistance" : "Failed to persist transaction data due to unknown reasons");
-                    }
-                }
-            });
+            await this.transactionDataRepository.SaveDataAsync(request.RecordKey, request.Data);
+
+            this.PutMessage(cfg, request, jmsAdapterConfiguration);
         }
 
         /// <summary>

@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using Communication;
@@ -111,7 +112,23 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             foreach (KeyValuePair<int, List<IDomainEvent>> keyValuePair in ordered.Skip(1).ToList())
             {
                 task = task.ContinueWith(
-                    t => t.IsCompleted ? this.domainEventBus.PublishBulk(keyValuePair.Value) : t);
+                    t =>
+                    {
+                        if (t.IsFaulted)
+                        {
+                            t.Exception.Handle(
+                                ex =>
+                                {
+                                    Debug.WriteLine(t.Exception.Flatten());
+                                    return false;
+                                });
+                            throw t.Exception;
+                        }
+                        else
+                        {
+                            return this.domainEventBus.PublishBulk(keyValuePair.Value);
+                        }
+                    });
             }
 
             return task;
