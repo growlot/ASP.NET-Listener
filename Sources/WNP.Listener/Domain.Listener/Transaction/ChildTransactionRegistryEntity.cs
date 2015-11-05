@@ -74,6 +74,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Details { get; set; }
 
         /// <summary>
+        /// Gets or sets the priority.
+        /// </summary>
+        /// <value>The priority.</value>
+        public int? Priority { get; set; }
+
+        /// <summary>
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
@@ -91,6 +97,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.UpdatedDateTime = myMemento.UpdatedDateTime;
             this.Message = myMemento.Message;
             this.Details = myMemento.Details;
+            this.Priority = myMemento.Priority;
         }
     }
 }

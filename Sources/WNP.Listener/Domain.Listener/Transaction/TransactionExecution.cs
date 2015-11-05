@@ -98,8 +98,23 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <returns>System.Threading.Tasks.Task.</returns>
         public virtual Task Process()
         {
-            var endpointExecutionData = this.ChildTransactions.Any() ? this.ProcessBatch() : ProcessTransaction(this, this.hashBuilder);
-            return this.domainEventBus.PublishBulk(endpointExecutionData);
+            var endpointExecutionData = this.ChildTransactions.Any()
+                ? this.ProcessBatch()
+                : new Dictionary<int, List<IDomainEvent>>()
+                {
+                    {
+                        0, ProcessTransaction(this, this.hashBuilder)
+                    }
+                };
+            var ordered = endpointExecutionData.OrderBy(s => s.Key).ToList();
+            var task = this.domainEventBus.PublishBulk(ordered.First().Value);
+            foreach (KeyValuePair<int, List<IDomainEvent>> keyValuePair in ordered.Skip(1).ToList())
+            {
+                task = task.ContinueWith(
+                    t => t.IsCompleted ? this.domainEventBus.PublishBulk(keyValuePair.Value) : t);
+            }
+
+            return task;
         }
 
         /// <summary>
@@ -134,7 +149,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             }
         }
 
-        private static ICollection<IDomainEvent> ProcessTransaction(ITransactionExecutionData transactionExecutionData, ITransactionHashBuilder hashBuilder)
+        private static List<IDomainEvent> ProcessTransaction(ITransactionExecutionData transactionExecutionData, ITransactionHashBuilder hashBuilder)
         {
             var returnValue = new List<IDomainEvent>();
             var processor = ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
@@ -179,12 +194,14 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             return returnValue;
         }
 
-        private ICollection<IDomainEvent> ProcessBatch()
+        private Dictionary<int, List<IDomainEvent>> ProcessBatch()
         {
-            var returnValue = new List<IDomainEvent>();
+            var returnValue = new Dictionary<int, List<IDomainEvent>>();
 
             if (this.DuplicateTransactions.Any())
             {
+                var block = new List<IDomainEvent>();
+                returnValue[0] = block;
                 var canceled = new TransactionsCanceled();
                 foreach (var source in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
                 {
@@ -193,22 +210,24 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
                 if (canceled.RecordKeys.Any())
                 {
-                    returnValue.Add(canceled);
+                    block.Add(canceled);
                 }
 
-                returnValue.Add(new TransactionSkipped(this.RecordKey));
+                block.Add(new TransactionSkipped(this.RecordKey));
             }
             else
             {
-                // if (this.Status == TransactionStatusType.Pending)
-                // {
-                //     this.Status = TransactionStatusType.Processing;
-                // }
                 foreach (
                     var childTransactionEntity in
                         this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
                 {
-                    returnValue.AddRange(ProcessTransaction(childTransactionEntity, this.hashBuilder));
+                    var priority = childTransactionEntity.Priority ?? 0;
+                    if (!returnValue.ContainsKey(priority))
+                    {
+                        returnValue[priority] = new List<IDomainEvent>();
+                    }
+
+                    returnValue[priority].AddRange(ProcessTransaction(childTransactionEntity, this.hashBuilder));
                 }
             }
 

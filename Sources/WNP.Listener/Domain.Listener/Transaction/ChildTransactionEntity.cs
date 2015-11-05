@@ -70,6 +70,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public TransactionStatusType Status { get; set; }
 
         /// <summary>
+        /// Gets or sets the priority.
+        /// </summary>
+        /// <value>The priority.</value>
+        public int? Priority { get; private set; }
+
+        /// <summary>
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
@@ -81,6 +87,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.EntityCategoryOperationId = myMemento.EntityCategoryOperationId;
             this.Data = myMemento.Data;
             this.Status = myMemento.Status;
+            this.Priority = myMemento.Priority;
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(s =>
             {

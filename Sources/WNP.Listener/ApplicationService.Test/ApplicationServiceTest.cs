@@ -134,7 +134,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 Guid.Parse(recordKey),
                 1,
                 new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Always) },
-                fieldConfigurations, null, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(testMessageData)), new List<Guid>(), TransactionStatusType.Pending);
+                fieldConfigurations, null, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(testMessageData)), new List<Guid>(), TransactionStatusType.Pending, null);
 
             transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(Guid.Parse(recordKey)))
                 .Returns(

@@ -258,7 +258,7 @@ WHERE ECO.EntityCategoryOperationId IN (@operations)";
                                             ctr.IncomingHash,
                                             StringComparison.InvariantCulture) == 0 &&
                                         (Guid)d.RecordKey != ctr.RecordKey).Select(s => (Guid)s.RecordKey),
-                                (TransactionStatusType)ctr.TransactionStatusId)),
+                                (TransactionStatusType)ctr.TransactionStatusId, ctr.Priority)),
                     string.IsNullOrWhiteSpace(tr.Data) ? null : JsonConvert.DeserializeObject<ExpandoObject>(tr.Data),
                     duplicates.Where(
                         d =>
@@ -267,7 +267,7 @@ WHERE ECO.EntityCategoryOperationId IN (@operations)";
                                 tr.IncomingHash,
                                 StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.RecordKey)
                         .Select(s => (Guid)s.RecordKey),
-                    (TransactionStatusType)tr.TransactionStatusId);
+                    (TransactionStatusType)tr.TransactionStatusId, tr.Priority);
             }
 
             return returnValue;
@@ -298,6 +298,7 @@ WHERE ECO.EntityCategoryOperationId IN (@operations)";
                                 EntityCategoryOperationId = childTransactionRegistryEntity.EntityCategoryOperationId,
                                 Data = childTransactionRegistryEntity.Data,
                                 AppUser = transactionRegistry.UserName,
+                                Priority = childTransactionRegistryEntity.Priority,
                                 IncomingHash = childTransactionRegistryEntity.IncomingHash,
                                 Summary =
                                     SerializationUtilities.DictionaryToXml(childTransactionRegistryEntity.Summary)
@@ -530,7 +531,8 @@ WHERE TR.RecordKey = @0";
                             TransactionStatusId = (int)childTransactionRegistryEntity.Status,
                             UpdatedDateTime = childTransactionRegistryEntity.UpdatedDateTime,
                             Message = childTransactionRegistryEntity.Message,
-                            Details = childTransactionRegistryEntity.Details
+                            Details = childTransactionRegistryEntity.Details,
+                            Priority = childTransactionRegistryEntity.Priority
                         };
 
                         await this.persistence.UpdateAsync(
