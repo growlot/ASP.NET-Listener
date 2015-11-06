@@ -156,7 +156,7 @@
                     !info.IsOptional &&
                     info.CustomAttributes.All(data => data.AttributeType != typeof(BoundEntityKeyAttribute)));
 
-        private IHttpActionResult CreateSimpleOkResponse(Type dataType, object result)
+        protected IHttpActionResult CreateSimpleOkResponse(Type dataType, object result)
             => (IHttpActionResult)this.GetSimpleOkMethod(dataType).Invoke(this, new[] { result });
 
         private MethodInfo GetSimpleOkMethod(Type dataType)

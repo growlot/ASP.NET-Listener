@@ -2,8 +2,6 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-using AMSLLC.Listener.MetadataService.Attributes;
-
 namespace AMSLLC.Listener.ODataService.Services.Impl
 {
     using System;
@@ -11,6 +9,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
     using System.Linq;
     using System.Reflection;
     using System.Web.OData.Builder;
+    using AMSLLC.Listener.MetadataService.Attributes;
     using MetadataService;
     using Microsoft.OData.Edm;
     using Ninject.Infrastructure.Language;

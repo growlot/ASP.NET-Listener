@@ -187,6 +187,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="Controllers\ElectricMetersController.cs" />
+    <Compile Include="Controllers\MeterTestResultsController.cs" />
     <Compile Include="Controllers\SitesController.cs" />
     <Compile Include="Controllers\TransactionMessageDataController.cs" />
     <Compile Include="Controllers\TransactionRegistryController.cs" />

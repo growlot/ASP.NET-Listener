@@ -25,6 +25,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Newtonsoft.Json;
     using Persistence.WNP;
     using Repository.WNP;
+    using Services;
     using Services.FilterTransformer;
     using Utilities;
 
@@ -46,7 +47,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             {
                 AllowedQueryOptions =
                     AllowedQueryOptions.Select | AllowedQueryOptions.Filter | AllowedQueryOptions.Top |
-                    AllowedQueryOptions.Skip,
+                    AllowedQueryOptions.Skip | AllowedQueryOptions.Expand,
             };
         }
 
@@ -106,6 +107,74 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             }
 
             return this.CreateOkResponseList(result);
+        }
+
+        /// <summary>
+        /// Generic handler for single result query.
+        /// </summary>
+        /// <returns><see cref="IHttpActionResult"/></returns>
+        public IHttpActionResult GetSingle()
+        {
+            // constructing oData options since we can not use generic return type
+            // without first generating Controller dynamically
+            var queryOptions = this.ConstructQueryOptions();
+            queryOptions.Validate(this.defaultODataValidationSettings);
+
+            var oDataModelType = queryOptions.Context.ElementClrType;
+            var modelMapping = metadataService.GetModelMapping(oDataModelType);
+
+            var entityConfig = modelMapping.EntityConfiguration;
+            var hasCompositeKey = entityConfig.Key?.Count() > 1;
+            var hasRequiredRelations = entityConfig.RequiredRelations;
+
+            var jsonKey = queryOptions.Context.Path.Segments[1] as KeyValuePathSegment;
+            if (jsonKey == null)
+            {
+                return this.BadRequest("Invalid key specified");
+            }
+
+            var key = new Dictionary<string, object>();
+            if (hasCompositeKey)
+            {
+                key = jsonKey.ToCompositeKeyDictionary();
+            }
+            else
+            {
+                key.Add(entityConfig.Key.ToArray()[0], JsonConvert.DeserializeObject(jsonKey.Value));
+            }
+
+            var orderedKey = key.ToArray();
+
+            var sql =
+                Sql.Builder.Select(this.GetDBColumnsList(queryOptions.SelectExpand, modelMapping.ModelToColumnMappings))
+                    .From($"{modelMapping.TableName}")
+                    .Where(
+                        orderedKey.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
+                            .Aggregate((s, s1) => $"{s} AND {s1}"),
+                        orderedKey.Select(kvp => kvp.Value).ToArray());
+
+            var dbResults = this.dbContext.Fetch<dynamic>(sql);
+
+            if (dbResults.Count > 1)
+            {
+                return this.BadRequest("Request returned more than 1 record.");
+            }
+
+            if (dbResults.Count == 0)
+            {
+                return this.NotFound();
+            }
+
+            var entityInstance = this.CreateResult(oDataModelType);
+
+            var rawData = (IDictionary<string, object>)dbResults[0];
+            foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
+            {
+                var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[kk.ToUpperInvariant()]);
+                property.SetValue(entityInstance, Converters.Convert(rawData[kk], property.PropertyType));
+            }
+
+            return this.CreateSimpleOkResponse(oDataModelType, entityInstance);
         }
 
         public async Task<IHttpActionResult> EntityActionHandler()

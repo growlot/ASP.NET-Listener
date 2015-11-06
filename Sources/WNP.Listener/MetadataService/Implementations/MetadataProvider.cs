@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
     using Utilities;
 
     /// <summary>
-    /// Implmeents <see cref="IMetadataProvider"/>
+    /// Implements <see cref="IMetadataProvider"/>
     /// </summary>
     public class MetadataProvider : IMetadataProvider
     {
@@ -27,16 +27,19 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
         private readonly WNPDBContext dbContext;
         private readonly IActionConfigurator actionConfigurator;
+        private readonly IEntityConfigurator entityConfigurator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetadataProvider"/> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
-        public MetadataProvider(WNPDBContext dbContext, IActionConfigurator actionConfigurator)
+        /// <param name="entityConfigurator">The entity configurator.</param>
+        public MetadataProvider(WNPDBContext dbContext, IActionConfigurator actionConfigurator, IEntityConfigurator entityConfigurator)
         {
             this.dbContext = dbContext;
             this.actionConfigurator = actionConfigurator;
+            this.entityConfigurator = entityConfigurator;
 
             if (oDataModelMappings == null)
             {
@@ -150,14 +153,31 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     columnToModelMappings.Add(column.ColumnName, customerLabel);
                 }
 
-                Type actionsContainer = null;
-                if (this.actionConfigurator.IsEntityActionsContainerAvailable(StringUtilities.Invariant($"wndba.{tableName}").ToUpperInvariant()))
-                {
-                     actionsContainer = this.actionConfigurator.GetEntityActionContainer(StringUtilities.Invariant($"wndba.{tableName}").ToUpperInvariant());
-                }
+                var fqTableName = StringUtilities.Invariant($"wndba.{tableName}").ToUpperInvariant();
 
-                var oDataModelMapping = new MetadataEntityModel(StringUtilities.Invariant($"wndba.{tableName}").ToUpperInvariant(), modelClassName, modelToColumnMappings, columnToModelMappings, fieldsInfo, actionsContainer);
-                oDataModelMappings.Add(StringUtilities.Invariant($"{this.ODataModelNamespace}.{modelClassName}"), oDataModelMapping);
+                var actionsContainer =
+                    this.actionConfigurator.GetEntityActionContainer(
+                        fqTableName);
+
+                Func<KeyValuePair<string, MetadataFieldInfo>, bool> predicate =
+                    fi => fi.Value.IsPrimaryKey && modelToColumnMappings[fi.Key].ToUpperInvariant() != "OWNER";
+
+                var entityConfiguration = this.entityConfigurator.GetEntityConfiguration(fqTableName)
+                                          ??
+                                          EntityConfiguration.CreateDefault(fqTableName, fieldsInfo.Where(predicate).Select(fi => fi.Key).ToArray());
+
+                var oDataModelMapping = new MetadataEntityModel(
+                    fqTableName,
+                    modelClassName,
+                    modelToColumnMappings,
+                    columnToModelMappings,
+                    fieldsInfo,
+                    actionsContainer,
+                    entityConfiguration);
+
+                oDataModelMappings.Add(
+                    StringUtilities.Invariant($"{this.ODataModelNamespace}.{modelClassName}"),
+                    oDataModelMapping);
             }
         }
 
@@ -167,6 +187,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
             var codeUnit = new CodeCompileUnit();
 
             var codeNamespace = new CodeNamespace(this.ODataModelNamespace);
+
             codeNamespace.Imports.Add(new CodeNamespaceImport("System"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.Linq"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
@@ -185,6 +206,8 @@ namespace AMSLLC.Listener.MetadataService.Implementations
             {
                 // if there is a redefine in Metadata, use CustomerLabel inst
                 var modelClassName = table.ClassName;
+
+                var entityConfig = table.EntityConfiguration;
 
                 var codeClass = new CodeTypeDeclaration(modelClassName)
                 {
@@ -217,10 +240,36 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 setFromEntityMethod.ReturnType = new CodeTypeReference(typeof(void));
                 setFromEntityMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(entityName), "entity"));
 
+                foreach (var requiredRelation in entityConfig.RequiredRelations)
+                {
+                    var targetEntity =
+                        oDataModelMappings.Values.FirstOrDefault(
+                            model => model.TableName == requiredRelation.TargetTableName);
+
+                    if (targetEntity == null)
+                    {
+                        throw new ArgumentException(
+                            StringUtilities.Invariant($"Target class for required relation {requiredRelation.TargetTableName} not found"));
+                    }
+
+                    var property = new CodeSnippetTypeMember
+                    {
+                        Text = StringUtilities.Invariant($"public {targetEntity.ClassName} {targetEntity.ClassName} {{get; set;}}")
+                    };
+
+                    codeClass.Members.Add(property);
+                }
+
                 foreach (var field in table.FieldInfo)
                 {
                     var property = new CodeSnippetTypeMember();
-                    if (field.Value.IsPrimaryKey)
+
+                    // we don't want to expose Owner as OData key, so if this is part of
+                    // composite key we should handle this inside the controller
+                    var originalColumnName = table.ModelToColumnMappings[field.Key];
+                    var isOwnerColumn = originalColumnName.ToUpperInvariant().Equals("OWNER");
+
+                    if (field.Value.IsPrimaryKey && !isOwnerColumn)
                     {
                         property.Text = "[Key]";
                     }

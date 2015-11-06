@@ -57,10 +57,6 @@ namespace AMSLLC.Listener.MetadataService.Implementations
         }
 
         /// <inheritdoc/>
-        public bool IsEntityActionsContainerAvailable(string tableName) =>
-            this.boundActionContainers.ContainsKey(tableName);
-
-        /// <inheritdoc/>
         public Type GetUnboundActionContainer(string containerName)
         {
             if (this.unboundActionContainers.ContainsKey(containerName))
@@ -68,7 +64,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 return this.unboundActionContainers[containerName];
             }
 
-            throw new ArgumentException("Invalid container name");
+            return null;
         }
 
         /// <inheritdoc/>
@@ -79,7 +75,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 return this.boundActionContainers[tableName];
             }
 
-            throw new ArgumentException("Invalid table name");
+            return null;
         }
     }
 }

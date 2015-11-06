@@ -21,7 +21,8 @@ namespace AMSLLC.Listener.MetadataService
         /// <param name="columnToModelMappings">The column to model mappings.</param>
         /// <param name="fieldInfo">The field information.</param>
         /// <param name="actionsContainer">The actions container.</param>
-        public MetadataEntityModel(string tableName, string className, Dictionary<string, string> modelToColumnMappings, Dictionary<string, string> columnToModelMappings, Dictionary<string, MetadataFieldInfo> fieldInfo, Type actionsContainer)
+        /// <param name="entityConfiguration">The entity configuration.</param>
+        public MetadataEntityModel(string tableName, string className, Dictionary<string, string> modelToColumnMappings, Dictionary<string, string> columnToModelMappings, Dictionary<string, MetadataFieldInfo> fieldInfo, Type actionsContainer, EntityConfiguration entityConfiguration)
         {
             this.TableName = tableName;
             this.ClassName = className;
@@ -29,6 +30,7 @@ namespace AMSLLC.Listener.MetadataService
             this.ColumnToModelMappings = columnToModelMappings;
             this.FieldInfo = fieldInfo;
             this.ActionsContainer = actionsContainer;
+            this.EntityConfiguration = entityConfiguration;
         }
 
         /// <summary>
@@ -78,5 +80,10 @@ namespace AMSLLC.Listener.MetadataService
         /// The actions container.
         /// </value>
         public Type ActionsContainer { get; }
+
+        /// <summary>
+        /// Gets custom entity configuration that defines relationship and other information about the entity.
+        /// </summary>
+        public EntityConfiguration EntityConfiguration { get; }
     }
 }

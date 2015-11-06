@@ -12,13 +12,6 @@ namespace AMSLLC.Listener.MetadataService
     public interface IActionConfigurator
     {
         /// <summary>
-        /// Determines whether there is any actions defined for specified table.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <returns>True if there are actions defined for the table, false otherwise.</returns>
-        bool IsEntityActionsContainerAvailable(string tableName);
-
-        /// <summary>
         /// Gets the action container bound to specific entity or collection.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>

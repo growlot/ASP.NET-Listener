@@ -68,6 +68,7 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             this.Kernel.Bind<IMetadataProvider>().To<MetadataProvider>().InTransientScope();
             this.Kernel.Bind<IActionConfigurator>().To<ActionConfigurator>().InSingletonScope();
+            this.Kernel.Bind<IEntityConfigurator>().To<EntityConfigurator>().InSingletonScope();
 
             try
             {
