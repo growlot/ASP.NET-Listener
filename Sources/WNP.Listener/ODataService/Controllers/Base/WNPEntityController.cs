@@ -33,7 +33,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     {
         private readonly ODataValidationSettings defaultODataValidationSettings;
 
-
         protected WNPEntityController(
             IMetadataProvider metadataService,
             IWNPUnitOfWork unitofwork,
@@ -153,7 +152,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                             .Aggregate((s, s1) => $"{s} AND {s1}"),
                         orderedKey.Select(kvp => kvp.Value).ToArray());
 
-            var dbResults = this.dbContext.Fetch<dynamic>(sql);
+            var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.Fetch<dynamic>(sql);
 
             if (dbResults.Count > 1)
             {
@@ -165,7 +164,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 return this.NotFound();
             }
 
-            var entityInstance = this.CreateResult(oDataModelType);
+            var entityInstance = this.CreateEdmEntity();
 
             var rawData = (IDictionary<string, object>)dbResults[0];
             foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))

@@ -4,6 +4,8 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
+    using AMSLLC.Listener.ApplicationService;
+    using AMSLLC.Listener.Repository.WNP;
     using Base;
     using MetadataService;
     using Persistence.WNP;
@@ -16,14 +18,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
     /// </summary>
     public class MeterTestResultsController : WNPEntityController
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MeterTestResultsController"/> class.
-        /// </summary>
-        public MeterTestResultsController(IMetadataProvider metadataService, WNPDBContext dbContext, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator) : base(metadataService, dbContext, filterTransformer, actionConfigurator)
-        {
-        }
 
         /// <inheritdoc/>
         public override string GetEntityTableName() => DBMetadata.MeterTestResults.FullTableName;
+
+        public MeterTestResultsController(IMetadataProvider metadataService, IWNPUnitOfWork unitofwork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, CurrentUnitOfWork test = null) : base(metadataService, unitofwork, filterTransformer, actionConfigurator, commandBus, test)
+        {
+        }
     }
 }
