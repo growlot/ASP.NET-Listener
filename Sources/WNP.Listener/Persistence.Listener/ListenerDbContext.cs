@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 {
     using System.Data;
     using System.Data.Common;
-    using global::Persistence.Poco;
+    using Poco;
     using Serilog;
 
     public class ListenerDbContext : PocoDbContext

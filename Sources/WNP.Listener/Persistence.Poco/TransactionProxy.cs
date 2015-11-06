@@ -1,20 +1,20 @@
-<<<<<<< HEAD:Sources/WNP.Listener/Persistence.Listener/TransactionProxy.cs
-﻿namespace AMSLLC.Listener.Persistence.Listener
-=======
-﻿namespace Persistence.Poco
->>>>>>> WNP batch updated:Sources/WNP.Listener/Persistence.Poco/TransactionProxy.cs
+// <copyright file="TransactionProxy.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.Persistence.Poco
 {
-    using AMSLLC.Listener.Repository;
     using AsyncPoco;
+    using Repository;
 
     public class TransactionProxy : ITransactionProxy
     {
         private readonly ITransaction _transaction;
+
         internal TransactionProxy(ITransaction transaction)
         {
             this._transaction = transaction;
         }
-
 
         public void Dispose()
         {

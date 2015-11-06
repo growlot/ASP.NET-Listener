@@ -7,10 +7,10 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AMSLLC.Listener.Core;
-    using AMSLLC.Listener.Repository;
-    using AMSLLC.Listener.Repository.WNP;
-    using AMSLLC.Listener.Repository.WNP.Model;
+    using Core;
+    using Repository;
+    using Repository.WNP;
+    using Repository.WNP.Model;
 
     /// <summary>
     /// Class WnpRepository.
@@ -46,7 +46,9 @@ WHERE
 	M.[NEW_BATCH_NO] = @0 AND TR.STEP_NO = 1";
 
             var tests = await this.persistenceAdapter.GetListAsync<TMETER_TEST_RESULTEntity>(sql, false, batchNumber);
-            return Enumerable.GroupBy(tests, o => new
+            return Enumerable.GroupBy(
+                tests,
+                o => new
                 {
                     o.EQP_NO,
                     o.OWNER

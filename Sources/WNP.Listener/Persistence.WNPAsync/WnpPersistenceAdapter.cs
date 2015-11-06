@@ -7,7 +7,7 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
     using System;
     using AMSLLC.Listener.Core;
     using AsyncPoco;
-    using global::Persistence.Poco;
+    using Poco;
 
     /// <summary>
     /// WNP persistence adapter

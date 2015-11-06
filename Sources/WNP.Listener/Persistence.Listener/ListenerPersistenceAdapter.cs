@@ -5,7 +5,7 @@
 namespace AMSLLC.Listener.Persistence.Listener
 {
     using Core;
-    using global::Persistence.Poco;
+    using Poco;
 
     /// <summary>
     /// Listener persistence adapter

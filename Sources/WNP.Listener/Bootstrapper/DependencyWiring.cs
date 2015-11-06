@@ -14,7 +14,6 @@ namespace AMSLLC.Listener.Bootstrapper
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
-    using global::Persistence.Poco;
     using MetadataService;
     using MetadataService.Implementations;
     using Ninject.Modules;
@@ -97,8 +96,8 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Repository bindings
             // -------------------------
-            this.Kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>().InRequestScope();
-            this.Kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>().InRequestScope();
+            this.Kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>();
+            this.Kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>();
             this.Kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
             this.Kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
             this.Kernel.Bind<IWnpBatchRepository>().To<WnpRepository>();

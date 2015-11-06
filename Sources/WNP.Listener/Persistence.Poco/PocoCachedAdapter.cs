@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Persistence.Poco
+namespace AMSLLC.Listener.Persistence.Poco
 {
     using System;
     using System.Collections.Concurrent;
