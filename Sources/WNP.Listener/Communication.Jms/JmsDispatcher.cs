@@ -63,7 +63,7 @@ namespace AMSLLC.Listener.Communication.Jms
         /// <param name="protocolConfiguration">The protocol configuration.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentException">eventData must be of type {0}.FormatWith(typeof(TransactionDataReady).FullName)</exception>
-        public async Task Handle(object requestData, IConnectionConfiguration connectionConfiguration, IProtocolConfiguration protocolConfiguration)
+        public Task Handle(object requestData, IConnectionConfiguration connectionConfiguration, IProtocolConfiguration protocolConfiguration)
         {
             var request = requestData as TransactionDataReady;
             var cfg = connectionConfiguration as JmsConnectionConfiguration;
@@ -80,9 +80,11 @@ namespace AMSLLC.Listener.Communication.Jms
                 throw new ArgumentException("{0} must be of type {1}".FormatWith(nameof(connectionConfiguration), typeof(JmsConnectionConfiguration).FullName));
             }
 
-            await this.transactionDataRepository.SaveDataAsync(request.RecordKey, request.Data);
+            var task = this.transactionDataRepository.SaveDataAsync(request.RecordKey, request.Data);
 
-            this.PutMessage(cfg, request, jmsAdapterConfiguration);
+            var t1 = task.ContinueWith(t => { this.PutMessage(cfg, request, jmsAdapterConfiguration); }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            var t2 = task.ContinueWith(t => t.Exception?.Handle(e => false), TaskContinuationOptions.NotOnRanToCompletion);
+            return Task.WhenAny(t1, t2);
         }
 
         /// <summary>

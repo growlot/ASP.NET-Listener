@@ -40,6 +40,17 @@ namespace AMSLLC.Listener.Bus
         private static readonly Dictionary<Type, List<Func<ICommand, Task>>> CommandAsyncHandlers =
             new Dictionary<Type, List<Func<ICommand, Task>>>();
 
+        /// <summary>
+        /// Resets the handlers
+        /// </summary>
+        public static void Reset()
+        {
+            DomainEventAsyncHandlers.Clear();
+            DomainEventHandlers.Clear();
+            CommandHandlers.Clear();
+            CommandAsyncHandlers.Clear();
+        }
+
         void IDomainEventBus.Publish<TEvent>(TEvent domainEvent)
         {
             if (domainEvent == null)
