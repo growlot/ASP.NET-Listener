@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.ApplicationService.Test
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
@@ -15,6 +16,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using Communication;
     using Core;
     using Core.Ninject;
+    using Core.Ninject.Test;
     using Domain;
     using Domain.Listener.Transaction;
     using Implementations;
@@ -26,6 +28,41 @@ namespace AMSLLC.Listener.ApplicationService.Test
     [TestClass]
     public class ApplicationServiceTest
     {
+
+        [ClassInitialize]
+        public static void ClassInit(
+            TestContext context)
+        {
+            var di = new TestDependencyInjectionAdapter();
+            var container = di.Kernel;
+            ApplicationIntegration.SetDependencyInjectionResolver(di);
+            container.Bind<ITransactionHashBuilder>().To<TransactionHashBuilder>().InSingletonScope();
+            container.Bind<IRecordKeyBuilder>().To<RecordKeyBuilder>().InSingletonScope();
+            container.Bind<ISummaryBuilder>().To<SummaryBuilder>().InSingletonScope();
+            container.Bind<ITransactionService>().To<TransactionService>();
+            container.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
+            container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
+            container.Bind<IRepositoryManager>().To<RepositoryManager>();
+            container.Bind<ApplicationServiceConfigurator>().ToSelf();
+        }
+
+        [ClassCleanup]
+        public static void ClassCleanup()
+        {
+        }
+
+        [TestInitialize()]
+        public void Initialize()
+        {
+        }
+
+        [TestCleanup()]
+        public void Cleanup()
+        {
+            var di = ApplicationIntegration.DependencyResolver as TestDependencyInjectionAdapter;
+            di.Reset();
+        }
+
         [TestMethod]
         public async Task TestEndpointFlow()
         {
@@ -62,25 +99,26 @@ namespace AMSLLC.Listener.ApplicationService.Test
             var settings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
             // var testJson = JsonConvert.SerializeObject(testMessageData, settings);
-            var di = new NinjectDependencyInjectionAdapter();
+            var di = ApplicationIntegration.DependencyResolver as TestDependencyInjectionAdapter;
 
             var transactionRepositoryMock = new Mock<ITransactionRepository>();
 
             var busImpl = new InMemoryBus();
-            var domainBusImpl = busImpl as IDomainEventBus;
-            var domainEventBus = new Mock<IDomainEventBus>();
+            InMemoryBus.Reset();
+            //var domainBusImpl = busImpl as IDomainEventBus;
+            //var domainEventBus = new Mock<IDomainEventBus>();
 
-            domainEventBus.Setup(s => s.Subscribe(It.IsAny<Action<IDomainEvent>>())).Callback((Action<IDomainEvent> evt) => domainBusImpl.Subscribe(evt));
-            domainEventBus.Setup(s => s.SubscribeAsync(It.IsAny<Func<IDomainEvent, Task>>())).Callback((Func<IDomainEvent, Task> evt) => domainBusImpl.SubscribeAsync(evt));
+            //domainEventBus.Setup(s => s.Subscribe(It.IsAny<Action<IDomainEvent>>())).Callback((Action<IDomainEvent> evt) => domainBusImpl.Subscribe(evt));
+            //domainEventBus.Setup(s => s.SubscribeAsync(It.IsAny<Func<IDomainEvent, Task>>())).Callback((Func<IDomainEvent, Task> evt) => domainBusImpl.SubscribeAsync(evt));
 
-            domainEventBus.Setup(s => s.Publish(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.Publish(evt));
-            domainEventBus.Setup(s => s.PublishAsync(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.PublishAsync(evt)).Returns(Task.CompletedTask);
-            domainEventBus.Setup(s => s.PublishBulk(It.IsAny<ICollection<IDomainEvent>>())).Callback((ICollection<IDomainEvent> evt) => domainBusImpl.PublishBulk(evt)).Returns(Task.CompletedTask);
+            //domainEventBus.Setup(s => s.Publish(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.Publish(evt));
+            //domainEventBus.Setup(s => s.PublishAsync(It.IsAny<IDomainEvent>())).Callback((IDomainEvent evt) => domainBusImpl.PublishAsync(evt)).Returns(() => Task.CompletedTask);
+            //domainEventBus.Setup(s => s.PublishBulk(It.IsAny<ICollection<IDomainEvent>>())).Callback((ICollection<IDomainEvent> evt) => domainBusImpl.PublishBulk(evt)).Returns(Task.CompletedTask);
 
 
             var hashBuilder = new Mock<ITransactionHashBuilder>();
 
-            var transactionExecutionDomain = new Mock<TransactionExecution>(domainEventBus.Object, hashBuilder.Object) { CallBase = true };
+            var transactionExecutionDomain = new Mock<TransactionExecution>(busImpl, hashBuilder.Object) { CallBase = true };
             transactionExecutionDomain.As<IOriginator>();
             transactionExecutionDomain.As<IWithDomainBuilder>();
             var integrationEndpointConfiguration = new Mock<IntegrationEndpointConfiguration>();
@@ -144,6 +182,10 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 .Returns(
                     (int i, string h) => Task.FromResult(0));
 
+            transactionRepositoryMock.Setup(s => s.GetRegistryEntry(It.IsAny<Guid>()))
+                .ReturnsAsync(
+                    new TransactionRegistryMemento(0, Guid.Parse(recordKey), null, string.Empty, string.Empty, string.Empty, string.Empty, TransactionStatusType.Processing, string.Empty, DateTime.Now, null, string.Empty, string.Empty, string.Empty, 0, new List<TransactionRegistryMemento>()));
+
             // var dn = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(testMessageData));
             //transactionRepositoryMock.Setup(s => s.GetTransactionDataAsync(Guid.Parse(recordKey)))
             //    .Returns(Task.FromResult(JsonConvert.SerializeObject(testMessageData)));
@@ -175,26 +217,16 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 .Returns(Task.CompletedTask);
 
             var builderMock = new Mock<IProtocolConfigurationBuilder>();
+            di.Rebind<ICommandBus>(busImpl);
 
-            di.Initialize(container =>
-            {
-                container.Bind<ITransactionHashBuilder>().To<TransactionHashBuilder>().InSingletonScope();
-                container.Bind<ICommandBus>().ToConstant(busImpl).InSingletonScope();
-                container.Bind<IDomainEventBus>().ToConstant(busImpl).InSingletonScope();
-                container.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
-                container.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
-                container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
-                container.Bind<IDomainBuilder>().ToConstant(domainBuilderMock.Object);
-                container.Bind<IRepositoryManager>().To<RepositoryManager>();
-                container.Bind<ITransactionRepository>().ToConstant(transactionRepositoryMock.Object);
-                container.Bind<IEndpointDataProcessor>().ToConstant(jmsEndpointProcessorMock.Object);
-                container.Bind<IConnectionConfigurationBuilder>().ToConstant(jmsConnectionBuilder.Object).InSingletonScope().Named("connection-builder-jms");
-                container.Bind<ICommunicationHandler>().ToConstant(communicationHandler.Object).InSingletonScope().Named("communication-jms");
-                container.Bind<IProtocolConfigurationBuilder>().ToConstant(builderMock.Object).Named("protocol-builder-jms");
-                container.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
-            });
+            di.Rebind<IDomainEventBus>(busImpl);
+            di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
+            di.Rebind<ITransactionRepository>(transactionRepositoryMock.Object);
+            di.Rebind<IEndpointDataProcessor>(jmsEndpointProcessorMock.Object);
+            di.Rebind<IConnectionConfigurationBuilder>(jmsConnectionBuilder.Object).InSingletonScope().Named("connection-builder-jms");
+            di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
+            di.Rebind<IProtocolConfigurationBuilder>(builderMock.Object).Named("protocol-builder-jms");
 
-            ApplicationIntegration.SetDependencyInjectionResolver(di);
 
             var configurator = di.ResolveType<ApplicationServiceConfigurator>();
             configurator.RegisterCommandHandlers();
@@ -277,20 +309,17 @@ namespace AMSLLC.Listener.ApplicationService.Test
             };
 
             // var t = JsonConvert.SerializeObject(testMessageData);
-            var di = new NinjectDependencyInjectionAdapter();
+            var di = ApplicationIntegration.DependencyResolver as TestDependencyInjectionAdapter;
+
             var jmsConnectionBuilder = new Mock<IConnectionConfigurationBuilder>();
             var builderMock = new Mock<IProtocolConfigurationBuilder>();
-            di.Initialize(container =>
-            {
-                container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
-                container.Bind<IConnectionConfigurationBuilder>()
-                    .ToConstant(jmsConnectionBuilder.Object)
-                    .InSingletonScope()
-                    .Named("connection-builder-jms");
 
-                container.Bind<IProtocolConfigurationBuilder>().ToConstant(builderMock.Object).Named("protocol-builder-jms");
-            });
-            ApplicationIntegration.SetDependencyInjectionResolver(di);
+            di.Rebind<IConnectionConfigurationBuilder>(jmsConnectionBuilder.Object)
+                .InSingletonScope()
+                .Named("connection-builder-jms");
+
+            di.Rebind<IProtocolConfigurationBuilder>(builderMock.Object).Named("protocol-builder-jms");
+
 
             Dictionary<string, object> integerMap = new Dictionary<string, object>
             {
@@ -334,6 +363,163 @@ namespace AMSLLC.Listener.ApplicationService.Test
             const string expectedJson =
                 "{\"Value\":987,\"ComplexProperty\":{\"AnotherValue\":\"Hello, World!\",\"NestedData\":{\"AnotherValue\":\"Hi, Bob!\",\"NestedData\":null,\"NestedArray\":null},\"NestedArray\":null},\"ArrayProperty\":[{\"AnotherValue\":\"ABC\",\"NestedData\":{\"AnotherValue\":\"EFD\",\"NestedData\":null,\"NestedArray\":[{\"Value\":159000,\"ComplexProperty\":null,\"ArrayProperty\":null},{\"Value\":9713000,\"ComplexProperty\":null,\"ArrayProperty\":null}]},\"NestedArray\":null},{\"AnotherValue\":\"F-1\",\"NestedData\":null,\"NestedArray\":null}]}";
             Assert.AreEqual(expectedJson, JsonConvert.SerializeObject(d.Data));
+        }
+
+        [TestMethod]
+        public async Task BatchPriorityTest()
+        {
+            var recordKey = Guid.NewGuid().ToString("D");
+
+            var busImpl = new InMemoryBus();
+            InMemoryBus.Reset();
+            var domainBuilderMock = new Mock<DomainBuilder>() { CallBase = true };
+            var jmsEndpointProcessorMock = new Mock<IEndpointDataProcessor>();
+            var jmsConnectionBuilder = new Mock<IConnectionConfigurationBuilder>();
+            var communicationHandler = new Mock<ICommunicationHandler>();
+            var builderMock = new Mock<IProtocolConfigurationBuilder>();
+            var transactionRepositoryMock = new Mock<ITransactionRepository>();
+            var hashBuilder = new Mock<ITransactionHashBuilder>();
+            var integrationEndpointConfiguration = new Mock<IntegrationEndpointConfiguration>() { CallBase = true };
+
+            var transactionExecutionDomain = new Mock<TransactionExecution>(busImpl, hashBuilder.Object) { CallBase = true };
+            transactionExecutionDomain.As<IOriginator>();
+            transactionExecutionDomain.As<IWithDomainBuilder>();
+            transactionExecutionDomain.Setup(t => t.DomainBuilder).Returns(domainBuilderMock.Object);
+
+            domainBuilderMock.Setup(d => d.Create<TransactionExecution>()).Returns(transactionExecutionDomain.Object);
+            domainBuilderMock.Setup(d => d.Create<IntegrationEndpointConfiguration>())
+                .Returns(integrationEndpointConfiguration.Object);
+
+            ConcurrentStack<Guid> handledTransactions = new ConcurrentStack<Guid>();
+
+            communicationHandler.Setup(
+                s =>
+                    s.Handle(
+                        It.IsAny<object>(),
+                        It.IsAny<IConnectionConfiguration>(),
+                        It.IsAny<IProtocolConfiguration>())).Callback(
+                            (object obj,
+                                IConnectionConfiguration ccfg,
+                                IProtocolConfiguration pcfg) =>
+                            {
+                                TransactionDataReady dataReady = (TransactionDataReady)obj;
+                                handledTransactions.Push(dataReady.RecordKey);
+                            }).Returns(Task.CompletedTask);
+
+            Dictionary<Guid, int> priorities = new Dictionary<Guid, int>
+            {
+                {Guid.NewGuid(), 4 },
+                { Guid.NewGuid(), 5 },
+                { Guid.NewGuid(), 1 },
+                { Guid.NewGuid(), 2 },
+                { Guid.NewGuid(), 2 },
+                { Guid.NewGuid(), 1 },
+                { Guid.NewGuid(), 1 },
+                { Guid.NewGuid(), 4 },
+                { Guid.NewGuid(), 5 },
+                { Guid.NewGuid(), 3 }
+            };
+
+            var batch = priorities.Select(keyValuePair => this.CreateBatchChild(keyValuePair.Key, keyValuePair.Value)).ToList();
+
+            transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(
+                    new TransactionExecutionMemento(
+                        0,
+                        Guid.Parse(recordKey),
+                        0,
+                        new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Always) },
+                        new List<FieldConfigurationMemento>(),
+                        batch,
+                        new object(),
+                        new List<Guid>(),
+                        TransactionStatusType.Pending,
+                        null));
+
+            transactionRepositoryMock.Setup(s => s.GetRegistryEntry(It.IsAny<Guid>()))
+                .ReturnsAsync(
+                    new TransactionRegistryMemento(
+                        0,
+                        Guid.Parse(recordKey),
+                        null,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        TransactionStatusType.Processing,
+                        string.Empty,
+                        DateTime.Now,
+                        null,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        0,
+                        new List<TransactionRegistryMemento>()));
+
+            jmsEndpointProcessorMock.Setup(s => s.Process(It.IsAny<object>(), It.IsAny<IList<FieldConfiguration>>()))
+                .Returns(
+                    new EndpointDataProcessorResult
+                    {
+                        Data = new object(),
+                        Hash = string.Empty
+                    });
+
+            var di = ApplicationIntegration.DependencyResolver as TestDependencyInjectionAdapter;
+
+
+            di.Rebind<ICommandBus>(busImpl);
+            di.Rebind<IDomainEventBus>(busImpl);
+            di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
+            di.Rebind<ITransactionRepository>(transactionRepositoryMock.Object);
+            di.Rebind<IEndpointDataProcessor>(jmsEndpointProcessorMock.Object);
+            di.Rebind<IConnectionConfigurationBuilder>(jmsConnectionBuilder.Object).Named("connection-builder-jms");
+            di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
+            di.Rebind<IProtocolConfigurationBuilder>(builderMock.Object).Named("protocol-builder-jms");
+
+
+            var configurator = di.ResolveType<ApplicationServiceConfigurator>();
+            configurator.RegisterCommandHandlers();
+            configurator.RegisterSagaHandlers();
+
+            var service = di.ResolveType<ITransactionService>();
+
+            await
+                service.Process(new ProcessTransactionCommand
+                {
+                    RecordKey = Guid.Parse(recordKey)
+                });
+
+            communicationHandler.Verify(
+                s =>
+                    s.Handle(
+                        It.IsAny<object>(),
+                        It.IsAny<IConnectionConfiguration>(),
+                        It.IsAny<IProtocolConfiguration>()), Times.Exactly(priorities.Count));
+
+            Guid currentTransaction;
+            int lastPriority = int.MaxValue;
+            while (!handledTransactions.IsEmpty)
+            {
+                handledTransactions.TryPop(out currentTransaction);
+                Assert.IsTrue(priorities[currentTransaction] <= lastPriority);
+                lastPriority = priorities[currentTransaction];
+            }
+        }
+
+        private TransactionExecutionMemento CreateBatchChild(
+            Guid recordKey, int priority)
+        {
+            return new TransactionExecutionMemento(
+                0,
+                recordKey,
+                0,
+                new[] { new IntegrationEndpointConfigurationMemento("jms", string.Empty, string.Empty, EndpointTriggerType.Always) },
+                new List<FieldConfigurationMemento>(),
+                new List<TransactionExecutionMemento>(),
+                new object(),
+                new List<Guid>(),
+                TransactionStatusType.Pending,
+                priority);
         }
 
         public class TestMessageData
