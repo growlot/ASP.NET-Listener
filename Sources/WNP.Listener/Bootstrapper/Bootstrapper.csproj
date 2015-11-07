@@ -174,6 +174,7 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="ApplicationScopeDIInitializer.cs" />
     <Compile Include="ListenerBoostrapper.cs" />
     <Compile Include="ObjectExtensios.cs" />
     <Compile Include="OwinRequestProfilerProvider.cs" />

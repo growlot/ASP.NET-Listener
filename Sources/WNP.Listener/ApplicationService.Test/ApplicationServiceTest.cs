@@ -19,6 +19,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using Core.Ninject.Test;
     using Domain;
     using Domain.Listener.Transaction;
+    using global::ApplicationService.Test;
     using Implementations;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
@@ -42,8 +43,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
             container.Bind<ITransactionService>().To<TransactionService>();
             container.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
             container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
-            container.Bind<IRepositoryManager>().To<RepositoryManager>();
             container.Bind<ApplicationServiceConfigurator>().ToSelf();
+            container.Bind<IDependencyInjectionModule>().To<TestScopeContainerInitializer>().InSingletonScope().Named("ApplicationScopeModule");
         }
 
         [ClassCleanup]

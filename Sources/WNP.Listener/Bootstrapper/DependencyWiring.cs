@@ -96,12 +96,8 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Repository bindings
             // -------------------------
-            this.Kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>();
-            this.Kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>();
-            this.Kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
-            this.Kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
-            this.Kernel.Bind<IWnpBatchRepository>().To<WnpRepository>();
-            this.Kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>().InRequestScope();
+            // this.Kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>();
+            // this.Kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>();
             this.Kernel.Bind<IWnpIntegrationService>().To<WnpIntegrationService>().InSingletonScope();
 
             // -------------------------
@@ -112,7 +108,7 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Persistence.Listener bindings
             // -------------------------
-            this.Kernel.Bind<ListenerDbContext>().ToSelf().InRequestScope().WithConstructorArgument("connectionStringName", "ListenerDB");
+            this.Kernel.Bind<ListenerDbContext>().ToSelf().WithConstructorArgument("connectionStringName", "ListenerDB");
 
             // -------------------------
             // Persistence.WNP bindings
@@ -121,7 +117,7 @@ namespace AMSLLC.Listener.Bootstrapper
                 .ToSelf()
                 .InRequestScope()
                 .WithConstructorArgument("connectionStringName", "WNPDatabase");
-            this.Kernel.Bind<WnpAsyncDbContext>().ToSelf().InRequestScope().WithConstructorArgument("connectionStringName", "WNPDatabase");
+            this.Kernel.Bind<WnpAsyncDbContext>().ToSelf().WithConstructorArgument("connectionStringName", "WNPDatabase");
 
             this.Kernel.Bind<WNPUnitOfWork>()
                 .ToSelf()
@@ -150,6 +146,8 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
             this.Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
             this.Kernel.Bind<CurrentUnitOfWork>().ToSelf().InRequestScope();
+
+            this.Kernel.Bind<IDependencyInjectionModule>().To<ApplicationScopeDIInitializer>().InSingletonScope().Named("ApplicationScopeModule");
         }
     }
 }

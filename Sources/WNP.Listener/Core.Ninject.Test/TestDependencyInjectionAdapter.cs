@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Core.Ninject.Test
 {
     using System;
     using System.Collections.Generic;
+    using global::Ninject.Extensions.ChildKernel;
     using global::Ninject.Syntax;
 
     /// <summary>
@@ -14,6 +15,18 @@ namespace AMSLLC.Listener.Core.Ninject.Test
     public class TestDependencyInjectionAdapter : NinjectDependencyInjectionAdapter
     {
         private Dictionary<Type, object> reboundInstances = new Dictionary<Type, object>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestDependencyInjectionAdapter"/> class.
+        /// </summary>
+        public TestDependencyInjectionAdapter()
+        {
+        }
+
+        private TestDependencyInjectionAdapter(ChildKernel kernel)
+            : base(kernel)
+        {
+        }
 
         /// <summary>
         /// Rebinds the specified to.
@@ -39,6 +52,17 @@ namespace AMSLLC.Listener.Core.Ninject.Test
             }
 
             this.reboundInstances.Clear();
+        }
+
+        /// <summary>
+        /// Creates the adapter.
+        /// </summary>
+        /// <param name="kernel">The kernel.</param>
+        /// <returns>IDependencyInjectionAdapter.</returns>
+        protected override IDependencyInjectionAdapter CreateAdapter(
+            ChildKernel kernel)
+        {
+            return new TestDependencyInjectionAdapter(kernel);
         }
     }
 }

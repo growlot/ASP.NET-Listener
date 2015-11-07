@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Core
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Abstracts dependency injection framework.
@@ -15,8 +16,9 @@ namespace AMSLLC.Listener.Core
         /// Gets the object of specified type from DI based on generic type definition.
         /// </summary>
         /// <typeparam name="TType">The type to resolve.</typeparam>
+        /// <param name="arguments">The arguments.</param>
         /// <returns>The resolved object.</returns>
-        TType ResolveType<TType>();
+        TType ResolveType<TType>(params KeyValuePair<string, object>[] arguments);
 
         /// <summary>
         /// Gets the object of specified type from DI.
@@ -32,5 +34,22 @@ namespace AMSLLC.Listener.Core
         /// <param name="name">The name of the specific implementation.</param>
         /// <returns>The resolved object.</returns>
         TType ResolveNamed<TType>(string name);
+
+        /// <summary>
+        /// Use scope for resolutions. Scope will be created if not exists
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="modules">The modules.</param>
+        /// <returns>AMSLLC.Listener.Core.IDependencyInjectionAdapter.</returns>
+        IDependencyInjectionAdapter WithScope(
+            string name,
+            params string[] modules);
+
+        /// <summary>
+        /// Disposes the scope.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        void DisposeScope(
+            string name);
     }
 }

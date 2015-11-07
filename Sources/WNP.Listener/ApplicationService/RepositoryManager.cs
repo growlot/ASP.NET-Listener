@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.ApplicationService
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Runtime.InteropServices;
     using Core;
     using Repository;
 
@@ -17,6 +18,16 @@ namespace AMSLLC.Listener.ApplicationService
     public class RepositoryManager : IRepositoryManager
     {
         private readonly ConcurrentBag<IRepository> knownRepositories = new ConcurrentBag<IRepository>();
+        private readonly IDependencyInjectionAdapter diContainer;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RepositoryManager" /> class.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public RepositoryManager(IDependencyInjectionAdapter container)
+        {
+            this.diContainer = container;
+        }
 
         /// <summary>
         /// Finalizes an instance of the <see cref="RepositoryManager" /> class.
@@ -31,7 +42,7 @@ namespace AMSLLC.Listener.ApplicationService
         public TRepository Create<TRepository>()
             where TRepository : IRepository
         {
-            var repository = ApplicationIntegration.DependencyResolver.ResolveType<TRepository>();
+            var repository = this.diContainer.ResolveType<TRepository>();
             this.knownRepositories.Add(repository);
             return repository;
         }

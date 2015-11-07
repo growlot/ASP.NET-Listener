@@ -81,7 +81,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"ElectricMeters\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Install\"}}}}";
             object receivedData = string.Empty;
 
-            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var cdi = ApplicationIntegration.DependencyResolver.WithScope(Guid.NewGuid().ToString("D"), "ApplicationScopeModule");
+            var communicationHandlerMock = new Mock<JmsDispatcher>(cdi.ResolveType<ITransactionDataRepository>()) { CallBase = true };
             var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
             //var transactionMessageDataRepository = new Mock<TransactionDataRepository> { CallBase = true };
             communicationHandlerMock.Setup(
@@ -191,6 +192,9 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         public async Task OpenAndSucceedBatchAsRoot()
         {
             var di = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+
+            var childId = ApplicationIntegration.DependencyResolver.WithScope(Guid.NewGuid().ToString("D"), "ApplicationScopeModule");
+
             var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
             var nextKey = Guid.NewGuid();
             var keyStack = new Queue<string>();
@@ -203,7 +207,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
             string expectedMessageTemplate = "{{\"Data\":{{\"UserName\":\"ListenerUser\",\"EntityCategory\":\"{0}\",\"EntityKey\":\"{1}\",\"OperationKey\":\"{2}\"}}}}";
 
-            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var communicationHandlerMock = new Mock<JmsDispatcher>(childId.ResolveType<ITransactionDataRepository>()) { CallBase = true };
             var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
 
             ConcurrentDictionary<Guid, object> receivedData = new ConcurrentDictionary<Guid, object>();
@@ -273,8 +277,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             }
 
             transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
-
-            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var cdi = ApplicationIntegration.DependencyResolver.WithScope(Guid.NewGuid().ToString("D"), "ApplicationScopeModule");
+            var communicationHandlerMock = new Mock<JmsDispatcher>(cdi.ResolveType<ITransactionDataRepository>()) { CallBase = true };
             var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
 
             communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.IsAny<TransactionDataReady>(), It.IsAny<ProtocolConfiguration>()));
@@ -316,8 +320,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             }
 
             transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
-
-            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var cdi = ApplicationIntegration.DependencyResolver.WithScope(Guid.NewGuid().ToString("D"), "ApplicationScopeModule");
+            var communicationHandlerMock = new Mock<JmsDispatcher>(cdi.ResolveType<ITransactionDataRepository>()) { CallBase = true };
             var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
 
             communicationHandlerMock.Setup(s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.IsAny<TransactionDataReady>(), It.IsAny<ProtocolConfiguration>()));
@@ -388,8 +392,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             var domainBuilderMock = new Mock<DomainBuilder> { CallBase = true };
             domainBuilderMock.Setup(s => s.Create<TransactionRegistry>()).Returns(transactionRegistryMock.Object);
-
-            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var cdi = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver.WithScope(Guid.NewGuid().ToString("D"), "ApplicationScopeModule");
+            var communicationHandlerMock = new Mock<JmsDispatcher>(cdi.ResolveType<ITransactionDataRepository>()) { CallBase = true };
             var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
 
             var batchRepository = new Mock<IWnpBatchRepository>();

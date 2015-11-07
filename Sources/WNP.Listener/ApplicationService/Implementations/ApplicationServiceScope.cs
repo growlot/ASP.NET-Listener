@@ -7,6 +7,7 @@
 namespace AMSLLC.Listener.ApplicationService.Implementations
 {
     using System;
+    using System.Collections.Generic;
     using Core;
     using Domain;
     using Repository;
@@ -17,6 +18,17 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     public class ApplicationServiceScope : IApplicationServiceScope
     {
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly IDependencyInjectionAdapter di;
+
+        private ApplicationServiceScope()
+            : this(Guid.NewGuid().ToString("D"))
+        {
+        }
+
+        private ApplicationServiceScope(string key)
+            : this(ApplicationIntegration.DependencyResolver.WithScope(key, "ApplicationScopeModule"))
+        {
+        }
 
         private ApplicationServiceScope(IDomainBuilder domainBuilder, IRepositoryManager repositoryBuilder, IDateTimeProvider dateTimeProvider)
         {
@@ -24,6 +36,15 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
             this.RepositoryBuilder = repositoryBuilder;
             this.dateTimeProvider = dateTimeProvider;
             this.ScopeCreated = this.dateTimeProvider.Now();
+        }
+
+        private ApplicationServiceScope(IDependencyInjectionAdapter di)
+            : this(
+                  di.ResolveType<IDomainBuilder>(),
+                di.ResolveType<IRepositoryManager>(new KeyValuePair<string, object>("container", di)),
+                di.ResolveType<IDateTimeProvider>())
+        {
+            this.di = di;
         }
 
         /// <summary>
@@ -53,10 +74,8 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         /// <returns>New instance of application service scope</returns>
         public static IApplicationServiceScope Create()
         {
-            return new ApplicationServiceScope(
-                ApplicationIntegration.DependencyResolver.ResolveType<IDomainBuilder>(),
-                ApplicationIntegration.DependencyResolver.ResolveType<IRepositoryManager>(),
-                ApplicationIntegration.DependencyResolver.ResolveType<IDateTimeProvider>());
+            var scopeKey = Guid.NewGuid().ToString("D");
+            return new ApplicationServiceScope(scopeKey);
         }
 
         /// <inheritdoc/>
@@ -74,6 +93,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         {
             if (disposing)
             {
+                this.di.Dispose();
                 this.RepositoryBuilder?.Dispose();
             }
         }
