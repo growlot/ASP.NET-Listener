@@ -20,7 +20,10 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly IDependencyInjectionAdapter di;
 
-        private ApplicationServiceScope()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationServiceScope"/> class.
+        /// </summary>
+        public ApplicationServiceScope()
             : this(Guid.NewGuid().ToString("D"))
         {
         }

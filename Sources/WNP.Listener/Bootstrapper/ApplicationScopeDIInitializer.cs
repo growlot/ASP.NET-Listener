@@ -26,12 +26,12 @@ namespace AMSLLC.Listener.Bootstrapper
         public void Initialize(object container)
         {
             var kernel = (StandardKernel)container;
-            kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>().InSingletonScope();
-            kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>().InSingletonScope();
-            kernel.Bind<IRepositoryManager>().To<RepositoryManager>().InSingletonScope();
-            kernel.Bind<ITransactionRepository>().To<TransactionRepository>().InSingletonScope();
-            kernel.Bind<IWnpBatchRepository>().To<WnpRepository>().InSingletonScope();
-            kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>().InSingletonScope();
+            kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>();
+            kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>();
+            kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
+            kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
+            kernel.Bind<IWnpBatchRepository>().To<WnpRepository>();
+            kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>();
         }
     }
 }

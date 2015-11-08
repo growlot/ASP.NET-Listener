@@ -8,7 +8,9 @@ namespace AMSLLC.Listener.ApplicationService
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Runtime.InteropServices;
+    using System.Threading;
     using Core;
     using Repository;
 
@@ -17,8 +19,9 @@ namespace AMSLLC.Listener.ApplicationService
     /// </summary>
     public class RepositoryManager : IRepositoryManager
     {
-        private readonly ConcurrentBag<IRepository> knownRepositories = new ConcurrentBag<IRepository>();
+        private readonly Dictionary<Type, IRepository> knownRepositories = new Dictionary<Type, IRepository>();
         private readonly IDependencyInjectionAdapter diContainer;
+        private ReaderWriterLockSlim repoLock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RepositoryManager" /> class.
@@ -42,9 +45,35 @@ namespace AMSLLC.Listener.ApplicationService
         public TRepository Create<TRepository>()
             where TRepository : IRepository
         {
-            var repository = this.diContainer.ResolveType<TRepository>();
-            this.knownRepositories.Add(repository);
-            return repository;
+            this.repoLock.EnterUpgradeableReadLock();
+            try
+            {
+                IRepository result = null;
+                if (this.knownRepositories.TryGetValue(typeof(TRepository), out result))
+                {
+                    return (TRepository)result;
+                }
+                else
+                {
+                    this.repoLock.EnterWriteLock();
+                    try
+                    {
+                        result = this.diContainer.ResolveType<TRepository>();
+
+                        this.knownRepositories.Add(typeof(TRepository), result);
+                    }
+                    finally
+                    {
+                        this.repoLock.ExitWriteLock();
+                    }
+
+                    return (TRepository)result;
+                }
+            }
+            finally
+            {
+                this.repoLock.ExitUpgradeableReadLock();
+            }
         }
 
         /// <inheritdoc/>
@@ -62,9 +91,11 @@ namespace AMSLLC.Listener.ApplicationService
         {
             if (disposing)
             {
-                foreach (var knownRepository in this.knownRepositories)
+                var keys = new List<Type>(this.knownRepositories.Keys);
+                foreach (Type key in keys)
                 {
-                    knownRepository?.Dispose();
+                    this.knownRepositories[key].Dispose();
+                    this.knownRepositories.Remove(key);
                 }
             }
         }

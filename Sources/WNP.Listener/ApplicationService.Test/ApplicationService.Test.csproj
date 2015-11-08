@@ -76,6 +76,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ApplicationScopeTest.cs" />
     <Compile Include="ApplicationServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestScopeContainerInitializer.cs" />
