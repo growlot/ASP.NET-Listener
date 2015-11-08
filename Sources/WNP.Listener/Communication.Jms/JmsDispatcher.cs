@@ -20,6 +20,7 @@ namespace AMSLLC.Listener.Communication.Jms
     /// </summary>
     public class JmsDispatcher : ICommunicationHandler
     {
+        private const string GenericMessageType = "GenericMessage";
         private static string cfName = "weblogic.jms.ConnectionFactory";
 
         private readonly ITransactionDataRepository transactionDataRepository;
@@ -41,6 +42,11 @@ namespace AMSLLC.Listener.Communication.Jms
         /// <returns>System.String.</returns>
         public static string CreateMessageType(object data, string messageTypeTemplate)
         {
+            if (messageTypeTemplate == null)
+            {
+                return GenericMessageType;
+            }
+
             string returnValue = messageTypeTemplate;
             var regex = new Regex("{.*?}");
             var matches = regex.Matches(messageTypeTemplate);
@@ -63,7 +69,7 @@ namespace AMSLLC.Listener.Communication.Jms
         /// <param name="protocolConfiguration">The protocol configuration.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentException">eventData must be of type {0}.FormatWith(typeof(TransactionDataReady).FullName)</exception>
-        public Task Handle(object requestData, IConnectionConfiguration connectionConfiguration, IProtocolConfiguration protocolConfiguration)
+        public async Task Handle(object requestData, IConnectionConfiguration connectionConfiguration, IProtocolConfiguration protocolConfiguration)
         {
             var request = requestData as TransactionDataReady;
             var cfg = connectionConfiguration as JmsConnectionConfiguration;
@@ -80,11 +86,9 @@ namespace AMSLLC.Listener.Communication.Jms
                 throw new ArgumentException("{0} must be of type {1}".FormatWith(nameof(connectionConfiguration), typeof(JmsConnectionConfiguration).FullName));
             }
 
-            var task = this.transactionDataRepository.SaveDataAsync(request.RecordKey, request.Data);
+            await this.transactionDataRepository.SaveDataAsync(request.RecordKey, request.Data);
 
-            var t1 = task.ContinueWith(t => { this.PutMessage(cfg, request, jmsAdapterConfiguration); }, TaskContinuationOptions.OnlyOnRanToCompletion);
-            var t2 = task.ContinueWith(t => t.Exception?.Handle(e => false), TaskContinuationOptions.NotOnRanToCompletion);
-            return Task.WhenAny(t1, t2);
+            this.PutMessage(cfg, request, jmsAdapterConfiguration);
         }
 
         /// <summary>

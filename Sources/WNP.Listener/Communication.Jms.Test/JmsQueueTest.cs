@@ -45,13 +45,13 @@ namespace AMSLLC.Listener.Communication.Jms.Test
                 JmsDispatcher dispatcher = new JmsDispatcher(transactionMessageDataRepMock.Object);
                 var transactionId = Guid.NewGuid().ToString();
                 var testMessage = new TestMessage { TransactionId = transactionId, Value = new Random().Next(9999) };
-                var eventData = new TransactionDataReady { Data = testMessage };
+                var eventData = new TransactionDataReady { Data = testMessage, RecordKey = Guid.NewGuid() };
                 var connectionConfiguration = new JmsConnectionConfiguration { Host = Host, Password = Password, UserName = Username, QueueName = QueueName, Port = Port };
 
                 var protocolConfiguration = new ProtocolConfiguration();
 
                 await dispatcher.Handle(eventData, connectionConfiguration, protocolConfiguration);
-                ReadMessage(JsonConvert.SerializeObject(testMessage), connectionConfiguration);
+                ReadMessage(JsonConvert.SerializeObject(eventData.RecordKey), connectionConfiguration);
             }
             catch (MessageException exc)
             {
