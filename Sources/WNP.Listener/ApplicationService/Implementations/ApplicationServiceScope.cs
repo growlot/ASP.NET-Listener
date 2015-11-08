@@ -66,10 +66,10 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         public DateTime Now => this.dateTimeProvider.Now();
 
         /// <inheritdoc/>
-        public IDomainBuilder DomainBuilder { get; } = null;
+        public IDomainBuilder DomainBuilder { get; private set; }
 
         /// <inheritdoc/>
-        public IRepositoryManager RepositoryBuilder { get; } = null;
+        public IRepositoryManager RepositoryBuilder { get; private set; }
 
         /// <summary>
         /// Creates new instance of application service scope.
@@ -97,7 +97,9 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
             if (disposing)
             {
                 this.di.Dispose();
+                this.DomainBuilder = null;
                 this.RepositoryBuilder?.Dispose();
+                this.RepositoryBuilder = null;
             }
         }
     }

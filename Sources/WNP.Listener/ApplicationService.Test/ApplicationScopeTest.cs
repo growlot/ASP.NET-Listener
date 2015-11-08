@@ -20,10 +20,14 @@ namespace ApplicationService.Test
         public void TestApplicationScope()
         {
             var di = new TestDependencyInjectionAdapter();
-            di.Kernel.Bind<IDependencyInjectionModule>().To<TestScopeContainerInitializer>().InSingletonScope().Named("ApplicationScopeModule");
-            di.Kernel.Bind<IDomainBuilder>().To<DomainBuilder>();
-            di.Kernel.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>();
+            di.Kernel.Bind<IDependencyInjectionModule>().To<TestScopeContainerInitializer>().Named("ApplicationScopeModule");
+            di.Kernel.Bind<IDomainBuilder>().To<DomainBuilder>().InSingletonScope();
+            di.Kernel.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
             ApplicationIntegration.SetDependencyInjectionResolver(di);
+
+            di.Rebind<IDependencyInjectionModule>(new TestScopeContainerInitializer()).Named("ApplicationScopeModule");
+
+            var db1 = di.ResolveType<IDomainBuilder>();
 
             var appScope1 = new Mock<ApplicationServiceScope>()
             {
@@ -36,6 +40,7 @@ namespace ApplicationService.Test
             var tr2 = appScopeMock1.Object.RepositoryBuilder.Create<ITransactionRepository>();
 
             Assert.AreEqual(tr1, tr2);
+            Assert.AreEqual(db1, appScopeMock1.Object.DomainBuilder);
 
             var appScope2 = new Mock<ApplicationServiceScope>()
             {
@@ -48,9 +53,18 @@ namespace ApplicationService.Test
             var tr4 = appScopeMock2.Object.RepositoryBuilder.Create<ITransactionRepository>();
 
             Assert.AreEqual(tr3, tr4);
+            Assert.AreEqual(db1, appScopeMock2.Object.DomainBuilder);
 
             Assert.AreNotEqual(tr1, tr3);
             Assert.AreNotEqual(tr2, tr4);
+
+            appScopeMock1.Object.Dispose();
+
+            var db3 = di.ResolveType<IDomainBuilder>();
+            Assert.IsNotNull(db3, "Cannot resolve instance from root DI");
+            Assert.AreEqual(db1, db3);
+            Assert.IsNull(appScopeMock1.Object.DomainBuilder);
+            Assert.IsNotNull(appScopeMock2.Object.DomainBuilder);
         }
     }
 }

@@ -44,7 +44,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
             container.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
             container.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
             container.Bind<ApplicationServiceConfigurator>().ToSelf();
-            container.Bind<IDependencyInjectionModule>().To<TestScopeContainerInitializer>().InSingletonScope().Named("ApplicationScopeModule");
+            container.Bind<IDependencyInjectionModule>().To<TestScopeContainerInitializer>().Named("ApplicationScopeModule");
         }
 
         [ClassCleanup]
@@ -218,11 +218,15 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 .Returns(Task.CompletedTask);
 
             var builderMock = new Mock<IProtocolConfigurationBuilder>();
+
+            di.Rebind<IDependencyInjectionModule>(new AppServiceTestContainerInitializer(transactionRepositoryMock.Object))
+                .Named("ApplicationScopeModule");
+
             di.Rebind<ICommandBus>(busImpl);
 
             di.Rebind<IDomainEventBus>(busImpl);
             di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
-            di.Rebind<ITransactionRepository>(transactionRepositoryMock.Object);
+            // di.Rebind<ITransactionRepository>(transactionRepositoryMock.Object);
             di.Rebind<IEndpointDataProcessor>(jmsEndpointProcessorMock.Object);
             di.Rebind<IConnectionConfigurationBuilder>(jmsConnectionBuilder.Object).InSingletonScope().Named("connection-builder-jms");
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
@@ -467,11 +471,13 @@ namespace AMSLLC.Listener.ApplicationService.Test
 
             var di = ApplicationIntegration.DependencyResolver as TestDependencyInjectionAdapter;
 
+            di.Rebind<IDependencyInjectionModule>(new AppServiceTestContainerInitializer(transactionRepositoryMock.Object))
+                .Named("ApplicationScopeModule");
 
             di.Rebind<ICommandBus>(busImpl);
             di.Rebind<IDomainEventBus>(busImpl);
             di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
-            di.Rebind<ITransactionRepository>(transactionRepositoryMock.Object);
+            // di.Rebind<ITransactionRepository>(transactionRepositoryMock.Object);
             di.Rebind<IEndpointDataProcessor>(jmsEndpointProcessorMock.Object);
             di.Rebind<IConnectionConfigurationBuilder>(jmsConnectionBuilder.Object).Named("connection-builder-jms");
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");

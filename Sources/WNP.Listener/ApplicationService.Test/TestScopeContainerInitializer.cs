@@ -28,6 +28,23 @@ namespace ApplicationService.Test
         }
     }
 
+    public class AppServiceTestContainerInitializer : IDependencyInjectionModule
+    {
+        private ITransactionRepository rep;
+        public AppServiceTestContainerInitializer(ITransactionRepository transactionRepository)
+        {
+            this.rep = transactionRepository;
+        }
+
+        public void Initialize(
+            object container)
+        {
+            var kernel = (StandardKernel)container;
+            kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
+            kernel.Bind<ITransactionRepository>().ToConstant(this.rep);
+        }
+    }
+
     public class TestTransactionRepository : ITransactionRepository
     {
         public void Dispose()
@@ -50,7 +67,8 @@ namespace ApplicationService.Test
         public Task<IMemento> GetExecutionContextAsync(
             Guid recordKey)
         {
-            throw new NotImplementedException();
+            return Task.FromResult((IMemento)null);
+            // throw new NotImplementedException();
         }
 
         public Task CreateTransactionRegistryAsync(

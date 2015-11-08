@@ -90,7 +90,7 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<ICommandBus>().To<InMemoryBus>().InSingletonScope();
             this.Kernel.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
             this.Kernel.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
-            this.Kernel.Bind<IBatchBuilder>().To<MeterTestResultBatchBuilder>().InSingletonScope();
+            this.Kernel.Bind<IBatchBuilder>().To<MeterTestResultBatchBuilder>();
             this.Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
 
             // -------------------------
