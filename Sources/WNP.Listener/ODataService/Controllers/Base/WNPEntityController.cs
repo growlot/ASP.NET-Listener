@@ -32,7 +32,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     /// <summary>
     /// Base class for all controllers working with WNP entities
     /// </summary>
-    public abstract class WNPEntityController : WNPController, IBoundActionsContainer
+    public class WNPEntityController : WNPController
     {
         private readonly ODataValidationSettings defaultODataValidationSettings;
 
@@ -44,15 +44,13 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
         /// <param name="commandBus">The command bus.</param>
-        /// <param name="test">The test.</param>
-        protected WNPEntityController(
+        public WNPEntityController(
             IMetadataProvider metadataService,
             IWNPUnitOfWork unitofwork,
             IFilterTransformer filterTransformer,
             IActionConfigurator actionConfigurator,
-            ICommandBus commandBus,
-            CurrentUnitOfWork test = null)
-            : base(metadataService, unitofwork, filterTransformer, actionConfigurator, commandBus, test)
+            ICommandBus commandBus)
+            : base(metadataService, unitofwork, filterTransformer, actionConfigurator, commandBus)
         {
             this.defaultODataValidationSettings = new ODataValidationSettings()
             {
@@ -135,8 +133,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var queryOptions = this.ConstructQueryOptions();
             queryOptions.Validate(this.defaultODataValidationSettings);
 
-            var oDataModelType = queryOptions.Context.ElementClrType;
-            var modelMapping = this.metadataService.GetModelMapping(oDataModelType);
+            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
 
             var entityConfig = modelMapping.EntityConfiguration;
             var hasCompositeKey = entityConfig.Key?.Count() > 1;
@@ -185,11 +182,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var rawData = (IDictionary<string, object>)dbResults[0];
             foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
             {
-                var property = oDataModelType.GetProperty(modelMapping.ColumnToModelMappings[kk.ToUpperInvariant()]);
+                var property = this.EdmEntityClrType.GetProperty(modelMapping.ColumnToModelMappings[kk.ToUpperInvariant()]);
                 property.SetValue(entityInstance, Converters.Convert(rawData[kk], property.PropertyType));
             }
 
-            return this.CreateSimpleOkResponse(oDataModelType, entityInstance);
+            return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
         }
 
         /// <summary>
@@ -228,9 +225,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             return await this.InvokeAction(actionsContainerType, actionName, keySegment);
         }
-
-        /// <inheritdoc/>
-        public abstract string GetEntityTableName();
 
         /// <summary>
         /// Gets the property value from delta object if it is in delta, or returns current value.

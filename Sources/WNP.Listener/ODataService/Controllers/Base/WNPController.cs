@@ -41,7 +41,7 @@
 
         protected readonly ICommandBus commandBus;
 
-        protected WNPController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, CurrentUnitOfWork test = null)
+        protected WNPController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus)
         {
             this.metadataService = metadataService;
             this.unitOfWork = unitOfWork;

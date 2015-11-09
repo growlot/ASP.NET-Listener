@@ -32,17 +32,19 @@ namespace AMSLLC.Listener.ODataService
         {
             this.metadataService = metadataService;
 
+            // selects all controllers that are inheriting from WNPEntityController
             var entityControllers =
                 AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(assembly => assembly.GetTypes())
-                    .Where(type => type != typeof(WNPEntityController))
-                    .Where(type => typeof(WNPEntityController).IsAssignableFrom(type))
+                    .Where(type => type != typeof(WNPEntityControllerBase))
+                    .Where(type => typeof(WNPEntityControllerBase).IsAssignableFrom(type))
                     .ToList();
 
+            // map table name to controller.
             entityControllers.Map(
                 type =>
                 {
-                    var entityTableName = ((IBoundActionsContainer)FormatterServices.GetUninitializedObject(type)).GetEntityTableName();
+                    var entityTableName = ((IWNPEntityController)FormatterServices.GetUninitializedObject(type)).GetEntityTableName();
                     var controllerName = type.Name.Substring(0, type.Name.IndexOf("Controller", StringComparison.Ordinal));
 
                     this.entityNameToController.Add(entityTableName, controllerName);
@@ -52,15 +54,25 @@ namespace AMSLLC.Listener.ODataService
         /// <inheritdoc/>
         public string SelectAction(ODataPath odataPath, HttpControllerContext controllerContext, ILookup<string, HttpActionDescriptor> actionMap)
         {
-            switch (odataPath.PathTemplate)
+            if (controllerContext.Request.Method == HttpMethod.Post)
             {
-                case "~/entityset/key/action":
-                case "~/entityset/action":
-                    return "EntityActionHandler";
-                case "~/unboundaction":
-                    return "UnboundActionHandler";
-                case "~/entityset/key":
-                    return "GetSingle";
+                switch (odataPath.PathTemplate)
+                {
+                    case "~/entityset/key/action":
+                    case "~/entityset/action":
+                        return "EntityActionHandler";
+                    case "~/unboundaction":
+                        return "UnboundActionHandler";
+                }
+            }
+
+            if (controllerContext.Request.Method == HttpMethod.Get)
+            {
+                switch (odataPath.PathTemplate)
+                {
+                    case "~/entityset/key":
+                        return "GetSingle";
+                }
             }
 
             return null;
@@ -87,12 +99,22 @@ namespace AMSLLC.Listener.ODataService
             var entityName = entitySetName.Remove(entitySetName.Length - 1);
 
             var metadataModel = this.metadataService.GetModelMapping(entityName);
-            if (this.entityNameToController.ContainsKey(metadataModel.TableName))
+
+            // for models defined in WNP metadata
+            if (metadataModel != null)
             {
-                return this.entityNameToController[metadataModel.TableName];
+                // if there is entity specific controller defined, use it
+                if (this.entityNameToController.ContainsKey(metadataModel.TableName))
+                {
+                    return this.entityNameToController[metadataModel.TableName];
+                }
+
+                // if there is no entity specific controller, use base WNPEntityController
+                return "WNPEntity";
             }
 
-            return entitySetName;
+            // for models that are not WNP metadata based, use default routing logic
+            return null;
         }
     }
 }

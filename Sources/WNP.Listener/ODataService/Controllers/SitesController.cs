@@ -25,7 +25,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     /// <summary>
     /// Controller for Sites.
     /// </summary>
-    public class SitesController : WNPEntityController
+    public class SitesController : WNPEntityControllerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SitesController" /> class.
@@ -35,9 +35,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
         /// <param name="commandBus">The command bus.</param>
-        /// <param name="test">The test.</param>
-        public SitesController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, CurrentUnitOfWork test)
-            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus, test)
+        public SitesController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus)
+            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus)
         {
         }
 

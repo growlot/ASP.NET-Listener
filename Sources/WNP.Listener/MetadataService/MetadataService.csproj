@@ -120,6 +120,7 @@
     <Compile Include="Implementations\MetadataProvider.cs" />
     <Compile Include="IODataEntity.cs" />
     <Compile Include="IUnboundActionsContainer.cs" />
+    <Compile Include="IWNPEntityController.cs" />
     <Compile Include="RelationInformation.cs" />
     <Compile Include="WNPMetadataMapping.cs" />
     <Compile Include="MetadataFieldInfo.cs" />

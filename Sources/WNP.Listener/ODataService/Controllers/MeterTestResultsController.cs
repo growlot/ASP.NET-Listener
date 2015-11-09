@@ -16,10 +16,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
     /// <summary>
     /// Controller for MeterTestResults entity
     /// </summary>
-    public class MeterTestResultsController : WNPEntityController
+    public class MeterTestResultsController : WNPEntityControllerBase
     {
 
-        public MeterTestResultsController(IMetadataProvider metadataService, IWNPUnitOfWork unitofwork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, CurrentUnitOfWork test = null) : base(metadataService, unitofwork, filterTransformer, actionConfigurator, commandBus, test)
+        public MeterTestResultsController(IMetadataProvider metadataService, IWNPUnitOfWork unitofwork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus)
+            : base(metadataService, unitofwork, filterTransformer, actionConfigurator, commandBus)
         {
         }
 

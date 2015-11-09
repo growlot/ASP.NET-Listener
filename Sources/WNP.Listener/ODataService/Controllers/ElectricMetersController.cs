@@ -20,7 +20,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     /// Controller for electric meters
     /// </summary>
     [ActionPrefix("ElectricMeter")]
-    public class ElectricMetersController : WNPEntityController
+    public class ElectricMetersController : WNPEntityControllerBase, IBoundActionsContainer
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ElectricMetersController" /> class.
