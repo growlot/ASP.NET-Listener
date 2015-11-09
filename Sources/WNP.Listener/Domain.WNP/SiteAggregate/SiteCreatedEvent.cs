@@ -5,7 +5,7 @@
 namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
     /// <summary>
-    /// Event generated after new site is added.
+    /// Event generated after new site is created.
     /// </summary>
     public class SiteCreatedEvent : IDomainEvent
     {

@@ -1,14 +1,13 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="UpdateSiteDetails.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="UpdateSiteDetailsCommand.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-//-----------------------------------------------------------------------
+
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
     /// <summary>
-    /// Information needed for site details update.
+    /// Update site details command
     /// </summary>
-    public class UpdateSiteDetails : ICommand
+    public class UpdateSiteDetailsCommand : ICommand
     {
         /// <summary>
         /// Gets or sets the owner.
@@ -27,19 +26,19 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public int SiteId { get; set; }
 
         /// <summary>
-        /// Gets or sets the is interconnect.
+        /// Gets the description.
         /// </summary>
         /// <value>
-        /// The is interconnect.
+        /// The description.
         /// </value>
-        public string IsInterconnect { get; set; }
+        public string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the interconnect utility name.
+        /// Gets the premise number.
         /// </summary>
         /// <value>
-        /// The interconnect utility name.
+        /// The premise number.
         /// </value>
-        public string InterconnectUtilityName { get; set; }
+        public string PremiseNumber { get; set; }
     }
 }

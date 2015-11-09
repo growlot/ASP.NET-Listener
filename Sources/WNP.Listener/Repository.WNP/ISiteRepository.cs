@@ -37,5 +37,17 @@ namespace AMSLLC.Listener.Repository.WNP
         /// <param name="siteDescription">The site description.</param>
         /// <returns>The owner mementos.</returns>
         Task<IMemento> GetOwnerWithCollidingSites(int owner, string sitePremiseNumber, string siteDescription);
+
+        /// <summary>
+        /// Gets the owner with sites that belong to this owner and have same site identity, premise number or description.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="siteId">The site identifier.</param>
+        /// <param name="sitePremiseNumber">The site premise number.</param>
+        /// <param name="siteDescription">The site description.</param>
+        /// <returns>
+        /// The owner mementos.
+        /// </returns>
+        Task<IMemento> GetOwnerWithCollidingSites(int owner, int siteId, string sitePremiseNumber, string siteDescription);
     }
 }

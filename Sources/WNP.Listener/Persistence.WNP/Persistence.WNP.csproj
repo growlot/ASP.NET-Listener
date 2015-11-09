@@ -85,6 +85,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="DomainEventHandlers\EventPesistenceHandler.cs" />
+    <Compile Include="DomainEventHandlers\SiteDetailsUpdatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\SiteBillingAccountUpdatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\SiteAddressUpdatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\SiteCreatedEventHandler.cs" />

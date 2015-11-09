@@ -136,6 +136,14 @@ namespace AMSLLC.Listener.Bootstrapper
                 .ToSelf()
                 .InRequestScope()
                 .WithConstructorArgument("user", "username");
+            this.Kernel.Bind<CircuitCreatedEventHandler>()
+                .ToSelf()
+                .InRequestScope()
+                .WithConstructorArgument("user", "username");
+            this.Kernel.Bind<SiteDetailsUpdatedEventHandler>()
+                .ToSelf()
+                .InRequestScope()
+                .WithConstructorArgument("user", "username");
 
             // -------------------------
             // OData service bindings

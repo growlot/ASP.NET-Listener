@@ -213,6 +213,31 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         public abstract string GetEntityTableName();
 
         /// <summary>
+        /// Gets the property value from delta object if it is in delta, or returns current value.
+        /// </summary>
+        /// <typeparam name="T">Type of the property</typeparam>
+        /// <typeparam name="TEntity">The type of the delta entity.</typeparam>
+        /// <param name="delta">The delta.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="currentValue">The current value.</param>
+        /// <returns>Property value.</returns>
+        protected static T GetChangedOrCurrent<T, TEntity>(Delta<TEntity> delta, string propertyName, T currentValue)
+                    where TEntity : class
+        {
+            if (delta.GetChangedPropertyNames().Contains(propertyName))
+            {
+                object value;
+                delta.TryGetPropertyValue(propertyName, out value);
+                if (value != null)
+                {
+                    return (T)value;
+                }
+            }
+
+            return currentValue;
+        }
+
+        /// <summary>
         /// Creates the typed OK response from specified list of result objects.
         /// </summary>
         /// <param name="result">The list of result objects.</param>

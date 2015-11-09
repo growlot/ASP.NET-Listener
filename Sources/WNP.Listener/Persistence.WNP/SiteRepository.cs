@@ -47,43 +47,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         /// <inheritdoc/>
         public Task<IMemento> GetOwnerWithCollidingSites(int owner, string sitePremiseNumber, string siteDescription)
         {
-            var select = Sql.Builder.Select("*")
-                .From(DBMetadata.Site.FullTableName)
-                .Where($"{DBMetadata.Site.Owner} = @0", owner);
-
-            if (!string.IsNullOrWhiteSpace(sitePremiseNumber) && !string.IsNullOrWhiteSpace(siteDescription))
-            {
-                select.Where($"{DBMetadata.Site.Owner} = @0 and ({DBMetadata.Site.SiteDescription} = @1 or {DBMetadata.Site.PremiseNo} = @2)", owner, siteDescription, sitePremiseNumber);
-            }
-            else if (!string.IsNullOrWhiteSpace(sitePremiseNumber))
-            {
-                select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.PremiseNo} = @1", owner, sitePremiseNumber);
-            }
-            else if (!string.IsNullOrWhiteSpace(siteDescription))
-            {
-                select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.SiteDescription} = @1", owner, siteDescription);
-            }
-            else
-            {
-                select.Where($"{DBMetadata.Site.Owner} = @0", owner);
-            }
-
-            var siteEntities = this.dbContext.Fetch<SiteEntity>(select);
-
-            var siteMementos = new List<OwnerSiteMemento>();
-            foreach (var siteEntity in siteEntities)
-            {
-                var siteMemento = new OwnerSiteMemento(
-                    site: siteEntity.Site.Value,
-                    description: siteEntity.SiteDescription,
-                    premiseNumber: siteEntity.PremiseNo);
-
-                siteMementos.Add(siteMemento);
-            }
-
-            var ownerMemento = new OwnerMemento(owner, siteMementos);
-
-            return Task.FromResult((IMemento)ownerMemento);
+            return this.GetOwnerWithCollidingSites(owner, -1, sitePremiseNumber, siteDescription);
         }
 
         /// <inheritdoc/>
@@ -105,9 +69,56 @@ namespace AMSLLC.Listener.Persistence.WNP
                 billingAccountName: siteEntity.AccountName,
                 billingAccountNumber: siteEntity.AccountNo,
                 interconnectUtilityName: siteEntity.InterconnectUtility,
-                isInterconnect: siteEntity.IsInterconnect == "Y" ? true : false);
+                isInterconnect: siteEntity.IsInterconnect == "Y" ? true : false,
+                circuits: null);
 
             return Task.FromResult((IMemento)siteMemento);
+        }
+
+        /// <inheritdoc/>
+        public Task<IMemento> GetOwnerWithCollidingSites(int owner, int siteId, string sitePremiseNumber, string siteDescription)
+        {
+            var siteMementos = new List<OwnerSiteMemento>();
+
+            var select = Sql.Builder.Select("*")
+                .From(DBMetadata.Site.FullTableName);
+
+            if (!string.IsNullOrWhiteSpace(sitePremiseNumber))
+            {
+                var sitesWithSamePremiseNumber = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.PremiseNo} = @1", owner, sitePremiseNumber));
+                siteMementos.AddRange(sitesWithSamePremiseNumber);
+            }
+
+            if (!string.IsNullOrWhiteSpace(siteDescription))
+            {
+                var sitesWithSameDescription = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.SiteDescription} = @1", owner, siteDescription));
+                siteMementos.AddRange(sitesWithSameDescription);
+            }
+
+            var sitesWithSameId = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1", owner, siteId));
+            siteMementos.AddRange(sitesWithSameId);
+
+            var ownerMemento = new OwnerMemento(owner, siteMementos);
+
+            return Task.FromResult((IMemento)ownerMemento);
+        }
+
+        private List<OwnerSiteMemento> GetSites(Sql select)
+        {
+            var siteMementos = new List<OwnerSiteMemento>();
+            var siteEntities = this.dbContext.Fetch<SiteEntity>(select);
+
+            foreach (var siteEntity in siteEntities)
+            {
+                var siteMemento = new OwnerSiteMemento(
+                    site: siteEntity.Site.Value,
+                    description: siteEntity.SiteDescription,
+                    premiseNumber: siteEntity.PremiseNo);
+
+                siteMementos.Add(siteMemento);
+            }
+
+            return siteMementos;
         }
     }
 }

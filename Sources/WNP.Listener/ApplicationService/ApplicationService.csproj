@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="ApplicationServiceConfigurator.cs" />
     <Compile Include="CommandHandlers\CommandHandlerBase.cs" />
+    <Compile Include="CommandHandlers\UpdateSiteDetailsCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateSiteBillingAccountCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateSiteAddressCommandHandler.cs" />
     <Compile Include="Commands\UpdateSiteAddressCommand.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Commands\CancelTransactionsCommand.cs" />
     <Compile Include="Commands\OpenBatchTransactionCommand.cs" />
     <Compile Include="Commands\ProcessingTransactionCommand.cs" />
+    <Compile Include="Commands\UpdateSiteDetailsCommand.cs" />
     <Compile Include="IBatchBuilder.cs" />
     <Compile Include="Implementations\WnpIntegrationService.cs" />
     <Compile Include="ISaga.cs" />

@@ -105,17 +105,41 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
             else
             {
-                var site = this.GetRequestEntity<SiteEntity>();
-                return this.CreateSite(site);
+                var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
+                var premiseNumberFieldName = modelMapping.ColumnToModelMappings[DBMetadata.Site.PremiseNo.ToUpperInvariant()];
+                if (modelMapping.FieldInfo[premiseNumberFieldName].IsPrimaryKey)
+                {
+                    var site = this.GetRequestEntity<SiteEntity>();
+                    site.PremiseNo = key;
+                    return this.CreateSite(site);
+                }
+                else
+                {
+                    return this.PrepareGetResponse(existingSite);
+                }
             }
         }
 
         private async Task<IHttpActionResult> UpdateSite(SiteEntity existingSite, Delta<SiteEntity> siteDelta, string key)
         {
-            List<Task> commandResults = new List<Task>();
-
             var changedProperties = siteDelta.GetChangedPropertyNames();
-            object value;
+
+            if (changedProperties.Contains(nameof(SiteEntity.InterconnectUtility))
+                || changedProperties.Contains(nameof(SiteEntity.IsInterconnect)))
+            {
+                throw new NotImplementedException("Update of the properties InterconnectUtility, IsInterconnect, is not yet implemented");
+                ////var updateSiteDetails = new UpdateSiteDetails()
+                ////{
+                ////    Owner = this.Owner,
+                ////    SiteId = existingSite.Site.Value,
+                ////    IsInterconnect = siteDelta.TryGetPropertyValue(nameof(SiteEntity.IsInterconnect), out value) ? (string)value : existingSite.IsInterconnect,
+                ////    InterconnectUtilityName = siteDelta.TryGetPropertyValue(nameof(SiteEntity.InterconnectUtility), out value) ? (string)value : existingSite.InterconnectUtility
+                ////};
+
+                ////commandResults.Add(this.commandBus.PublishAsync(updateSiteDetails));
+            }
+
+            List<Task> commandResults = new List<Task>();
 
             if (changedProperties.Contains(nameof(SiteEntity.AccountNo))
                 || changedProperties.Contains(nameof(SiteEntity.AccountName)))
@@ -124,8 +148,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 {
                     Owner = this.Owner,
                     SiteId = existingSite.Site.Value,
-                    BillingAccountName = siteDelta.TryGetPropertyValue(nameof(SiteEntity.AccountName), out value) ? (string)value : existingSite.AccountName,
-                    BillingAccountNumber = siteDelta.TryGetPropertyValue(nameof(SiteEntity.AccountNo), out value) ? (string)value : existingSite.AccountNo
+                    BillingAccountName = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.AccountName), existingSite.AccountName),
+                    BillingAccountNumber = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.AccountNo), existingSite.AccountNo)
                 };
 
                 commandResults.Add(this.commandBus.PublishAsync(updateSiteBillingAccount));
@@ -142,34 +166,29 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 {
                     Owner = this.Owner,
                     SiteId = existingSite.Site.Value,
-                    Country = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteCountry), out value) ? (string)value : existingSite.SiteCountry,
-                    State = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteState), out value) ? (string)value : existingSite.SiteState,
-                    City = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteCity), out value) ? (string)value : existingSite.SiteCity,
-                    Address1 = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteAddress), out value) ? (string)value : existingSite.SiteAddress,
-                    Address2 = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteAddress2), out value) ? (string)value : existingSite.SiteAddress2,
-                    Zip = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteZipcode), out value) ? (string)value : existingSite.SiteZipcode
+                    Country = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.SiteCountry), existingSite.SiteCountry),
+                    State = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.SiteState), existingSite.SiteState),
+                    City = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.SiteCity), existingSite.SiteCity),
+                    Address1 = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.SiteAddress), existingSite.SiteAddress),
+                    Address2 = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.SiteAddress2), existingSite.SiteAddress2),
+                    Zip = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.SiteZipcode), existingSite.SiteZipcode)
                 };
 
                 commandResults.Add(this.commandBus.PublishAsync(updateSiteAddress));
             }
 
-            if (changedProperties.Contains(nameof(SiteEntity.InterconnectUtility))
-                || changedProperties.Contains(nameof(SiteEntity.IsInterconnect))
-                || changedProperties.Contains(nameof(SiteEntity.PremiseNo))
+            if (changedProperties.Contains(nameof(SiteEntity.PremiseNo))
                 || changedProperties.Contains(nameof(SiteEntity.SiteDescription)))
             {
-                throw new NotImplementedException("Update of the properties InterconnectUtility, IsInterconnect, PremisNo, SiteDescription is not yet implemented");
-                ////var updateSiteDetails = new UpdateSiteDetails()
-                ////{
-                ////    Owner = this.Owner,
-                ////    SiteId = existingSite.Site.Value,
-                ////    Description = siteDelta.TryGetPropertyValue(nameof(SiteEntity.SiteDescription), out value) ? (string)value : existingSite.SiteDescription,
-                ////    PremiseNumber = siteDelta.TryGetPropertyValue(nameof(SiteEntity.PremiseNo), out value) ? (string)value : existingSite.PremiseNo,
-                ////    IsInterconnect = siteDelta.TryGetPropertyValue(nameof(SiteEntity.IsInterconnect), out value) ? (string)value : existingSite.IsInterconnect,
-                ////    InterconnectUtilityName = siteDelta.TryGetPropertyValue(nameof(SiteEntity.InterconnectUtility), out value) ? (string)value : existingSite.InterconnectUtility
-                ////};
+                var updateSiteDetails = new UpdateSiteDetailsCommand()
+                {
+                    Owner = this.Owner,
+                    SiteId = existingSite.Site.Value,
+                    Description = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.SiteDescription), existingSite.SiteDescription),
+                    PremiseNumber = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.PremiseNo), existingSite.PremiseNo)
+                };
 
-                ////commandResults.Add(this.commandBus.PublishAsync(updateSiteDetails));
+                commandResults.Add(this.commandBus.PublishAsync(updateSiteDetails));
             }
 
             await Task.WhenAll(commandResults);
@@ -227,7 +246,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     .Where($"{DBMetadata.Site.Site}=@0", int.Parse(key, CultureInfo.InvariantCulture));
             }
 
-            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<SiteEntity>(sql);
+            var dbContext = ((WNPUnitOfWork)this.unitOfWork).DbContext;
+            var result = dbContext.FirstOrDefault<SiteEntity>(sql);
+            return result;
         }
     }
 }

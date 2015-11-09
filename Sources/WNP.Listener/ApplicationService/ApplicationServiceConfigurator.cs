@@ -15,6 +15,7 @@ namespace AMSLLC.Listener.ApplicationService
     using Domain.Listener.Transaction;
     using Domain.WNP.OwnerAggregate;
     using Domain.WNP.SiteAggregate;
+    using Domain.WNP.SiteAggregate.CircuitChild;
     using Persistence.WNP.DomainEventHandlers;
 
     /// <summary>
@@ -50,6 +51,8 @@ namespace AMSLLC.Listener.ApplicationService
                 command => ApplicationIntegration.DependencyResolver.ResolveType<UpdateSiteBillingAccountCommandHandler>().HandleAsync(command));
             this.commandBus.Subscribe<UpdateSiteAddressCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<UpdateSiteAddressCommandHandler>().HandleAsync(command));
+            this.commandBus.Subscribe<UpdateSiteDetailsCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<UpdateSiteDetailsCommandHandler>().HandleAsync(command));
         }
 
         /// <summary>
@@ -100,6 +103,10 @@ namespace AMSLLC.Listener.ApplicationService
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteAddressUpdatedEventHandler>().HandleAsync(domainEvent));
             this.domainEventBus.SubscribeAsync<SiteBillingAccountUpdated>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteBillingAccountUpdatedEventHandler>().HandleAsync(domainEvent));
+            this.domainEventBus.SubscribeAsync<CircuitCreatedEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<CircuitCreatedEventHandler>().HandleAsync(domainEvent));
+            this.domainEventBus.SubscribeAsync<SiteDetailsUpdated>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteDetailsUpdatedEventHandler>().HandleAsync(domainEvent));
         }
     }
 }
