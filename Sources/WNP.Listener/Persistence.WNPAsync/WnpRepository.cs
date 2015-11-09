@@ -11,6 +11,8 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
     using Repository;
     using Repository.WNP;
     using Repository.WNP.Model;
+    using WNP;
+    using WNP.Metadata;
 
     /// <summary>
     /// Class WnpRepository.
@@ -34,34 +36,34 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
         /// </summary>
         /// <param name="batchNumber">The batch number.</param>
         /// <returns>Task&lt;Collection&lt;Meter&gt;&gt;.</returns>
-        public async Task<ICollection<Meter>> GetMeterTestBatchAsync(
-            string batchNumber)
+        public async Task<ICollection<Meter>> GetMeterTestBatchAsync(string batchNumber)
         {
-            string sql = @"SELECT
+            string sql = $@"
+SELECT
 	TR.*
 FROM
-	[wndba].[TMETER_TEST_RESULTS] TR
-	INNER JOIN [wndba].[TEQP_METER] M ON TR.[EQP_NO] = M.[EQP_NO]
+	{DBMetadata.MeterTestResults.FullTableName} TR
+	INNER JOIN {DBMetadata.EqpMeter.FullTableName} M ON TR.{DBMetadata.MeterTestResults.EqpNo} = M.{DBMetadata.EqpMeter.EqpNo}
 WHERE
-	M.[NEW_BATCH_NO] = @0 AND TR.STEP_NO = 1";
+	M.{DBMetadata.EqpMeter.NewBatchNo} = @0 AND TR.{DBMetadata.MeterTestResults.StepNo} = 1";
 
-            var tests = await this.persistenceAdapter.GetListAsync<TMETER_TEST_RESULTEntity>(sql, false, batchNumber);
+            var tests = await this.persistenceAdapter.GetListAsync<MeterTestResultsEntity>(sql, false, batchNumber);
             return Enumerable.GroupBy(
                 tests,
                 o => new
                 {
-                    o.EQP_NO,
-                    o.OWNER
+                    o.EqpNo,
+                    o.Owner
                 }).Select(
                     s => new Meter(
                         s.Select(
                             ss => new MeterTest
                             {
-                                StartDate = ss.TEST_DATE_START
+                                StartDate = ss.TestDateStart
                             }))
                     {
-                        EquipmentNumber = s.Key.EQP_NO,
-                        Owner = s.Key.OWNER
+                        EquipmentNumber = s.Key.EqpNo,
+                        Owner = s.Key.Owner
                     }).ToList();
         }
     }

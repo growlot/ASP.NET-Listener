@@ -4,9 +4,7 @@
 
 namespace AMSLLC.Listener.Bootstrapper
 {
-    using System;
     using ApplicationService;
-    using ApplicationService.Implementations;
     using Core;
     using Ninject;
     using Persistence.Listener;

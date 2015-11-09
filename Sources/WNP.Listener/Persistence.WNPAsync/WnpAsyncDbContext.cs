@@ -19,8 +19,7 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="providerName">Name of the provider.</param>
-        public WnpAsyncDbContext(string connectionString,
-            string providerName)
+        public WnpAsyncDbContext(string connectionString, string providerName)
             : base(connectionString, providerName)
         {
         }
@@ -30,8 +29,7 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="provider">The provider.</param>
-        public WnpAsyncDbContext(string connectionString,
-                    DbProviderFactory provider)
+        public WnpAsyncDbContext(string connectionString, DbProviderFactory provider)
                     : base(connectionString, provider)
         {
         }
@@ -51,7 +49,11 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
         /// <param name="cmd">The command.</param>
         public override void OnExecutingCommand(IDbCommand cmd)
         {
-            Log.Information(cmd.CommandText);
+            if (cmd != null)
+            {
+                Log.Information(cmd.CommandText);
+            }
+
             base.OnExecutingCommand(cmd);
         }
     }

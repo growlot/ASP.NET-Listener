@@ -259,7 +259,7 @@
       <Name>Persistence.Poco</Name>
     </ProjectReference>
     <ProjectReference Include="..\Persistence.WNPAsync\Persistence.WNPAsync.csproj">
-      <Project>{6B57711D-F549-4D80-AB52-2C22FFA113A2}</Project>
+      <Project>{6b57711d-f549-4d80-ab52-2c22ffa113a2}</Project>
       <Name>Persistence.WNPAsync</Name>
     </ProjectReference>
     <ProjectReference Include="..\Persistence.WNP\Persistence.WNP.csproj">

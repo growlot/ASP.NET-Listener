@@ -4,9 +4,7 @@
 
 namespace AMSLLC.Listener.Persistence.WNPAsync
 {
-    using System;
     using AMSLLC.Listener.Core;
-    using AsyncPoco;
     using Poco;
 
     /// <summary>
