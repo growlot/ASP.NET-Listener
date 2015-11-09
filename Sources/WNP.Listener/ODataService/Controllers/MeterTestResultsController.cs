@@ -19,11 +19,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
     public class MeterTestResultsController : WNPEntityController
     {
 
-        /// <inheritdoc/>
-        public override string GetEntityTableName() => DBMetadata.MeterTestResults.FullTableName;
-
         public MeterTestResultsController(IMetadataProvider metadataService, IWNPUnitOfWork unitofwork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, CurrentUnitOfWork test = null) : base(metadataService, unitofwork, filterTransformer, actionConfigurator, commandBus, test)
         {
         }
+
+        /// <inheritdoc/>
+        public override string GetEntityTableName() => DBMetadata.MeterTestResults.FullTableName;
     }
 }

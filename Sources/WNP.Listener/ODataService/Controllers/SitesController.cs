@@ -45,27 +45,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
         public override string GetEntityTableName() => DBMetadata.Site.FullTableName;
 
         /// <summary>
-        /// Gets the specified Site by key.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>The Site.</returns>
-        public Task<IHttpActionResult> Get([FromODataUri] string key)
-        {
-            // we can infer model type from the ODataQueryOptions
-            // we created earlier
-            if (!this.ModelState.IsValid)
-            {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
-            }
-
-            var queryOptions = this.ConstructQueryOptions();
-
-            var existingSite = this.GetExisting(key);
-
-            return this.PrepareGetResponse(existingSite);
-        }
-
-        /// <summary>
         /// Adds new Site.
         /// </summary>
         /// <returns>The OData response for newly created Site.</returns>

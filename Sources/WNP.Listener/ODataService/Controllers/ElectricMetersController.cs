@@ -22,9 +22,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     [ActionPrefix("ElectricMeter")]
     public class ElectricMetersController : WNPEntityController
     {
-        /// <inheritdoc/>
-        public override string GetEntityTableName() => DBMetadata.EqpMeter.FullTableName;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ElectricMetersController" /> class.
         /// </summary>
@@ -36,6 +33,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus)
         {
         }
+
+        /// <inheritdoc/>
+        public override string GetEntityTableName() => DBMetadata.EqpMeter.FullTableName;
 
         /// <summary>
         /// Example URI: ~/ElectricMeters('1')/AMSLLC.Listener.ElectricMeter_Test

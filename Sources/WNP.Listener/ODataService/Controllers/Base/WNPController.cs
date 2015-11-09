@@ -41,10 +41,6 @@
 
         protected readonly ICommandBus commandBus;
 
-        protected int Owner { get; set; }
-
-        protected Type EdmEntityClrType { get; set; }
-
         protected WNPController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, CurrentUnitOfWork test = null)
         {
             this.metadataService = metadataService;
@@ -53,6 +49,10 @@
             this.actionConfigurator = actionConfigurator;
             this.commandBus = commandBus;
         }
+
+        protected int Owner { get; set; }
+
+        protected Type EdmEntityClrType { get; set; }
 
         public async Task<IHttpActionResult> UnboundActionHandler()
         {

@@ -29,10 +29,22 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Services.FilterTransformer;
     using Utilities;
 
+    /// <summary>
+    /// Base class for all controllers working with WNP entities
+    /// </summary>
     public abstract class WNPEntityController : WNPController, IBoundActionsContainer
     {
         private readonly ODataValidationSettings defaultODataValidationSettings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WNPEntityController"/> class.
+        /// </summary>
+        /// <param name="metadataService">The metadata service.</param>
+        /// <param name="unitofwork">The unitofwork.</param>
+        /// <param name="filterTransformer">The filter transformer.</param>
+        /// <param name="actionConfigurator">The action configurator.</param>
+        /// <param name="commandBus">The command bus.</param>
+        /// <param name="test">The test.</param>
         protected WNPEntityController(
             IMetadataProvider metadataService,
             IWNPUnitOfWork unitofwork,
@@ -50,6 +62,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             };
         }
 
+        /// <summary>
+        /// Gets this collection of entities.
+        /// </summary>
+        /// <returns>The collection of entities.</returns>
         public IHttpActionResult Get()
         {
             // constructing oData options since we can not use generic return type
@@ -109,9 +125,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         }
 
         /// <summary>
-        /// Generic handler for single result query.
+        /// Gets single entity using primary key specified in Url.
         /// </summary>
-        /// <returns><see cref="IHttpActionResult"/></returns>
+        /// <returns>Single entity</returns>
         public IHttpActionResult GetSingle()
         {
             // constructing oData options since we can not use generic return type
@@ -120,7 +136,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             queryOptions.Validate(this.defaultODataValidationSettings);
 
             var oDataModelType = queryOptions.Context.ElementClrType;
-            var modelMapping = metadataService.GetModelMapping(oDataModelType);
+            var modelMapping = this.metadataService.GetModelMapping(oDataModelType);
 
             var entityConfig = modelMapping.EntityConfiguration;
             var hasCompositeKey = entityConfig.Key?.Count() > 1;
@@ -176,6 +192,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return this.CreateSimpleOkResponse(oDataModelType, entityInstance);
         }
 
+        /// <summary>
+        /// Handles actions bound to entities or entity collections, by redirecting request to correct method.
+        /// </summary>
+        /// <returns>Action results</returns>
         public async Task<IHttpActionResult> EntityActionHandler()
         {
             var queryOptions = this.ConstructQueryOptions();
@@ -357,7 +377,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var converterObject = this.CreateEdmEntity();
             Delta<TEntity> entityDelta = (Delta<TEntity>)getEntityDeltaMethod.Invoke(converterObject, new object[] { edmEnityDelta });
             return entityDelta;
-
         }
 
         private string GetRequestContents(HttpRequestMessage request)
