@@ -14,8 +14,8 @@ namespace ListenerLiveTest.Client
     {
         static void Main(string[] args)
         {
-            const int parallelCount = 5;
-            const int totalRequests = 100;
+            const int parallelCount = 3;
+            const int totalRequests = 10;
             var log = new LoggerConfiguration().ReadFrom.AppSettings().CreateLogger();
             Log.Logger = log;
 
@@ -36,6 +36,7 @@ namespace ListenerLiveTest.Client
                                         }
 
                                         await manager.Run(new Uri("http://localhost:9000/listener/Open"), data.ToArray());
+                                        Log.Logger.Information("Manager completed");
                                     }
                                     catch (Exception exc)
                                     {

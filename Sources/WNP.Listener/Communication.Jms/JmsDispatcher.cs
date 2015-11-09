@@ -141,7 +141,7 @@ namespace AMSLLC.Listener.Communication.Jms
             producer.DeliveryMode = Constants.DeliveryMode.PERSISTENT;
 
             // create a text message
-            ITextMessage textMessage = CreateMessage(session, request.RecordKey, jmsAdapterConfiguration);
+            ITextMessage textMessage = CreateMessage(session, request, jmsAdapterConfiguration);
 
             // send the message
             producer.Send(textMessage);
@@ -152,10 +152,10 @@ namespace AMSLLC.Listener.Communication.Jms
             context.CloseAll();
         }
 
-        private static ITextMessage CreateMessage(ISession session, object data, ProtocolConfiguration configuration)
+        private static ITextMessage CreateMessage(ISession session, TransactionDataReady data, ProtocolConfiguration configuration)
         {
-            var returnValue = session.CreateTextMessage(JsonConvert.SerializeObject(data));
-            returnValue.JMSType = CreateMessageType(data, configuration.MessageTypeTemplate);
+            var returnValue = session.CreateTextMessage(JsonConvert.SerializeObject(data.RecordKey));
+            returnValue.JMSType = CreateMessageType(data.Data, configuration.MessageTypeTemplate);
             return returnValue;
         }
     }

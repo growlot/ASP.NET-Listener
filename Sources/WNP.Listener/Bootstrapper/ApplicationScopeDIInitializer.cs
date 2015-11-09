@@ -31,7 +31,6 @@ namespace AMSLLC.Listener.Bootstrapper
             kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
             kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
             kernel.Bind<IWnpBatchRepository>().To<WnpRepository>();
-            kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>();
         }
     }
 }

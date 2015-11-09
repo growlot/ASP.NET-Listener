@@ -66,7 +66,7 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Communication bindings
             // -------------------------
-            this.Kernel.Bind<ICommunicationHandler>().To<JmsDispatcher>().InSingletonScope().Named("communication-jms");
+            this.Kernel.Bind<ICommunicationHandler>().To<JmsDispatcher>().Named("communication-jms");
 
             // -------------------------
             // Metadata service bindings
@@ -96,9 +96,10 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             // Repository bindings
             // -------------------------
-            // this.Kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>();
-            // this.Kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>();
+            this.Kernel.Bind<IPersistenceAdapter>().To<ListenerPersistenceAdapter>().WhenClassHas<WithinListenerContextAttribute>();
+            this.Kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>();
             this.Kernel.Bind<IWnpIntegrationService>().To<WnpIntegrationService>().InSingletonScope();
+            this.Kernel.Bind<ITransactionDataRepository>().To<TransactionDataRepository>();
 
             // -------------------------
             // Repository.WNP bindings
