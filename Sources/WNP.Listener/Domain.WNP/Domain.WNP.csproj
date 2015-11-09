@@ -69,8 +69,13 @@
     <Compile Include="OwnerAggregate\Owner.cs" />
     <Compile Include="OwnerAggregate\OwnerMemento.cs" />
     <Compile Include="OwnerAggregate\OwnerSite.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Circuit.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\CircuitCreatedEvent.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\CircuitMemento.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\ElectricService.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\ServiceWiring.cs" />
     <Compile Include="SiteAggregate\InterconnectSite.cs" />
-    <Compile Include="SiteAggregate\GeoLocation.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\GeoLocation.cs" />
     <Compile Include="OwnerAggregate\SiteDetailsUpdated.cs" />
     <Compile Include="SiteAggregate\SiteCreatedEvent.cs" />
     <Compile Include="OwnerAggregate\OwnerSiteMemento.cs" />

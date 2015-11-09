@@ -88,6 +88,7 @@
     <Compile Include="DomainEventHandlers\SiteDetailsUpdatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\SiteBillingAccountUpdatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\SiteAddressUpdatedEventHandler.cs" />
+    <Compile Include="DomainEventHandlers\CircuitCreatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\SiteCreatedEventHandler.cs" />
     <Compile Include="FluentColumnMap.cs" />
     <Compile Include="FluentMapperExtensions.cs" />

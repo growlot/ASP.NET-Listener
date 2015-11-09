@@ -3,7 +3,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
+namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
 {
     using System;
     using System.Globalization;

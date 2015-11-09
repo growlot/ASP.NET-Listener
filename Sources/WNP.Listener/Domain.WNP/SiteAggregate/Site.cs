@@ -6,21 +6,15 @@
 namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
     using System;
-    using Core;
+    using System.Collections.Generic;
+    using CircuitChild;
 
     /// <summary>
     /// Root aggregate for a Site
     /// </summary>
     public class Site : AggregateRoot<int>
     {
-        /// <summary>
-        /// The owner.
-        /// </summary>
         private int owner;
-
-        /// <summary>
-        /// The description.
-        /// </summary>
         private string description;
 
         /// <summary>
@@ -29,18 +23,10 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// If it is set, it must be unique, but if site is not assigned to any billing account then premise number might be empty.
         /// </summary>
         private string premiseNumber;
-
-        /// <summary>
-        /// The address.
-        /// </summary>
         private PhysicalAddress address;
-
-        /// <summary>
-        /// The account.
-        /// </summary>
         private BillingAccount account;
-
         private InterconnectSite interconnectInfo;
+        private IList<Circuit> circuits = new List<Circuit>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Site"/> class.
@@ -196,6 +182,13 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             if (!string.IsNullOrWhiteSpace(siteMemento.BillingAccountNumber))
             {
                 this.account = new BillingAccount(siteMemento.BillingAccountName, siteMemento.BillingAccountNumber);
+            }
+
+            foreach (var circuitMemento in siteMemento.Circuits)
+            {
+                var circuit = new Circuit(this.Events);
+                ((IOriginator)circuit).SetMemento(circuitMemento);
+                this.circuits.Add(circuit);
             }
         }
     }

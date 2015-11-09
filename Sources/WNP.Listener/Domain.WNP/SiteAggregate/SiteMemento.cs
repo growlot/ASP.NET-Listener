@@ -3,8 +3,12 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+
 namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
+    using System.Collections.Generic;
+    using CircuitChild;
+
     /// <summary>
     /// Memento class for site aggregate root
     /// </summary>
@@ -27,6 +31,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <param name="billingAccountNumber">The billing account number.</param>
         /// <param name="isInterconnect">Is this site interconnect site with other utility.</param>
         /// <param name="interconnectUtilityName">Name of the interconnect utility.</param>
+        /// <param name="circuits">The site circuits.</param>
         public SiteMemento(
             int owner,
             int site,
@@ -41,7 +46,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             string billingAccountName,
             string billingAccountNumber,
             bool isInterconnect,
-            string interconnectUtilityName)
+            string interconnectUtilityName,
+            IEnumerable<IMemento> circuits)
         {
             this.Owner = owner;
             this.Id = site;
@@ -57,7 +63,24 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             this.BillingAccountNumber = billingAccountNumber;
             this.IsInterconnect = isInterconnect;
             this.InterconnectUtilityName = interconnectUtilityName;
+
+            if (circuits != null)
+            {
+                this.Circuits = circuits;
+            }
+            else
+            {
+                this.Circuits = new List<CircuitMemento>();
+            }
         }
+
+        /// <summary>
+        /// Gets or sets the site circuits mementos.
+        /// </summary>
+        /// <value>
+        /// The site circuits mementos.
+        /// </value>
+        internal IEnumerable<IMemento> Circuits { get; set; }
 
         /// <summary>
         /// Gets the owner.
