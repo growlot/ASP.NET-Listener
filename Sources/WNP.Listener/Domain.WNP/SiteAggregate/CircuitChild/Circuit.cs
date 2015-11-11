@@ -16,7 +16,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         private string description;
         private GeoLocation location;
         private ElectricService service;
-        private int? numberOfConductorsPerPhase;
         private string enclosureType;
         private DateTime? installDate;
 
@@ -32,31 +31,31 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <summary>
         /// Initializes a new instance of the <see cref="Circuit" /> class.
         /// </summary>
+        /// <param name="events">The events.</param>
         /// <param name="owner">The owner.</param>
         /// <param name="siteId">The site identifier.</param>
         /// <param name="id">The identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="location">The location.</param>
         /// <param name="service">The service.</param>
-        /// <param name="numberOfConductorsPerPhase">The number of conductors per phase.</param>
         /// <param name="enclosureType">Type of the enclosure.</param>
         /// <param name="installDate">The install date.</param>
         private Circuit(
+            IList<IDomainEvent> events,
             int owner,
             int siteId,
             int id,
             string description,
             GeoLocation location,
             ElectricService service,
-            int? numberOfConductorsPerPhase,
             string enclosureType,
             DateTime? installDate)
         {
+            this.events = events;
             this.Id = id;
             this.description = description;
             this.location = location;
             this.service = service;
-            this.numberOfConductorsPerPhase = numberOfConductorsPerPhase;
             this.enclosureType = enclosureType;
             this.installDate = installDate;
 
@@ -76,7 +75,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
                     wireLocation: this.service?.WiringInfo?.WireLocation,
                     wireSize: this.service?.WiringInfo?.WireSize,
                     wireType: this.service?.WiringInfo?.WireType,
-                    numberOfConductorsPerPhase: this.numberOfConductorsPerPhase,
+                    numberOfConductorsPerPhase: this.service?.WiringInfo?.NumberOfConductorsPerPhase,
                     enclosureType: this.enclosureType,
                     installDate: this.installDate));
         }
@@ -84,39 +83,49 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <summary>
         /// Creates the circuit.
         /// </summary>
+        /// <param name="events">The list of domain events.</param>
         /// <param name="owner">The owner.</param>
         /// <param name="siteId">The site identifier.</param>
         /// <param name="id">The identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="location">The location.</param>
         /// <param name="service">The service.</param>
-        /// <param name="numberOfConductorsPerPhase">The number of conductors per phase.</param>
         /// <param name="enclosureType">Type of the enclosure.</param>
         /// <param name="installDate">The install date.</param>
         /// <returns>
         /// The new circuit
         /// </returns>
         public static Circuit CreateCircuit(
+            IList<IDomainEvent> events,
             int owner,
             int siteId,
             int id,
             string description,
             GeoLocation location,
             ElectricService service,
-            int? numberOfConductorsPerPhase,
             string enclosureType,
             DateTime? installDate)
         {
             return new Circuit(
+                events: events,
                 owner: owner,
                 siteId: siteId,
                 id: id,
                 description: description,
                 location: location,
                 service: service,
-                numberOfConductorsPerPhase: numberOfConductorsPerPhase,
                 enclosureType: enclosureType,
                 installDate: installDate);
+        }
+
+        /// <summary>
+        /// Checks if specified description is same as current description.
+        /// </summary>
+        /// <param name="newDescription">The description.</param>
+        /// <returns>True if description match, false otherwise</returns>
+        public bool SameDescription(string newDescription)
+        {
+            return this.description.Equals(newDescription, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <inheritdoc/>
@@ -125,7 +134,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             var circuitMemento = (CircuitMemento)memento;
             this.Id = circuitMemento.Id;
             this.description = circuitMemento.Description;
-            this.numberOfConductorsPerPhase = circuitMemento.NumberOfConductorsPerPhase;
             this.enclosureType = circuitMemento.EnclosureType;
             this.installDate = circuitMemento.InstallDate;
 
@@ -137,7 +145,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             var wiringInfo = new ServiceWiring(
                 circuitMemento.WireLocation,
                 circuitMemento.WireSize,
-                circuitMemento.WireType);
+                circuitMemento.WireType,
+                circuitMemento.NumberOfConductorsPerPhase);
 
             this.service = new ElectricService(
                 circuitMemento.ServiceLocation,

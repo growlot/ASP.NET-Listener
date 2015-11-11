@@ -13,6 +13,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         private readonly string wireLocation;
         private readonly string wireSize;
         private readonly string wireType;
+        private readonly int? numberOfConductorsPerPhase;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceWiring" /> class.
@@ -20,8 +21,14 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <param name="wireLocation">The location of wires.</param>
         /// <param name="wireSize">Size of the wire.</param>
         /// <param name="wireType">Type of the wire.</param>
-        public ServiceWiring(string wireLocation, string wireSize, string wireType)
+        /// <param name="numberOfConductorsPerPhase">The number of conductors per phase.</param>
+        public ServiceWiring(
+            string wireLocation,
+            string wireSize,
+            string wireType,
+            int? numberOfConductorsPerPhase)
         {
+            this.numberOfConductorsPerPhase = numberOfConductorsPerPhase;
             this.wireLocation = wireLocation;
             this.wireSize = wireSize;
             this.wireType = wireType;
@@ -66,6 +73,20 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             get
             {
                 return this.wireType;
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of conductors per phase.
+        /// </summary>
+        /// <value>
+        /// The number of conductors per phase.
+        /// </value>
+        public int? NumberOfConductorsPerPhase
+        {
+            get
+            {
+                return this.numberOfConductorsPerPhase;
             }
         }
     }

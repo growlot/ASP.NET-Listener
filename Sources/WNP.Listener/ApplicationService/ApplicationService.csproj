@@ -87,6 +87,8 @@
     </Compile>
     <Compile Include="ApplicationServiceConfigurator.cs" />
     <Compile Include="CommandHandlers\CommandHandlerBase.cs" />
+    <Compile Include="CommandHandlers\CreateCircuitCommandHandler.cs" />
+    <Compile Include="Commands\CreateCircuitCommand.cs" />
     <Compile Include="CommandHandlers\UpdateSiteDetailsCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateSiteBillingAccountCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateSiteAddressCommandHandler.cs" />

@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     using Domain;
     using Domain.WNP.OwnerAggregate;
     using Domain.WNP.SiteAggregate;
+    using Domain.WNP.SiteAggregate.CircuitChild;
     using Metadata;
     using Repository.WNP;
 
@@ -55,6 +56,46 @@ namespace AMSLLC.Listener.Persistence.WNP
         {
             var siteEntity = this.dbContext.First<SiteEntity>($"SELECT * FROM {DBMetadata.Site.FullTableName} WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1", owner, siteId);
 
+            var circuitEntities = this.dbContext.Fetch<CircuitEntity>($"SELECT * FROM {DBMetadata.Circuit.FullTableName} WHERE {DBMetadata.Circuit.Owner} = @0 and {DBMetadata.Circuit.Site} = @1", owner, siteId);
+
+            var circuitMementos = new List<CircuitMemento>();
+
+            foreach (var circuitEntity in circuitEntities)
+            {
+                int intValue;
+
+                int? servicePhases = null;
+                if (int.TryParse(circuitEntity.ServicePhase, out intValue))
+                {
+                    servicePhases = intValue;
+                }
+
+                int? serviceWires = null;
+                if (int.TryParse(circuitEntity.ServiceWire, out intValue))
+                {
+                    serviceWires = intValue;
+                }
+
+                var circuitMemento = new CircuitMemento(
+                    id: circuitEntity.Circuit.Value,
+                    description: circuitEntity.CircuitDesc,
+                    longitude: (decimal?)circuitEntity.Longitude,
+                    latitude: (decimal?)circuitEntity.Latitude,
+                    serviceLocation: circuitEntity.ServiceLocation,
+                    serviceVoltage: (decimal?)circuitEntity.ServiceVoltage,
+                    serviceAmperage: (decimal?)circuitEntity.ServiceAmps,
+                    servicePhases: servicePhases,
+                    serviceWires: serviceWires,
+                    wireLocation: circuitEntity.WireLocation,
+                    wireSize: circuitEntity.WireSize,
+                    wireType: circuitEntity.WireType,
+                    numberOfConductorsPerPhase: circuitEntity.ConductorsPerPhase,
+                    enclosureType: circuitEntity.EnclosureType,
+                    installDate: circuitEntity.InstallDate);
+
+                circuitMementos.Add(circuitMemento);
+            }
+
             var siteMemento = new SiteMemento(
                 owner: owner,
                 site: siteEntity.Site.Value,
@@ -70,7 +111,7 @@ namespace AMSLLC.Listener.Persistence.WNP
                 billingAccountNumber: siteEntity.AccountNo,
                 interconnectUtilityName: siteEntity.InterconnectUtility,
                 isInterconnect: siteEntity.IsInterconnect == "Y" ? true : false,
-                circuits: null);
+                circuits: circuitMementos);
 
             return Task.FromResult((IMemento)siteMemento);
         }

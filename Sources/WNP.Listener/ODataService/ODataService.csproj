@@ -187,6 +187,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="Controllers\Base\WNPEntityControllerBase.cs" />
+    <Compile Include="Controllers\CircuitsController.cs" />
     <Compile Include="Controllers\ElectricMetersController.cs" />
     <Compile Include="Controllers\MeterTestResultsController.cs" />
     <Compile Include="Controllers\SitesController.cs" />

@@ -53,6 +53,9 @@ namespace AMSLLC.Listener.ApplicationService
                 command => ApplicationIntegration.DependencyResolver.ResolveType<UpdateSiteAddressCommandHandler>().HandleAsync(command));
             this.commandBus.Subscribe<UpdateSiteDetailsCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<UpdateSiteDetailsCommandHandler>().HandleAsync(command));
+
+            this.commandBus.Subscribe<CreateCircuitCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<CreateCircuitCommandHandler>().HandleAsync(command));
         }
 
         /// <summary>

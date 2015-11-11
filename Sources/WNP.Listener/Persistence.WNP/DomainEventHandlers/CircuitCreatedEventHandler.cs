@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
     using Core;
     using Domain;
     using Domain.WNP.SiteAggregate.CircuitChild;
+    using Metadata;
     using Repository.WNP;
     using WNP;
 
@@ -53,7 +54,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
                 WireType = domainEvent.WireType,
             };
 
-            return this.InsertAsync(circuit);
+            return this.InsertWithIdAsync(DBMetadata.Circuit.FullTableName, circuit);
         }
     }
 }

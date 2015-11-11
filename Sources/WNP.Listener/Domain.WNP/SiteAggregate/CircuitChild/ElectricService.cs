@@ -28,11 +28,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <param name="numberOfPhases">The number of phases.</param>
         /// <param name="numberOfWires">The number of wires.</param>
         /// <param name="wiringInfo">The wiring information.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Only values 1 for single-phase or 3 for three-phase are supported for number of phases.
+        /// <exception cref="System.ArgumentOutOfRangeException">Only values 1 for single-phase or 3 for three-phase are supported for number of phases.
         /// or
-        /// Only values 2, 3 and 4 are supported for number of wires.
-        /// </exception>
+        /// Only values 2, 3 and 4 are supported for number of wires.</exception>
         public ElectricService(
             string location,
             decimal? voltage,
@@ -41,12 +39,12 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             int? numberOfWires,
             ServiceWiring wiringInfo)
         {
-            if (numberOfPhases != null && (numberOfPhases.Value != 1 || numberOfPhases.Value != 3))
+            if (numberOfPhases.HasValue && (numberOfPhases.Value != 1 || numberOfPhases.Value != 3))
             {
                 throw new ArgumentOutOfRangeException(nameof(numberOfPhases), "Only values 1 for single-phase or 3 for three-phase are supported for number of phases.");
             }
 
-            if (numberOfWires != null && (numberOfWires.Value < 2 || numberOfWires.Value > 4))
+            if (numberOfWires.HasValue && (numberOfWires.Value < 2 || numberOfWires.Value > 4))
             {
                 throw new ArgumentOutOfRangeException(nameof(numberOfWires), "Only values 2, 3 and 4 are supported for number of wires.");
             }

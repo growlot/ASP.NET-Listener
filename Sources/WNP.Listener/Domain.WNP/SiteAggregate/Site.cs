@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using CircuitChild;
 
     /// <summary>
@@ -157,6 +158,49 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         }
 
         /// <summary>
+        /// Adds new circuit to the site.
+        /// </summary>
+        /// <param name="circuitDescription">The description.</param>
+        /// <param name="location">The location.</param>
+        /// <param name="service">The service.</param>
+        /// <param name="enclosureType">Type of the enclosure.</param>
+        /// <param name="installDate">The install date.</param>
+        /// <returns>The identifier of the new circuit.</returns>
+        public int AddCircuit(
+            string circuitDescription,
+            GeoLocation location,
+            ElectricService service,
+            string enclosureType,
+            DateTime? installDate)
+        {
+            if (circuitDescription == null)
+            {
+                throw new ArgumentNullException(nameof(circuitDescription), "Circuit can not be created, because circuit description is required field.");
+            }
+
+            foreach (var existingCircuit in this.circuits)
+            {
+                if (existingCircuit.SameDescription(circuitDescription))
+                {
+                    throw new InvalidOperationException("Can not add Circuit, because description is not unique.");
+                }
+            }
+
+            var circuit = Circuit.CreateCircuit(
+                this.Events,
+                this.owner,
+                this.Id,
+                this.GetNextCirciutId(),
+                circuitDescription,
+                location,
+                service,
+                enclosureType,
+                installDate);
+
+            return circuit.Id;
+        }
+
+        /// <summary>
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
@@ -190,6 +234,20 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
                 ((IOriginator)circuit).SetMemento(circuitMemento);
                 this.circuits.Add(circuit);
             }
+        }
+
+        /// <summary>
+        /// Gets the identifier for new circiut.
+        /// </summary>
+        /// <returns>The circuit identifier.</returns>
+        private int GetNextCirciutId()
+        {
+            if (this.circuits.Count == 0)
+            {
+                return 0;
+            }
+
+            return this.circuits.Max(item => item.Id) + 1;
         }
     }
 }
