@@ -80,57 +80,78 @@ namespace AMSLLC.Listener.Client
             Uri relativeUri,
             object message)
         {
-            var openTask = GenericProxy.OpenAsync(
-                new Uri(this._baseUri, relativeUri),
-                message,
-                new ListenerRequestHeaderDictionary());
-
-            openTask.Wait();
+            string transactionKey = this.OpenTask(relativeUri, message);
 
             try
             {
-
-                var openedTask =
-                    GenericProxy.OpenAsync(
-                        new Uri(
-                            this._baseUri,
-                            new Uri($"/TransactionRegistry({openTask.Result})/AMSLLC.Listener.Process()")),
-                        null,
-                        new ListenerRequestHeaderDictionary());
-
-                openedTask.Wait();
+                this.ProcessTask(transactionKey);
             }
             catch (AggregateException exc)
             {
                 exc.Handle((x) =>
                 {
                     Log.Logger.Error(x, "Failed to process transaction");
-
-                    var t =
-                        GenericProxy.OpenAsync(
-                            new Uri(
-                                this._baseUri,
-                                new Uri($"listener/TransactionRegistry({openTask.Result})/AMSLLC.Listener.Fail()")),
-                            JsonConvert.SerializeObject(new ProcessingFailedRequestMessage
-                            {
-                                Message = x.Message,
-                                Details = x.StackTrace
-                            }),
-                            new ListenerRequestHeaderDictionary());
-                    t.Wait();
-
-
+                    string excMessage = x.Message;
+                    string stacktrace = x.StackTrace;
+                    this.FailTransaction(transactionKey, excMessage, stacktrace);
                     return false;
                 });
             }
 
+            this.SucceedTransaction(transactionKey);
+        }
+
+        protected virtual string OpenTask(
+            Uri relativeUri,
+            object message)
+        {
+            var openTask = GenericProxy.OpenAsync(
+                new Uri(this._baseUri, relativeUri),
+                message,
+                new ListenerRequestHeaderDictionary());
+
+            openTask.Wait();
+            return openTask.Result;
+        }
+
+        protected virtual void FailTransaction(
+            string transactionKey,
+            string excMessage,
+            string stacktrace)
+        {
+            var t =
+                GenericProxy.OpenAsync(
+                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Fail()")),
+                    JsonConvert.SerializeObject(
+                        new ProcessingFailedRequestMessage
+                        {
+                            Message = excMessage,
+                            Details = stacktrace
+                        }),
+                    new ListenerRequestHeaderDictionary());
+            t.Wait();
+        }
+
+        protected virtual void ProcessTask(
+            string transactionKey)
+        {
+            var openedTask =
+                GenericProxy.OpenAsync(
+                    new Uri(this._baseUri, new Uri($"/TransactionRegistry({transactionKey})/AMSLLC.Listener.Process()")),
+                    null,
+                    new ListenerRequestHeaderDictionary());
+
+            openedTask.Wait();
+        }
+
+        protected virtual void SucceedTransaction(
+            string key)
+        {
             var succeedTask =
-                     GenericProxy.OpenAsync(
-                         new Uri(
-                             this._baseUri,
-                             new Uri($"/TransactionRegistry({openTask.Result})/AMSLLC.Listener.Succeed()")),
-                         null,
-                         new ListenerRequestHeaderDictionary());
+                GenericProxy.OpenAsync(
+                    new Uri(this._baseUri, new Uri($"/TransactionRegistry({key})/AMSLLC.Listener.Succeed()")),
+                    null,
+                    new ListenerRequestHeaderDictionary());
 
             succeedTask.Wait();
         }
