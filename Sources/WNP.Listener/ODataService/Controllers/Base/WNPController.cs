@@ -109,7 +109,6 @@
             // if we have a key, we can optionally bind it to the appropriate action parameter
             if (keySegment != null)
             {
-                var keyValue = JsonConvert.DeserializeObject(keySegment.Value);
                 var entityKeyParameter =
                     parametersInfo.FirstOrDefault(
                         info => info.CustomAttributes.Any(data => data.AttributeType == typeof(BoundEntityKeyAttribute)));
@@ -121,7 +120,7 @@
                         return this.BadRequest($"Parameter {entityKeyParameter.Name} is entity key.");
                     }
 
-                    jsonParameters.Add(entityKeyParameter.Name, keyValue);
+                    jsonParameters.Add(entityKeyParameter.Name, keySegment.Value);
                 }
             }
 
