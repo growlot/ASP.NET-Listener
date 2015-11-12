@@ -9,13 +9,13 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
     using System.Collections.Generic;
     using System.Linq;
     using CircuitChild;
+    using CircuitChild.Equipment;
 
     /// <summary>
     /// Root aggregate for a Site
     /// </summary>
     public class Site : AggregateRoot<int>
     {
-        private int owner;
         private string description;
 
         /// <summary>
@@ -118,7 +118,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 
             this.address = newAddress;
             var siteAddressUpdated = new SiteAddressUpdated(
-                owner: this.owner,
                 siteId: this.Id,
                 country: this.address.Country,
                 state: this.address.State,
@@ -149,7 +148,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 
             this.account = newAccount;
             var siteBillingAccountUpdated = new SiteBillingAccountUpdated(
-                owner: this.owner,
                 siteId: this.Id,
                 accountName: this.account.Name,
                 accountNumber: this.account.Number);
@@ -165,8 +163,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <param name="service">The service.</param>
         /// <param name="enclosureType">Type of the enclosure.</param>
         /// <param name="installDate">The install date.</param>
-        /// <returns>The identifier of the new circuit.</returns>
-        public int AddCircuit(
+        public void AddCircuit(
             string circuitDescription,
             GeoLocation location,
             ElectricService service,
@@ -186,9 +183,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
                 }
             }
 
-            var circuit = Circuit.CreateCircuit(
+            Circuit.CreateCircuit(
                 this.Events,
-                this.owner,
                 this.Id,
                 this.GetNextCirciutId(),
                 circuitDescription,
@@ -196,8 +192,25 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
                 service,
                 enclosureType,
                 installDate);
+        }
 
-            return circuit.Id;
+        /// <summary>
+        /// Installs the meter in circuit.
+        /// </summary>
+        /// <param name="circuitId">The circuit identifier.</param>
+        /// <param name="meter">The meter.</param>
+        /// <param name="installDate">The install date.</param>
+        /// <param name="installUser">The install user.</param>
+        /// <param name="installServiceOrder">The service order information.</param>
+        public void InstallMeter(
+            int circuitId,
+            CircuitMeter meter,
+            DateTime installDate,
+            string installUser,
+            ServiceOrder installServiceOrder)
+        {
+            var circuit = this.circuits.First(item => item.Id == circuitId);
+            circuit.InstallMeter(this.Id, meter, installDate, installUser, installServiceOrder);
         }
 
         /// <summary>
@@ -207,7 +220,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         protected override void SetMemento(IMemento memento)
         {
             var siteMemento = (SiteMemento)memento;
-            this.owner = siteMemento.Owner;
             this.Id = siteMemento.Id;
             this.description = siteMemento.Description;
             this.premiseNumber = siteMemento.PremiseNumber;

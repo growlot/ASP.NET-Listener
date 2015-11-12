@@ -65,14 +65,25 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="EquipmentType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="OwnerAggregate\Owner.cs" />
     <Compile Include="OwnerAggregate\OwnerMemento.cs" />
     <Compile Include="OwnerAggregate\OwnerSite.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Circuit.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\TransformerSelectedRatioUpdatedEvent.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitPotentialTransformer.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitCurrentTransformer.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitPotentialTransformerMemento.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitCurrentTransformerMemento.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\ServiceOrder.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\EquipmentInstalledInCircuitEvent.cs" />
     <Compile Include="SiteAggregate\CircuitChild\CircuitCreatedEvent.cs" />
     <Compile Include="SiteAggregate\CircuitChild\CircuitMemento.cs" />
     <Compile Include="SiteAggregate\CircuitChild\ElectricService.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\BillingInformationUpdatedEvent.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitMeter.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitMeterMemento.cs" />
     <Compile Include="SiteAggregate\CircuitChild\ServiceWiring.cs" />
     <Compile Include="SiteAggregate\InterconnectSite.cs" />
     <Compile Include="SiteAggregate\CircuitChild\GeoLocation.cs" />
@@ -105,7 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\..\..\FxCopRuleSets\CustomDictionary.xml">
-      <Link>CustomDictionary.xml</Link>
+      <Link>Properties\CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>

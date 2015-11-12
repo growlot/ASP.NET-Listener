@@ -14,9 +14,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <summary>
         /// Initializes a new instance of the <see cref="CircuitCreatedEvent" /> class.
         /// </summary>
-        /// <param name="ownerId">The owner identifier.</param>
         /// <param name="siteId">The site identifier.</param>
-        /// <param name="id">The identifier.</param>
+        /// <param name="circuitId">The circuit identifier.</param>
         /// <param name="description">The description.</param>
         /// <param name="longitude">The longitude.</param>
         /// <param name="latitude">The latitude.</param>
@@ -32,9 +31,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <param name="enclosureType">Type of the enclosure.</param>
         /// <param name="installDate">The install date.</param>
         public CircuitCreatedEvent(
-            int ownerId,
             int siteId,
-            int id,
+            int circuitId,
             string description,
             decimal? longitude,
             decimal? latitude,
@@ -50,9 +48,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             string enclosureType,
             DateTime? installDate)
         {
-            this.OwnerId = ownerId;
             this.SiteId = siteId;
-            this.Id = id;
+            this.CircuitId = circuitId;
             this.Description = description;
             this.Longitude = longitude;
             this.Latitude = latitude;
@@ -70,14 +67,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         }
 
         /// <summary>
-        /// Gets the owner identifier.
-        /// </summary>
-        /// <value>
-        /// The owner identifier.
-        /// </value>
-        public int OwnerId { get; private set; }
-
-        /// <summary>
         /// Gets the site identifier.
         /// </summary>
         /// <value>
@@ -91,7 +80,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <value>
         /// The circiut identifier.
         /// </value>
-        public int Id { get; private set; }
+        public int CircuitId { get; private set; }
 
         /// <summary>
         /// Gets the circuit description.

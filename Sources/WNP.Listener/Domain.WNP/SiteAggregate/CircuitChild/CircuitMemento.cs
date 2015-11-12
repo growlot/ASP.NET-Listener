@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Memento class for circuit entity
@@ -12,7 +13,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
     public class CircuitMemento : IMemento
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CircuitMemento"/> class.
+        /// Initializes a new instance of the <see cref="CircuitMemento" /> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="description">The description.</param>
@@ -29,6 +30,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <param name="numberOfConductorsPerPhase">The number of conductors per phase.</param>
         /// <param name="enclosureType">Type of the enclosure.</param>
         /// <param name="installDate">The install date.</param>
+        /// <param name="meters">The meters.</param>
+        /// <param name="currentTransformers">The current transformers.</param>
+        /// <param name="potentialTransformers">The potential transformers.</param>
         public CircuitMemento(
             int id,
             string description,
@@ -44,7 +48,10 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             string wireType,
             int? numberOfConductorsPerPhase,
             string enclosureType,
-            DateTime? installDate)
+            DateTime? installDate,
+            IEnumerable<IMemento> meters,
+            IEnumerable<IMemento> currentTransformers,
+            IEnumerable<IMemento> potentialTransformers)
         {
             this.Id = id;
             this.Description = description;
@@ -61,7 +68,34 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             this.NumberOfConductorsPerPhase = numberOfConductorsPerPhase;
             this.EnclosureType = enclosureType;
             this.InstallDate = installDate;
+            this.Meters = meters;
+            this.CurrentTransformers = currentTransformers;
+            this.PotentialTransformers = potentialTransformers;
         }
+
+        /// <summary>
+        /// Gets the meters.
+        /// </summary>
+        /// <value>
+        /// The meters.
+        /// </value>
+        internal IEnumerable<IMemento> Meters { get; private set; }
+
+        /// <summary>
+        /// Gets the current transformers.
+        /// </summary>
+        /// <value>
+        /// The current transformers.
+        /// </value>
+        internal IEnumerable<IMemento> CurrentTransformers { get; private set; }
+
+        /// <summary>
+        /// Gets the potential transformers.
+        /// </summary>
+        /// <value>
+        /// The potential transformers.
+        /// </value>
+        internal IEnumerable<IMemento> PotentialTransformers { get; private set; }
 
         /// <summary>
         /// Gets the circuit identifier.

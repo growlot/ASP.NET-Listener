@@ -13,29 +13,18 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteBillingAccountUpdated" /> class.
         /// </summary>
-        /// <param name="owner">The owner.</param>
         /// <param name="siteId">The site identifier.</param>
         /// <param name="accountName">Name of the account.</param>
         /// <param name="accountNumber">The account number.</param>
         public SiteBillingAccountUpdated(
-            int owner,
             int siteId,
             string accountName,
             string accountNumber)
         {
-            this.Owner = owner;
             this.SiteId = siteId;
             this.AccountName = accountName;
             this.AccountNumber = accountNumber;
         }
-
-        /// <summary>
-        /// Gets the owner.
-        /// </summary>
-        /// <value>
-        /// The owner.
-        /// </value>
-        public int Owner { get; private set; }
 
         /// <summary>
         /// Gets the site identifier.

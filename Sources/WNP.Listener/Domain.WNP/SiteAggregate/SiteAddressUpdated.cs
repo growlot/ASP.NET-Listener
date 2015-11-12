@@ -13,7 +13,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteAddressUpdated" /> class.
         /// </summary>
-        /// <param name="owner">The owner.</param>
         /// <param name="siteId">The site identifier.</param>
         /// <param name="country">The country.</param>
         /// <param name="state">The state.</param>
@@ -22,7 +21,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <param name="address2">The address2.</param>
         /// <param name="zip">The zip.</param>
         public SiteAddressUpdated(
-            int owner,
             int siteId,
             string country,
             string state,
@@ -31,7 +29,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             string address2,
             string zip)
         {
-            this.Owner = owner;
             this.SiteId = siteId;
             this.Country = country;
             this.State = state;
@@ -40,14 +37,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             this.Address2 = address2;
             this.Zip = zip;
         }
-
-        /// <summary>
-        /// Gets the owner.
-        /// </summary>
-        /// <value>
-        /// The owner.
-        /// </value>
-        public int Owner { get; private set; }
 
         /// <summary>
         /// Gets the site identifier.

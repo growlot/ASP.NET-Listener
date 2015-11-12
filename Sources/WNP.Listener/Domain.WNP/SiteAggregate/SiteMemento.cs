@@ -17,7 +17,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteMemento" /> class.
         /// </summary>
-        /// <param name="owner">The owner.</param>
         /// <param name="site">The site.</param>
         /// <param name="description">The description.</param>
         /// <param name="country">The country.</param>
@@ -33,7 +32,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// <param name="interconnectUtilityName">Name of the interconnect utility.</param>
         /// <param name="circuits">The site circuits.</param>
         public SiteMemento(
-            int owner,
             int site,
             string description,
             string country,
@@ -49,7 +47,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             string interconnectUtilityName,
             IEnumerable<IMemento> circuits)
         {
-            this.Owner = owner;
             this.Id = site;
             this.Description = description;
             this.Country = country;
@@ -81,14 +78,6 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// The site circuits mementos.
         /// </value>
         internal IEnumerable<IMemento> Circuits { get; set; }
-
-        /// <summary>
-        /// Gets the owner.
-        /// </summary>
-        /// <value>
-        /// The owner.
-        /// </value>
-        internal int Owner { get; private set; }
 
         /// <summary>
         /// Gets the identifier.
