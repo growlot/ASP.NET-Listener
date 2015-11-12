@@ -71,6 +71,7 @@ namespace AMSLLC.Listener.ODataService
                 switch (odataPath.PathTemplate)
                 {
                     case "~/entityset/key":
+                    case "~/entityset/key/navigation/key":
                         return "GetSingle";
                 }
             }

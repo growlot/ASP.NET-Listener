@@ -113,6 +113,7 @@
     <Compile Include="EntityConfiguration.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IBoundActionsContainer.cs" />
+    <Compile Include="IContainedEntity.cs" />
     <Compile Include="IEntityConfigurator.cs" />
     <Compile Include="IMetadataProvider.cs" />
     <Compile Include="Implementations\ActionConfigurator.cs" />

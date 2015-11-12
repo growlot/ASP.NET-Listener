@@ -31,20 +31,37 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                         MeterTestResults.StepNo)
                     .HasRequired(
                         EqpMeter.FullTableName,
+                        false,
                         new ColumnMatch(MeterTestResults.Owner, EqpMeter.Owner),
                         new ColumnMatch(MeterTestResults.EqpNo, EqpMeter.EqpNo))
                     .HasMany(
                         Reading.FullTableName,
+                        true,
                         new ColumnMatch(MeterTestResults.Owner, Reading.Owner),
                         new ColumnMatch(MeterTestResults.EqpNo, Reading.EqpNo),
                         new ColumnMatch(MeterTestResults.TestDateStart, Reading.ReadDate))
                     .HasMany(
                         Comment.FullTableName,
+                        true,
                         new ColumnMatch(MeterTestResults.Owner, Comment.Owner),
                         new ColumnMatch(MeterTestResults.EqpNo, Comment.EqpNo),
                         new ColumnMatch(MeterTestResults.TestDateStart, Comment.CreateDate));
 
+            var meterReadingConfiguration =
+                new EntityConfiguration(Reading.FullTableName)
+                    .OwnerSpecific()
+                    .Contained()
+                    .HasKey(Reading.ReadIndex);
+
+            var commentsConfiguration =
+                new EntityConfiguration(Comment.FullTableName)
+                    .OwnerSpecific()
+                    .Contained()
+                    .HasKey(Comment.CommentIndex);
+
             this.configurations.Add(MeterTestResults.FullTableName, meterTestsConfiguration);
+            this.configurations.Add(Reading.FullTableName, meterReadingConfiguration);
+            this.configurations.Add(Comment.FullTableName, commentsConfiguration);
         }
 
         /// <inheritdoc/>

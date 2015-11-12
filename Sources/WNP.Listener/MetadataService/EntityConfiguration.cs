@@ -42,6 +42,11 @@ namespace AMSLLC.Listener.MetadataService
         public Collection<RelationInformation> ManyRelations { get; } = new Collection<RelationInformation>();
 
         /// <summary>
+        /// Defines if this entity is contained in parent
+        /// </summary>
+        public bool IsContained { get; set; }
+
+        /// <summary>
         /// Creates default entity configuration.
         /// </summary>
         /// <param name="tableName">Entity table name.</param>
@@ -65,6 +70,17 @@ namespace AMSLLC.Listener.MetadataService
         }
 
         /// <summary>
+        /// Defines if this entity is contained in parent
+        /// </summary>
+        /// <returns>Current instance of EntityConfiguration</returns>
+        public EntityConfiguration Contained()
+        {
+            this.IsContained = true;
+
+            return this;
+        }
+
+        /// <summary>
         /// Defines composite key for this entity.
         /// This composite key will be used when constructing OData entity.
         /// </summary>
@@ -81,11 +97,12 @@ namespace AMSLLC.Listener.MetadataService
         /// Defines required "virtual" one-to-one relationship with another table (entity)
         /// </summary>
         /// <param name="tableName">Table to link to</param>
+        /// <param name="isContained">Defines if this entity is contained in parent</param>
         /// <param name="matchOn">On which field to form a match</param>
         /// <returns>Current instance of EntityConfiguration</returns>
-        public EntityConfiguration HasRequired(string tableName, params ColumnMatch[] matchOn)
+        public EntityConfiguration HasRequired(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.RequiredRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList())));
+            this.RequiredRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
 
             return this;
         }
@@ -94,11 +111,12 @@ namespace AMSLLC.Listener.MetadataService
         /// Defines an optional "virtual" zero-to-one relationship with another table (entity)
         /// </summary>
         /// <param name="tableName">Table to link to</param>
+        /// <param name="isContained">Defines if this entity is contained in parent</param>
         /// <param name="matchOn">On which field to form a match</param>
         /// <returns>Current instance of EntityConfiguration</returns>
-        public EntityConfiguration HasOptional(string tableName, params ColumnMatch[] matchOn)
+        public EntityConfiguration HasOptional(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.OptionalRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList())));
+            this.OptionalRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
 
             return this;
         }
@@ -107,11 +125,12 @@ namespace AMSLLC.Listener.MetadataService
         /// Defines "virtual" one-to-many relationship with another table (entity)
         /// </summary>
         /// <param name="tableName">Table to link to</param>
+        /// <param name="isContained">Defines if this entity is contained in parent</param>
         /// <param name="matchOn">On which field to form a match</param>
         /// <returns>Current instance of EntityConfiguration</returns>
-        public EntityConfiguration HasMany(string tableName, params ColumnMatch[] matchOn)
+        public EntityConfiguration HasMany(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.ManyRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList())));
+            this.ManyRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
 
             return this;
         }

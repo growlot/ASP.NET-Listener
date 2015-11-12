@@ -16,11 +16,18 @@ namespace AMSLLC.Listener.MetadataService
         /// </summary>
         /// <param name="targetTableName">Table name to create relation with</param>
         /// <param name="matchOn">Collection of fields to match</param>
-        public RelationInformation(string targetTableName, Collection<ColumnMatch> matchOn)
+        /// <param name="isContained">Defines if this entity is contained in parent</param>
+        public RelationInformation(string targetTableName, Collection<ColumnMatch> matchOn, bool isContained)
         {
             this.TargetTableName = targetTableName;
             this.MatchOn = matchOn;
+            this.IsContained = isContained;
         }
+
+        /// <summary>
+        /// Defines if this entity is contained in parent
+        /// </summary>
+        public bool IsContained { get; }
 
         /// <summary>
         /// Entity table name that is linked

@@ -48,7 +48,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
             var generatedModels =
                 this.metadataService.ODataModelAssembly.GetTypes()
-                    .Where(type => typeof(IODataEntity).IsAssignableFrom(type));
+                    .Where(type => typeof(IODataEntity).IsAssignableFrom(type) && !typeof(IContainedEntity).IsAssignableFrom(type));
 
             generatedModels.Map(type => this.GenerateBoundActions(type, builder));
 

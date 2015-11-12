@@ -100,6 +100,61 @@ namespace AMSLLC.Listener.MetadataService.Implementations
         public MetadataEntityModel GetModelMappingByTableName(string tableName) =>
             oDataModelMappings.First(modelMappings => modelMappings.Value.TableName == tableName).Value;
 
+        private static void AddManyRelations(EntityConfiguration entityConfig, CodeTypeDeclaration codeClass)
+        {
+            foreach (var manyRelation in entityConfig.ManyRelations)
+            {
+                var targetEntity =
+                    oDataModelMappings.Values.FirstOrDefault(
+                        model => model.TableName == manyRelation.TargetTableName);
+
+                if (targetEntity == null)
+                {
+                    throw new ArgumentException(
+                        StringUtilities.Invariant($"Target class for required relation {manyRelation.TargetTableName} not found"));
+                }
+
+                var containmentAttribute = string.Empty;
+                if (manyRelation.IsContained)
+                {
+                    containmentAttribute = "[Contained]";
+                }
+
+                var property = new CodeSnippetTypeMember
+                {
+                    Text =
+                        StringUtilities.Invariant(
+                            $"{containmentAttribute} public List<{targetEntity.ClassName}> {targetEntity.ClassName}s {{get; set;}}")
+                };
+
+                codeClass.Members.Add(property);
+            }
+        }
+
+        private static void AddRequiredRelations(EntityConfiguration entityConfig, CodeTypeDeclaration codeClass)
+        {
+            foreach (var requiredRelation in entityConfig.RequiredRelations)
+            {
+                var targetEntity =
+                    oDataModelMappings.Values.FirstOrDefault(
+                        model => model.TableName == requiredRelation.TargetTableName);
+
+                if (targetEntity == null)
+                {
+                    throw new ArgumentException(
+                        StringUtilities.Invariant(
+                            $"Target class for required relation {requiredRelation.TargetTableName} not found"));
+                }
+
+                var property = new CodeSnippetTypeMember
+                {
+                    Text = StringUtilities.Invariant($"public {targetEntity.ClassName} {targetEntity.ClassName} {{get; set;}}")
+                };
+
+                codeClass.Members.Add(property);
+            }
+        }
+
         private void PrepareModel()
         {
             oDataModelMappings = new Dictionary<string, MetadataEntityModel>();
@@ -164,7 +219,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
                 var entityConfiguration = this.entityConfigurator.GetEntityConfiguration(fqTableName)
                                           ??
-                                          EntityConfiguration.CreateDefault(fqTableName, fieldsInfo.Where(predicate).Select(fi => fi.Key).ToArray());
+                                          EntityConfiguration.CreateDefault(fqTableName, fieldsInfo.Where(predicate).Select(fi => modelToColumnMappings[fi.Key]).ToArray());
 
                 var oDataModelMapping = new MetadataEntityModel(
                     fqTableName,
@@ -190,8 +245,10 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
             codeNamespace.Imports.Add(new CodeNamespaceImport("System"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.Linq"));
+            codeNamespace.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("System.Web.OData"));
+            codeNamespace.Imports.Add(new CodeNamespaceImport("System.Web.OData.Builder"));
             codeNamespace.Imports.Add(new CodeNamespaceImport("AMSLLC.Listener.Utilities"));
 
             // TODO: we should move the IODataEntity marker interface to another library, think about this
@@ -216,49 +273,46 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     BaseTypes = { typeof(IODataEntity) }
                 };
 
+                if (entityConfig.IsContained)
+                {
+                    codeClass.BaseTypes.Add(typeof(IContainedEntity));
+                }
+
                 codeNamespace.Types.Add(codeClass);
 
                 var entityName = WNPDBHelpers.HumanizeTable(table.TableName);
 
-                var getEntityMethod = new CodeMemberMethod();
-                getEntityMethod.Attributes = MemberAttributes.Public;
-                getEntityMethod.Name = "GetEntity";
-                getEntityMethod.ReturnType = new CodeTypeReference(entityName);
+                var getEntityMethod = new CodeMemberMethod
+                {
+                    Attributes = MemberAttributes.Public,
+                    Name = "GetEntity",
+                    ReturnType = new CodeTypeReference(entityName)
+                };
+
                 getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($"var result = new {entityName}();")));
 
-                var getEntityDeltaMethod = new CodeMemberMethod();
-                getEntityDeltaMethod.Attributes = MemberAttributes.Public;
-                getEntityDeltaMethod.Name = "GetEntityDelta";
+                var getEntityDeltaMethod = new CodeMemberMethod
+                {
+                    Attributes = MemberAttributes.Public,
+                    Name = "GetEntityDelta"
+                };
+
                 getEntityDeltaMethod.Parameters.Add(new CodeParameterDeclarationExpression(StringUtilities.Invariant($"Delta<{modelClassName}>"), "edmDelta"));
                 getEntityDeltaMethod.ReturnType = new CodeTypeReference(StringUtilities.Invariant($"Delta<{entityName}>"));
                 getEntityDeltaMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($"var result = new Delta<{entityName}>();")));
                 getEntityDeltaMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($"var changedProperties = edmDelta.GetChangedPropertyNames();")));
 
-                var setFromEntityMethod = new CodeMemberMethod();
-                setFromEntityMethod.Attributes = MemberAttributes.Public;
-                setFromEntityMethod.Name = "SetFromEntity";
-                setFromEntityMethod.ReturnType = new CodeTypeReference(typeof(void));
+                var setFromEntityMethod = new CodeMemberMethod
+                {
+                    Attributes = MemberAttributes.Public,
+                    Name = "SetFromEntity",
+                    ReturnType = new CodeTypeReference(typeof(void))
+                };
+
                 setFromEntityMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(entityName), "entity"));
 
-                foreach (var requiredRelation in entityConfig.RequiredRelations)
-                {
-                    var targetEntity =
-                        oDataModelMappings.Values.FirstOrDefault(
-                            model => model.TableName == requiredRelation.TargetTableName);
-
-                    if (targetEntity == null)
-                    {
-                        throw new ArgumentException(
-                            StringUtilities.Invariant($"Target class for required relation {requiredRelation.TargetTableName} not found"));
-                    }
-
-                    var property = new CodeSnippetTypeMember
-                    {
-                        Text = StringUtilities.Invariant($"public {targetEntity.ClassName} {targetEntity.ClassName} {{get; set;}}")
-                    };
-
-                    codeClass.Members.Add(property);
-                }
+                AddRequiredRelations(entityConfig, codeClass);
+                AddManyRelations(entityConfig, codeClass);
 
                 foreach (var field in table.FieldInfo)
                 {
@@ -269,7 +323,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     var originalColumnName = table.ModelToColumnMappings[field.Key];
                     var isOwnerColumn = originalColumnName.ToUpperInvariant().Equals("OWNER");
 
-                    if (field.Value.IsPrimaryKey && !isOwnerColumn)
+                    if (entityConfig.Key.Contains(table.ModelToColumnMappings[field.Key], StringComparer.OrdinalIgnoreCase) && !isOwnerColumn)
                     {
                         property.Text = "[Key]";
                     }
