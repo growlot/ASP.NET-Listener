@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         /// <param name="name">The name.</param>
         /// <returns>Task&lt;IEnumerable&lt;OpenBatchTransactionCommand&gt;&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<ICollection<OpenBatchTransactionCommand>> Create(
+        public Task<OpenBatchTransactionCommand> Create(
             string batchKey,
             string companyCode,
             string applicationKey,

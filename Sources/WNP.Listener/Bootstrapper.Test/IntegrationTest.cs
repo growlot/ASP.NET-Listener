@@ -457,9 +457,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             transactionRegistryMock.Verify(
                 t => t.Create(It.IsAny<DateTime>(), It.IsAny<Dictionary<int, IEnumerable<FieldConfiguration>>>()),
-                Times.Exactly(3));
+                Times.Exactly(1));
 
-            Assert.AreEqual(3, result.Length);
         }
 
         #endregion
@@ -545,7 +544,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             return responseMessage;
         }
 
-        private static async Task<Guid[]> OpenWnpBatchTransaction(TestServer server, string batchKey)
+        private static async Task<Guid> OpenWnpBatchTransaction(TestServer server, string batchKey)
         {
             var settings = new JsonSerializerSettings
             {
@@ -570,7 +569,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             string responseBody = await response.Content.ReadAsStringAsync();
             var expando = JsonConvert.DeserializeObject<ExpandoObject>(responseBody) as IDictionary<string, object>;
-            var responseMessage = (expando["value"] as List<object>).Select(s => Guid.Parse(s.ToString())).ToArray();
+            var responseMessage =Guid.Parse(expando["value"]?.ToString());
             return responseMessage;
         }
 

@@ -29,22 +29,19 @@ namespace AMSLLC.Listener.ApplicationService.BatchBuilder
         }
 
         /// <inheritdoc/>
-        public async Task<ICollection<OpenBatchTransactionCommand>> Create(
+        public async Task<OpenBatchTransactionCommand> Create(
             string batchNumber, string companyCode, string applicationKey, string userName)
         {
-            List<OpenBatchTransactionCommand> returnValue = new List<OpenBatchTransactionCommand>();
             var records = await this.repository.GetMeterTestBatchAsync(batchNumber);
-
+            var returnValue = new OpenBatchTransactionCommand()
+            {
+                CompanyCode = companyCode,
+                SourceApplicationKey = applicationKey,
+                User = userName
+            };
             foreach (var record in records)
             {
-                var message = new OpenBatchTransactionCommand()
-                {
-                    CompanyCode = companyCode,
-                    SourceApplicationKey = applicationKey,
-                    User = userName
-                };
-
-                message.Batch.Add(
+                returnValue.Batch.Add(
                     new BatchTransactionEntry
                     {
                         OperationKey = "Add",
@@ -60,7 +57,7 @@ namespace AMSLLC.Listener.ApplicationService.BatchBuilder
 
                 foreach (var test in record.Tests)
                 {
-                    message.Batch.Add(
+                    returnValue.Batch.Add(
                     new BatchTransactionEntry
                     {
                         OperationKey = "Test",
@@ -73,8 +70,6 @@ namespace AMSLLC.Listener.ApplicationService.BatchBuilder
                             })
                     });
                 }
-
-                returnValue.Add(message);
             }
 
             return returnValue;

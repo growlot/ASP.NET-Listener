@@ -33,10 +33,20 @@
 
             if (d != null)
             {
-                client.DefaultRequestHeaders.Accept.Add(
-                    new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                response = client.PostAsync(uri,
-                            new StringContent(JsonConvert.SerializeObject(d), Encoding.UTF8, "application/json"));
+                if (d is string)
+                {
+                    response = client.PostAsync(
+                        uri,
+                        new StringContent($"={d}", Encoding.UTF8, "application/x-www-form-urlencoded"));
+                }
+                else
+                {
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    response = client.PostAsync(
+                        uri,
+                        new StringContent(JsonConvert.SerializeObject(d), Encoding.UTF8, "application/json"));
+                }
             }
             else
             {

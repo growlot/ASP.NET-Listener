@@ -159,14 +159,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                var records = await this._wnpIntegrationService.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
-                List<Guid> returnValue = new List<Guid>();
-                foreach (OpenBatchTransactionCommand openBatchTransactionCommand in records)
-                {
-                    returnValue.Add(await this._transactionService.Open(openBatchTransactionCommand));
-                }
-
-                return this.Ok(returnValue);//await Task.WhenAll(records.Select(r => this._transactionService.Open(r)))
+                var openBatchTransactionCommand = await this._wnpIntegrationService.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
+                return this.Ok(await this._transactionService.Open(openBatchTransactionCommand));//await Task.WhenAll(records.Select(r => this._transactionService.Open(r)))
             }
             catch (Exception exc)
             {

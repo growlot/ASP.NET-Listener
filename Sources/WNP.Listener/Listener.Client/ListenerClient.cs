@@ -98,7 +98,7 @@ namespace AMSLLC.Listener.Client
         public void ProcessBatch(
             BatchAcceptedMessage request)
         {
-            this.Execute(new Uri("listener/BuildBatch", UriKind.Relative), new BatchAcceptedRequestMessage() { BatchNumber = request.BatchNumber });
+            this.Execute(new Uri("listener/BuildBatch", UriKind.Relative), request.BatchNumber);
         }
 
         private void Execute(

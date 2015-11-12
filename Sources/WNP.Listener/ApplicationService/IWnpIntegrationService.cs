@@ -20,9 +20,9 @@ namespace AMSLLC.Listener.ApplicationService
         /// <param name="companyCode">The company code.</param>
         /// <param name="applicationKey">The application key.</param>
         /// <param name="name">The name.</param>
-        /// <returns>Task&lt;IEnumerable&lt;OpenBatchTransactionCommand&gt;&gt;.</returns>
+        /// <returns>Task&lt;OpenBatchTransactionCommand&gt;.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review later")]
-        Task<ICollection<OpenBatchTransactionCommand>> Create(
+        Task<OpenBatchTransactionCommand> Create(
             string batchKey,
             string companyCode,
             string applicationKey,
