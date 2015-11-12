@@ -59,6 +59,12 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     OperationEndpointId = 7,
                     EntityCategoryOperationId = 7,
                     EndpointId = 1
+                },
+                new
+                {
+                    OperationEndpointId = 8,
+                    EntityCategoryOperationId = 8,
+                    EndpointId = 1
                 }
             };
 

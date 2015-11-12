@@ -10,9 +10,9 @@
     using Newtonsoft.Json;
     using Serilog;
 
-    public static class GenericProxy
+    public class ListenerProxy : IListenerProxy
     {
-        public static Task<string> OpenAsync(Uri uri, object data, Dictionary<string, string> headers = null)
+        public Task<string> OpenAsync(Uri uri, object data, Dictionary<string, string> headers = null)
         {
             var d = data;
             HttpClient client = new HttpClient();

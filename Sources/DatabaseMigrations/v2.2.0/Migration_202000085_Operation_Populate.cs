@@ -39,6 +39,12 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     OperationId = 3,
                     Name = "Add",
                     DisplayName = "Add Entity"
+                },
+                new
+                {
+                    OperationId = 4,
+                    Name = "Test",
+                    DisplayName = "Test Entity"
                 }
             };
             foreach (var record in records)

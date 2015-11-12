@@ -63,8 +63,8 @@ namespace AMSLLC.Listener.ApplicationService.BatchBuilder
                     message.Batch.Add(
                     new BatchTransactionEntry
                     {
-                        OperationKey = "Add",
-                        EntityCategory = "MeterTest",
+                        OperationKey = "Test",
+                        EntityCategory = "ElectricMeters",
                         Priority = 2,
                         Data = JsonConvert.SerializeObject(
                             new MeterTest

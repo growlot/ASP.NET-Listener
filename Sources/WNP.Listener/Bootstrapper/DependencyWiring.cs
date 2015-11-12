@@ -105,6 +105,7 @@ namespace AMSLLC.Listener.Bootstrapper
             // Repository.WNP bindings
             // -------------------------
             this.Kernel.Bind<IWNPUnitOfWork>().To<WNPUnitOfWork>().InRequestScope();
+            this.Kernel.Bind<IWnpBatchRepository>().To<WnpRepository>();
 
             // -------------------------
             // Persistence.Listener bindings

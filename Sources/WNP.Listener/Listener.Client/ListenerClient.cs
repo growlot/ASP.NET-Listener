@@ -5,7 +5,10 @@ using System.Text;
 
 namespace AMSLLC.Listener.Client
 {
+    using System.Dynamic;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using Exception;
     using Message;
     using Newtonsoft.Json;
     using Serilog;
@@ -13,13 +16,14 @@ namespace AMSLLC.Listener.Client
     public class ListenerClient
     {
         private readonly Uri _baseUri = null;
+        private IListenerProxy _proxy = null;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListenerClient"/> class.
+        /// Initializes a new instance of the <see cref="ListenerClient" /> class.
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
         public ListenerClient(string baseUri)
-            : this(new Uri(baseUri))
+            : this(baseUri, new ListenerProxy())
         {
 
         }
@@ -28,9 +32,30 @@ namespace AMSLLC.Listener.Client
         /// Initializes a new instance of the <see cref="ListenerClient"/> class.
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
-        public ListenerClient(Uri baseUri)
+        /// <param name="proxy">The proxy.</param>
+        public ListenerClient(string baseUri, IListenerProxy proxy)
+            : this(new Uri(baseUri), proxy)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ListenerClient"/> class.
+        /// </summary>
+        /// <param name="baseUri">The base URI.</param>
+        public ListenerClient(Uri baseUri) : this(baseUri, new ListenerProxy())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ListenerClient" /> class.
+        /// </summary>
+        /// <param name="baseUri">The base URI.</param>
+        /// <param name="proxy">The proxy.</param>
+        public ListenerClient(Uri baseUri, IListenerProxy proxy)
         {
             this._baseUri = baseUri;
+            this._proxy = proxy;
         }
 
         /// <summary>
@@ -40,7 +65,7 @@ namespace AMSLLC.Listener.Client
         public void ProcessDeviceTestResult(DeviceTestResultMessage request)
         {
             this.Execute(
-                new Uri("/Open"),
+                new Uri("listener/Open", UriKind.Relative),
                 new DeviceTestResultRequestMessage(request.EquipmentType)
                 {
                     EntityKey = request.EquipmentNumber,
@@ -57,12 +82,12 @@ namespace AMSLLC.Listener.Client
             DeviceUpdateMessage request)
         {
             this.Execute(
-                new Uri("/Open"),
-                new DeviceUpdateRequestMessage(request.EquipmentType)
-                {
-                    EntityKey = request.EquipmentNumber,
-                    Owner = request.CompanyId
-                });
+                 new Uri("listener/Open", UriKind.Relative),
+                 new DeviceUpdateRequestMessage(request.EquipmentType)
+                 {
+                     EntityKey = request.EquipmentNumber,
+                     Owner = request.CompanyId
+                 });
         }
 
         /// <summary>
@@ -73,39 +98,75 @@ namespace AMSLLC.Listener.Client
         public void ProcessBatch(
             BatchAcceptedMessage request)
         {
-            this.Execute(new Uri("/OpenBatch"), new BatchAcceptedRequestMessage() {BatchNumber = request.BatchNumber});
+            this.Execute(new Uri("listener/BuildBatch", UriKind.Relative), new BatchAcceptedRequestMessage() { BatchNumber = request.BatchNumber });
         }
 
         private void Execute(
             Uri relativeUri,
             object message)
         {
-            string transactionKey = this.OpenTask(relativeUri, message);
+            string transactionKey;
+            string response;
+            try
+            {
+                response = this.OpenTask(relativeUri, message);
 
+                Log.Logger.Information("Opened transaction {0}", response);
+            }
+            catch (System.Exception exc)
+            {
+                throw new FailedToOpenTransactionException(exc.Message, exc);
+            }
+
+            var responseExpando =
+                    JsonConvert.DeserializeObject<ExpandoObject>(response) as IDictionary<string, object>;
+            transactionKey = responseExpando["value"]?.ToString();
+            Log.Logger.Information("Using transactionKey {0}", transactionKey);
             try
             {
                 this.ProcessTask(transactionKey);
+                Log.Logger.Information("Processed transaction {0}", transactionKey);
             }
             catch (AggregateException exc)
             {
-                exc.Handle((x) =>
-                {
-                    Log.Logger.Error(x, "Failed to process transaction");
-                    string excMessage = x.Message;
-                    string stacktrace = x.StackTrace;
-                    this.FailTransaction(transactionKey, excMessage, stacktrace);
-                    return false;
-                });
+                exc.Handle(
+                    (x) =>
+                    {
+                        Log.Logger.Error(x, "Failed to process transaction");
+                        string excMessage = x.Message;
+                        string stacktrace = x.StackTrace;
+                        this.FailTransaction(transactionKey, excMessage, stacktrace);
+                        return false;
+                    });
+                throw new FailedToProcessTransactionException(exc.Message, exc);
+            }
+            catch (System.Exception exc)
+            {
+                Log.Logger.Error(exc, "Failed to process transaction");
+                string excMessage = exc.Message;
+                string stacktrace = exc.StackTrace;
+                this.FailTransaction(transactionKey, excMessage, stacktrace);
+                throw new FailedToProcessTransactionException(exc.Message, exc);
             }
 
-            this.SucceedTransaction(transactionKey);
+
+            try
+            {
+                this.SucceedTransaction(transactionKey);
+                Log.Logger.Information("Succeeded transaction {0}", transactionKey);
+            }
+            catch (System.Exception exc)
+            {
+                Log.Logger.Error(exc, "Failed to succeed transaction");
+                throw new FailedToSucceedTransactionException(exc.Message, exc);
+            }
         }
 
-        protected virtual string OpenTask(
+        public virtual string OpenTask(
             Uri relativeUri,
             object message)
         {
-            var openTask = GenericProxy.OpenAsync(
+            var openTask = this._proxy.OpenAsync(
                 new Uri(this._baseUri, relativeUri),
                 message,
                 new ListenerRequestHeaderDictionary());
@@ -114,14 +175,14 @@ namespace AMSLLC.Listener.Client
             return openTask.Result;
         }
 
-        protected virtual void FailTransaction(
+        public virtual void FailTransaction(
             string transactionKey,
             string excMessage,
             string stacktrace)
         {
             var t =
-                GenericProxy.OpenAsync(
-                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Fail()")),
+                 this._proxy.OpenAsync(
+                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Fail()", UriKind.Relative)),
                     JsonConvert.SerializeObject(
                         new ProcessingFailedRequestMessage
                         {
@@ -132,24 +193,24 @@ namespace AMSLLC.Listener.Client
             t.Wait();
         }
 
-        protected virtual void ProcessTask(
+        public virtual void ProcessTask(
             string transactionKey)
         {
             var openedTask =
-                GenericProxy.OpenAsync(
-                    new Uri(this._baseUri, new Uri($"/TransactionRegistry({transactionKey})/AMSLLC.Listener.Process()")),
+                 this._proxy.OpenAsync(
+                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Process()", UriKind.Relative)),
                     null,
                     new ListenerRequestHeaderDictionary());
 
             openedTask.Wait();
         }
 
-        protected virtual void SucceedTransaction(
+        public virtual void SucceedTransaction(
             string key)
         {
             var succeedTask =
-                GenericProxy.OpenAsync(
-                    new Uri(this._baseUri, new Uri($"/TransactionRegistry({key})/AMSLLC.Listener.Succeed()")),
+                 this._proxy.OpenAsync(
+                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({key})/AMSLLC.Listener.Succeed()", UriKind.Relative)),
                     null,
                     new ListenerRequestHeaderDictionary());
 

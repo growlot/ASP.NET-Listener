@@ -28,7 +28,6 @@ namespace AMSLLC.Listener.Bootstrapper
             kernel.Bind<IPersistenceAdapter>().To<WnpPersistenceAdapter>().WhenClassHas<WithinWnpContextAttribute>();
             kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
             kernel.Bind<ITransactionRepository>().To<TransactionRepository>();
-            kernel.Bind<IWnpBatchRepository>().To<WnpRepository>();
         }
     }
 }

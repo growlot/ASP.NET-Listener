@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.WNPAsync", "Sou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Listener.Client", "Sources\WNP.Listener\Listener.Client\Listener.Client.csproj", "{40BB4A5C-DDAF-4AFE-9205-5D287F2CE886}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Listener.Client.Test", "Sources\WNP.Listener\Listener.Client.Test\Listener.Client.Test.csproj", "{340A789B-4BDA-47BF-A89E-2BE6CBAA77C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug.SQLServer|Any CPU = Debug.SQLServer|Any CPU
@@ -246,6 +248,12 @@ Global
 		{40BB4A5C-DDAF-4AFE-9205-5D287F2CE886}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40BB4A5C-DDAF-4AFE-9205-5D287F2CE886}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40BB4A5C-DDAF-4AFE-9205-5D287F2CE886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{340A789B-4BDA-47BF-A89E-2BE6CBAA77C3}.Debug.SQLServer|Any CPU.ActiveCfg = Debug|Any CPU
+		{340A789B-4BDA-47BF-A89E-2BE6CBAA77C3}.Debug.SQLServer|Any CPU.Build.0 = Debug|Any CPU
+		{340A789B-4BDA-47BF-A89E-2BE6CBAA77C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{340A789B-4BDA-47BF-A89E-2BE6CBAA77C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{340A789B-4BDA-47BF-A89E-2BE6CBAA77C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{340A789B-4BDA-47BF-A89E-2BE6CBAA77C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

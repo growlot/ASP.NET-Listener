@@ -54,8 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exception\FailedToOpenTransactionException.cs" />
+    <Compile Include="Exception\FailedToProcessTransactionException.cs" />
+    <Compile Include="Exception\FailedToSucceedTransactionException.cs" />
     <Compile Include="Exception\ListenerRequestFailedException.cs" />
-    <Compile Include="GenericProxy.cs" />
+    <Compile Include="IListenerProxy.cs" />
+    <Compile Include="ListenerProxy.cs" />
     <Compile Include="ListenerClient.cs" />
     <Compile Include="ListenerRequestHeaderDictionary.cs" />
     <Compile Include="Message\BaseListenerRequestMessage.cs" />

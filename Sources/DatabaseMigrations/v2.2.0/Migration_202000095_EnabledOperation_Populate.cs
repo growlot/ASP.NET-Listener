@@ -42,6 +42,13 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     ApplicationId = 1,
                     CompanyId = 0,
                     OperationId = 3
+                },
+                new
+                {
+                    EnabledOperationId = 4,
+                    ApplicationId = 1,
+                    CompanyId = 0,
+                    OperationId = 4
                 }
             };
             foreach (var record in records)

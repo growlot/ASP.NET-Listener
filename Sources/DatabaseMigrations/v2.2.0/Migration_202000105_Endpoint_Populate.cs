@@ -27,7 +27,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 ProtocolTypeId = 1,
                 ConnectionConfiguration = "{\"Host\":\"localhost\", \"Port\":7001, \"QueueName\":\"jms/AMSIntegration\", \"UserName\":\"ams\", \"Password\":\"Password1\"}",
                 EndpointTriggerTypeId = 2,
-                AdapterConfiguration = "{\"MessageTypeTemplate\":\"{EntityCategory}:{OperationKey}\"}"
+                AdapterConfiguration = "{\"MessageTypeTemplate\":\"{Data.EntityCategory}:{Data.OperationKey}\"}"
             };
 
             this.IfSqlServer().Insert.IntoTable("Endpoint").WithIdentityInsert()
