@@ -85,17 +85,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var sqlWhere = this.filterTransformer.TransformFilterQueryOption(queryOptions.Filter);
 
             // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
-            for (int i = 0; i < sqlWhere.PositionalParameters.Length; i++)
-            {
-                DateTimeOffset? parameter = sqlWhere.PositionalParameters[i] as DateTimeOffset?;
-
-                if (parameter != null)
-                {
-                    DateTime localTime = new DateTime(parameter.Value.ToLocalTime().Ticks);
-                    DateTime localTimeAsUtc = DateTime.SpecifyKind(localTime, DateTimeKind.Utc);
-                    sqlWhere.PositionalParameters[i] = (DateTimeOffset)localTimeAsUtc;
-                }
-            }
+            ConvertUtcParamsToLocalTime(sqlWhere);
 
             if (!string.IsNullOrWhiteSpace(sqlWhere.Clause))
             {
@@ -124,32 +114,78 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return this.CreateOkResponseList(result);
         }
 
+        private static void ConvertUtcParamsToLocalTime(WhereClause sqlWhere)
+        {
+            for (int i = 0; i < sqlWhere.PositionalParameters.Length; i++)
+            {
+                DateTimeOffset? parameter = sqlWhere.PositionalParameters[i] as DateTimeOffset?;
+
+                if (parameter != null)
+                {
+                    DateTime localTime = new DateTime(parameter.Value.ToLocalTime().Ticks);
+                    DateTime localTimeAsUtc = DateTime.SpecifyKind(localTime, DateTimeKind.Utc);
+                    sqlWhere.PositionalParameters[i] = (DateTimeOffset) localTimeAsUtc;
+                }
+            }
+        }
+
         /// <summary>
-        /// Gets single entity using primary key specified in Url.
+        /// Gets this collection of navigation entities.
         /// </summary>
-        /// <returns>Single entity</returns>
-        public IHttpActionResult GetSingle()
+        /// <returns>The collection of entities.</returns>
+        public IHttpActionResult GetNavigation()
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
             var queryOptions = this.ConstructQueryOptions();
             queryOptions.Validate(this.defaultODataValidationSettings);
 
-            var pathTemplate = queryOptions.Context.Path.PathTemplate;
+            var model = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
 
-            // get single result of entity set by specified key
-            if (pathTemplate == "~/entityset/key")
+            var skip = queryOptions.Skip?.Value ?? 0;
+            var top = queryOptions.Top?.Value ?? 10;
+
+            var containedEntitySet = queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
+            if (containedEntitySet != null)
             {
-                return this.GetSingleSimple(queryOptions);
+                var navSource = containedEntitySet;
+                var parentNavSource = navSource.ParentNavigationSource as IEdmEntitySet;
+                if (parentNavSource != null)
+                {
+                    // get types
+                    var parentEntityType = navSource.NavigationProperty.DeclaringEntityType();
+                    var childEntityType = navSource.NavigationProperty.ToEntityType();
+
+                    // get types' entity models
+                    var parentEntityModel = this.metadataService.GetModelMapping(parentEntityType.Name);
+                    var childEntityModel = this.metadataService.GetModelMapping(childEntityType.Name);
+
+                    var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, queryOptions, false);
+
+                    var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql);
+
+                    // create actual result object we will be sending over the wire
+                    var result = this.CreateResultList();
+
+                    foreach (var record in dbResults)
+                    {
+                        var entityInstance = this.CreateEdmEntity();
+
+                        var rawData = (IDictionary<string, object>)record;
+                        foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
+                        {
+                            var property = this.EdmEntityClrType.GetProperty(model.ColumnToModelMappings[key.ToUpperInvariant()]);
+                            property.SetValue(entityInstance, Converters.Convert(rawData[key], property.PropertyType));
+                        }
+
+                        result.Add(entityInstance);
+                    }
+
+                    return this.CreateOkResponseList(result);
+                }
             }
 
-            // get single result of contained child entity set by specified key
-            if (pathTemplate == "~/entityset/key/navigation/key")
-            {
-                return this.GetSingleByNavigation(queryOptions);
-            }
-
-            return this.BadRequest("Unknown path template specified");
+            return this.BadRequest();
         }
 
         /// <summary>
@@ -189,128 +225,17 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return await this.InvokeAction(actionsContainerType, actionName, keySegment);
         }
 
-        private static KeyValuePair<string, object>[] GetRequestKey(ODataQueryOptions queryOptions, MetadataEntityModel modelMapping, int keyPosition)
+        /// <summary>
+        /// Gets single entity using primary key specified in Url.
+        /// </summary>
+        /// <returns>Single entity</returns>
+        public IHttpActionResult GetSingleSimple()
         {
-            var entityConfig = modelMapping.EntityConfiguration;
-            var hasCompositeKey = entityConfig.Key?.Count() > 1;
+            // constructing oData options since we can not use generic return type
+            // without first generating Controller dynamically
+            var queryOptions = this.ConstructQueryOptions();
+            queryOptions.Validate(this.defaultODataValidationSettings);
 
-            var jsonKey = queryOptions.Context.Path.Segments[keyPosition] as KeyValuePathSegment;
-            if (jsonKey == null)
-            {
-                throw new ArgumentException("Invalid key specified");
-            }
-
-            var key = new Dictionary<string, object>();
-            if (hasCompositeKey)
-            {
-                key = jsonKey.ToCompositeKeyDictionary();
-            }
-            else
-            {
-                key.Add(modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
-                    JsonConvert.DeserializeObject(jsonKey.Value));
-            }
-
-            return key.ToArray();
-        }
-
-        private static string GenerateWhereBodyForKey(KeyValuePair<string, object>[] key, string table, MetadataEntityModel model, int offset = 0)
-        {
-            return key.Select(
-                (kvp, ind) => $"{table}.{model.ModelToColumnMappings[kvp.Key]}=@{ind + offset}")
-                .Aggregate((s, s1) => $"{s} AND {s1}");
-        }
-
-        private IHttpActionResult GetSingleByNavigation(ODataQueryOptions queryOptions)
-        {
-            var containedEntitySet = queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
-            if (containedEntitySet != null)
-            {
-                var navSource = containedEntitySet;
-                var parentNavSource = navSource.ParentNavigationSource as IEdmEntitySet;
-                if (parentNavSource != null)
-                {
-                    // get types
-                    var parentEntityType = navSource.NavigationProperty.DeclaringEntityType();
-                    var childEntityType = navSource.NavigationProperty.ToEntityType();
-
-                    // get types' entity models
-                    var parentEntityModel = this.metadataService.GetModelMapping(parentEntityType.Name);
-                    var childEntityModel = this.metadataService.GetModelMapping(childEntityType.Name);
-
-                    // check if navSource is a Collection so we know we should look into ManyRelations
-                    // TODO: should we do this? How 1-1 relationship is defined?
-                    if (navSource.Type.TypeKind == EdmTypeKind.Collection)
-                    {
-                        var childTable = childEntityModel.TableName;
-                        var relConfig =
-                            parentEntityModel.EntityConfiguration.ManyRelations.FirstOrDefault(
-                                ri => ri.TargetTableName == childTable);
-
-                        if (relConfig == null)
-                            return this.BadRequest("Relationship configuration not found");
-
-                        // make join
-                        var parentTable = parentEntityModel.TableName;
-                        var onClause = relConfig.MatchOn
-                            .Select(m => $"{parentTable}.{m.SourceColumn} = {childTable}.{m.TargetColumn}")
-                            .Aggregate((m1, m2) => $"{m1} AND {m2}");
-
-                        var parentKey = GetRequestKey(queryOptions, parentEntityModel, 1);
-                        var childKey = GetRequestKey(queryOptions, childEntityModel, 3);
-
-                        var dbColumnsList = this.GetDBColumnsList(queryOptions.SelectExpand, childEntityModel);
-
-                        var whereClause =
-                            $"{GenerateWhereBodyForKey(parentKey, parentTable, parentEntityModel)} " +
-                            $"AND {GenerateWhereBodyForKey(childKey, childTable, childEntityModel, parentKey.Length)}";
-
-                        var whereArgs =
-                            parentKey.Select(kvp => kvp.Value)
-                                .Union(childKey.Select(kvp => kvp.Value))
-                                .ToArray();
-
-                        var sql =
-                            Sql.Builder.Select(dbColumnsList)
-                                .From($"{parentTable}")
-                                .InnerJoin($"{childTable}")
-                                .On(onClause)
-                                .Where(whereClause, whereArgs);
-
-                        Log.Debug("Generated SQL:{GeneratedSQL}\n\nParameters: {Parameters}\n", sql.SQL, sql.Arguments);
-
-                        var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.Fetch<dynamic>(sql);
-                        if (dbResults.Count > 1)
-                        {
-                            return this.BadRequest("Request returned more than 1 record.");
-                        }
-
-                        if (dbResults.Count == 0)
-                        {
-                            return this.NotFound();
-                        }
-
-                        var entityInstance = this.CreateEdmEntity();
-
-                        var rawData = (IDictionary<string, object>)dbResults[0];
-                        foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
-                        {
-                            var property = this.EdmEntityClrType.GetProperty(childEntityModel.ColumnToModelMappings[kk.ToUpperInvariant()]);
-                            property.SetValue(entityInstance, Converters.Convert(rawData[kk], property.PropertyType));
-                        }
-
-                        return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
-                    }
-                }
-
-                return this.BadRequest("Parent EntitySet must be IEdmEntitySet");
-            }
-
-            return this.BadRequest("Only contained sets is currently supported");
-        }
-
-        private IHttpActionResult GetSingleSimple(ODataQueryOptions queryOptions)
-        {
             var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
 
             var orderedKey = GetRequestKey(queryOptions, modelMapping, 1);
@@ -345,6 +270,167 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             }
 
             return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
+        }
+
+        /// <summary>
+        /// Get single result of contained child entity set by specified parent
+        /// and child keys.
+        /// </summary>
+        /// <returns>Single entity</returns>
+        public IHttpActionResult GetSingleByNavigation()
+        {
+            // constructing oData options since we can not use generic return type
+            // without first generating Controller dynamically
+            var queryOptions = this.ConstructQueryOptions();
+            queryOptions.Validate(this.defaultODataValidationSettings);
+
+            var containedEntitySet = queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
+            if (containedEntitySet != null)
+            {
+                var navSource = containedEntitySet;
+                var parentNavSource = navSource.ParentNavigationSource as IEdmEntitySet;
+                if (parentNavSource != null)
+                {
+                    // get types
+                    var parentEntityType = navSource.NavigationProperty.DeclaringEntityType();
+                    var childEntityType = navSource.NavigationProperty.ToEntityType();
+
+                    // get types' entity models
+                    var parentEntityModel = this.metadataService.GetModelMapping(parentEntityType.Name);
+                    var childEntityModel = this.metadataService.GetModelMapping(childEntityType.Name);
+
+                    // check if navSource is a Collection so we know we should look into ManyRelations
+                    // TODO: should we do this? How 1-1 relationship is defined?
+                    if (navSource.Type.TypeKind == EdmTypeKind.Collection)
+                    {
+                        var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, queryOptions, true);
+
+                        Log.Debug("Generated SQL:{GeneratedSQL}\n\nParameters: {Parameters}\n", sql.SQL, sql.Arguments);
+
+                        var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.Fetch<dynamic>(sql);
+                        if (dbResults.Count > 1)
+                        {
+                            return this.BadRequest("Request returned more than 1 record.");
+                        }
+
+                        if (dbResults.Count == 0)
+                        {
+                            return this.NotFound();
+                        }
+
+                        // this should be instance of the requested child entity
+                        var entityInstance = this.CreateEdmEntity();
+
+                        var rawData = (IDictionary<string, object>)dbResults[0];
+                        foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
+                        {
+                            var property = this.EdmEntityClrType.GetProperty(childEntityModel.ColumnToModelMappings[kk.ToUpperInvariant()]);
+                            property.SetValue(entityInstance, Converters.Convert(rawData[kk], property.PropertyType));
+                        }
+
+                        return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
+                    }
+                }
+
+                return this.BadRequest("Parent EntitySet must be IEdmEntitySet");
+            }
+
+            return this.BadRequest("Only contained sets are currently supported");
+        }
+
+        private static KeyValuePair<string, object>[] GetRequestKey(ODataQueryOptions queryOptions, MetadataEntityModel modelMapping, int keyPosition)
+        {
+            var entityConfig = modelMapping.EntityConfiguration;
+            var hasCompositeKey = entityConfig.Key?.Count() > 1;
+
+            var jsonKey = queryOptions.Context.Path.Segments[keyPosition] as KeyValuePathSegment;
+            if (jsonKey == null)
+            {
+                throw new ArgumentException("Invalid key specified");
+            }
+
+            var key = new Dictionary<string, object>();
+            if (hasCompositeKey)
+            {
+                key = jsonKey.ToCompositeKeyDictionary();
+            }
+            else
+            {
+                key.Add(
+                    modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
+                    JsonConvert.DeserializeObject(jsonKey.Value));
+            }
+
+            return key.ToArray();
+        }
+
+        private Sql GetNavigationSql(MetadataEntityModel parentEntityModel, MetadataEntityModel childEntityModel, ODataQueryOptions queryOptions, bool byChildKey)
+        {
+            var childTable = childEntityModel.TableName;
+            var relConfig =
+                parentEntityModel.EntityConfiguration.ManyRelations.FirstOrDefault(
+                    ri => ri.TargetTableName == childTable);
+
+            if (relConfig == null)
+            {
+                throw new ArgumentException($"Relationship configuration not found between {parentEntityModel.TableName} and {childTable}");
+            }
+
+            // make join
+            var parentTable = parentEntityModel.TableName;
+            var onClause = relConfig.MatchOn
+                .Select(m => $"{parentTable}.{m.SourceColumn} = {childTable}.{m.TargetColumn}")
+                .Aggregate((m1, m2) => $"{m1} AND {m2}");
+
+            var dbColumnsList = this.GetDBColumnsList(queryOptions.SelectExpand, childEntityModel);
+
+            var parentKey = GetRequestKey(queryOptions, parentEntityModel, 1);
+            KeyValuePair<string, object>[] childKey = null;
+
+            object[] filterArgs = null;
+
+            var whereClause = $"{GenerateWhereBodyForKey(parentKey, parentTable, parentEntityModel)}";
+            if (byChildKey)
+            {
+                childKey = GetRequestKey(queryOptions, childEntityModel, 3);
+                whereClause +=
+                    $" AND {GenerateWhereBodyForKey(childKey, childTable, childEntityModel, parentKey.Length)}";
+            }
+            else
+            {
+                var sqlFilter = this.filterTransformer.TransformFilterQueryOption(queryOptions.Filter, parentKey.Length);
+
+                // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
+                ConvertUtcParamsToLocalTime(sqlFilter);
+
+                if (!string.IsNullOrWhiteSpace(sqlFilter.Clause))
+                {
+                    whereClause += $" AND {sqlFilter.Clause}";
+                    filterArgs = sqlFilter.PositionalParameters;
+                }
+            }
+
+            var whereArgs =
+                parentKey.Select(kvp => kvp.Value).ToList();
+
+            whereArgs.AddRange(childKey?.Select(kvp => kvp.Value) ?? new object[] { });
+            whereArgs.AddRange(filterArgs ?? new object[] { });
+
+            var sql =
+                Sql.Builder.Select(dbColumnsList)
+                    .From($"{parentTable}")
+                    .InnerJoin($"{childTable}")
+                    .On(onClause)
+                    .Where(whereClause, whereArgs.ToArray());
+
+            return sql;
+        }
+
+        private static string GenerateWhereBodyForKey(KeyValuePair<string, object>[] key, string table, MetadataEntityModel model, int offset = 0)
+        {
+            return key.Select(
+                (kvp, ind) => $"{table}.{model.ModelToColumnMappings[kvp.Key]}=@{ind + offset}")
+                .Aggregate((s, s1) => $"{s} AND {s1}");
         }
 
         /// <summary>

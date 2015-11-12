@@ -26,6 +26,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
         private readonly IODataFunctionToSqlConvertor oDataToSql;
 
         private readonly List<object> positionalParmeters = new List<object>();
+        private int positionalArgsOffset = 0;
 
         private FilterQueryOption filterQueryOption;
 
@@ -36,8 +37,10 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
         }
 
         /// <inheritdoc/>
-        public WhereClause TransformFilterQueryOption(FilterQueryOption filterQueryOption)
+        public WhereClause TransformFilterQueryOption(FilterQueryOption filterQueryOption, int positionalArgsOffset = 0)
         {
+            this.positionalArgsOffset = positionalArgsOffset;
+
             if ((this.filterQueryOption = filterQueryOption) == null)
             {
                 return EmptyWhereClause;
@@ -184,7 +187,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
         {
             this.positionalParmeters.Add(constantNode.ToKnownClrType());
 
-            return $"@{this.positionalParmeters.Count - 1}";
+            return $"@{this.positionalParmeters.Count - 1 + this.positionalArgsOffset}";
         }
 
         private string BindBinaryOperatorNode(BinaryOperatorNode binaryOperatorNode)

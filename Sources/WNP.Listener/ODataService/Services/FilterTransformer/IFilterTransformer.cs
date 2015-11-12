@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.ODataService.Services.FilterTransformer
 
     public interface IFilterTransformer
     {
-        WhereClause TransformFilterQueryOption(FilterQueryOption filterQueryOption);
+        WhereClause TransformFilterQueryOption(FilterQueryOption filterQueryOption, int positionalArgsOffset = 0);
     }
 
     public class WhereClause
