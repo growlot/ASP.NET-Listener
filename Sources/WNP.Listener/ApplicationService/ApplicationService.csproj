@@ -100,6 +100,8 @@
     <Compile Include="Commands\ProcessingTransactionCommand.cs" />
     <Compile Include="Commands\UpdateSiteDetailsCommand.cs" />
     <Compile Include="IBatchBuilder.cs" />
+    <Compile Include="ICurrentRequestScope.cs" />
+    <Compile Include="Implementations\CurrentRequestScope.cs" />
     <Compile Include="Implementations\WnpIntegrationService.cs" />
     <Compile Include="ISaga.cs" />
     <Compile Include="Implementations\ApplicationServiceScope.cs" />

@@ -5,10 +5,10 @@
 namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
 {
     using System.Threading.Tasks;
+    using ApplicationService;
     using Core;
     using Domain;
     using Domain.WNP.SiteAggregate;
-    using Repository.WNP;
     using WNP;
 
     /// <summary>
@@ -19,11 +19,10 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteCreatedEventHandler" /> class.
         /// </summary>
-        /// <param name="unitOfWork">The unit of work.</param>
-        /// <param name="user">The user who initiated the event.</param>
+        /// <param name="requestScope">The request scope.</param>
         /// <param name="timeProvider">The time provider.</param>
-        public SiteCreatedEventHandler(IWNPUnitOfWork unitOfWork, string user, IDateTimeProvider timeProvider)
-            : base(unitOfWork, user, timeProvider)
+        public SiteCreatedEventHandler(ICurrentRequestScope requestScope, IDateTimeProvider timeProvider)
+            : base(requestScope, timeProvider)
         {
         }
 
@@ -32,11 +31,9 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         {
             var site = new SiteEntity()
             {
+                Owner = this.Owner,
                 AccountName = domainEvent.BillingAccountName,
                 AccountNo = domainEvent.BillingAccountNumber,
-                CreateBy = this.User,
-                CreateDate = this.TimeProvider.Now(),
-                Owner = domainEvent.Owner,
                 PremiseNo = domainEvent.PremiseNumber,
                 SiteAddress = domainEvent.Address1,
                 SiteAddress2 = domainEvent.Address2,

@@ -91,7 +91,7 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<ITransactionService>().To<TransactionService>().InSingletonScope();
             this.Kernel.Bind<IApplicationServiceScope>().To<ApplicationServiceScope>();
             this.Kernel.Bind<IBatchBuilder>().To<MeterTestResultBatchBuilder>();
-            this.Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
+            this.Kernel.Bind<ICurrentRequestScope>().To<CurrentRequestScope>().InRequestScope();
 
             // -------------------------
             // Repository bindings
@@ -125,27 +125,6 @@ namespace AMSLLC.Listener.Bootstrapper
                 .ToSelf()
                 .InRequestScope();
 
-            this.Kernel.Bind<SiteCreatedEventHandler>()
-                .ToSelf()
-                .InRequestScope()
-                .WithConstructorArgument("user", "username");
-            this.Kernel.Bind<SiteAddressUpdatedEventHandler>()
-                .ToSelf()
-                .InRequestScope()
-                .WithConstructorArgument("user", "username");
-            this.Kernel.Bind<SiteBillingAccountUpdatedEventHandler>()
-                .ToSelf()
-                .InRequestScope()
-                .WithConstructorArgument("user", "username");
-            this.Kernel.Bind<CircuitCreatedEventHandler>()
-                .ToSelf()
-                .InRequestScope()
-                .WithConstructorArgument("user", "username");
-            this.Kernel.Bind<SiteDetailsUpdatedEventHandler>()
-                .ToSelf()
-                .InRequestScope()
-                .WithConstructorArgument("user", "username");
-
             // -------------------------
             // OData service bindings
             // -------------------------
@@ -155,7 +134,7 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();
             this.Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
             this.Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
-            this.Kernel.Bind<CurrentUnitOfWork>().ToSelf().InRequestScope();
+            this.Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
 
             this.Kernel.Bind<IDependencyInjectionModule>().To<ApplicationScopeDIInitializer>().InSingletonScope().Named("ApplicationScopeModule");
         }

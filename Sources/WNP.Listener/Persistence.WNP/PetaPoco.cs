@@ -35,8 +35,6 @@ using System.CodeDom.Compiler;
 
 namespace AMSLLC.Listener.Persistence.WNP
 {
-    using Serilog;
-
     /// <summary>
 	/// The main PetaPoco Database class.  You can either use this class directly, or derive from it.
 	/// </summary>

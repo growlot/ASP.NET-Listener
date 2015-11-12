@@ -1,37 +1,40 @@
-﻿// <copyright file="UnitOfWorkHandler.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="RequestScopeHandler.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
 namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
     using System.Net.Http;
+    using ApplicationService;
+    using ApplicationService.Implementations;
     using Core;
     using Repository.WNP;
 
     /// <summary>
     /// Custom delegating handler to extract UnitOfWork if it is present in request.
     /// </summary>
-    public class UnitOfWorkHandler : DelegatingHandler
+    public class RequestScopeHandler : DelegatingHandler
     {
-        private const string UnitOfWork = "Batch_UnitOfWork";
+        private const string RequestScope = "Batch_RequestScope";
 
         /// <inheritdoc/>
         protected async override System.Threading.Tasks.Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
         {
-            var scope = request.GetDependencyScope();
-            var currentUnitOfWork = ApplicationIntegration.DependencyResolver.ResolveType<CurrentUnitOfWork>();
+            var requestScope = ApplicationIntegration.DependencyResolver.ResolveType<ICurrentRequestScope>();
 
-            object existingUnitOfWork;
-            if (request.Properties.TryGetValue(UnitOfWork, out existingUnitOfWork))
+            object existingRequestScope;
+            if (request.Properties.TryGetValue(RequestScope, out existingRequestScope))
             {
-                currentUnitOfWork.UnitOfWork = (IWNPUnitOfWork)existingUnitOfWork;
+                requestScope = (CurrentRequestScope)existingRequestScope;
                 return await base.SendAsync(request, cancellationToken);
             }
             else
             {
                 using (var unitOfWork = ApplicationIntegration.DependencyResolver.ResolveType<IWNPUnitOfWork>())
                 {
-                    currentUnitOfWork.UnitOfWork = unitOfWork;
+                    ((CurrentRequestScope)requestScope).UnitOfWork = unitOfWork;
+                    ((CurrentRequestScope)requestScope).User = "petras";
+                    ((CurrentRequestScope)requestScope).OperatingCompany = 0;
 
                     var response = await base.SendAsync(request, cancellationToken);
 

@@ -6,11 +6,11 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using ApplicationService;
     using Core;
     using Domain;
     using Domain.WNP.SiteAggregate;
     using Metadata;
-    using Repository.WNP;
     using WNP;
 
     /// <summary>
@@ -21,11 +21,10 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteAddressUpdatedEventHandler" /> class.
         /// </summary>
-        /// <param name="unitOfWork">The unit of work.</param>
-        /// <param name="user">The user who initiated the event.</param>
+        /// <param name="requestScope">The request scope.</param>
         /// <param name="timeProvider">The time provider.</param>
-        public SiteAddressUpdatedEventHandler(IWNPUnitOfWork unitOfWork, string user, IDateTimeProvider timeProvider)
-            : base(unitOfWork, user, timeProvider)
+        public SiteAddressUpdatedEventHandler(ICurrentRequestScope requestScope, IDateTimeProvider timeProvider)
+            : base(requestScope, timeProvider)
         {
         }
 
@@ -34,10 +33,8 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         {
             var site = new SiteEntity()
             {
-                Owner = domainEvent.Owner,
+                Owner = this.Owner,
                 Site = domainEvent.SiteId,
-                ModBy = this.User,
-                ModDate = this.TimeProvider.Now(),
                 SiteAddress = domainEvent.Address1,
                 SiteAddress2 = domainEvent.Address2,
                 SiteCity = domainEvent.City,
@@ -47,8 +44,6 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             };
 
             var columnList = new List<string>();
-            columnList.Add(DBMetadata.Site.ModBy);
-            columnList.Add(DBMetadata.Site.ModDate);
             columnList.Add(DBMetadata.Site.SiteAddress);
             columnList.Add(DBMetadata.Site.SiteAddress2);
             columnList.Add(DBMetadata.Site.SiteCountry);

@@ -25,7 +25,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.ttransducer_test_results")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class TransducerTestResultsEntity  
+    public partial class TransducerTestResultsEntity 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("site_name")] public string SiteName { get; set; }
@@ -68,7 +69,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TBARCODE")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class BarcodeEntity  
+    public partial class BarcodeEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("AEP_CODE")] public string AepCode { get; set; }
@@ -135,7 +143,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tmeter_limit_set")]
 	[PrimaryKey("limit_index", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MeterLimitSetEntity  
+    public partial class MeterLimitSetEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		 
+		 
+	 
     {
 		[Column("limit_index")] public int? LimitIndex { get; set; }
 		[Column("limit_name")] public string LimitName { get; set; }
@@ -166,7 +181,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TVALIDATION")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ValidationEntity  
+    public partial class ValidationEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("VAL_COLUMN")] public string ValColumn { get; set; }
@@ -180,7 +202,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TBARCODE_CONTROL")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class BarcodeControlEntity  
+    public partial class BarcodeControlEntity 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("BC_FIELD")] public string BcField { get; set; }
@@ -192,7 +215,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.taudit_log")]
 	[PrimaryKey("log_index", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class AuditLogEntity  
+    public partial class AuditLogEntity 
+	 
+		 
+		: ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("log_index")] public int? LogIndex { get; set; }
 		[Column("owner")] public int? Owner { get; set; }
@@ -211,7 +241,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TVENDOR")]
 	[PrimaryKey("vendor_id", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class VendorEntity  
+    public partial class VendorEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		 
+		 
+	 
     {
 		[Column("vendor_id")] public int? VendorId { get; set; }
 		[Column("mfr")] public string Mfr { get; set; }
@@ -228,7 +265,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tkyz")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class KyzEntity  
+    public partial class KyzEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -247,7 +291,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TVENDOR_CONTACT")]
 	[PrimaryKey("vendor_id", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class VendorContactEntity  
+    public partial class VendorContactEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		 
+		 
+	 
     {
 		[Column("vendor_id")] public int? VendorId { get; set; }
 		[Column("contact_index")] public int? ContactIndex { get; set; }
@@ -264,7 +315,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.trma_batch_in")]
 	[PrimaryKey("rma_batch_in_no", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class RmaBatchInEntity  
+    public partial class RmaBatchInEntity 
+	 
+		 
+		: ITrackCreation  
+		 
+		 
+		 
+	 
     {
 		[Column("rma_batch_in_no")] public string RmaBatchInNo { get; set; }
 		[Column("rma_batch_in_desc")] public string RmaBatchInDesc { get; set; }
@@ -284,7 +342,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tevent_triggers")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EventTriggersEntity  
+    public partial class EventTriggersEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("workstation")] public string Workstation { get; set; }
@@ -299,7 +364,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tharmonic_configuration")]
 	[PrimaryKey("configuration_name", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class HarmonicConfigurationEntity  
+    public partial class HarmonicConfigurationEntity 
+	 
     {
 		[Column("configuration_name")] public string ConfigurationName { get; set; }
 		[Column("va")] public string Va { get; set; }
@@ -320,7 +386,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TBARCODE_LABEL")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class BarcodeLabelEntity  
+    public partial class BarcodeLabelEntity 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("BARCODE_LABEL")] public string BarcodeLabel { get; set; }
@@ -335,7 +402,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TTRANSFORMER_CODE_CT")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class TransformerCodeCtEntity  
+    public partial class TransformerCodeCtEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("transformer_code")] public string TransformerCode { get; set; }
@@ -382,7 +456,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tversion")]
 	[PrimaryKey("version", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class VersionEntity  
+    public partial class VersionEntity 
+	 
     {
 		[Column("version")] public int? Version { get; set; }
 		[Column("wnp_version")] public string WnpVersion { get; set; }
@@ -391,7 +466,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TBARCODE_LABEL_DEF")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class BarcodeLabelDefEntity  
+    public partial class BarcodeLabelDefEntity 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("FACEPLATE_COL")] public string FaceplateCol { get; set; }
@@ -403,7 +479,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TTRANSFORMER_CODE_PT")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class TransformerCodePtEntity  
+    public partial class TransformerCodePtEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("transformer_code")] public string TransformerCode { get; set; }
@@ -449,7 +532,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tharmonic_config_data")]
 	[PrimaryKey("name", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class HarmonicConfigDataEntity  
+    public partial class HarmonicConfigDataEntity 
+	 
     {
 		[Column("name")] public string Name { get; set; }
 		[Column("revision")] public int? Revision { get; set; }
@@ -461,7 +545,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tsite_metrics")]
 	[PrimaryKey("site", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SiteMetricsEntity  
+    public partial class SiteMetricsEntity 
+	 
     {
 		[Column("site")] public int? Site { get; set; }
 		[Column("date_read")] public DateTime? DateRead { get; set; }
@@ -482,7 +567,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TVERSION_HISTORY")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class VersionHistoryEntity  
+    public partial class VersionHistoryEntity 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -513,7 +599,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tsite_wiring_check")]
 	[PrimaryKey("site", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SiteWiringCheckEntity  
+    public partial class SiteWiringCheckEntity 
+	 
     {
 		[Column("site")] public int? Site { get; set; }
 		[Column("test_date")] public DateTime? TestDate { get; set; }
@@ -547,7 +634,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TWORKSTATION")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class WorkstationEntity  
+    public partial class WorkstationEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("WORKSTATION")] public string Workstation { get; set; }
@@ -561,7 +655,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TCIRCUIT")]
 	[PrimaryKey("SITE", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class CircuitEntity  
+    public partial class CircuitEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("SITE")] public int? Site { get; set; }
@@ -591,7 +692,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.trma_batch_out")]
 	[PrimaryKey("rma_batch_out_no", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class RmaBatchOutEntity  
+    public partial class RmaBatchOutEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		 
+		 
+	 
     {
 		[Column("rma_batch_out_no")] public string RmaBatchOutNo { get; set; }
 		[Column("rma_batch_out_desc")] public string RmaBatchOutDesc { get; set; }
@@ -617,7 +725,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TTEST_CARD")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class TestCardEntity  
+    public partial class TestCardEntity 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("card_name")] public string CardName { get; set; }
@@ -634,7 +743,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TRATIO")]
 	[PrimaryKey("EQP_TYPE", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class RatioEntity  
+    public partial class RatioEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		 
+		 
+	 
     {
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
 		[Column("NAMEPLATE_RATIO")] public string NameplateRatio { get; set; }
@@ -656,7 +772,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.trma_eqp")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class RmaEqpEntity  
+    public partial class RmaEqpEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -703,7 +826,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_REFERENCE")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpReferenceEntity  
+    public partial class EqpReferenceEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -762,7 +892,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TCIRCUIT_HIST")]
 	[PrimaryKey("site", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class CircuitHistEntity  
+    public partial class CircuitHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
@@ -792,7 +929,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_TESTBOARD")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpTestboardEntity  
+    public partial class EqpTestboardEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("test_eqp_no")] public string TestEqpNo { get; set; }
@@ -810,7 +954,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TCOMMENT")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class CommentEntity  
+    public partial class CommentEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -834,7 +985,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.teqp_ami")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpAmiEntity  
+    public partial class EqpAmiEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("ami_id")] public string AmiId { get; set; }
@@ -862,7 +1020,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TCT_TEST_RESULTS")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class CtTestResultsEntity  
+    public partial class CtTestResultsEntity 
+	 
+		: ITrackModification  
+		 
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -916,7 +1081,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TREFERENCE_INSTALL_HISTORY")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ReferenceInstallHistoryEntity  
+    public partial class ReferenceInstallHistoryEntity 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -932,7 +1098,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TCUSTOM_FIELD_DESCRIPTIONS")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class CustomFieldDescriptionsEntity  
+    public partial class CustomFieldDescriptionsEntity 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
@@ -974,7 +1141,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tvehicle")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class VehicleEntity  
+    public partial class VehicleEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("vehicle_id")] public string VehicleId { get; set; }
@@ -990,7 +1164,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TREFERENCE_TEST_RESULTS")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ReferenceTestResultsEntity  
+    public partial class ReferenceTestResultsEntity 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -1023,7 +1198,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_CT")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpCtEntity  
+    public partial class EqpCtEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -1097,7 +1279,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tstandards_compare_sequence")]
 	[PrimaryKey("sequence_description", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class StandardsCompareSequenceEntity  
+    public partial class StandardsCompareSequenceEntity 
+	 
     {
 		[Column("sequence_description")] public string SequenceDescription { get; set; }
 		[Column("step_no")] public int? StepNo { get; set; }
@@ -1119,7 +1302,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_CT_HIST")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpCtHistEntity  
+    public partial class EqpCtHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -1193,7 +1383,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tmetadata")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MetadataEntity  
+    public partial class MetadataEntity 
+	 
+		 
+		 
+		: IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("table_name")] public string TableName { get; set; }
@@ -1221,7 +1418,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_METER")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpMeterEntity  
+    public partial class EqpMeterEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -1354,7 +1558,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TAMI_INSTALL_HISTORY")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class AmiInstallHistoryEntity  
+    public partial class AmiInstallHistoryEntity 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("parent_eqp_type")] public string ParentEqpType { get; set; }
@@ -1372,7 +1577,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_METER_HIST")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpMeterHistEntity  
+    public partial class EqpMeterHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -1505,7 +1717,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSITE_INSTALL_HISTORY")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SiteInstallHistoryEntity  
+    public partial class SiteInstallHistoryEntity 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
@@ -1530,7 +1743,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_PT")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpPtEntity  
+    public partial class EqpPtEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -1603,7 +1823,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TOBSOLETE")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ObsoleteEntity  
+    public partial class ObsoleteEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
@@ -1623,7 +1850,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_PT_HIST")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpPtHistEntity  
+    public partial class EqpPtHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -1696,7 +1930,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_TYPE")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpTypeEntity  
+    public partial class EqpTypeEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
@@ -1709,7 +1950,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_RECORDER")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpRecorderEntity  
+    public partial class EqpRecorderEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -1771,7 +2019,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TMETER_PWDS")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MeterPwdsEntity  
+    public partial class MeterPwdsEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("protocol_type")] public string ProtocolType { get; set; }
@@ -1789,7 +2044,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_RECORDER_HIST")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpRecorderHistEntity  
+    public partial class EqpRecorderHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -1852,7 +2114,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_GENERIC")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpGenericEntity  
+    public partial class EqpGenericEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
@@ -1920,7 +2189,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_TOTALIZER")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpTotalizerEntity  
+    public partial class EqpTotalizerEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -1980,7 +2256,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TGENERIC_CODE")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class GenericCodeEntity  
+    public partial class GenericCodeEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
@@ -2024,7 +2307,8 @@ namespace AMSLLC.Listener.Persistence.WNP
     
 	[TableName("wndba.pbcattbl")]
 	[ExplicitColumns]
-    public partial class PbcattblEntity  
+    public partial class PbcattblEntity 
+	 
     {
 		[Column("pbt_tnam")] public string PbtTnam { get; set; }
 		[Column("pbt_tid")] public int? PbtTid { get; set; }
@@ -2055,7 +2339,8 @@ namespace AMSLLC.Listener.Persistence.WNP
     
 	[TableName("wndba.pbcatcol")]
 	[ExplicitColumns]
-    public partial class PbcatcolEntity  
+    public partial class PbcatcolEntity 
+	 
     {
 		[Column("pbc_tnam")] public string PbcTnam { get; set; }
 		[Column("pbc_tid")] public int? PbcTid { get; set; }
@@ -2082,7 +2367,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_TOTALIZER_HIST")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpTotalizerHistEntity  
+    public partial class EqpTotalizerHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -2142,7 +2434,8 @@ namespace AMSLLC.Listener.Persistence.WNP
     
 	[TableName("wndba.pbcatfmt")]
 	[ExplicitColumns]
-    public partial class PbcatfmtEntity  
+    public partial class PbcatfmtEntity 
+	 
     {
 		[Column("pbf_name")] public string PbfName { get; set; }
 		[Column("pbf_frmt")] public string PbfFrmt { get; set; }
@@ -2152,7 +2445,8 @@ namespace AMSLLC.Listener.Persistence.WNP
     
 	[TableName("wndba.pbcatvld")]
 	[ExplicitColumns]
-    public partial class PbcatvldEntity  
+    public partial class PbcatvldEntity 
+	 
     {
 		[Column("pbv_name")] public string PbvName { get; set; }
 		[Column("pbv_vald")] public string PbvVald { get; set; }
@@ -2164,7 +2458,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_TRANSDUCER")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpTransducerEntity  
+    public partial class EqpTransducerEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -2223,7 +2524,8 @@ namespace AMSLLC.Listener.Persistence.WNP
     
 	[TableName("wndba.pbcatedt")]
 	[ExplicitColumns]
-    public partial class PbcatedtEntity  
+    public partial class PbcatedtEntity 
+	 
     {
 		[Column("pbe_name")] public string PbeName { get; set; }
 		[Column("pbe_edit")] public string PbeEdit { get; set; }
@@ -2237,7 +2539,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TEQP_TRANSDUCER_HIST")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpTransducerHistEntity  
+    public partial class EqpTransducerHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -2298,7 +2607,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TLOT_SIZE_LOOKUP")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class LotSizeLookupEntity  
+    public partial class LotSizeLookupEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("LOT_SIZE")] public int? LotSize { get; set; }
@@ -2311,7 +2627,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TIMPORT_EXPORT_DEFINITIONS")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ImportExportDefinitionsEntity  
+    public partial class ImportExportDefinitionsEntity 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("DEFINITION_NAME")] public string DefinitionName { get; set; }
@@ -2326,7 +2643,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TLOT_PERCENT_DEF")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class LotPercentDefEntity  
+    public partial class LotPercentDefEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("SAMPLE_SIZE")] public int? SampleSize { get; set; }
@@ -2339,7 +2663,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TLOT_ACCEPT_QUALITY_LEVEL")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class LotAcceptQualityLevelEntity  
+    public partial class LotAcceptQualityLevelEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("SAMPLE_SIZE")] public int? SampleSize { get; set; }
@@ -2351,7 +2682,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TIMPORT_EXPORT_OPTIONS")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ImportExportOptionsEntity  
+    public partial class ImportExportOptionsEntity 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("DEFINITION_NAME")] public string DefinitionName { get; set; }
@@ -2386,7 +2718,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TNEW_BATCH")]
 	[PrimaryKey("NEW_BATCH_NO", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class NewBatchEntity  
+    public partial class NewBatchEntity 
+	 
+		 
+		: ITrackCreation  
+		 
+		 
+		 
+	 
     {
 		[Column("NEW_BATCH_NO")] public string NewBatchNo { get; set; }
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
@@ -2406,7 +2745,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TLOCATION")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class LocationEntity  
+    public partial class LocationEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("LOCATION")] public string Location { get; set; }
@@ -2419,7 +2765,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TTAMPER")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class TamperEntity  
+    public partial class TamperEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -2443,7 +2796,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TMANUFACTURERCODE")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ManufacturercodeEntity  
+    public partial class ManufacturercodeEntity 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("MFR")] public string Mfr { get; set; }
@@ -2453,7 +2807,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TMETER_CODE")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MeterCodeEntity  
+    public partial class MeterCodeEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("METER_CODE")] public string MeterCode { get; set; }
@@ -2566,7 +2927,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tmeter_emulation")]
 	[PrimaryKey("form", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MeterEmulationEntity  
+    public partial class MeterEmulationEntity 
+	 
     {
 		[Column("form")] public string Form { get; set; }
 		[Column("base")] public string Base { get; set; }
@@ -2599,7 +2961,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TMETER_POWER_SETUP")]
 	[PrimaryKey("FORM_NO", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MeterPowerSetupEntity  
+    public partial class MeterPowerSetupEntity 
+	 
     {
 		[Column("FORM_NO")] public string FormNo { get; set; }
 		[Column("base")] public string Base { get; set; }
@@ -2633,7 +2996,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TMETER_TEST_RESULTS")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MeterTestResultsEntity  
+    public partial class MeterTestResultsEntity 
+	 
+		 
+		 
+		: IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -2702,7 +3072,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tmeter_test_sequence")]
 	[PrimaryKey("sequence_description", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MeterTestSequenceEntity  
+    public partial class MeterTestSequenceEntity 
+	 
     {
 		[Column("sequence_description")] public string SequenceDescription { get; set; }
 		[Column("step_no")] public int? StepNo { get; set; }
@@ -2731,7 +3102,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TMFR")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MfrEntity  
+    public partial class MfrEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("mfr")] public string Mfr { get; set; }
@@ -2746,7 +3124,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TMAP_WINBOARD2")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MapWinboard2Entity  
+    public partial class MapWinboard2Entity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("wb2_table_name")] public string Wb2TableName { get; set; }
@@ -2769,7 +3154,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TMULTIMEDIA")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MultimediaEntity  
+    public partial class MultimediaEntity 
+	 
+		 
+		: ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("FILE_INDEX")] public int? FileIndex { get; set; }
 		[Column("FILE_NAME")] public string FileName { get; set; }
@@ -2789,7 +3181,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TREPAIR")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class RepairEntity  
+    public partial class RepairEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -2820,7 +3219,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TOWNER")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class OwnerEntity  
+    public partial class OwnerEntity 
+	 
+		: ITrackModification  
+		 
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("OWNER_DESC")] public string OwnerDesc { get; set; }
@@ -2842,7 +3248,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TPROCESS_FLOW")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ProcessFlowEntity  
+    public partial class ProcessFlowEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("TEST_PROGRAM")] public string TestProgram { get; set; }
@@ -2855,7 +3268,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TPT_TEST_RESULTS")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class PtTestResultsEntity  
+    public partial class PtTestResultsEntity 
+	 
+		: ITrackModification  
+		 
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -2909,7 +3329,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TREAD_SET")]
 	[PrimaryKey("read_set", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ReadSetEntity  
+    public partial class ReadSetEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		 
+		 
+	 
     {
 		[Column("read_set")] public string ReadSet { get; set; }
 		[Column("register_id")] public string RegisterId { get; set; }
@@ -2928,7 +3355,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TREADING")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ReadingEntity  
+    public partial class ReadingEntity 
+	 
+		: ITrackModification  
+		 
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -2948,7 +3382,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSAMPLE_LIST")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SampleListEntity  
+    public partial class SampleListEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -2986,7 +3427,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSAMPLE_LIST_ARCH")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SampleListArchEntity  
+    public partial class SampleListArchEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -3025,7 +3473,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tdefault_values")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class DefaultValuesEntity  
+    public partial class DefaultValuesEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("wnp_process")] public string WnpProcess { get; set; }
@@ -3041,7 +3496,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSECURITY_GROUPS")]
 	[PrimaryKey("GROUP_NAME", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SecurityGroupsEntity  
+    public partial class SecurityGroupsEntity 
+	 
     {
 		[Column("GROUP_NAME")] public string GroupName { get; set; }
 		[Column("GROUP_DESCRIPTION")] public string GroupDescription { get; set; }
@@ -3050,7 +3506,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSECURITY_RIGHTS")]
 	[PrimaryKey("PROGRAM_NAME", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SecurityRightsEntity  
+    public partial class SecurityRightsEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		 
+		 
+	 
     {
 		[Column("PROGRAM_NAME")] public string ProgramName { get; set; }
 		[Column("CONTROL_NAME")] public string ControlName { get; set; }
@@ -3066,7 +3529,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSECURITY_USERS")]
 	[PrimaryKey("USERNAME", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SecurityUsersEntity  
+    public partial class SecurityUsersEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		 
+		 
+	 
     {
 		[Column("USERNAME")] public string Username { get; set; }
 		[Column("PASSWORD")] public string Password { get; set; }
@@ -3088,7 +3558,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tred_tag")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class RedTagEntity  
+    public partial class RedTagEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
@@ -3114,7 +3591,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSELECTION_PROGRAM")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SelectionProgramEntity  
+    public partial class SelectionProgramEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("year")] public int? Year { get; set; }
@@ -3134,7 +3618,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tred_tag_control")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class RedTagControlEntity  
+    public partial class RedTagControlEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
@@ -3176,7 +3667,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSELECTION_PROGRAM_GROUP")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SelectionProgramGroupEntity  
+    public partial class SelectionProgramGroupEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("year")] public int? Year { get; set; }
@@ -3202,7 +3700,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSHOP_GOALS")]
 	[PrimaryKey("EQP_TYPE", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ShopGoalsEntity  
+    public partial class ShopGoalsEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		 
+		 
+	 
     {
 		[Column("EQP_TYPE")] public string EqpType { get; set; }
 		[Column("SHOP_STATUS")] public string ShopStatus { get; set; }
@@ -3228,7 +3733,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tlistener_transaction_state")]
 	[PrimaryKey("transaction_state", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ListenerTransactionStateEntity  
+    public partial class ListenerTransactionStateEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		 
+		 
+	 
     {
 		[Column("transaction_state")] public int? TransactionState { get; set; }
 		[Column("transaction_state_desc")] public string TransactionStateDesc { get; set; }
@@ -3239,7 +3751,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSITE")]
 	[PrimaryKey("site")]
 	[ExplicitColumns]
-    public partial class SiteEntity  
+    public partial class SiteEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("site")] public int? Site { get; set; }
 		[Column("owner")] public int? Owner { get; set; }
@@ -3265,7 +3784,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tlistener_transaction_statistics")]
 	[PrimaryKey("transaction_id", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ListenerTransactionStatisticsEntity  
+    public partial class ListenerTransactionStatisticsEntity 
+	 
     {
 		[Column("transaction_id")] public int? TransactionId { get; set; }
 		[Column("call_time")] public DateTime? CallTime { get; set; }
@@ -3275,7 +3795,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSITE_COMMENTS")]
 	[PrimaryKey("SITE", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SiteCommentsEntity  
+    public partial class SiteCommentsEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("SITE")] public int? Site { get; set; }
@@ -3292,7 +3819,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tlistener_transaction_status")]
 	[PrimaryKey("transaction_status", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ListenerTransactionStatusEntity  
+    public partial class ListenerTransactionStatusEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		 
+		 
+	 
     {
 		[Column("transaction_status")] public int? TransactionStatus { get; set; }
 		[Column("transaction_status_desc")] public string TransactionStatusDesc { get; set; }
@@ -3303,7 +3837,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSITE_HIST")]
 	[PrimaryKey("site", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SiteHistEntity  
+    public partial class SiteHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("site")] public int? Site { get; set; }
 		[Column("site_date")] public DateTime? SiteDate { get; set; }
@@ -3330,7 +3871,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tlistener_transaction_type")]
 	[PrimaryKey("transaction_type", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ListenerTransactionTypeEntity  
+    public partial class ListenerTransactionTypeEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		 
+		 
+	 
     {
 		[Column("transaction_type")] public int? TransactionType { get; set; }
 		[Column("transaction_type_desc")] public string TransactionTypeDesc { get; set; }
@@ -3341,7 +3889,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSITE_MULTIMEDIA")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SiteMultimediaEntity  
+    public partial class SiteMultimediaEntity 
+	 
+		 
+		: ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("SITE")] public int? Site { get; set; }
@@ -3364,7 +3919,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tsocket_mapping")]
 	[PrimaryKey("form_no", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SocketMappingEntity  
+    public partial class SocketMappingEntity 
+	 
     {
 		[Column("form_no")] public string FormNo { get; set; }
 		[Column("base")] public string Base { get; set; }
@@ -3383,7 +3939,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSTATUS")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class StatusEntity  
+    public partial class StatusEntity 
+	 
+		 
+		: ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("type")] public string Type { get; set; }
@@ -3398,7 +3961,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tlistener_config_notifications")]
 	[PrimaryKey("state_notification_id", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ListenerConfigNotificationsEntity  
+    public partial class ListenerConfigNotificationsEntity 
+	 
     {
 		[Column("state_notification_id")] public int? StateNotificationId { get; set; }
 		[Column("transaction_state")] public int? TransactionState { get; set; }
@@ -3408,7 +3972,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSYS_CONTROL")]
 	[PrimaryKey("table_index", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SysControlEntity  
+    public partial class SysControlEntity 
+	 
     {
 		[Column("table_index")] public string TableIndex { get; set; }
 		[Column("disable_login")] public string DisableLogin { get; set; }
@@ -3432,7 +3997,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TSYS_VALIDATION")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SysValidationEntity  
+    public partial class SysValidationEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("val_column")] public string ValColumn { get; set; }
@@ -3446,7 +4018,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tfirmware_label")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class FirmwareLabelEntity  
+    public partial class FirmwareLabelEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("label_firmware_rev01")] public string LabelFirmwareRev01 { get; set; }
@@ -3474,7 +4053,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tlistener_config")]
 	[PrimaryKey("config_id")]
 	[ExplicitColumns]
-    public partial class ListenerConfigEntity  
+    public partial class ListenerConfigEntity 
+	 
     {
 		[Column("config_id")] public int? ConfigId { get; set; }
 		[Column("config_name")] public string ConfigName { get; set; }
@@ -3484,7 +4064,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tbarcode_ct")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class BarcodeCtEntity  
+    public partial class BarcodeCtEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("aep_code")] public string AepCode { get; set; }
@@ -3535,7 +4122,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TTRACKING")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class TrackingEntity  
+    public partial class TrackingEntity 
+	 
+		 
+		: ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("EQP_NO")] public string EqpNo { get; set; }
@@ -3556,7 +4150,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tbarcode_pt")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class BarcodePtEntity  
+    public partial class BarcodePtEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("aep_code")] public string AepCode { get; set; }
@@ -3607,7 +4208,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TTRACKING_IN")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class TrackingInEntity  
+    public partial class TrackingInEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("TEST_PROGRAM")] public string TestProgram { get; set; }
@@ -3628,7 +4236,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tlistener_transaction_log")]
 	[PrimaryKey("transaction_id")]
 	[ExplicitColumns]
-    public partial class ListenerTransactionLogEntity  
+    public partial class ListenerTransactionLogEntity 
+	 
     {
 		[Column("transaction_id")] public int? TransactionId { get; set; }
 		[Column("transaction_type")] public int? TransactionType { get; set; }
@@ -3642,7 +4251,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.TTRACKING_OUT")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class TrackingOutEntity  
+    public partial class TrackingOutEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
+	 
     {
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("TEST_PROGRAM")] public string TestProgram { get; set; }
@@ -3669,7 +4285,14 @@ namespace AMSLLC.Listener.Persistence.WNP
 	[TableName("wndba.tlistener_transaction_source")]
 	[PrimaryKey("transaction_source", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ListenerTransactionSourceEntity  
+    public partial class ListenerTransactionSourceEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		 
+		 
+	 
     {
 		[Column("transaction_source")] public int? TransactionSource { get; set; }
 		[Column("transaction_source_desc")] public string TransactionSourceDesc { get; set; }

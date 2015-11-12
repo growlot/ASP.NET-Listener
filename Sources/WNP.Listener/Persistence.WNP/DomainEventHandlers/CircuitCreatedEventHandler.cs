@@ -5,11 +5,10 @@
 namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
 {
     using System.Threading.Tasks;
+    using ApplicationService;
     using Core;
     using Domain;
     using Domain.WNP.SiteAggregate.CircuitChild;
-    using Metadata;
-    using Repository.WNP;
     using WNP;
 
     /// <summary>
@@ -20,11 +19,10 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="CircuitCreatedEventHandler" /> class.
         /// </summary>
-        /// <param name="unitOfWork">The unit of work.</param>
-        /// <param name="user">The user who initiated the event.</param>
+        /// <param name="requestScope">The request scope.</param>
         /// <param name="timeProvider">The time provider.</param>
-        public CircuitCreatedEventHandler(IWNPUnitOfWork unitOfWork, string user, IDateTimeProvider timeProvider)
-            : base(unitOfWork, user, timeProvider)
+        public CircuitCreatedEventHandler(ICurrentRequestScope requestScope, IDateTimeProvider timeProvider)
+            : base(requestScope, timeProvider)
         {
         }
 
@@ -33,13 +31,11 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         {
             var circuit = new CircuitEntity()
             {
-                Owner = domainEvent.OwnerId,
+                Owner = this.Owner,
                 Site = domainEvent.SiteId,
-                Circuit = domainEvent.Id,
+                Circuit = domainEvent.CircuitId,
                 CircuitDesc = domainEvent.Description,
                 ConductorsPerPhase = domainEvent.NumberOfConductorsPerPhase,
-                CreateBy = this.User,
-                CreateDate = this.TimeProvider.Now(),
                 EnclosureType = domainEvent.EnclosureType,
                 InstallDate = domainEvent.InstallDate,
                 Latitude = (double?)domainEvent.Latitude,
@@ -54,7 +50,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
                 WireType = domainEvent.WireType,
             };
 
-            return this.InsertWithIdAsync(DBMetadata.Circuit.FullTableName, circuit);
+            return this.InsertAsync(circuit);
         }
     }
 }

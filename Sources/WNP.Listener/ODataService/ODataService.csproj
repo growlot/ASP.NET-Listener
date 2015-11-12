@@ -196,8 +196,7 @@
     <Compile Include="Controllers\UnboundActionsController.cs" />
     <Compile Include="Controllers\Base\WNPController.cs" />
     <Compile Include="Controllers\Base\WNPEntityController.cs" />
-    <Compile Include="CurrentUnitOfWork.cs" />
-    <Compile Include="HttpMessageHandlers\UnitOfWorkHandler.cs" />
+    <Compile Include="HttpMessageHandlers\RequestScopeHandler.cs" />
     <Compile Include="KeyValuePathSegmentExtensions.cs" />
     <Compile Include="ListenerODataContext.cs" />
     <Compile Include="ListenerRequestHeaderMap.cs" />

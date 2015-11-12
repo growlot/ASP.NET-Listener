@@ -137,6 +137,12 @@ namespace <#=Namespace #>
 <#
 foreach(Table tbl in from t in tables where !t.Ignore select t)
 {
+	int trackModification = 0;
+	int trackCreation = 0;
+	int useId = 0;
+	int haveOwner = 0;
+	string separator = ":";
+
 	tbl.ClassName = Humanize(tbl.Name, true) + ClassSuffix;
 #>
     
@@ -152,7 +158,27 @@ foreach(Table tbl in from t in tables where !t.Ignore select t)
 	[PrimaryKey("<#=tbl.PK.Name#>", autoIncrement=false)]
 <# } #>
 	[ExplicitColumns]
-    public partial class <#=tbl.ClassName#> <# if (GenerateOperations) { #>: <#=RepoName#>.Record<<#=tbl.ClassName#>> <# } #> 
+<# foreach(Column col in from c in tbl.Columns where !c.Ignore select c)
+{
+	if (col.Name.ToLowerInvariant() == "mod_by") { trackModification = trackModification + 1; }
+	if (col.Name.ToLowerInvariant() == "mod_date") { trackModification = trackModification + 1; }
+
+	if (col.Name.ToLowerInvariant() == "create_by") { trackCreation = trackCreation + 1; }
+	if (col.Name.ToLowerInvariant() == "create_date") { trackCreation = trackCreation + 1; }
+
+	if (col.Name.ToLowerInvariant() == "id") { useId = useId + 1; }
+
+	if (col.Name.ToLowerInvariant() == "owner") { haveOwner = haveOwner + 1; }
+}
+#>
+    public partial class <#=tbl.ClassName#> 
+	<# if (trackModification == 2 || trackCreation == 2 || useId == 1 || GenerateOperations) { #> 
+		<# if (trackModification == 2) { #><#=separator#> ITrackModification <# separator = ", "; } #> 
+		<# if (trackCreation == 2) { #><#=separator#> ITrackCreation <# separator = ", "; } #> 
+		<# if (useId == 1) { #><#=separator#> IUseId <# separator = ", "; } #> 
+		<# if (haveOwner == 1) { #><#=separator#> IHaveOwner <# separator = ", "; } #> 
+		<# if (GenerateOperations) { #><#=separator#> <#=RepoName#>.Record<<#=tbl.ClassName#>> <# } #> 
+	<# } #> 
     {
 <#
 foreach(Column col in from c in tbl.Columns where !c.Ignore select c)

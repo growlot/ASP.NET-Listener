@@ -93,6 +93,10 @@
     <Compile Include="FluentColumnMap.cs" />
     <Compile Include="FluentMapperExtensions.cs" />
     <Compile Include="FluentMapper{T}.cs" />
+    <Compile Include="IHaveOwner.cs" />
+    <Compile Include="IUseId.cs" />
+    <Compile Include="ITrackCreation.cs" />
+    <Compile Include="ITrackModification.cs" />
     <Compile Include="Metadata\AmiInstallHistory.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -494,6 +498,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationService\ApplicationService.csproj">
+      <Project>{6b540066-84ab-4d63-81a6-9c724aef039f}</Project>
+      <Name>ApplicationService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{b650a448-fc3b-4c43-a59a-b1ad3500abd2}</Project>
       <Name>Core</Name>
@@ -517,6 +525,10 @@
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{72E29F3F-E27A-4224-9F7B-59C2497D3BF3}</Project>
       <Name>Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{cf40fb68-247d-4024-a8e9-3b707973ad11}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
