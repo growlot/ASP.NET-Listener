@@ -9,7 +9,6 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
     using Commands;
     using Domain;
     using Domain.WNP.OwnerAggregate;
-    using Domain.WNP.SiteAggregate;
     using Repository.WNP;
 
     /// <summary>

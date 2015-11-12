@@ -13,7 +13,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using MetadataService;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
-    using Services;
     using Services.FilterTransformer;
 
     /// <summary>

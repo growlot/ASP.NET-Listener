@@ -13,7 +13,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Net.Http;
     using System.Net.Http.Formatting;
     using System.Net.Http.Headers;
-    using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -21,7 +20,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Communication;
     using Communication.Jms;
     using Core;
-    using Core.Ninject;
     using Core.Ninject.Test;
     using Domain;
     using Domain.Listener.Transaction;
@@ -29,8 +27,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
-    using Ninject.Activation.Caching;
-    using ODataService;
     using Repository;
     using Repository.WNP;
     using Repository.WNP.Model;

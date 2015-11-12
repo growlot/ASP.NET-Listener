@@ -7,9 +7,7 @@
 namespace AMSLLC.Listener.ApplicationService
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Runtime.InteropServices;
     using System.Threading;
     using Core;
     using Repository;

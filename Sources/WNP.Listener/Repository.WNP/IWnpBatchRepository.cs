@@ -5,7 +5,6 @@
 namespace AMSLLC.Listener.Repository.WNP
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Threading.Tasks;
     using Model;
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AMSLLC.Listener.Persistence.Listener
+﻿namespace AMSLLC.Listener.Persistence.Listener
 {
     using System.Data;
     using System.Data.Common;

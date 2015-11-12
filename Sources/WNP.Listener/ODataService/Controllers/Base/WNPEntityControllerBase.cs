@@ -5,9 +5,7 @@
 namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
     using ApplicationService;
-    using Base;
     using MetadataService;
-    using Persistence.WNP.Metadata;
     using Repository.WNP;
     using Services.FilterTransformer;
 

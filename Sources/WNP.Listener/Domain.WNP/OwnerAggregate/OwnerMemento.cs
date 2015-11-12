@@ -6,7 +6,6 @@
 namespace AMSLLC.Listener.Domain.WNP.OwnerAggregate
 {
     using System.Collections.Generic;
-    using SiteAggregate;
 
     /// <summary>
     /// Memento class for owner aggregate root

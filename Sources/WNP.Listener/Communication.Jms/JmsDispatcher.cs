@@ -11,7 +11,6 @@ namespace AMSLLC.Listener.Communication.Jms
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using Repository;
-    using Serilog;
     using Utilities;
     using WebLogic.Messaging;
 

@@ -4,11 +4,9 @@
 
 namespace AMSLLC.Listener.ApplicationService
 {
-    using System.Collections;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Commands;
-    using Model;
 
     /// <summary>
     /// Batch builder interface

@@ -4,7 +4,6 @@
 
 namespace AMSLLC.Listener.ApplicationService.Implementations
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Commands;

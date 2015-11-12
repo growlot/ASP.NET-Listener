@@ -5,7 +5,6 @@
 namespace AMSLLC.Listener.Repository.WNP.Model
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Meter test collection
