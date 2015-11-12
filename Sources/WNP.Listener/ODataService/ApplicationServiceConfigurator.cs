@@ -2,13 +2,14 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ApplicationService
+namespace AMSLLC.Listener.ODataService
 {
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using CommandHandlers;
-    using Commands;
+    using ApplicationService;
+    using ApplicationService.CommandHandlers;
+    using ApplicationService.Commands;
     using Communication;
     using Core;
     using Domain;

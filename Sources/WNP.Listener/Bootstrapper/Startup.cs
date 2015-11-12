@@ -7,8 +7,6 @@ namespace AMSLLC.Listener.Bootstrapper
     using System.Web.Http;
 
     using AMSLLC.Listener.Bootstrapper.Owin;
-
-    using ApplicationService;
     using Core;
     using Core.Ninject;
 
@@ -21,7 +19,6 @@ namespace AMSLLC.Listener.Bootstrapper
     using Owin.Middleware;
     using Serilog;
     using StackExchange.Profiling;
-    using Topshelf.Hosts;
 
     /// <summary>
     /// Manages application/service startup

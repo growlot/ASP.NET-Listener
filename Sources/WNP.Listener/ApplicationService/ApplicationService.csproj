@@ -85,7 +85,6 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
-    <Compile Include="ApplicationServiceConfigurator.cs" />
     <Compile Include="CommandHandlers\CommandHandlerBase.cs" />
     <Compile Include="CommandHandlers\CreateCircuitCommandHandler.cs" />
     <Compile Include="Commands\CreateCircuitCommand.cs" />
@@ -149,10 +148,6 @@
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Persistence.WNP\Persistence.WNP.csproj">
-      <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>
-      <Name>Persistence.WNP</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository.WNP\Repository.WNP.csproj">
       <Project>{2643c152-d7b8-4633-a540-8ee3a1db8e45}</Project>

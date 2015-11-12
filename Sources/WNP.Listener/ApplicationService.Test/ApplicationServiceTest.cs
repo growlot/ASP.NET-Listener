@@ -15,7 +15,6 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using Commands;
     using Communication;
     using Core;
-    using Core.Ninject;
     using Core.Ninject.Test;
     using Domain;
     using Domain.Listener.Transaction;
@@ -25,6 +24,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using Moq;
     using Newtonsoft.Json;
     using Repository;
+    using ODataService;
 
     [TestClass]
     public class ApplicationServiceTest
@@ -231,7 +231,6 @@ namespace AMSLLC.Listener.ApplicationService.Test
             di.Rebind<IConnectionConfigurationBuilder>(jmsConnectionBuilder.Object).InSingletonScope().Named("connection-builder-jms");
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
             di.Rebind<IProtocolConfigurationBuilder>(builderMock.Object).Named("protocol-builder-jms");
-
 
             var configurator = di.ResolveType<ApplicationServiceConfigurator>();
             configurator.RegisterCommandHandlers();

@@ -114,6 +114,10 @@
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ODataService\ODataService.csproj">
+      <Project>{28de87b5-514b-4996-b65a-9d8f9e4578e0}</Project>
+      <Name>ODataService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{72E29F3F-E27A-4224-9F7B-59C2497D3BF3}</Project>
       <Name>Repository</Name>
