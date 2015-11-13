@@ -71,6 +71,8 @@
     <Compile Include="OwnerAggregate\OwnerMemento.cs" />
     <Compile Include="OwnerAggregate\OwnerSite.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Circuit.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\EquipmentStatus.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\InstallationPoint.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Equipment\TransformerSelectedRatioUpdatedEvent.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitPotentialTransformer.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitCurrentTransformer.cs" />
@@ -81,7 +83,7 @@
     <Compile Include="SiteAggregate\CircuitChild\CircuitCreatedEvent.cs" />
     <Compile Include="SiteAggregate\CircuitChild\CircuitMemento.cs" />
     <Compile Include="SiteAggregate\CircuitChild\ElectricService.cs" />
-    <Compile Include="SiteAggregate\CircuitChild\Equipment\BillingInformationUpdatedEvent.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\Equipment\MeterBillingInformationUpdatedEvent.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitMeter.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Equipment\CircuitMeterMemento.cs" />
     <Compile Include="SiteAggregate\CircuitChild\ServiceWiring.cs" />

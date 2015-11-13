@@ -17,6 +17,7 @@ namespace AMSLLC.Listener.ODataService
     using Domain.WNP.OwnerAggregate;
     using Domain.WNP.SiteAggregate;
     using Domain.WNP.SiteAggregate.CircuitChild;
+    using Domain.WNP.SiteAggregate.CircuitChild.Equipment;
     using Persistence.WNP.DomainEventHandlers;
 
     /// <summary>
@@ -57,6 +58,9 @@ namespace AMSLLC.Listener.ODataService
 
             this.commandBus.Subscribe<CreateCircuitCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<CreateCircuitCommandHandler>().HandleAsync(command));
+
+            this.commandBus.Subscribe<InstallMeterCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<InstallMeterCommandHandler>().HandleAsync(command));
         }
 
         /// <summary>
@@ -107,10 +111,16 @@ namespace AMSLLC.Listener.ODataService
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteAddressUpdatedEventHandler>().HandleAsync(domainEvent));
             this.domainEventBus.SubscribeAsync<SiteBillingAccountUpdated>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteBillingAccountUpdatedEventHandler>().HandleAsync(domainEvent));
-            this.domainEventBus.SubscribeAsync<CircuitCreatedEvent>(
-                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<CircuitCreatedEventHandler>().HandleAsync(domainEvent));
             this.domainEventBus.SubscribeAsync<SiteDetailsUpdated>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<SiteDetailsUpdatedEventHandler>().HandleAsync(domainEvent));
+
+            this.domainEventBus.SubscribeAsync<CircuitCreatedEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<CircuitCreatedEventHandler>().HandleAsync(domainEvent));
+
+            this.domainEventBus.SubscribeAsync<EquipmentInstalledInCircuitEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<EquipmentInstalledInCircuitEventHandler>().HandleAsync(domainEvent));
+            this.domainEventBus.SubscribeAsync<MeterBillingInformationUpdatedEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<MeterBillingInformationUpdatedEventHandler>().HandleAsync(domainEvent));
         }
     }
 }

@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Equipment;
 
     /// <summary>
@@ -142,14 +143,25 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             string installUser,
             ServiceOrder installServiceOrder)
         {
+            if (meter == null)
+            {
+                throw new ArgumentNullException(nameof(meter), "Can not install meter in circuit, because it is not specified.");
+            }
+
             if (installServiceOrder == null)
             {
                 throw new ArgumentNullException(nameof(installServiceOrder), "Service order must be specified (even if all it's fields will be null)");
             }
 
-            if (meter == null)
+            if (this.meters.Contains(meter))
             {
-                throw new ArgumentNullException(nameof(meter), "Can not install meter in circuit, because it is not specified.");
+                return;
+            }
+
+            string reason;
+            if (!meter.CanBeInstalled(out reason))
+            {
+                throw new InvalidOperationException(reason);
             }
 
             this.meters.Add(meter);
@@ -157,6 +169,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             var meterInstalledEvent = new EquipmentInstalledInCircuitEvent(
                 siteId,
                 this.Id,
+                EquipmentType.ElectricMeter.Code,
                 meter.Id,
                 meterInstallDate,
                 installUser,

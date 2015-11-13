@@ -16,6 +16,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// </summary>
         /// <param name="siteId">The site identifier.</param>
         /// <param name="circuitId">The circuit identifier.</param>
+        /// <param name="equipmentType">Type of the equipment.</param>
         /// <param name="equipmentNumber">The equipment number.</param>
         /// <param name="installDate">The install date.</param>
         /// <param name="installUser">The install user.</param>
@@ -24,6 +25,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         public EquipmentInstalledInCircuitEvent(
             int siteId,
             int circuitId,
+            string equipmentType,
             string equipmentNumber,
             DateTime installDate,
             string installUser,
@@ -32,6 +34,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         {
             this.SiteId = siteId;
             this.CircuitId = circuitId;
+            this.EquipmentType = equipmentType;
             this.EquipmentNumber = equipmentNumber;
             this.InstallDate = installDate;
             this.InstallUser = installUser;
@@ -54,6 +57,14 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// The circiut identifier.
         /// </value>
         public int CircuitId { get; private set; }
+
+        /// <summary>
+        /// Gets the type of the equipment.
+        /// </summary>
+        /// <value>
+        /// The type of the equipment.
+        /// </value>
+        public string EquipmentType { get; private set; }
 
         /// <summary>
         /// Gets the meter equipment number.

@@ -20,6 +20,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Repository.WNP;
     using Services.FilterTransformer;
     using MetadataService.Attributes;
+    using System.Net;
+    using Utilities;
 
     /// <summary>
     /// Controller for Circuits.
@@ -53,7 +55,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
             }
 
-            var queryOptions = this.ConstructQueryOptions();
+            this.ConstructQueryOptions();
             var circuit = this.GetRequestEntity<CircuitEntity>();
             return this.CreateCircuit(circuit);
         }
@@ -69,42 +71,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
             }
 
-            var queryOptions = this.ConstructQueryOptions();
-
-            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
-            var entityConfig = modelMapping.EntityConfiguration;
-            var hasCompositeKey = entityConfig.Key?.Count() > 1;
-
-            var hasRequiredRelations = entityConfig.RequiredRelations;
-
-            var jsonKey = queryOptions.Context.Path.Segments[1] as KeyValuePathSegment;
-            if (jsonKey == null)
+            this.ConstructQueryOptions();
+            var key = this.GetKey();
+            if (key == null)
             {
                 return Task.FromResult<IHttpActionResult>(this.BadRequest("Invalid key specified"));
             }
 
-            var key = new Dictionary<string, object>();
-            if (hasCompositeKey)
-            {
-                key = jsonKey.ToCompositeKeyDictionary();
-            }
-            else
-            {
-                key.Add(entityConfig.Key.ToArray()[0], JsonConvert.DeserializeObject(jsonKey.Value));
-            }
-
-            var orderedKey = key.ToArray();
-
-            var sql =
-                Sql.Builder.Select("*")
-                    .From($"{modelMapping.TableName}")
-                    .Where(
-                        orderedKey.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                            .Aggregate((s, s1) => $"{s} AND {s1}"),
-                        orderedKey.Select(kvp => kvp.Value).ToArray());
-
-            var existingCircuit = ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<CircuitEntity>(sql);
-
+            var existingCircuit = this.GetExisting<CircuitEntity>(key);
             if (existingCircuit != null)
             {
                 var circuitDelta = this.GetRequestEntityDelta<CircuitEntity>();
@@ -117,13 +91,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
             else
             {
+                var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
                 var descriptionFieldName = modelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc.ToUpperInvariant()];
                 if (modelMapping.FieldInfo[descriptionFieldName].IsPrimaryKey)
                 {
                     var circuit = this.GetRequestEntity<CircuitEntity>();
 
-                    circuit.Site = (int)orderedKey.First(item => item.Key == modelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site]).Value;
-                    circuit.CircuitDesc = (string)orderedKey.First(item => item.Key == modelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc]).Value;
+                    circuit.Site = (int)key.First(item => item.Key == modelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site]).Value;
+                    circuit.CircuitDesc = (string)key.First(item => item.Key == modelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc]).Value;
                     return this.CreateCircuit(circuit);
                 }
                 else
@@ -143,8 +118,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="installUser">The user who did the install.</param>
         /// <param name="installServiceOrderStarted">The date when install service order was created.</param>
         /// <param name="installServiceOrderCompleted">The date when install service order was completed.</param>
+        /// <returns>The result of action.</returns>
         [BoundAction]
-        public void AddEquipment(
+        public async Task<IHttpActionResult> AddEquipment(
                     [BoundEntityKey] string circuitId,
                     string equipmentType,
                     string equipmentNumber,
@@ -153,7 +129,85 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     DateTime? installServiceOrderStarted = null,
                     DateTime? installServiceOrderCompleted = null)
         {
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
 
+            this.ConstructQueryOptions();
+            var key = this.GetKey();
+            if (key == null)
+            {
+                return this.BadRequest("Invalid key specified");
+            }
+
+            var existingCircuit = this.GetExisting<CircuitEntity>(key);
+            if (existingCircuit == null)
+            {
+                return this.NotFound();
+            }
+
+            switch (equipmentType)
+            {
+                case "EM":
+                    var installMeterCommand = new InstallMeterCommand()
+                    {
+                        CircuitId = existingCircuit.Circuit.Value,
+                        EquipmentNumber = equipmentNumber,
+                        EquipmentType = equipmentType,
+                        InstallDate = installDate,
+                        InstallServiceOrderCompleted = installServiceOrderCompleted,
+                        InstallServiceOrderStarted = installServiceOrderStarted,
+                        InstallUser = installUser,
+                        SiteId = existingCircuit.Site.Value
+                    };
+
+                    await this.commandBus.PublishAsync(installMeterCommand);
+                    return this.StatusCode(HttpStatusCode.NoContent);
+
+                default:
+                    throw new NotSupportedException(StringUtilities.Invariant($"Installation of equipment with type {equipmentType} currently not supported."));
+            }
+        }
+
+        private KeyValuePair<string, object>[] GetKey()
+        {
+            var oDataKey = this.queryOptions.Context.Path.Segments[1] as KeyValuePathSegment;
+            if (oDataKey == null)
+            {
+                return null;
+            }
+
+            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            var entityConfig = modelMapping.EntityConfiguration;
+            var hasCompositeKey = entityConfig.Key?.Count() > 1;
+
+            var key = new Dictionary<string, object>();
+            if (hasCompositeKey)
+            {
+                key = oDataKey.ToCompositeKeyDictionary();
+            }
+            else
+            {
+                key.Add(entityConfig.Key.ToArray()[0], JsonConvert.DeserializeObject(oDataKey.Value));
+            }
+
+            return key.ToArray();
+        }
+
+        private TEntity GetExisting<TEntity>(KeyValuePair<string, object>[] key)
+        {
+            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+
+            var sql =
+                Sql.Builder.Select("*")
+                    .From($"{modelMapping.TableName}")
+                    .Where(
+                        key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
+                            .Aggregate((s, s1) => $"{s} AND {s1}"),
+                        key.Select(kvp => kvp.Value).ToArray());
+
+            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
         }
 
         private async Task<IHttpActionResult> CreateCircuit(CircuitEntity circuit)

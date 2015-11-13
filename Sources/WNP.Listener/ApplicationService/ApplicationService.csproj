@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="CommandHandlers\CommandHandlerBase.cs" />
     <Compile Include="CommandHandlers\CreateCircuitCommandHandler.cs" />
+    <Compile Include="CommandHandlers\InstallMeterCommandHandler.cs" />
     <Compile Include="Commands\CreateCircuitCommand.cs" />
     <Compile Include="CommandHandlers\UpdateSiteDetailsCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateSiteBillingAccountCommandHandler.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Commands\CancelTransactionsCommand.cs" />
     <Compile Include="Commands\OpenBatchTransactionCommand.cs" />
     <Compile Include="Commands\ProcessingTransactionCommand.cs" />
+    <Compile Include="Commands\InstallMeterCommand.cs" />
     <Compile Include="Commands\UpdateSiteDetailsCommand.cs" />
     <Compile Include="IBatchBuilder.cs" />
     <Compile Include="ICurrentRequestScope.cs" />

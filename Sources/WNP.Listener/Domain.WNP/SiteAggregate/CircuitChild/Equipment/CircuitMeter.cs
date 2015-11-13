@@ -12,6 +12,8 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
     /// </summary>
     public class CircuitMeter : Entity<string>
     {
+        private InstallationPoint installationPoint;
+        private EquipmentStatus status;
         private IList<IDomainEvent> events;
         private decimal internalMultiplier;
         private decimal? billingMultiplier;
@@ -64,9 +66,32 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
                 this.billingMultiplier = newBillingMultiplier;
                 this.billingKh = newBillingKh;
 
-                var multiplierUpdatedEvent = new BillingInformationUpdatedEvent(this.Id, this.billingMultiplier, this.billingKh);
+                var multiplierUpdatedEvent = new MeterBillingInformationUpdatedEvent(this.Id, this.billingMultiplier, this.billingKh);
                 this.events.Add(multiplierUpdatedEvent);
             }
+        }
+
+        /// <summary>
+        /// Determines whether this meter can be installed. If not provides the reason why.
+        /// </summary>
+        /// <param name="reason">The reason why meter can't be installed. Null if it can be installed.</param>
+        /// <returns>True if meter can be installed, false otherwise.</returns>
+        public bool CanBeInstalled(out string reason)
+        {
+            reason = null;
+            if (this.status.IsRetired())
+            {
+                reason = "Meter can not be installed, because it is retired.";
+                return false;
+            }
+
+            if (this.installationPoint.SiteId != null)
+            {
+                reason = "Meter can not be installed, because it is already installed in another location.";
+                return false;
+            }
+
+            return true;
         }
 
         /// <inheritdoc/>
@@ -74,12 +99,14 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
         {
             var meterMemento = (CircuitMeterMemento)memento;
             this.Id = meterMemento.EquipmentNumber;
+            this.installationPoint = new InstallationPoint(meterMemento.SiteId, meterMemento.CircuitId);
+            this.status = new EquipmentStatus(meterMemento.Status);
             this.billingMultiplier = meterMemento.BillingMultiplier;
             this.billingKh = meterMemento.BillingKh;
             this.kh = meterMemento.Kh;
 
             this.internalMultiplier = 1;
-            if (!meterMemento.InternalMultiplier.HasValue)
+            if (meterMemento.InternalMultiplier.HasValue)
             {
                 this.internalMultiplier = meterMemento.InternalMultiplier.Value;
             }

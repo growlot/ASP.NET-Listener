@@ -1,4 +1,4 @@
-﻿// <copyright file="BillingInformationUpdatedEvent.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="MeterBillingInformationUpdatedEvent.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
@@ -7,15 +7,15 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
     /// <summary>
     /// Event generated after billing multiplier changes for the meter.
     /// </summary>
-    public class BillingInformationUpdatedEvent : IDomainEvent
+    public class MeterBillingInformationUpdatedEvent : IDomainEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BillingInformationUpdatedEvent" /> class.
+        /// Initializes a new instance of the <see cref="MeterBillingInformationUpdatedEvent" /> class.
         /// </summary>
         /// <param name="equipmentNumber">The equipment number.</param>
         /// <param name="billingMultiplier">The billing multiplier.</param>
         /// <param name="billingKh">The billing kh.</param>
-        public BillingInformationUpdatedEvent(
+        public MeterBillingInformationUpdatedEvent(
             string equipmentNumber,
             decimal? billingMultiplier,
             decimal? billingKh)

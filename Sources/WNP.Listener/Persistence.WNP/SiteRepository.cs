@@ -105,6 +105,38 @@ namespace AMSLLC.Listener.Persistence.WNP
             return Task.FromResult((IMemento)ownerMemento);
         }
 
+        /// <inheritdoc/>
+        public Task<IMemento> GetMeter(string equipmentNumber)
+        {
+            var meterEntity = this.dbContext.First<EqpMeterEntity>(
+                $@"
+SELECT {DBMetadata.EqpMeter.EqpNo}, {DBMetadata.EqpMeter.Site}, {DBMetadata.EqpMeter.Circuit}, 
+       {DBMetadata.EqpMeter.Scalar}, {DBMetadata.EqpMeter.EnergyMult}, {DBMetadata.EqpMeter.Kh}, 
+       {DBMetadata.EqpMeter.PrimaryKh}, {DBMetadata.EqpMeter.EqpStatus}
+FROM {DBMetadata.EqpMeter.FullTableName} 
+WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
+                this.operatingCompany,
+                equipmentNumber);
+
+            decimal value;
+            if (!decimal.TryParse(meterEntity.Kh, out value))
+            {
+                throw new InvalidOperationException(StringUtilities.Invariant($"Can not load meter {meterEntity.EqpNo}, because it doesn't have Kh value set or value is not a number."));
+            }
+
+            var meterMemento = new CircuitMeterMemento(
+                equipmentNumber: meterEntity.EqpNo,
+                siteId: meterEntity.Site,
+                circuitId: meterEntity.Circuit,
+                status: meterEntity.EqpStatus,
+                internalMultiplier: meterEntity.Scalar,
+                billingMultiplier: meterEntity.EnergyMult,
+                kh: value,
+                billingKh: meterEntity.PrimaryKh);
+
+            return Task.FromResult((IMemento)meterMemento);
+        }
+
         private List<OwnerSiteMemento> GetSites(Sql select)
         {
             var siteMementos = new List<OwnerSiteMemento>();
@@ -176,7 +208,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 
             var meterEntities = this.dbContext.Fetch<EqpMeterEntity>(
                 $@"
-SELECT {DBMetadata.EqpMeter.EqpNo}, {DBMetadata.EqpMeter.Scalar}, {DBMetadata.EqpMeter.EnergyMult}, {DBMetadata.EqpMeter.Kh}, {DBMetadata.EqpMeter.PrimaryKh}
+SELECT {DBMetadata.EqpMeter.EqpNo}, {DBMetadata.EqpMeter.Site}, {DBMetadata.EqpMeter.Circuit}, 
+       {DBMetadata.EqpMeter.Scalar}, {DBMetadata.EqpMeter.EnergyMult}, {DBMetadata.EqpMeter.Kh}, 
+       {DBMetadata.EqpMeter.PrimaryKh}, {DBMetadata.EqpMeter.EqpStatus}
 FROM {DBMetadata.EqpMeter.FullTableName} 
 WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.Site} = @1 and {DBMetadata.EqpMeter.Circuit}",
                 owner,
@@ -192,6 +226,9 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.Site} = @1 and {
 
                 var meterMemento = new CircuitMeterMemento(
                     equipmentNumber: meterEntity.EqpNo,
+                    siteId: meterEntity.Site,
+                    circuitId: meterEntity.Circuit,
+                    status: meterEntity.EqpStatus,
                     internalMultiplier: meterEntity.Scalar,
                     billingMultiplier: meterEntity.EnergyMult,
                     kh: value,

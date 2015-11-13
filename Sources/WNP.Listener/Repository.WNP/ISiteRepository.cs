@@ -48,5 +48,12 @@ namespace AMSLLC.Listener.Repository.WNP
         /// The owner mementos.
         /// </returns>
         Task<IMemento> GetOwnerWithCollidingSites(int owner, int siteId, string sitePremiseNumber, string siteDescription);
+
+        /// <summary>
+        /// Gets the meter fields used in inventory management context.
+        /// </summary>
+        /// <param name="equipmentNumber">The equipment number.</param>
+        /// <returns>The meter memento.</returns>
+        Task<IMemento> GetMeter(string equipmentNumber);
     }
 }
