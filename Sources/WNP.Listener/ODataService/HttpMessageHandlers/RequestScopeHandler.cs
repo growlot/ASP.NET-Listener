@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
     using ApplicationService.Implementations;
     using Core;
     using Repository.WNP;
+    using Persistence.WNP;
 
     /// <summary>
     /// Custom delegating handler to extract UnitOfWork if it is present in request.
@@ -32,9 +33,10 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
             {
                 using (var unitOfWork = ApplicationIntegration.DependencyResolver.ResolveType<IWNPUnitOfWork>())
                 {
+                    ((WNPUnitOfWork)unitOfWork).SetOperatingCompany = 0;
+                    ((CurrentRequestScope)requestScope).OperatingCompany = 0;
                     ((CurrentRequestScope)requestScope).UnitOfWork = unitOfWork;
                     ((CurrentRequestScope)requestScope).User = "petras";
-                    ((CurrentRequestScope)requestScope).OperatingCompany = 0;
 
                     var response = await base.SendAsync(request, cancellationToken);
 

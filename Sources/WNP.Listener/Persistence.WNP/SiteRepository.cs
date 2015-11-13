@@ -22,14 +22,17 @@ namespace AMSLLC.Listener.Persistence.WNP
     public class SiteRepository : ISiteRepository
     {
         private WNPDBContext dbContext;
+        private int operatingCompany;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SiteRepository"/> class.
+        /// Initializes a new instance of the <see cref="SiteRepository" /> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
-        public SiteRepository(WNPDBContext dbContext)
+        /// <param name="operatingCompany">The operating company.</param>
+        public SiteRepository(WNPDBContext dbContext, int operatingCompany)
         {
             this.dbContext = dbContext;
+            this.operatingCompany = operatingCompany;
         }
 
         /// <summary>
@@ -48,15 +51,21 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetOwnerWithCollidingSites(int owner, string sitePremiseNumber, string siteDescription)
+        public Task<IMemento> GetOwnerWithCollidingSites(string sitePremiseNumber, string siteDescription)
         {
-            return this.GetOwnerWithCollidingSites(owner, -1, sitePremiseNumber, siteDescription);
+            return this.GetOwnerWithCollidingSites(-1, sitePremiseNumber, siteDescription);
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetSite(int owner, int siteId)
+        public Task<IMemento> GetSite(int siteId)
         {
-            var siteEntity = this.dbContext.First<SiteEntity>($"SELECT * FROM {DBMetadata.Site.FullTableName} WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1", owner, siteId);
+            var siteEntity = this.dbContext.First<SiteEntity>(
+                $@"
+SELECT * 
+FROM {DBMetadata.Site.FullTableName} 
+WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1",
+                this.operatingCompany,
+                siteId);
 
             var siteMemento = new SiteMemento(
                 site: siteEntity.Site.Value,
@@ -72,13 +81,13 @@ namespace AMSLLC.Listener.Persistence.WNP
                 billingAccountNumber: siteEntity.AccountNo,
                 interconnectUtilityName: siteEntity.InterconnectUtility,
                 isInterconnect: siteEntity.IsInterconnect == "Y" ? true : false,
-                circuits: this.GetCircuits(owner, siteEntity.Site.Value));
+                circuits: this.GetCircuits(siteEntity.Site.Value));
 
             return Task.FromResult((IMemento)siteMemento);
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetOwnerWithCollidingSites(int owner, int siteId, string sitePremiseNumber, string siteDescription)
+        public Task<IMemento> GetOwnerWithCollidingSites(int siteId, string sitePremiseNumber, string siteDescription)
         {
             var siteMementos = new List<OwnerSiteMemento>();
 
@@ -87,20 +96,20 @@ namespace AMSLLC.Listener.Persistence.WNP
 
             if (!string.IsNullOrWhiteSpace(sitePremiseNumber))
             {
-                var sitesWithSamePremiseNumber = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.PremiseNo} = @1", owner, sitePremiseNumber));
+                var sitesWithSamePremiseNumber = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.PremiseNo} = @1", this.operatingCompany, sitePremiseNumber));
                 siteMementos.AddRange(sitesWithSamePremiseNumber);
             }
 
             if (!string.IsNullOrWhiteSpace(siteDescription))
             {
-                var sitesWithSameDescription = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.SiteDescription} = @1", owner, siteDescription));
+                var sitesWithSameDescription = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.SiteDescription} = @1", this.operatingCompany, siteDescription));
                 siteMementos.AddRange(sitesWithSameDescription);
             }
 
-            var sitesWithSameId = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1", owner, siteId));
+            var sitesWithSameId = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1", this.operatingCompany, siteId));
             siteMementos.AddRange(sitesWithSameId);
 
-            var ownerMemento = new OwnerMemento(owner, siteMementos);
+            var ownerMemento = new OwnerMemento(this.operatingCompany, siteMementos);
 
             return Task.FromResult((IMemento)ownerMemento);
         }
@@ -155,11 +164,18 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
             return siteMementos;
         }
 
-        private IEnumerable<CircuitMemento> GetCircuits(int owner, int siteId)
+        private IEnumerable<CircuitMemento> GetCircuits(int siteId)
         {
             var circuitMementos = new List<CircuitMemento>();
 
-            var circuitEntities = this.dbContext.Fetch<CircuitEntity>($"SELECT * FROM {DBMetadata.Circuit.FullTableName} WHERE {DBMetadata.Circuit.Owner} = @0 and {DBMetadata.Circuit.Site} = @1", owner, siteId);
+            var circuitEntities = this.dbContext.Fetch<CircuitEntity>(
+                $@"
+SELECT * 
+FROM {DBMetadata.Circuit.FullTableName} 
+WHERE {DBMetadata.Circuit.Owner} = @0 and {DBMetadata.Circuit.Site} = @1",
+                this.operatingCompany,
+                siteId);
+
             foreach (var circuitEntity in circuitEntities)
             {
                 int intValue;
@@ -192,9 +208,9 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
                     numberOfConductorsPerPhase: circuitEntity.ConductorsPerPhase,
                     enclosureType: circuitEntity.EnclosureType,
                     installDate: circuitEntity.InstallDate,
-                    meters: this.GetMeters(owner, siteId, circuitEntity.Circuit.Value),
-                    currentTransformers: this.GetCurrentTransformers(owner, siteId, circuitEntity.Circuit.Value),
-                    potentialTransformers: this.GetPotentialTransformers(owner, siteId, circuitEntity.Circuit.Value));
+                    meters: this.GetMeters(siteId, circuitEntity.Circuit.Value),
+                    currentTransformers: this.GetCurrentTransformers(siteId, circuitEntity.Circuit.Value),
+                    potentialTransformers: this.GetPotentialTransformers(siteId, circuitEntity.Circuit.Value));
 
                 circuitMementos.Add(circuitMemento);
             }
@@ -202,7 +218,7 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
             return circuitMementos;
         }
 
-        private IEnumerable<CircuitMeterMemento> GetMeters(int owner, int siteId, int circuitId)
+        private IEnumerable<CircuitMeterMemento> GetMeters(int siteId, int circuitId)
         {
             var meterMementos = new List<CircuitMeterMemento>();
 
@@ -212,8 +228,8 @@ SELECT {DBMetadata.EqpMeter.EqpNo}, {DBMetadata.EqpMeter.Site}, {DBMetadata.EqpM
        {DBMetadata.EqpMeter.Scalar}, {DBMetadata.EqpMeter.EnergyMult}, {DBMetadata.EqpMeter.Kh}, 
        {DBMetadata.EqpMeter.PrimaryKh}, {DBMetadata.EqpMeter.EqpStatus}
 FROM {DBMetadata.EqpMeter.FullTableName} 
-WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.Site} = @1 and {DBMetadata.EqpMeter.Circuit}",
-                owner,
+WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.Site} = @1 and {DBMetadata.EqpMeter.Circuit} = @2",
+                this.operatingCompany,
                 siteId,
                 circuitId);
             foreach (var meterEntity in meterEntities)
@@ -240,7 +256,7 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.Site} = @1 and {
             return meterMementos;
         }
 
-        private IEnumerable<CircuitCurrentTransformerMemento> GetCurrentTransformers(int owner, int siteId, int circuitId)
+        private IEnumerable<CircuitCurrentTransformerMemento> GetCurrentTransformers(int siteId, int circuitId)
         {
             var currentTransformerMementos = new List<CircuitCurrentTransformerMemento>();
 
@@ -248,8 +264,8 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.Site} = @1 and {
                 $@"
 SELECT {DBMetadata.EqpCt.EqpNo}, {DBMetadata.EqpCt.SelectedRatio}, {DBMetadata.EqpCt.AuxMult}
 FROM {DBMetadata.EqpCt.FullTableName} 
-WHERE {DBMetadata.EqpCt.Owner} = @0 and {DBMetadata.EqpCt.Site} = @1 and {DBMetadata.EqpCt.Circuit}",
-                owner,
+WHERE {DBMetadata.EqpCt.Owner} = @0 and {DBMetadata.EqpCt.Site} = @1 and {DBMetadata.EqpCt.Circuit} = @2",
+                this.operatingCompany,
                 siteId,
                 circuitId);
 
@@ -273,7 +289,7 @@ WHERE {DBMetadata.EqpCt.Owner} = @0 and {DBMetadata.EqpCt.Site} = @1 and {DBMeta
             return currentTransformerMementos;
         }
 
-        private IEnumerable<CircuitPotentialTransformerMemento> GetPotentialTransformers(int owner, int siteId, int circuitId)
+        private IEnumerable<CircuitPotentialTransformerMemento> GetPotentialTransformers(int siteId, int circuitId)
         {
             var potentialTransformerMementos = new List<CircuitPotentialTransformerMemento>();
 
@@ -281,8 +297,8 @@ WHERE {DBMetadata.EqpCt.Owner} = @0 and {DBMetadata.EqpCt.Site} = @1 and {DBMeta
                 $@"
 SELECT {DBMetadata.EqpPt.EqpNo}, {DBMetadata.EqpPt.SelectedRatio}
 FROM {DBMetadata.EqpPt.FullTableName} 
-WHERE {DBMetadata.EqpPt.Owner} = @0 and {DBMetadata.EqpPt.Site} = @1 and {DBMetadata.EqpPt.Circuit}",
-                owner,
+WHERE {DBMetadata.EqpPt.Owner} = @0 and {DBMetadata.EqpPt.Site} = @1 and {DBMetadata.EqpPt.Circuit} = @2",
+                this.operatingCompany,
                 siteId,
                 circuitId);
 

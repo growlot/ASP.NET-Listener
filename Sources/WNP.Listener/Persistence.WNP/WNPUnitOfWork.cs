@@ -15,6 +15,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         private WNPDBContext dbContext;
         private IOwnerRepository ownerRepository;
         private ISiteRepository siteRepository;
+        private int operatingCompany;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WNPUnitOfWork" /> class.
@@ -24,6 +25,17 @@ namespace AMSLLC.Listener.Persistence.WNP
         {
             this.dbContext = dbContext;
             this.dbContext.BeginTransaction();
+        }
+
+        /// <summary>
+        /// Sets the set operating company.
+        /// </summary>
+        /// <value>
+        /// The operating company.
+        /// </value>
+        public int SetOperatingCompany
+        {
+            set { this.operatingCompany = value; }
         }
 
         /// <summary>
@@ -47,7 +59,7 @@ namespace AMSLLC.Listener.Persistence.WNP
             {
                 if (this.ownerRepository == null)
                 {
-                    this.ownerRepository = new OwnerRepository(this.dbContext);
+                    this.ownerRepository = new OwnerRepository(this.dbContext, this.operatingCompany);
                 }
 
                 return this.ownerRepository;
@@ -61,7 +73,7 @@ namespace AMSLLC.Listener.Persistence.WNP
             {
                 if (this.siteRepository == null)
                 {
-                    this.siteRepository = new SiteRepository(this.dbContext);
+                    this.siteRepository = new SiteRepository(this.dbContext, this.operatingCompany);
                 }
 
                 return this.siteRepository;

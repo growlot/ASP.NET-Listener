@@ -16,8 +16,8 @@ namespace AMSLLC.Listener.Repository.WNP
         /// <summary>
         /// Gets the Owner agregate root memento.
         /// </summary>
-        /// <param name="owner">The owner.</param>
         /// <returns>The Owner agregate root memento.</returns>
-        Task<IMemento> GetOwner(int owner);
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Information is loaded from database, so property is not appropriate.")]
+        Task<IMemento> GetOwner();
     }
 }

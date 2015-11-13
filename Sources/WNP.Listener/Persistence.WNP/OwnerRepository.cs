@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     using System.Threading.Tasks;
     using Domain;
     using Domain.WNP.OwnerAggregate;
+    using Metadata;
     using Repository.WNP;
 
     /// <summary>
@@ -16,14 +17,17 @@ namespace AMSLLC.Listener.Persistence.WNP
     public class OwnerRepository : IOwnerRepository
     {
         private WNPDBContext dbContext;
+        private int operatingCompany;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OwnerRepository"/> class.
+        /// Initializes a new instance of the <see cref="OwnerRepository" /> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
-        public OwnerRepository(WNPDBContext dbContext)
+        /// <param name="operatingCompany">The operating company.</param>
+        public OwnerRepository(WNPDBContext dbContext, int operatingCompany)
         {
             this.dbContext = dbContext;
+            this.operatingCompany = operatingCompany;
         }
 
         /// <summary>
@@ -36,9 +40,14 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetOwner(int owner)
+        public Task<IMemento> GetOwner()
         {
-            return Task.FromResult((IMemento)this.dbContext.FirstOrDefault<OwnerMemento>("SELECT owner FROM wndba.towner WHERE owner = @0", owner));
+            return Task.FromResult((IMemento)this.dbContext.FirstOrDefault<OwnerMemento>(
+                $@"
+SELECT {DBMetadata.Owner.Owner}
+FROM {DBMetadata.Owner.FullTableName}
+WHERE {DBMetadata.Owner.Owner} = @0",
+                this.operatingCompany));
         }
     }
 }

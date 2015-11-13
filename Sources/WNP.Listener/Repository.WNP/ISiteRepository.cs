@@ -16,10 +16,9 @@ namespace AMSLLC.Listener.Repository.WNP
         /// <summary>
         /// Gets the memento for site agregate.
         /// </summary>
-        /// <param name="owner">The owner.</param>
         /// <param name="siteId">The site identifier.</param>
         /// <returns>The site memento</returns>
-        Task<IMemento> GetSite(int owner, int siteId);
+        Task<IMemento> GetSite(int siteId);
 
         /// <summary>
         /// Gets the site by premise number.
@@ -31,23 +30,21 @@ namespace AMSLLC.Listener.Repository.WNP
         /// <summary>
         /// Gets the owner with sites that belong to this owner and have same premise number or description.
         /// </summary>
-        /// <param name="owner">The owner.</param>
         /// <param name="sitePremiseNumber">The site premise number.</param>
         /// <param name="siteDescription">The site description.</param>
         /// <returns>The owner mementos.</returns>
-        Task<IMemento> GetOwnerWithCollidingSites(int owner, string sitePremiseNumber, string siteDescription);
+        Task<IMemento> GetOwnerWithCollidingSites(string sitePremiseNumber, string siteDescription);
 
         /// <summary>
         /// Gets the owner with sites that belong to this owner and have same site identity, premise number or description.
         /// </summary>
-        /// <param name="owner">The owner.</param>
         /// <param name="siteId">The site identifier.</param>
         /// <param name="sitePremiseNumber">The site premise number.</param>
         /// <param name="siteDescription">The site description.</param>
         /// <returns>
         /// The owner mementos.
         /// </returns>
-        Task<IMemento> GetOwnerWithCollidingSites(int owner, int siteId, string sitePremiseNumber, string siteDescription);
+        Task<IMemento> GetOwnerWithCollidingSites(int siteId, string sitePremiseNumber, string siteDescription);
 
         /// <summary>
         /// Gets the meter fields used in inventory management context.
