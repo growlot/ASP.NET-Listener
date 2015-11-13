@@ -49,13 +49,11 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
             var meterReadingConfiguration =
                 new EntityConfiguration(Reading.FullTableName)
-                    .OwnerSpecific()
                     .Contained()
                     .HasKey(Reading.ReadIndex);
 
             var commentsConfiguration =
                 new EntityConfiguration(Comment.FullTableName)
-                    .OwnerSpecific()
                     .Contained()
                     .HasKey(Comment.CommentIndex);
 
