@@ -25,7 +25,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 new
                 {
                     EntityCategoryId = 1,
-                    Name = "ElectricMeters",
+                    Name = "EM",
                     DisplayName = "Electric Meters"
                 },
                 new

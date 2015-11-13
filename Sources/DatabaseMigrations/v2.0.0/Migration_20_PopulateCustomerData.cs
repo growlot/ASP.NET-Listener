@@ -41,6 +41,11 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 this.Insert.IntoTable("Company").Row(new { CompanyId = "0", ExternalCode = "CCD", InternalCode = "0", Name = "Concord" });
             }
 
+            if (((string)this.ApplicationContext).Contains("PPL"))
+            {
+                this.Insert.IntoTable("Company").Row(new { CompanyId = "0", ExternalCode = "PPL", InternalCode = "0", Name = "PPL Electric Utilities" });
+            }
+
             if (((string)this.ApplicationContext).Contains("LabTrack"))
             {
                 this.Update.Table("EquipmentType").Set(new { ExternalCode = "EMT" }).Where(new { EquipmentTypeId = "1" });

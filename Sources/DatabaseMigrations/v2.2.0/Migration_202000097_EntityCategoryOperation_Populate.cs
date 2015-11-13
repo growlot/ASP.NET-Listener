@@ -69,11 +69,18 @@ namespace AMSLLC.Listener.DatabaseMigrations
                     EnabledOperationId = 4,
                     FieldConfigurationId = (int?)1
                 },
-                 new
+                new
                 {
                     EntityCategoryOperationId = 8,
                     EntityCategoryId = 1,
                     EnabledOperationId = 3,
+                    FieldConfigurationId = (int?)1
+                },
+                new
+                {
+                    EntityCategoryOperationId = 9,
+                    EntityCategoryId = 1,
+                    EnabledOperationId = 5,
                     FieldConfigurationId = (int?)1
                 }
             };
