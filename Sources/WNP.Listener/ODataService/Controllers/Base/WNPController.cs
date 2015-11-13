@@ -127,22 +127,18 @@
             try
             {
                 // adjust parameters types
-                jsonParameters = jsonParameters.ToDictionary(kvp => kvp.Key,
-                    kvp =>
-                        Converters.Convert(kvp.Value, parametersInfo.First(info => info.Name == kvp.Key).ParameterType));
+                jsonParameters = jsonParameters.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => Converters.Convert(kvp.Value, parametersInfo.First(info => info.Name == kvp.Key).ParameterType));
 
-                var result = methodInfo.InvokeWithNamedParameters(actionsContainer, jsonParameters);
-
-                if (methodInfo.ReturnType != typeof(void))
-                {
-                    return this.CreateSimpleOkResponse(methodInfo.ReturnType, result);
-                }
-
-                return this.Ok();
+                return await (Task<IHttpActionResult>)methodInfo.InvokeWithNamedParameters(actionsContainer, jsonParameters);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Action {ActionName} in container {ContainerType} failed to execute.", actionName,
+                Log.Error(
+                    ex,
+                    "Action {ActionName} in container {ContainerType} failed to execute.",
+                    actionName,
                     actionsContainerType.FullName);
 
                 return this.InternalServerError(ex);
