@@ -76,6 +76,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public int? Priority { get; private set; }
 
         /// <summary>
+        /// Gets the dirty.
+        /// </summary>
+        /// <value>The dirty.</value>
+        public bool Dirty { get; set; }
+
+        /// <summary>
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>

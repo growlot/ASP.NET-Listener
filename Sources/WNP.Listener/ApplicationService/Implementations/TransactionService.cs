@@ -203,11 +203,22 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
 
                 ((IOriginator)transactionExecution).SetMemento(memento);
 
-                await transactionExecution.Process();
+                switch (requestMessage.RetryPolicy)
+                {
+                    case RetryPolicyType.Retry:
+                        await transactionExecution.Retry();
+                        break;
+                        case RetryPolicyType.Force:
+                        await transactionExecution.ForceRetry();
+                        break;
+                    default:
+                        await transactionExecution.Process();
+                        break;
+                }
 
                 var hashList =
                     new Dictionary<Guid, string>(
-                        transactionExecution.ChildTransactions.ToDictionary(s => s.RecordKey, s => s.OutgoingHash))
+                        transactionExecution.ChildTransactions.Where(c => c.Dirty).ToDictionary(s => s.RecordKey, s => s.OutgoingHash))
                     {
                         {
                             transactionExecution.RecordKey, transactionExecution.OutgoingHash

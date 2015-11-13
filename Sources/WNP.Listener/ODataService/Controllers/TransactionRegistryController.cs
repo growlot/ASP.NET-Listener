@@ -18,19 +18,20 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using ApplicationService;
     using ApplicationService.Commands;
     using ApplicationService.Model;
+    using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using Persistence.Listener;
     using Serilog;
 
+    /// <summary>
+    /// Transaction registry controller
+    /// </summary>
     [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal | AllowedLogicalOperators.And | AllowedLogicalOperators.Or)]
     public class TransactionRegistryController : ODataController
     {
         private readonly ListenerODataContext _dbContext;
         private readonly ITransactionService _transactionService;
         private readonly IWnpIntegrationService _wnpIntegrationService;
-
-        public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
-        public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRegistryController" /> class.
@@ -44,6 +45,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
             this._transactionService = transactionService;
             this._wnpIntegrationService = wnpService;
         }
+
+        private string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
+        private string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
 
         public IQueryable<TransactionRegistryEntity> Get()
         {
@@ -180,6 +184,46 @@ namespace AMSLLC.Listener.ODataService.Controllers
             try
             {
                 await this._transactionService.Process(new ProcessTransactionCommand { RecordKey = key });
+                return this.Ok();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Processes the specified transaction.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> Retry([FromODataUri] Guid key)
+        {
+            try
+            {
+                await this._transactionService.Process(new ProcessTransactionCommand { RecordKey = key, RetryPolicy = RetryPolicyType.Retry });
+                return this.Ok();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Processes the specified transaction.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>Task&lt;ApiResponseMessage&gt;.</returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> ForceRetry([FromODataUri] Guid key)
+        {
+            try
+            {
+                await this._transactionService.Process(new ProcessTransactionCommand { RecordKey = key, RetryPolicy = RetryPolicyType.Force });
                 return this.Ok();
             }
             catch (Exception exc)

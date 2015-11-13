@@ -2,16 +2,15 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace ApplicationService.Test
+namespace AMSLLC.Listener.ApplicationService.Test
 {
-    using AMSLLC.Listener.ApplicationService;
-    using AMSLLC.Listener.ApplicationService.Implementations;
-    using AMSLLC.Listener.Core;
-    using AMSLLC.Listener.Core.Ninject.Test;
-    using AMSLLC.Listener.Domain;
-    using AMSLLC.Listener.Repository;
+    using Core;
+    using Core.Ninject.Test;
+    using Domain;
+    using Implementations;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
+    using Repository;
 
     [TestClass]
     public class ApplicationScopeTest
@@ -20,12 +19,15 @@ namespace ApplicationService.Test
         public void TestApplicationScope()
         {
             var di = new TestDependencyInjectionAdapter();
-            di.Kernel.Bind<IDependencyInjectionModule>().To<TestScopeContainerInitializer>().Named("ApplicationScopeModule");
+            di.Kernel.Bind<IDependencyInjectionModule>()
+                .To<TestScopeContainerInitializer>()
+                .Named("ApplicationScopeModule");
             di.Kernel.Bind<IDomainBuilder>().To<DomainBuilder>().InSingletonScope();
             di.Kernel.Bind<IDateTimeProvider>().To<UtcDateTimeProvider>().InSingletonScope();
             ApplicationIntegration.SetDependencyInjectionResolver(di);
 
-            di.Rebind<IDependencyInjectionModule>(new TestScopeContainerInitializer()).Named("ApplicationScopeModule");
+            di.Rebind<IDependencyInjectionModule>(new TestScopeContainerInitializer())
+                .Named("ApplicationScopeModule");
 
             var db1 = di.ResolveType<IDomainBuilder>();
 

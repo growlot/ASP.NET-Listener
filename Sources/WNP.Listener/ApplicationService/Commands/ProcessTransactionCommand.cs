@@ -6,6 +6,7 @@
 namespace AMSLLC.Listener.ApplicationService.Commands
 {
     using System;
+    using Domain.Listener.Transaction;
 
     /// <summary>
     /// Process transaction command
@@ -19,5 +20,11 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// The record key.
         /// </value>
         public Guid RecordKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the retry policy type.
+        /// </summary>
+        /// <value>The retry.</value>
+        public RetryPolicyType RetryPolicy { get; set; }
     }
 }

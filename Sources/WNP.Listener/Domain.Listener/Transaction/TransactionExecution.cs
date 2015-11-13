@@ -94,44 +94,51 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public Collection<Guid> DuplicateTransactions { get; } = new Collection<Guid>();
 
         /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
+        /// <value>The status.</value>
+        public TransactionStatusType Status { get; private set; }
+
+        /// <summary>
+        /// Retries execution of the transaction
+        /// </summary>
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        public virtual Task Retry()
+        {
+            return this.Process(
+                new[]
+                {
+                    TransactionStatusType.Canceled,
+                    TransactionStatusType.Pending,
+                    TransactionStatusType.Failed
+                });
+        }
+
+        /// <summary>
+        /// Retries execution of the transaction
+        /// </summary>
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        public virtual Task ForceRetry()
+        {
+            return this.Process(
+                new[]
+                {
+                    TransactionStatusType.Canceled,
+                    TransactionStatusType.Failed,
+                    TransactionStatusType.Pending,
+                    TransactionStatusType.Invalid,
+                    TransactionStatusType.Skipped,
+                    TransactionStatusType.Processing
+                });
+        }
+
+        /// <summary>
         /// Processes the specified transaction.
         /// </summary>
         /// <returns>System.Threading.Tasks.Task.</returns>
         public virtual Task Process()
         {
-            var endpointExecutionData = this.ChildTransactions.Any()
-                ? this.ProcessBatch()
-                : new Dictionary<int, List<IDomainEvent>>()
-                {
-                    {
-                        0, ProcessTransaction(this, this.hashBuilder)
-                    }
-                };
-            var ordered = endpointExecutionData.OrderBy(s => s.Key).ToList();
-            var task = this.domainEventBus.PublishBulk(ordered.First().Value);
-            foreach (KeyValuePair<int, List<IDomainEvent>> keyValuePair in ordered.Skip(1).ToList())
-            {
-                task = task.ContinueWith(
-                    t =>
-                    {
-                        if (t.IsFaulted)
-                        {
-                            t.Exception.Handle(
-                                ex =>
-                                {
-                                    Debug.WriteLine(t.Exception.Flatten());
-                                    return false;
-                                });
-                            throw t.Exception;
-                        }
-                        else
-                        {
-                            return this.domainEventBus.PublishBulk(keyValuePair.Value);
-                        }
-                    });
-            }
-
-            return task;
+            return this.Process(new[] { TransactionStatusType.Pending, });
         }
 
         /// <summary>
@@ -143,6 +150,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             var myMemento = (TransactionExecutionMemento)memento;
             this.RecordKey = myMemento.RecordKey;
             this.Id = myMemento.TransactionId;
+            this.Status = myMemento.Status;
             this.EntityCategoryOperationId = myMemento.EntityCategoryOperationId;
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
             this.Data = myMemento.Data;
@@ -211,7 +219,55 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             return returnValue;
         }
 
-        private Dictionary<int, List<IDomainEvent>> ProcessBatch()
+        /// <summary>
+        /// Processes the specified transaction.
+        /// </summary>
+        /// <param name="statusTypes">The status types.</param>
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        private Task Process(TransactionStatusType[] statusTypes)
+        {
+            if (!statusTypes.Contains(this.Status))
+            {
+                return Task.Factory.StartNew(() => { });
+            }
+
+            var endpointExecutionData = this.ChildTransactions.Any()
+                ? this.ProcessBatch(statusTypes)
+                : new Dictionary<int, List<IDomainEvent>>()
+                {
+                    {
+                        0, ProcessTransaction(this, this.hashBuilder)
+                    }
+                };
+            var ordered = endpointExecutionData.OrderBy(s => s.Key).ToList();
+            var task = this.domainEventBus.PublishBulk(ordered.First().Value);
+            foreach (KeyValuePair<int, List<IDomainEvent>> keyValuePair in ordered.Skip(1).ToList())
+            {
+                task = task.ContinueWith(
+                    t =>
+                    {
+                        if (t.IsFaulted)
+                        {
+                            t.Exception.Handle(
+                                ex =>
+                                {
+                                    Debug.WriteLine(t.Exception.Flatten());
+                                    return false;
+                                });
+                            throw t.Exception;
+                        }
+                        else
+                        {
+                            return this.domainEventBus.PublishBulk(keyValuePair.Value);
+                        }
+                    });
+            }
+
+            return task;
+        }
+
+        private Dictionary<int, List<IDomainEvent>> ProcessBatch(
+           TransactionStatusType[] statuses)
         {
             var returnValue = new Dictionary<int, List<IDomainEvent>>();
 
@@ -234,15 +290,18 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             }
             else
             {
-                foreach (
-                    var childTransactionEntity in
-                        this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Pending))
+                foreach (var childTransactionEntity in
+                    this.ChildTransactions.Where(
+                        s =>
+                            statuses.Contains(s.Status)))
                 {
                     var priority = childTransactionEntity.Priority ?? 0;
                     if (!returnValue.ContainsKey(priority))
                     {
                         returnValue[priority] = new List<IDomainEvent>();
                     }
+
+                    childTransactionEntity.Dirty = true;
 
                     returnValue[priority].AddRange(ProcessTransaction(childTransactionEntity, this.hashBuilder));
                 }

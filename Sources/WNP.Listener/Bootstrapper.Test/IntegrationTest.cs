@@ -355,18 +355,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         }
 
         [TestMethod]
-        public async Task RetryBatch()
-        {
-            Assert.Inconclusive("Implement this");
-        }
-
-        [TestMethod]
-        public async Task ForceRetryBatch()
-        {
-            Assert.Inconclusive("Implement this");
-        }
-
-        [TestMethod]
         public async Task CreateWnpBatch()
         {
             var di = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;

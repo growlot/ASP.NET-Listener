@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿// <copyright file="TestScopeContainerInitializer.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
-namespace ApplicationService.Test
+namespace AMSLLC.Listener.ApplicationService.Test
 {
+using System;
+using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using AMSLLC.Listener.ApplicationService;
-    using AMSLLC.Listener.Core;
-    using AMSLLC.Listener.Domain;
-    using AMSLLC.Listener.Domain.Listener.Transaction;
-    using AMSLLC.Listener.Repository;
+using System.Threading.Tasks;
+    using Core;
+    using Domain;
+    using Domain.Listener.Transaction;
     using Ninject;
+    using Repository;
 
     public class TestScopeContainerInitializer : IDependencyInjectionModule
     {
@@ -18,7 +20,8 @@ namespace ApplicationService.Test
         /// Initializes the specified container.
         /// </summary>
         /// <param name="container">The container.</param>
-        public void Initialize(object container)
+        public void Initialize(
+            object container)
         {
             var kernel = (StandardKernel)container;
             kernel.Bind<IRepositoryManager>().To<RepositoryManager>();
@@ -29,6 +32,7 @@ namespace ApplicationService.Test
     public class AppServiceTestContainerInitializer : IDependencyInjectionModule
     {
         private ITransactionRepository rep;
+
         public AppServiceTestContainerInitializer(ITransactionRepository transactionRepository)
         {
             this.rep = transactionRepository;

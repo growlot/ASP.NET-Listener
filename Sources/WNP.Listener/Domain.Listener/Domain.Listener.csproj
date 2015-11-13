@@ -98,6 +98,7 @@
     <Compile Include="Transaction\IntegrationEndpointConfigurationMemento.cs" />
     <Compile Include="Transaction\IRecordKeyBuilder.cs" />
     <Compile Include="Transaction\ProtocolConfigurationFactory.cs" />
+    <Compile Include="Transaction\RetryPolicyType.cs" />
     <Compile Include="Transaction\TransactionsCanceled.cs" />
     <Compile Include="Transaction\TransactionConfiguration.cs" />
     <Compile Include="Transaction\TransactionConfigurationMemento.cs" />
