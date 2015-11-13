@@ -62,6 +62,23 @@ namespace AMSLLC.Listener.MetadataService.Implementations
             this.configurations.Add(MeterTestResults.FullTableName, meterTestsConfiguration);
             this.configurations.Add(Reading.FullTableName, meterReadingConfiguration);
             this.configurations.Add(Comment.FullTableName, commentsConfiguration);
+
+            var siteConfiguration = new EntityConfiguration(Site.FullTableName).OwnerSpecific()
+                .HasKey(
+                    Site.Owner,
+                    Site.PremiseNo)
+                .HasMany(
+                    Circuit.FullTableName,
+                    true,
+                    new ColumnMatch(Site.Owner, Circuit.Owner),
+                    new ColumnMatch(Site.Site, Circuit.Site));
+
+            var circuitConfiguration = new EntityConfiguration(Circuit.FullTableName)
+                .Contained()
+                .HasKey(Circuit.CircuitDesc);
+
+            this.configurations.Add(Site.FullTableName, siteConfiguration);
+            this.configurations.Add(Circuit.FullTableName, circuitConfiguration);
         }
 
         /// <inheritdoc/>

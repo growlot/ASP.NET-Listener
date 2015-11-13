@@ -136,15 +136,15 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
-            var queryOptions = this.ConstructQueryOptions();
-            queryOptions.Validate(this.defaultODataValidationSettings);
+            this.ConstructQueryOptions();
+            this.queryOptions.Validate(this.defaultODataValidationSettings);
 
             var model = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
 
-            var skip = queryOptions.Skip?.Value ?? 0;
-            var top = queryOptions.Top?.Value ?? 10;
+            var skip = this.queryOptions.Skip?.Value ?? 0;
+            var top = this.queryOptions.Top?.Value ?? 10;
 
-            var containedEntitySet = queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
+            var containedEntitySet = this.queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
             if (containedEntitySet != null)
             {
                 var navSource = containedEntitySet;
@@ -159,7 +159,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     var parentEntityModel = this.metadataService.GetModelMapping(parentEntityType.Name);
                     var childEntityModel = this.metadataService.GetModelMapping(childEntityType.Name);
 
-                    var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, queryOptions, false);
+                    var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, this.queryOptions, false);
 
                     var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql);
 
@@ -232,12 +232,12 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
-            var queryOptions = this.ConstructQueryOptions();
-            queryOptions.Validate(this.defaultODataValidationSettings);
+            this.ConstructQueryOptions();
+            this.queryOptions.Validate(this.defaultODataValidationSettings);
 
             var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
 
-            var orderedKey = GetRequestKey(queryOptions, modelMapping, 1);
+            var orderedKey = GetRequestKey(this.queryOptions, modelMapping, 1);
 
             var sql =
                 Sql.Builder.Select(this.GetDBColumnsList(this.queryOptions.SelectExpand, modelMapping))
@@ -280,9 +280,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
+            this.ConstructQueryOptions();
             this.queryOptions.Validate(this.defaultODataValidationSettings);
 
-            var containedEntitySet = queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
+            var containedEntitySet = this.queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
             if (containedEntitySet != null)
             {
                 var navSource = containedEntitySet;
@@ -301,7 +302,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     // TODO: should we do this? How 1-1 relationship is defined?
                     if (navSource.Type.TypeKind == EdmTypeKind.Collection)
                     {
-                        var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, queryOptions, true);
+                        var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, this.queryOptions, true);
 
                         Log.Debug("Generated SQL:{GeneratedSQL}\n\nParameters: {Parameters}\n", sql.SQL, sql.Arguments);
 
@@ -339,7 +340,16 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         private static KeyValuePair<string, object>[] GetRequestKey(ODataQueryOptions queryOptions, MetadataEntityModel modelMapping, int keyPosition)
         {
             var entityConfig = modelMapping.EntityConfiguration;
-            var hasCompositeKey = entityConfig.Key?.Count() > 1;
+
+            bool hasCompositeKey;
+            if (entityConfig.IsOwnerSpecific)
+            {
+                hasCompositeKey = entityConfig.Key?.Count() > 2;
+            }
+            else
+            {
+                hasCompositeKey = entityConfig.Key?.Count() > 1;
+            }
 
             var jsonKey = queryOptions.Context.Path.Segments[keyPosition] as KeyValuePathSegment;
             if (jsonKey == null)
@@ -354,9 +364,18 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             }
             else
             {
-                key.Add(
-                    modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
-                    JsonConvert.DeserializeObject(jsonKey.Value));
+                if (entityConfig.IsOwnerSpecific)
+                {
+                    key.Add(
+                        modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[1].ToUpperInvariant()],
+                        JsonConvert.DeserializeObject(jsonKey.Value));
+                }
+                else
+                {
+                    key.Add(
+                        modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
+                        JsonConvert.DeserializeObject(jsonKey.Value));
+                }
             }
 
             return key.ToArray();
