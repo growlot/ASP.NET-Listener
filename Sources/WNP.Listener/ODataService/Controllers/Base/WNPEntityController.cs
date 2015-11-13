@@ -27,7 +27,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Newtonsoft.Json;
     using Persistence.WNP;
     using Repository.WNP;
-    using Services;
     using Services.FilterTransformer;
     using Utilities;
 
@@ -70,19 +69,19 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
-            var queryOptions = this.ConstructQueryOptions();
-            queryOptions.Validate(this.defaultODataValidationSettings);
+            this.ConstructQueryOptions();
+            this.queryOptions.Validate(this.defaultODataValidationSettings);
 
             var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
 
-            var skip = queryOptions.Skip?.Value ?? 0;
-            var top = queryOptions.Top?.Value ?? 10;
+            var skip = this.queryOptions.Skip?.Value ?? 0;
+            var top = this.queryOptions.Top?.Value ?? 10;
 
             var sql =
-                Sql.Builder.Select(this.GetDBColumnsList(queryOptions.SelectExpand, modelMapping))
+                Sql.Builder.Select(this.GetDBColumnsList(this.queryOptions.SelectExpand, modelMapping))
                            .From($"{modelMapping.TableName}");
 
-            var sqlWhere = this.filterTransformer.TransformFilterQueryOption(queryOptions.Filter);
+            var sqlWhere = this.filterTransformer.TransformFilterQueryOption(this.queryOptions.Filter);
 
             // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
             ConvertUtcParamsToLocalTime(sqlWhere);
@@ -194,8 +193,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <returns>Action results</returns>
         public async Task<IHttpActionResult> EntityActionHandler()
         {
-            var queryOptions = this.ConstructQueryOptions();
-            var oDataPath = queryOptions.Context.Path;
+            this.ConstructQueryOptions();
+            var oDataPath = this.queryOptions.Context.Path;
 
             var isCollectionWide = oDataPath.PathTemplate == "~/entityset/action";
 
@@ -241,7 +240,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var orderedKey = GetRequestKey(queryOptions, modelMapping, 1);
 
             var sql =
-                Sql.Builder.Select(this.GetDBColumnsList(queryOptions.SelectExpand, modelMapping))
+                Sql.Builder.Select(this.GetDBColumnsList(this.queryOptions.SelectExpand, modelMapping))
                     .From($"{modelMapping.TableName}")
                     .Where(
                         orderedKey.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
@@ -281,8 +280,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
-            var queryOptions = this.ConstructQueryOptions();
-            queryOptions.Validate(this.defaultODataValidationSettings);
+            this.queryOptions.Validate(this.defaultODataValidationSettings);
 
             var containedEntitySet = queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
             if (containedEntitySet != null)

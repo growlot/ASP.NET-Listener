@@ -54,6 +54,8 @@
 
         protected Type EdmEntityClrType { get; set; }
 
+        protected ODataQueryOptions queryOptions { get; set; }
+
         public async Task<IHttpActionResult> UnboundActionHandler()
         {
             var oDataProperties = this.Request.ODataProperties();
@@ -162,7 +164,7 @@
                     .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
                     .MakeGenericMethod(dataType));
 
-        protected ODataQueryOptions ConstructQueryOptions()
+        protected void ConstructQueryOptions()
         {
             var oDataProperties = this.Request.ODataProperties();
             var oDataPath = oDataProperties.Path;
@@ -206,7 +208,7 @@
             }
 
             this.EdmEntityClrType = edmEntityClrType;
-            return new ODataQueryOptions(new ODataQueryContext(model, edmEntityClrType, oDataPath), this.Request);
+            this.queryOptions = new ODataQueryOptions(new ODataQueryContext(model, edmEntityClrType, oDataPath), this.Request);
         }
     }
 }
