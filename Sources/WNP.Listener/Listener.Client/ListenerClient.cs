@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AMSLLC.Listener.Client
 {
     using System.Dynamic;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
     using Exception;
     using Message;
     using Newtonsoft.Json;
