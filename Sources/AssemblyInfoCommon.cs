@@ -24,5 +24,5 @@ using System.Reflection;
 // AssemblyFileVersion needs to change for every new WNP setup package.
 [assembly: AssemblyVersion("2.2.0.0")]
 [assembly: AssemblyInformationalVersion("2.2")]
-[assembly: AssemblyFileVersion("2.2.0.14")]
+[assembly: AssemblyFileVersion("2.2.0.16")]
 [assembly: CLSCompliant(true)]
