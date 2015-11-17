@@ -6,9 +6,6 @@ namespace AMSLLC.Listener.Client
 
     public interface IListenerProxy
     {
-        Task<string> OpenAsync(
-            Uri uri,
-            object data,
-            Dictionary<string, string> headers = null);
+        Task<string> OpenAsync(Uri uri, object data, Dictionary<string, string> headers = null);
     }
 }

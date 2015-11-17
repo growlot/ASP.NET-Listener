@@ -12,10 +12,20 @@
 
     public class ListenerProxy : IListenerProxy
     {
+
+        private IHttpClientAdapter _hClient = null;
+
+        public ListenerProxy() : this(new HttpClientAdapter()) { }
+
+        public ListenerProxy(IHttpClientAdapter adapter)
+        {
+            this._hClient = adapter;
+        }
+
         public Task<string> OpenAsync(Uri uri, object data, Dictionary<string, string> headers = null)
         {
             var d = data;
-            HttpClient client = new HttpClient();
+            IHttpClientAdapter client = this._hClient;
 
             Task<HttpResponseMessage> response;
 
@@ -28,8 +38,6 @@
                 //client.DefaultRequestHeaders.Add("AMS-Company", "CCD");
                 //client.DefaultRequestHeaders.Add("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e");
             }
-
-
 
             if (d != null)
             {

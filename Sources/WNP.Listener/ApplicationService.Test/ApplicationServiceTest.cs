@@ -21,6 +21,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
+    using ODataService;
     using Repository;
     using Serilog;
 

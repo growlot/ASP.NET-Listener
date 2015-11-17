@@ -16,7 +16,9 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     using Domain;
     using Domain.Listener.Transaction;
     using Model;
+    using Newtonsoft.Json;
     using Repository;
+    using Serilog;
 
     /// <summary>
     /// Implements <see cref="ITransactionService"/>
@@ -75,7 +77,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                   }));
 
                 transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
-
+                Log.Logger.Information("Opening transaction {0}", transactionRegistry.RecordKey);
                 await transactionRepository.CreateTransactionRegistryAsync(transactionRegistry);
 
                 returnValue = transactionRegistry.RecordKey;
@@ -178,7 +180,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 }));
 
                 transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
-
+                Log.Logger.Information("Opening batch transaction {0} with {1} children", transactionRegistry.RecordKey, transactionRegistry.ChildTransactions.Count);
                 await transactionRepository.CreateTransactionRegistryAsync(transactionRegistry);
 
                 returnValue = transactionRegistry.RecordKey;
@@ -206,12 +208,15 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 switch (requestMessage.RetryPolicy)
                 {
                     case RetryPolicyType.Retry:
+                        Log.Logger.Information("Retrying transaction {0} with {1} children", transactionExecution.RecordKey, transactionExecution.ChildTransactions.Count);
                         await transactionExecution.Retry();
                         break;
-                        case RetryPolicyType.Force:
+                    case RetryPolicyType.Force:
+                        Log.Logger.Information("Forcing transaction retry for {0} with {1} children", transactionExecution.RecordKey, transactionExecution.ChildTransactions.Count);
                         await transactionExecution.ForceRetry();
                         break;
                     default:
+                        Log.Logger.Information("Processing transaction {0} with {1} children", transactionExecution.RecordKey, transactionExecution.ChildTransactions.Count);
                         await transactionExecution.Process();
                         break;
                 }
@@ -224,7 +229,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                             transactionExecution.RecordKey, transactionExecution.OutgoingHash
                         }
                     };
-
+                Log.Logger.Information("Updating hash list {0}", JsonConvert.SerializeObject(hashList));
                 await sourceRepository.UpdateHashAsync(hashList);
             }
         }
@@ -243,6 +248,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
                 transactionRegistry.Succeed(scope.ScopeCreated);
+                Log.Logger.Information("Succeeding transaction {0}", transactionRegistry.RecordKey);
                 await sourceRepository.UpdateTransactionRegistryAsync(transactionRegistry);
             }
         }
@@ -261,6 +267,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
                 transactionRegistry.Fail(scope.ScopeCreated, transactionFailedMessage.Message, transactionFailedMessage.Details);
+                Log.Logger.Information("Failing transaction {0}", transactionRegistry.RecordKey);
                 await sourceRepository.UpdateTransactionRegistryAsync(transactionRegistry);
             }
         }
@@ -279,6 +286,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
                 transactionRegistry.Skip(scope.ScopeCreated);
+                Log.Logger.Information("Skipping transaction {0}", transactionRegistry.RecordKey);
                 await sourceRepository.UpdateTransactionRegistryAsync(transactionRegistry);
             }
         }
@@ -298,6 +306,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
                 transactionRegistry.Processing(scope.ScopeCreated);
+                Log.Logger.Information("Processing transaction {0} with {1} children", transactionRegistry.RecordKey, transactionRegistry.ChildTransactions.Count);
                 await sourceRepository.UpdateTransactionRegistryAsync(transactionRegistry);
             }
         }
@@ -323,6 +332,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     modifiedRegistries.Add(transactionRegistry);
                 }
 
+                Log.Logger.Information("Canceling transactions {0}", JsonConvert.SerializeObject(modifiedRegistries));
                 await sourceRepository.UpdateTransactionRegistryBulkAsync(modifiedRegistries);
             }
         }

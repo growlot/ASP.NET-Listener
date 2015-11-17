@@ -62,9 +62,9 @@
                 //this is expected
             }
 
-            mq.Verify(f=>f.OpenTask(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
-            mq.Verify(f=>f.SucceedTransaction(It.IsAny<string>()), Times.Never);
-            mq.Verify(f=>f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mq.Verify(f => f.OpenTask(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
+            mq.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Never);
+            mq.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [TestMethod]
@@ -88,9 +88,9 @@
                 //This is expected
             }
 
-            mq.Verify(f=>f.OpenTask(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
-            mq.Verify(f=>f.SucceedTransaction(It.IsAny<string>()), Times.Once);
-            mq.Verify(f=>f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            mq.Verify(f => f.OpenTask(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
+            mq.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Once);
+            mq.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
     }
 }

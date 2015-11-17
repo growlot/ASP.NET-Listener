@@ -37,6 +37,7 @@ namespace AMSLLC.Listener.Core.Ninject.Test
         public IBindingWhenInNamedWithOrOnSyntax<TType> Rebind<TType>(
             TType to)
         {
+            this.Kernel.Unbind<TType>();
             this.reboundInstances.Add(typeof(TType), to);
             return this.Kernel.Rebind<TType>().ToConstant(to);
         }

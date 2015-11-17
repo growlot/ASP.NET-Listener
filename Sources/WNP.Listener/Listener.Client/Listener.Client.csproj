@@ -77,6 +77,8 @@
     <Compile Include="Exception\FailedToProcessTransactionException.cs" />
     <Compile Include="Exception\FailedToSucceedTransactionException.cs" />
     <Compile Include="Exception\ListenerRequestFailedException.cs" />
+    <Compile Include="HttpClientAdapter.cs" />
+    <Compile Include="IHttpClientAdapter.cs" />
     <Compile Include="IListenerProxy.cs" />
     <Compile Include="ListenerProxy.cs" />
     <Compile Include="ListenerClient.cs" />

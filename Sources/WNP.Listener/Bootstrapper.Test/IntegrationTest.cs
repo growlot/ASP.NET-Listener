@@ -30,6 +30,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Repository;
     using Repository.WNP;
     using Repository.WNP.Model;
+    using Serilog;
 
     [TestClass]
     public class IntegrationTest
@@ -68,7 +69,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         [TestMethod]
         public async Task OpenAndSucceedTransactionTest()
         {
-
             var di = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
             var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
             var nextKey = Guid.NewGuid();
@@ -363,13 +363,11 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             //var keyStack = new Queue<string>();
             //keyStack.Enqueue(nextKey.ToString("D"));
             var seq = transactionRecordKeyBuilder.SetupSequence(s => s.Create()).Returns(nextKey.ToString("D"));
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < 20; i++)
             {
                 seq = seq.Returns(Guid.NewGuid().ToString("D"));
                 //keyStack.Enqueue();
             }
-
-
 
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             var transactionRegistryMock = new Mock<TransactionRegistry>(di.ResolveType<IRecordKeyBuilder>(), di.ResolveType<ITransactionHashBuilder>(), di.ResolveType<ISummaryBuilder>()) { CallBase = true };
@@ -443,6 +441,33 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 t => t.Create(It.IsAny<DateTime>(), It.IsAny<Dictionary<int, IEnumerable<FieldConfiguration>>>()),
                 Times.Exactly(1));
 
+            di.Kernel.Release(transactionRecordKeyBuilder.Object);
+
+        }
+
+        [TestMethod]
+        public async Task EndpointFailureAs500()
+        {
+            var di = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            di.Kernel.Bind<IRecordKeyBuilder>().ToConstant((IRecordKeyBuilder)null);
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            var nextKey = Guid.NewGuid();
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey.ToString("D"));
+            di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
+            var entityKey = Guid.NewGuid().ToString("D");
+            var transactionRegistryMock = new Mock<TransactionRegistry>(di.ResolveType<IRecordKeyBuilder>(), di.ResolveType<ITransactionHashBuilder>(), di.ResolveType<ISummaryBuilder>()) { CallBase = true };
+
+            var domainBuilderMock = new Mock<DomainBuilder> { CallBase = true };
+            domainBuilderMock.Setup(s => s.Create<TransactionRegistry>()).Returns(transactionRegistryMock.Object);
+           
+            di.Rebind<ICommunicationHandler>(new DummyCommunicationHandler()).Named("communication-jms");
+            di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
+            //di.Rebind<ITransactionDataRepository>().ToConstant(transactionMessageDataRepository.Object);
+
+            var responseMessage = await OpenTransaction(_server, entityKey);
+            Assert.AreEqual(nextKey, responseMessage, $"Expected {nextKey}, got {responseMessage} with entity key as {entityKey}");
+
+            await ProcessTransaction(_server, nextKey, HttpStatusCode.InternalServerError);
         }
 
         #endregion
@@ -553,7 +578,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             string responseBody = await response.Content.ReadAsStringAsync();
             var expando = JsonConvert.DeserializeObject<ExpandoObject>(responseBody) as IDictionary<string, object>;
-            var responseMessage =Guid.Parse(expando["value"]?.ToString());
+            var responseMessage = Guid.Parse(expando["value"]?.ToString());
             return responseMessage;
         }
 
@@ -640,7 +665,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             return responseMessage;
         }
 
-        private static async Task ProcessTransaction(TestServer server, Guid nextKey)
+        private static async Task ProcessTransaction(TestServer server, Guid nextKey, HttpStatusCode expectedCode = HttpStatusCode.OK)
         {
             HttpResponseMessage processResponse =
                 await
@@ -648,7 +673,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                         .AddHeader("AMS-Company", "CCD")
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
 
-            Assert.AreEqual(HttpStatusCode.OK, processResponse.StatusCode);
+            Assert.AreEqual(expectedCode, processResponse.StatusCode);
         }
 
         private static async Task<long> GetTransactionStatus(TestServer server, Guid nextKey)
