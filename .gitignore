@@ -16,3 +16,4 @@ StyleCop.Cache
 *.GhostDoc.xml
 /Sources/WNP.Listener/ModelingProjectLib/
 *.orig
+CodeGeneration.Log.xml
