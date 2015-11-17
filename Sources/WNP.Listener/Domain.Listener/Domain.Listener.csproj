@@ -132,6 +132,10 @@
       <Project>{7937eb80-3944-4ab3-96e3-4745cfc5e21a}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Listener.Shared\Listener.Shared.csproj">
+      <Project>{ed495806-3082-49a2-a243-ebeaff4029b8}</Project>
+      <Name>Listener.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\FxCopRuleSets\stylecop.json">

@@ -13,12 +13,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using AsyncPoco;
 
 namespace AMSLLC.Listener.Persistence.Listener
 {
-    public partial class ListenerDB : Database
+	public partial class ListenerDB : Database
 	{
 		public ListenerDB() 
 			: base("Listener")
@@ -109,6 +111,27 @@ namespace AMSLLC.Listener.Persistence.Listener
 	}
 	
 
+    
+	[TableName("TransactionRegistryView")]
+	[ExplicitColumns]
+    public partial class TransactionRegistryViewEntity : ListenerDB.Record<TransactionRegistryViewEntity>  
+    {
+		[Column] public int TransactionId { get; set; }
+		[Column] public Guid RecordKey { get; set; }
+		[Column] public Guid? BatchKey { get; set; }
+		[Column] public int TransactionStatusId { get; set; }
+		[Column] public DateTime CreatedDateTime { get; set; }
+		[Column] public DateTime? UpdatedDateTime { get; set; }
+		[Column] public string Message { get; set; }
+		[Column] public string Details { get; set; }
+		[Column] public string EntityCategory { get; set; }
+		[Column] public string OperationName { get; set; }
+		[Column] public string ApplicationKey { get; set; }
+		[Column] public string CompanyCode { get; set; }
+		[Column] public string EntityKey { get; set; }
+		[Column] public string BatchNumber { get; set; }
+		[Column] public DateTime? StartDate { get; set; }
+	}
     
 	[TableName("VersionInfo")]
 	[ExplicitColumns]
@@ -477,17 +500,5 @@ namespace AMSLLC.Listener.Persistence.Listener
     {
 		[Column] public Guid RecordKey { get; set; }
 		[Column] public string MessageData { get; set; }
-	}
-    
-	[TableName("sysdiagrams")]
-	[PrimaryKey("diagram_id")]
-	[ExplicitColumns]
-    public partial class sysdiagramEntity : ListenerDB.Record<sysdiagramEntity>  
-    {
-		[Column] public string name { get; set; }
-		[Column] public int principal_id { get; set; }
-		[Column] public int diagram_id { get; set; }
-		[Column] public int? version { get; set; }
-		[Column] public byte[] definition { get; set; }
 	}
 }

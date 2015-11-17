@@ -116,6 +116,10 @@
       <Project>{7937eb80-3944-4ab3-96e3-4745cfc5e21a}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Listener.Shared\Listener.Shared.csproj">
+      <Project>{ed495806-3082-49a2-a243-ebeaff4029b8}</Project>
+      <Name>Listener.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Persistence.Poco\Persistence.Poco.csproj">
       <Project>{91D72E44-F89A-4E9D-9646-E44FA0B04778}</Project>
       <Name>Persistence.Poco</Name>

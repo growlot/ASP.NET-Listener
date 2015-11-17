@@ -97,6 +97,11 @@ namespace AMSLLC.Listener.Client
             this.Execute(new Uri("listener/BuildBatch", UriKind.Relative), request.BatchNumber);
         }
 
+        public ICollection<TransactionInfoResponseMessage> SearchTransactions(TransactionFilter filter)
+        {
+            return null;
+        } 
+
         private void Execute(
             Uri relativeUri,
             object message)

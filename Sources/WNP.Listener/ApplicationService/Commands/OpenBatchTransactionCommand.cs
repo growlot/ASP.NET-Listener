@@ -31,6 +31,12 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string User { get; set; }
 
         /// <summary>
+        /// Gets or sets the batch number.
+        /// </summary>
+        /// <value>The batch number.</value>
+        public string BatchNumber { get; set; }
+
+        /// <summary>
         /// Gets the batch.
         /// </summary>
         /// <value>The batch.</value>

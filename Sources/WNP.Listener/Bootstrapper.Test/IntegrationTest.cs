@@ -31,6 +31,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Repository.WNP;
     using Repository.WNP.Model;
     using Serilog;
+    using Shared;
 
     [TestClass]
     public class IntegrationTest

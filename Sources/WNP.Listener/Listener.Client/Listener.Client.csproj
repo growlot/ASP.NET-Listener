@@ -90,6 +90,8 @@
     <Compile Include="Message\DeviceUpdateMessage.cs" />
     <Compile Include="Message\DeviceUpdateRequestMessage.cs" />
     <Compile Include="Message\ProcessingFailedRequestMessage.cs" />
+    <Compile Include="Message\TransactionFilter.cs" />
+    <Compile Include="Message\TransactionInfoResponseMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +104,12 @@
     <CodeAnalysisDictionary Include="..\..\..\FxCopRuleSets\CustomDictionary.xml">
       <Link>Properties\CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Listener.Shared\Listener.Shared.csproj">
+      <Project>{ed495806-3082-49a2-a243-ebeaff4029b8}</Project>
+      <Name>Listener.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

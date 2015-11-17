@@ -19,6 +19,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     using Newtonsoft.Json;
     using Repository;
     using Serilog;
+    using Shared;
 
     /// <summary>
     /// Implements <see cref="ITransactionService"/>
@@ -163,7 +164,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     requestMessage.User,
                     scope.ScopeCreated,
                     null,
-                    null,
+                    JsonConvert.SerializeObject(new { BatchNumber = requestMessage.BatchNumber, Size = batch.Count }),
                     null,
                     null,
                     enabledOperation.EnabledOperationId,

@@ -24,6 +24,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using ODataService;
     using Repository;
     using Serilog;
+    using Shared;
 
     [TestClass]
     public class ApplicationServiceTest

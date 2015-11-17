@@ -207,6 +207,10 @@
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Listener.Shared\Listener.Shared.csproj">
+      <Project>{ed495806-3082-49a2-a243-ebeaff4029b8}</Project>
+      <Name>Listener.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ODataService\ODataService.csproj">
       <Project>{28DE87B5-514B-4996-B65A-9D8F9E4578E0}</Project>
       <Name>ODataService</Name>

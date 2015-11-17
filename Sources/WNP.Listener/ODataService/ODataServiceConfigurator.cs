@@ -88,6 +88,7 @@ namespace AMSLLC.Listener.ODataService
             });
 
             this.PrepareODataController<TransactionMessageDatumEntity, Guid>(builder, a => a.RecordKey);
+            this.PrepareODataController<TransactionRegistryViewEntity, Guid>(builder, a => a.RecordKey, null, "TransactionRegistryDetails");
 
             // Create a message handler chain with an end-point.
             DelegatingHandler[] handlers = new DelegatingHandler[] { new ListenerMessageHandler() };
@@ -99,11 +100,14 @@ namespace AMSLLC.Listener.ODataService
                 defaultHandler: routeHandlers);
         }
 
-        private void PrepareODataController<TEntity, TKey>(ODataModelBuilder builder, Expression<Func<TEntity, TKey>> primaryKeySelector, Action<ODataModelBuilder, EntityTypeConfiguration<TEntity>> actionBuilder = null)
-            where TEntity : class
+        private void PrepareODataController<TEntity, TKey>(
+            ODataModelBuilder builder,
+            Expression<Func<TEntity, TKey>> primaryKeySelector,
+            Action<ODataModelBuilder, EntityTypeConfiguration<TEntity>> actionBuilder = null,
+            string tableName = null) where TEntity : class
         {
             // separate OData endpoint for Listener API
-            this.MapPetaPocoEntity(builder, primaryKeySelector);
+            this.MapPetaPocoEntity(builder, primaryKeySelector, tableName);
 
             var entityType = builder.EntityType<TEntity>();
 
@@ -121,11 +125,18 @@ namespace AMSLLC.Listener.ODataService
 
         private void MapPetaPocoEntity<T, TKey>(
             ODataModelBuilder modelBuilder,
-            Expression<Func<T, TKey>> primaryKeySelector)
+            Expression<Func<T, TKey>> primaryKeySelector, string tableName = null)
             where T : class
         {
-            var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
-            modelBuilder.EntitySet<T>(tableNameAttribute.Value);
+            if (string.IsNullOrWhiteSpace(tableName))
+            {
+                var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
+                modelBuilder.EntitySet<T>(tableNameAttribute.Value);
+            }
+            else
+            {
+                modelBuilder.EntitySet<T>(tableName);
+            }
             modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
         }
     }

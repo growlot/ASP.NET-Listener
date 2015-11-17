@@ -125,10 +125,15 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 {
                     CompanyCode = this.CompanyCode,
                     SourceApplicationKey = this.ApplicationKey,
-                    User = this.User?.Identity.Name
+                    User = this.User?.Identity.Name,
                 };
 
                 var body = JsonConvert.DeserializeObject<ExpandoObject>(data) as IDictionary<string, object>;
+                if (body.ContainsKey("BatchNumber"))
+                {
+                    message.BatchNumber = body["BatchNumber"]?.ToString();
+                }
+
                 if (body.ContainsKey("Body"))
                 {
                     var bodyArray = body["Body"] as List<object>;

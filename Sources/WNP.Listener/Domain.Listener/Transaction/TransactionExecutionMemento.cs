@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System.Collections.ObjectModel;
     using System.Linq;
     using Communication;
+    using Shared;
 
     /// <summary>
     /// Transaction execution memento

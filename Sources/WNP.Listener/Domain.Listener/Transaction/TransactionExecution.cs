@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System.Threading.Tasks;
     using Communication;
     using Core;
+    using Shared;
 
     /// <summary>
     /// Transaction execution

@@ -17,6 +17,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     using Models;
     using Newtonsoft.Json;
     using Repository;
+    using Shared;
     using Utilities;
 
     /// <summary>

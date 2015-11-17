@@ -37,7 +37,8 @@ namespace AMSLLC.Listener.ApplicationService.BatchBuilder
             {
                 CompanyCode = companyCode,
                 SourceApplicationKey = applicationKey,
-                User = userName
+                User = userName,
+                BatchNumber = batchNumber
             };
             foreach (var record in records)
             {

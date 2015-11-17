@@ -195,6 +195,7 @@
     <Compile Include="Controllers\SitesController.cs" />
     <Compile Include="Controllers\TransactionMessageDataController.cs" />
     <Compile Include="Controllers\TransactionRegistryController.cs" />
+    <Compile Include="Controllers\TransactionRegistryDetailsController.cs" />
     <Compile Include="Controllers\UnboundActionsController.cs" />
     <Compile Include="Controllers\Base\WNPController.cs" />
     <Compile Include="Controllers\Base\WNPEntityController.cs" />
