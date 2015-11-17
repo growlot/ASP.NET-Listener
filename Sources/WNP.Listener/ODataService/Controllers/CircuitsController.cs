@@ -72,13 +72,33 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             this.ConstructQueryOptions();
-            var key = this.GetKey();
-            if (key == null)
+            var siteModelMapping = this.metadataService.GetModelMappingByTableName(DBMetadata.Site.FullTableName);
+
+            var siteKey = this.GetRequestKey(siteModelMapping, 1);
+            if (siteKey == null)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest("Invalid key specified"));
+                return Task.FromResult<IHttpActionResult>(this.BadRequest($"Invalid key specified for the {siteModelMapping.ClassName}."));
             }
 
-            var existingCircuit = this.GetExisting<CircuitEntity>(key);
+            var existingSite = this.GetSite<SiteEntity>(siteKey, siteModelMapping);
+
+            if (existingSite == null)
+            {
+                return Task.FromResult<IHttpActionResult>(this.NotFound());
+            }
+
+            var circuitModelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            var circuitKey = this.GetRequestKey(circuitModelMapping, 3);
+
+            if (circuitKey == null)
+            {
+                return Task.FromResult<IHttpActionResult>(this.BadRequest($"Invalid key specified for the {circuitModelMapping.ClassName}."));
+            }
+
+            var circuitKeyList = circuitKey.ToList();
+            circuitKeyList.Add(new KeyValuePair<string, object>(circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site], existingSite.Site));
+
+            var existingCircuit = this.GetExisting<CircuitEntity>(circuitKeyList.ToArray());
             if (existingCircuit != null)
             {
                 var circuitDelta = this.GetRequestEntityDelta<CircuitEntity>();
@@ -91,14 +111,13 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
             else
             {
-                var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
-                var descriptionFieldName = modelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc.ToUpperInvariant()];
-                if (modelMapping.FieldInfo[descriptionFieldName].IsPrimaryKey)
+                var descriptionFieldName = circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc.ToUpperInvariant()];
+                if (circuitModelMapping.FieldInfo[descriptionFieldName].IsPrimaryKey)
                 {
                     var circuit = this.GetRequestEntity<CircuitEntity>();
 
-                    circuit.Site = (int)key.First(item => item.Key == modelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site]).Value;
-                    circuit.CircuitDesc = (string)key.First(item => item.Key == modelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc]).Value;
+                    circuit.Site = (int)circuitKey.First(item => item.Key == circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site]).Value;
+                    circuit.CircuitDesc = (string)circuitKey.First(item => item.Key == circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc]).Value;
                     return this.CreateCircuit(circuit);
                 }
                 else
@@ -121,7 +140,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <returns>The result of action.</returns>
         [BoundAction]
         public async Task<IHttpActionResult> AddEquipment(
-                    [BoundEntityKey] string circuitId,
+//                    [BoundEntityKey] string circuitId,
                     string equipmentType,
                     string equipmentNumber,
                     DateTime installDate,
@@ -135,13 +154,34 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             this.ConstructQueryOptions();
-            var key = this.GetKey();
-            if (key == null)
+            var siteModelMapping = this.metadataService.GetModelMappingByTableName(DBMetadata.Site.FullTableName);
+
+            var siteKey = this.GetRequestKey(siteModelMapping, 1);
+            if (siteKey == null)
             {
-                return this.BadRequest("Invalid key specified");
+                return this.BadRequest($"Invalid key specified for the {siteModelMapping.ClassName}.");
             }
 
-            var existingCircuit = this.GetExisting<CircuitEntity>(key);
+            var existingSite = this.GetSite<SiteEntity>(siteKey, siteModelMapping);
+
+            if (existingSite == null)
+            {
+                return this.NotFound();
+            }
+
+            var circuitModelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            var circuitKey = this.GetRequestKey(circuitModelMapping, 3);
+
+            if (circuitKey == null)
+            {
+                return this.BadRequest($"Invalid key specified for the {circuitModelMapping.ClassName}.");
+            }
+
+            var circuitKeyList = circuitKey.ToList();
+            circuitKeyList.Add(new KeyValuePair<string, object>(circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site], existingSite.Site));
+
+            var existingCircuit = this.GetExisting<CircuitEntity>(circuitKeyList.ToArray());
+
             if (existingCircuit == null)
             {
                 return this.NotFound();
@@ -170,37 +210,25 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
         }
 
-        private KeyValuePair<string, object>[] GetKey()
-        {
-            var oDataKey = this.queryOptions.Context.Path.Segments[1] as KeyValuePathSegment;
-            if (oDataKey == null)
-            {
-                return null;
-            }
-
-            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
-            var entityConfig = modelMapping.EntityConfiguration;
-            var hasCompositeKey = entityConfig.Key?.Count() > 1;
-
-            var key = new Dictionary<string, object>();
-            if (hasCompositeKey)
-            {
-                key = oDataKey.ToCompositeKeyDictionary();
-            }
-            else
-            {
-                key.Add(entityConfig.Key.ToArray()[0], JsonConvert.DeserializeObject(oDataKey.Value));
-            }
-
-            return key.ToArray();
-        }
-
         private TEntity GetExisting<TEntity>(KeyValuePair<string, object>[] key)
         {
             var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
 
             var sql =
                 Sql.Builder.Select("*")
+                    .From($"{modelMapping.TableName}")
+                    .Where(
+                        key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
+                            .Aggregate((s, s1) => $"{s} AND {s1}"),
+                        key.Select(kvp => kvp.Value).ToArray());
+
+            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
+        }
+
+        private TEntity GetSite<TEntity>(KeyValuePair<string, object>[] key, MetadataEntityModel modelMapping)
+        {
+            var sql =
+                Sql.Builder.Select(DBMetadata.Site.Site)
                     .From($"{modelMapping.TableName}")
                     .Where(
                         key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")

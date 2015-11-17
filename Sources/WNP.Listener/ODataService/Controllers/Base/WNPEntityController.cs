@@ -196,29 +196,37 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             this.ConstructQueryOptions();
             var oDataPath = this.queryOptions.Context.Path;
 
-            var isCollectionWide = oDataPath.PathTemplate == "~/entityset/action";
+            BoundActionPathSegment actionSegment = null;
+            KeyValuePathSegment keySegment = null;
+            switch (oDataPath.PathTemplate)
+            {
+                case "~/entityset/action":
+                    actionSegment = oDataPath.Segments[1] as BoundActionPathSegment;
+                    break;
 
-            var entitySetSegment = oDataPath.Segments[0] as EntitySetPathSegment;
+                case "~/entityset/key/action":
+                    actionSegment = oDataPath.Segments[2] as BoundActionPathSegment;
+                    keySegment = oDataPath.Segments[1] as KeyValuePathSegment;
+                    break;
 
-            Debug.Assert(entitySetSegment != null, "entitySetSegment != null");
-            var entityName = ((IEdmCollectionType)entitySetSegment.GetEdmType(null)).ElementType.ShortQualifiedName();
+                case "~/entityset/key/navigation/action":
+                    actionSegment = oDataPath.Segments[3] as BoundActionPathSegment;
+                    break;
 
-            var actionSegment = oDataPath.Segments[isCollectionWide ? 1 : 2] as BoundActionPathSegment;
+                case "~/entityset/key/navigation/key/action":
+                    actionSegment = oDataPath.Segments[4] as BoundActionPathSegment;
+                    break;
+            }
+
             var fqnActionName = actionSegment?.ActionName;
 
             Debug.Assert(fqnActionName != null, "fqnActionName != null");
             var actionName = fqnActionName.Substring(fqnActionName.IndexOf("_", StringComparison.Ordinal) + 1);
 
-            var actionsContainerType = this.metadataService.GetModelMapping(this.metadataService.GetEntityType(entityName)).ActionsContainer;
+            var actionsContainerType = this.metadataService.GetModelMapping(this.metadataService.GetEntityType(this.EdmEntityClrType.FullName)).ActionsContainer;
             if (actionsContainerType == null)
             {
                 return this.NotFound();
-            }
-
-            KeyValuePathSegment keySegment = null;
-            if (!isCollectionWide)
-            {
-                keySegment = oDataPath.Segments[1] as KeyValuePathSegment;
             }
 
             return await this.InvokeAction(actionsContainerType, actionName, keySegment);
@@ -237,7 +245,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
 
-            var orderedKey = GetRequestKey(this.queryOptions, modelMapping, 1);
+            var orderedKey = this.GetRequestKey(modelMapping, 1);
 
             var sql =
                 Sql.Builder.Select(this.GetDBColumnsList(this.queryOptions.SelectExpand, modelMapping))
@@ -337,7 +345,13 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return this.BadRequest("Only contained sets are currently supported");
         }
 
-        private static KeyValuePair<string, object>[] GetRequestKey(ODataQueryOptions queryOptions, MetadataEntityModel modelMapping, int keyPosition)
+        /// <summary>
+        /// Gets the request key.
+        /// </summary>
+        /// <param name="modelMapping">The model mapping.</param>
+        /// <param name="keyPosition">The key position.</param>
+        /// <returns>The key used in request.</returns>
+        protected KeyValuePair<string, object>[] GetRequestKey(MetadataEntityModel modelMapping, int keyPosition)
         {
             var entityConfig = modelMapping.EntityConfiguration;
 
@@ -351,7 +365,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 hasCompositeKey = entityConfig.Key?.Count() > 1;
             }
 
-            var jsonKey = queryOptions.Context.Path.Segments[keyPosition] as KeyValuePathSegment;
+            var jsonKey = this.queryOptions.Context.Path.Segments[keyPosition] as KeyValuePathSegment;
             if (jsonKey == null)
             {
                 throw new ArgumentException("Invalid key specified");
@@ -401,7 +415,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             var dbColumnsList = this.GetDBColumnsList(queryOptions.SelectExpand, childEntityModel);
 
-            var parentKey = GetRequestKey(queryOptions, parentEntityModel, 1);
+            var parentKey = this.GetRequestKey(parentEntityModel, 1);
             KeyValuePair<string, object>[] childKey = null;
 
             object[] filterArgs = null;
@@ -409,7 +423,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var whereClause = $"{GenerateWhereBodyForKey(parentKey, parentTable, parentEntityModel)}";
             if (byChildKey)
             {
-                childKey = GetRequestKey(queryOptions, childEntityModel, 3);
+                childKey = this.GetRequestKey(childEntityModel, 3);
                 whereClause +=
                     $" AND {GenerateWhereBodyForKey(childKey, childTable, childEntityModel, parentKey.Length)}";
             }
@@ -521,9 +535,15 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             // create actual object that was sent over the wire
             var responseContent = this.CreateEdmEntity();
-
-            var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
-            setFromEntityMethod.Invoke(responseContent, new object[] { entity });
+            try
+            {
+                var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
+                setFromEntityMethod.Invoke(responseContent, new object[] { entity });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
 
             var result = (IHttpActionResult)this.GetCreatedMethod().Invoke(this, new[] { responseContent });
             return Task.FromResult(result);

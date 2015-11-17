@@ -46,11 +46,17 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                 ContainerName = "AMSLLC.Listener"
             };
 
-            var generatedModels =
+            var entitySetTypes =
                 this.metadataService.ODataModelAssembly.GetTypes()
                     .Where(type => typeof(IODataEntity).IsAssignableFrom(type) && !typeof(IContainedEntity).IsAssignableFrom(type));
 
-            generatedModels.Map(type => this.GenerateBoundActions(type, builder));
+            entitySetTypes.Map(type => this.GenerateEntities(type, builder));
+
+            var entityTypes =
+                this.metadataService.ODataModelAssembly.GetTypes()
+                    .Where(type => typeof(IODataEntity).IsAssignableFrom(type));
+
+            entityTypes.Map(type => this.GenerateBoundActions(type, builder));
 
             this.GenerateUnboundActions(builder);
 
@@ -162,12 +168,15 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             });
         }
 
-        private void GenerateBoundActions(Type type, ODataConventionModelBuilder builder)
+        private void GenerateEntities(Type type, ODataConventionModelBuilder builder)
         {
             var entitySetMethod = typeof(ODataConventionModelBuilder).GetMethod("EntitySet");
-            var entityTypeMethod = typeof(ODataConventionModelBuilder).GetMethod("EntityType");
+            entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] { $"{type.Name}s" });
+        }
 
-            entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] {$"{type.Name}s"});
+        private void GenerateBoundActions(Type type, ODataConventionModelBuilder builder)
+        {
+            var entityTypeMethod = typeof(ODataConventionModelBuilder).GetMethod("EntityType");
 
             var actionsContainer = this.metadataService.GetModelMapping(type).ActionsContainer;
             if (actionsContainer != null)

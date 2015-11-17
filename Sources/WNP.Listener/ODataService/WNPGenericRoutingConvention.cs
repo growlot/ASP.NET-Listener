@@ -15,12 +15,14 @@ namespace AMSLLC.Listener.ODataService
     using System.Web.OData.Routing.Conventions;
     using Controllers.Base;
     using MetadataService;
+    using Microsoft.OData.Edm;
 
     /// <summary>
     /// Custom OData routing convention for WNP.
     /// </summary>
     public class WNPGenericRoutingConvention : IODataRoutingConvention
     {
+        private const string DefaultControllerName = "DEFAULT";
         private readonly IMetadataProvider metadataService;
         private readonly Dictionary<string, string> entityNameToController = new Dictionary<string, string>();
 
@@ -31,6 +33,8 @@ namespace AMSLLC.Listener.ODataService
         public WNPGenericRoutingConvention(IMetadataProvider metadataService)
         {
             this.metadataService = metadataService;
+
+            this.entityNameToController.Add(DefaultControllerName, "WNPEntity");
 
             // selects all controllers that are inheriting from WNPEntityController
             var entityControllers =
@@ -58,8 +62,10 @@ namespace AMSLLC.Listener.ODataService
             {
                 switch (odataPath.PathTemplate)
                 {
-                    case "~/entityset/key/action":
                     case "~/entityset/action":
+                    case "~/entityset/key/action":
+                    case "~/entityset/key/navigation/action":
+                    case "~/entityset/key/navigation/key/action":
                         return "EntityActionHandler";
                     case "~/unboundaction":
                         return "UnboundActionHandler";
@@ -81,13 +87,22 @@ namespace AMSLLC.Listener.ODataService
                 }
             }
 
+            if (controllerContext.Request.Method.Method == "PATCH")
+            {
+                switch (odataPath.PathTemplate)
+                {
+                    case "~/entityset/key/navigation/key":
+                        return "Patch";
+                }
+            }
+
             return null;
         }
 
         /// <inheritdoc/>
         public string SelectController(ODataPath odataPath, HttpRequestMessage request)
         {
-            if (odataPath.PathTemplate == "~" || odataPath.PathTemplate == "~/$metadata")
+            if (odataPath.PathTemplate == "~" || odataPath.PathTemplate == "~/$metadata" || odataPath.PathTemplate == "~/$batch")
             {
                 return null;
             }
@@ -97,6 +112,36 @@ namespace AMSLLC.Listener.ODataService
                 return "UnboundActions";
             }
 
+            switch (odataPath.PathTemplate)
+            {
+                case "~/entityset":
+                case "~/entityset/key":
+                    var entitySetTableName = this.GetEntitySetTableName(odataPath);
+                    if (entitySetTableName != null)
+                    {
+                        return this.GetControllerMapping(entitySetTableName);
+                    }
+
+                    break;
+                case "~/entityset/key/navigation":
+                case "~/entityset/key/navigation/key":
+                case "~/entityset/key/navigation/action":
+                case "~/entityset/key/navigation/key/action":
+                    var navigationEntityTableName = this.GetNavigationEntityTableName(odataPath);
+                    if (navigationEntityTableName != null)
+                    {
+                        return this.GetControllerMapping(navigationEntityTableName);
+                    }
+
+                    break;
+            }
+
+            // for models that are not WNP metadata based, use default routing logic
+            return null;
+        }
+
+        private string GetEntitySetTableName(ODataPath odataPath)
+        {
             var entitySetSegment = odataPath.Segments[0] as EntitySetPathSegment;
             Debug.Assert(entitySetSegment != null, "entitySetSegment != null");
 
@@ -104,23 +149,31 @@ namespace AMSLLC.Listener.ODataService
             var entitySetName = entitySetSegment.EntitySetName;
             var entityName = entitySetName.Remove(entitySetName.Length - 1);
 
-            var metadataModel = this.metadataService.GetModelMapping(entityName);
+            return this.metadataService.GetModelMapping(entityName)?.TableName;
+        }
 
-            // for models defined in WNP metadata
-            if (metadataModel != null)
+        private string GetNavigationEntityTableName(ODataPath odataPath)
+        {
+            var navigationSegment = odataPath.Segments[2] as NavigationPathSegment;
+            Debug.Assert(navigationSegment != null, "navigationSegment != null");
+
+            // remove "s" from the end
+            var navigationPropertyName = navigationSegment.NavigationPropertyName;
+            var entityName = navigationPropertyName.Remove(navigationPropertyName.Length - 1);
+
+            return this.metadataService.GetModelMapping(entityName)?.TableName;
+        }
+
+        private string GetControllerMapping(string tableName)
+        {
+            // if there is entity specific controller defined, use it
+            if (this.entityNameToController.ContainsKey(tableName))
             {
-                // if there is entity specific controller defined, use it
-                if (this.entityNameToController.ContainsKey(metadataModel.TableName))
-                {
-                    return this.entityNameToController[metadataModel.TableName];
-                }
-
-                // if there is no entity specific controller, use base WNPEntityController
-                return "WNPEntity";
+                return this.entityNameToController[tableName];
             }
 
-            // for models that are not WNP metadata based, use default routing logic
-            return null;
+            // if there is no entity specific controller, use base WNPEntityController
+            return this.entityNameToController[DefaultControllerName];
         }
     }
 }

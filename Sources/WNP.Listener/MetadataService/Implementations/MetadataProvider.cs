@@ -329,7 +329,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     }
 
                     var nullable = string.Empty;
-                    if (field.Value.DataType == "int")
+                    if (field.Value.DataType == "int" || field.Value.DataType == "DateTimeOffset")
                     {
                         nullable = "?";
                     }
@@ -342,7 +342,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
                     if (field.Value.DataType == "DateTimeOffset")
                     {
-                        getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" result.{fieldName} = new DateTime({field.Key}.ToLocalTime().Ticks);")));
+                        getEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" if ({field.Key}.HasValue) result.{fieldName} = new DateTime({field.Key}.Value.ToLocalTime().Ticks);")));
                     }
                     else if (field.Value.DataType == "char")
                     {
@@ -362,7 +362,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                             }}
                     ")));
 
-                    setFromEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" this.{field.Key} = ({field.Value.DataType})Converters.Convert(entity.{fieldName}, typeof({field.Value.DataType}));")));
+                    setFromEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" this.{field.Key} = ({field.Value.DataType}{nullable})Converters.Convert(entity.{fieldName}, typeof({field.Value.DataType}));")));
                 }
 
                 getEntityMethod.Statements.Add(new CodeSnippetStatement("return result;"));

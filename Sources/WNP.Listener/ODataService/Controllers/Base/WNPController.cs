@@ -171,40 +171,50 @@
             var model = oDataProperties.Model;
             Type edmEntityClrType;
 
-            if (oDataProperties.Path.PathTemplate == "~/entityset/key/action" || oDataProperties.Path.PathTemplate == "~/entityset/action")
+            switch (oDataProperties.Path.PathTemplate)
             {
-                var entitySetName = oDataProperties.Path.Segments[0] as EntitySetPathSegment;
-                var edmType = entitySetName.GetEdmType(null);
-                edmEntityClrType = this.metadataService.GetEntityType(((IEdmCollectionType)edmType).ElementType.ShortQualifiedName());
-            }
-            else
-            {
-                string modelTypeFullName;
-                switch (oDataProperties.Path.EdmType.TypeKind)
-                {
-                    case EdmTypeKind.None:
-                        throw new NotSupportedException("EdmTypeKind.None not yet supported");
-                    case EdmTypeKind.Primitive:
-                        throw new NotSupportedException("EdmTypeKind.Primitive not yet supported");
-                    case EdmTypeKind.Entity:
-                        modelTypeFullName = ((EdmEntityType)oDataProperties.Path.EdmType).FullName();
-                        break;
-                    case EdmTypeKind.Complex:
-                        throw new NotSupportedException("EdmTypeKind.Complex not yet supported");
-                    case EdmTypeKind.Collection:
-                        modelTypeFullName = ((EdmCollectionType)oDataProperties.Path.EdmType).ElementType.FullName();
-                        break;
-                    case EdmTypeKind.EntityReference:
-                        throw new NotSupportedException("EdmTypeKind.EntityReference not yet supported");
-                    case EdmTypeKind.Enum:
-                        throw new NotSupportedException("EdmTypeKind.Enum not yet supported");
-                    case EdmTypeKind.TypeDefinition:
-                        throw new NotSupportedException("EdmTypeKind.TypeDefinition not yet supported");
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                case "~/entityset/action":
+                case "~/entityset/key/action":
+                    var entitySetName = oDataProperties.Path.Segments[0] as EntitySetPathSegment;
+                    var entitySetEdmType = entitySetName.GetEdmType(null);
+                    edmEntityClrType = this.metadataService.GetEntityType(((IEdmCollectionType)entitySetEdmType).ElementType.ShortQualifiedName());
+                    break;
 
-                edmEntityClrType = this.metadataService.ODataModelAssembly.GetType(modelTypeFullName);
+                case "~/entityset/key/navigation/action":
+                case "~/entityset/key/navigation/key/action":
+                    var navigationPropertyName = oDataProperties.Path.Segments[2] as NavigationPathSegment;
+                    var navigationEdmType = navigationPropertyName.GetEdmType(null);
+                    edmEntityClrType = this.metadataService.GetEntityType(((IEdmCollectionType)navigationEdmType).ElementType.ShortQualifiedName());
+                    break;
+
+                default:
+                    string modelTypeFullName;
+                    switch (oDataProperties.Path.EdmType.TypeKind)
+                    {
+                        case EdmTypeKind.None:
+                            throw new NotSupportedException("EdmTypeKind.None not yet supported");
+                        case EdmTypeKind.Primitive:
+                            throw new NotSupportedException("EdmTypeKind.Primitive not yet supported");
+                        case EdmTypeKind.Entity:
+                            modelTypeFullName = ((EdmEntityType)oDataProperties.Path.EdmType).FullName();
+                            break;
+                        case EdmTypeKind.Complex:
+                            throw new NotSupportedException("EdmTypeKind.Complex not yet supported");
+                        case EdmTypeKind.Collection:
+                            modelTypeFullName = ((EdmCollectionType)oDataProperties.Path.EdmType).ElementType.FullName();
+                            break;
+                        case EdmTypeKind.EntityReference:
+                            throw new NotSupportedException("EdmTypeKind.EntityReference not yet supported");
+                        case EdmTypeKind.Enum:
+                            throw new NotSupportedException("EdmTypeKind.Enum not yet supported");
+                        case EdmTypeKind.TypeDefinition:
+                            throw new NotSupportedException("EdmTypeKind.TypeDefinition not yet supported");
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    edmEntityClrType = this.metadataService.ODataModelAssembly.GetType(modelTypeFullName);
+                    break;
             }
 
             this.EdmEntityClrType = edmEntityClrType;
