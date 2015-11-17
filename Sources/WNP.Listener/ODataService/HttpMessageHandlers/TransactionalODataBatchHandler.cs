@@ -7,20 +7,25 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.OData.Batch;
+    using ApplicationService;
+    using ApplicationService.Implementations;
+    using Core;
     using Domain;
+    using Persistence.WNP;
+    using Repository.WNP;
 
     /// <summary>
     /// Custom OData batch handler that ensures that changeset is executed in single transaction.
     /// </summary>
     public class TransactionalODataBatchHandler : DefaultODataBatchHandler
     {
-        private const string UnitOfWorkPropertyName = "UnitOfWork";
-        private IUnitOfWork unitOfWork;
+        private const string RequestScope = "Batch_RequestScope";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionalODataBatchHandler"/> class.
@@ -40,8 +45,6 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
             }
 
             this.ValidateRequest(request);
-
-            this.unitOfWork = request.GetUnitOfWork();
 
             IList<ODataBatchRequestItem> subRequests = await this.ParseBatchRequestsAsync(request, cancellationToken);
 
@@ -123,14 +126,32 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
             CancellationToken cancellation)
         {
             ChangeSetResponseItem changeSetResponse;
+            var requestScope = ApplicationIntegration.DependencyResolver.ResolveType<ICurrentRequestScope>();
 
-            foreach (HttpRequestMessage request in changeSet.Requests)
+            using (var unitOfWork = ApplicationIntegration.DependencyResolver.ResolveType<IWNPUnitOfWork>())
             {
-                request.SetUnitOfWork(this.unitOfWork);
-            }
+                ((WNPUnitOfWork)unitOfWork).SetOperatingCompany = 0;
+                ((CurrentRequestScope)requestScope).OperatingCompany = 0;
+                ((CurrentRequestScope)requestScope).UnitOfWork = unitOfWork;
+                ((CurrentRequestScope)requestScope).User = "petras";
 
-            changeSetResponse = (ChangeSetResponseItem)await changeSet.SendRequestAsync(this.Invoker, cancellation);
-            responses.Add(changeSetResponse);
+                foreach (HttpRequestMessage request in changeSet.Requests)
+                {
+                    request.Properties[RequestScope] = requestScope;
+                }
+
+                changeSetResponse = (ChangeSetResponseItem)await changeSet.SendRequestAsync(this.Invoker, cancellation);
+                responses.Add(changeSetResponse);
+
+                if (changeSetResponse.Responses.All(r => r.IsSuccessStatusCode))
+                {
+                    unitOfWork.Commit();
+                }
+                else
+                {
+                    unitOfWork.Rollback();
+                }
+            }
         }
     }
 }

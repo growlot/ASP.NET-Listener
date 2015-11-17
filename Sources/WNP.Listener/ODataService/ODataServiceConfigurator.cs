@@ -41,13 +41,23 @@ namespace AMSLLC.Listener.ODataService
             conventions.Insert(0, new WNPGenericRoutingConvention(this.metadataService));
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
 
+            DelegatingHandler[] handlersWnp = new DelegatingHandler[] { new RequestScopeHandler() };
+            var routeHandlersWnp = HttpClientFactory.CreatePipeline(new HttpControllerDispatcher(config), handlersWnp);
+
+            // Adding batch handler. Code taken from OData implementation.
+            // Can not use MapODataServiceRoute, because it doesn't allow to specify defaultHandler and batchHandler at the same time.
+            var batchHandler = new TransactionalODataBatchHandler(new HttpServer(config));
+            batchHandler.ODataRouteName = "WNPODataRoute";
+            string batchTemplate = ODataRouteConstants.Batch;
+            config.Routes.MapHttpBatchRoute(batchHandler.ODataRouteName + "Batch", batchTemplate, batchHandler);
+
             config.MapODataServiceRoute(
                 routeName: "WNPODataRoute",
                 routePrefix: null,
                 model: this.modelGenerator.GenerateODataModel(),
                 pathHandler: new DefaultODataPathHandler(),
-                routingConventions: conventions //,
-                                                /*defaultHandler: new DefaultODataBatchHandler(new HttpServer(config))*/);
+                routingConventions: conventions,
+                defaultHandler: routeHandlersWnp);
 
             var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener", ContainerName = "AMSLLC.Listener" };
             this.PrepareODataController<TransactionRegistryEntity, Guid>(builder, a => a.RecordKey, (b, configuration) =>
@@ -82,7 +92,11 @@ namespace AMSLLC.Listener.ODataService
             // Create a message handler chain with an end-point.
             DelegatingHandler[] handlers = new DelegatingHandler[] { new ListenerMessageHandler() };
             var routeHandlers = HttpClientFactory.CreatePipeline(new HttpControllerDispatcher(config), handlers);
-            config.MapODataServiceRoute("listener", routePrefix: "listener", model: builder.GetEdmModel(), defaultHandler: routeHandlers);
+            config.MapODataServiceRoute(
+                routeName: "listener",
+                routePrefix: "listener",
+                model: builder.GetEdmModel(),
+                defaultHandler: routeHandlers);
         }
 
         private void PrepareODataController<TEntity, TKey>(ODataModelBuilder builder, Expression<Func<TEntity, TKey>> primaryKeySelector, Action<ODataModelBuilder, EntityTypeConfiguration<TEntity>> actionBuilder = null)

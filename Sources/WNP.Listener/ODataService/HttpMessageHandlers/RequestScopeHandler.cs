@@ -8,8 +8,8 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
     using ApplicationService;
     using ApplicationService.Implementations;
     using Core;
-    using Repository.WNP;
     using Persistence.WNP;
+    using Repository.WNP;
 
     /// <summary>
     /// Custom delegating handler to extract UnitOfWork if it is present in request.
