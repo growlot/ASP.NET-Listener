@@ -87,6 +87,18 @@ public class TrackingInTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string InFunctTrigger3 { get; } = "in_funct_trigger_3";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string LocationType { get; } = "location_type";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ProcessTag { get; } = "process_tag";
 	
 	public string RealTableName
 	{
@@ -115,6 +127,8 @@ public class TrackingInTable: ITableInformation {
 				{"InFunctTrigger1", new ColumnInformation() { DataType = "string", ModelName = "InFunctTrigger1", ColumnName = "in_funct_trigger_1"}},
 				{"InFunctTrigger2", new ColumnInformation() { DataType = "string", ModelName = "InFunctTrigger2", ColumnName = "in_funct_trigger_2"}},
 				{"InFunctTrigger3", new ColumnInformation() { DataType = "string", ModelName = "InFunctTrigger3", ColumnName = "in_funct_trigger_3"}},
+				{"LocationType", new ColumnInformation() { DataType = "string", ModelName = "LocationType", ColumnName = "location_type"}},
+				{"ProcessTag", new ColumnInformation() { DataType = "string", ModelName = "ProcessTag", ColumnName = "process_tag"}},
 			};
 
 	public override string ToString() 

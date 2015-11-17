@@ -123,6 +123,36 @@ public class TrackingOutTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string OutFunctTrigger3 { get; } = "out_funct_trigger_3";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string LocationType { get; } = "location_type";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ProcessTag { get; } = "process_tag";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ClearShelf { get; } = "clear_shelf";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ClearReceivedBy { get; } = "clear_received_by";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ClearVehicleNo { get; } = "clear_vehicle_no";
 	
 	public string RealTableName
 	{
@@ -157,6 +187,11 @@ public class TrackingOutTable: ITableInformation {
 				{"OutFunctTrigger1", new ColumnInformation() { DataType = "string", ModelName = "OutFunctTrigger1", ColumnName = "out_funct_trigger_1"}},
 				{"OutFunctTrigger2", new ColumnInformation() { DataType = "string", ModelName = "OutFunctTrigger2", ColumnName = "out_funct_trigger_2"}},
 				{"OutFunctTrigger3", new ColumnInformation() { DataType = "string", ModelName = "OutFunctTrigger3", ColumnName = "out_funct_trigger_3"}},
+				{"LocationType", new ColumnInformation() { DataType = "string", ModelName = "LocationType", ColumnName = "location_type"}},
+				{"ProcessTag", new ColumnInformation() { DataType = "string", ModelName = "ProcessTag", ColumnName = "process_tag"}},
+				{"ClearShelf", new ColumnInformation() { DataType = "string", ModelName = "ClearShelf", ColumnName = "clear_shelf"}},
+				{"ClearReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ClearReceivedBy", ColumnName = "clear_received_by"}},
+				{"ClearVehicleNo", new ColumnInformation() { DataType = "string", ModelName = "ClearVehicleNo", ColumnName = "clear_vehicle_no"}},
 			};
 
 	public override string ToString() 

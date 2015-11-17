@@ -81,6 +81,72 @@ public class NewBatchTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string AcceptanceDecision { get; } = "acceptance_decision";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string AnsiSelectMethod { get; } = "ansi_select_method";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string FailureQty { get; } = "failure_qty";
+		/// <summary>
+	/// <para />Database Type: byte[]
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string NewMfrFile { get; } = "new_mfr_file";
+		/// <summary>
+	/// <para />Database Type: DateTime
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string NewMfrFileDate { get; } = "new_mfr_file_date";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string InspectLevel { get; } = "inspect_level";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string Aql { get; } = "aql";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string AcceptNumber { get; } = "accept_number";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string RejectNumber { get; } = "reject_number";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string DecisionOverrideFlag { get; } = "decision_override_flag";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string NewMfrFileName { get; } = "new_mfr_file_name";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SampleSizeCode { get; } = "sample_size_code";
 	
 	public string RealTableName
 	{
@@ -108,6 +174,17 @@ public class NewBatchTable: ITableInformation {
 				{"AcceptanceBy", new ColumnInformation() { DataType = "string", ModelName = "AcceptanceBy", ColumnName = "ACCEPTANCE_BY"}},
 				{"NewBatchDesc", new ColumnInformation() { DataType = "string", ModelName = "NewBatchDesc", ColumnName = "NEW_BATCH_DESC"}},
 				{"AcceptanceDecision", new ColumnInformation() { DataType = "string", ModelName = "AcceptanceDecision", ColumnName = "acceptance_decision"}},
+				{"AnsiSelectMethod", new ColumnInformation() { DataType = "string", ModelName = "AnsiSelectMethod", ColumnName = "ansi_select_method"}},
+				{"FailureQty", new ColumnInformation() { DataType = "int", ModelName = "FailureQty", ColumnName = "failure_qty"}},
+				{"NewMfrFile", new ColumnInformation() { DataType = "byte[]", ModelName = "NewMfrFile", ColumnName = "new_mfr_file"}},
+				{"NewMfrFileDate", new ColumnInformation() { DataType = "DateTime", ModelName = "NewMfrFileDate", ColumnName = "new_mfr_file_date"}},
+				{"InspectLevel", new ColumnInformation() { DataType = "string", ModelName = "InspectLevel", ColumnName = "inspect_level"}},
+				{"Aql", new ColumnInformation() { DataType = "string", ModelName = "Aql", ColumnName = "aql"}},
+				{"AcceptNumber", new ColumnInformation() { DataType = "int", ModelName = "AcceptNumber", ColumnName = "accept_number"}},
+				{"RejectNumber", new ColumnInformation() { DataType = "int", ModelName = "RejectNumber", ColumnName = "reject_number"}},
+				{"DecisionOverrideFlag", new ColumnInformation() { DataType = "string", ModelName = "DecisionOverrideFlag", ColumnName = "decision_override_flag"}},
+				{"NewMfrFileName", new ColumnInformation() { DataType = "string", ModelName = "NewMfrFileName", ColumnName = "new_mfr_file_name"}},
+				{"SampleSizeCode", new ColumnInformation() { DataType = "string", ModelName = "SampleSizeCode", ColumnName = "sample_size_code"}},
 			};
 
 	public override string ToString() 

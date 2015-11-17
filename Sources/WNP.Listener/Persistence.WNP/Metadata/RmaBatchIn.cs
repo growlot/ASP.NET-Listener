@@ -81,6 +81,42 @@ public class RmaBatchInTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string AcceptanceDecision { get; } = "acceptance_decision";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string AnsiSelectMethod { get; } = "ansi_select_method";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string FailureQty { get; } = "failure_qty";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string FailureMax { get; } = "failure_max";
+		/// <summary>
+	/// <para />Database Type: byte[]
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string RmaMfrFile { get; } = "rma_mfr_file";
+		/// <summary>
+	/// <para />Database Type: DateTime
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string RmaMfrFileDate { get; } = "rma_mfr_file_date";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string RmaMfrFileName { get; } = "rma_mfr_file_name";
 	
 	public string RealTableName
 	{
@@ -108,6 +144,12 @@ public class RmaBatchInTable: ITableInformation {
 				{"AcceptanceDate", new ColumnInformation() { DataType = "DateTime", ModelName = "AcceptanceDate", ColumnName = "acceptance_date"}},
 				{"AcceptanceBy", new ColumnInformation() { DataType = "string", ModelName = "AcceptanceBy", ColumnName = "acceptance_by"}},
 				{"AcceptanceDecision", new ColumnInformation() { DataType = "string", ModelName = "AcceptanceDecision", ColumnName = "acceptance_decision"}},
+				{"AnsiSelectMethod", new ColumnInformation() { DataType = "string", ModelName = "AnsiSelectMethod", ColumnName = "ansi_select_method"}},
+				{"FailureQty", new ColumnInformation() { DataType = "int", ModelName = "FailureQty", ColumnName = "failure_qty"}},
+				{"FailureMax", new ColumnInformation() { DataType = "int", ModelName = "FailureMax", ColumnName = "failure_max"}},
+				{"RmaMfrFile", new ColumnInformation() { DataType = "byte[]", ModelName = "RmaMfrFile", ColumnName = "rma_mfr_file"}},
+				{"RmaMfrFileDate", new ColumnInformation() { DataType = "DateTime", ModelName = "RmaMfrFileDate", ColumnName = "rma_mfr_file_date"}},
+				{"RmaMfrFileName", new ColumnInformation() { DataType = "string", ModelName = "RmaMfrFileName", ColumnName = "rma_mfr_file_name"}},
 			};
 
 	public override string ToString() 

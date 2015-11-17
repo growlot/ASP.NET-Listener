@@ -39,6 +39,18 @@ public class LocationTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModDate { get; } = "MOD_DATE";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string LocationType { get; } = "location_type";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string AreaName { get; } = "area_name";
 	
 	public string RealTableName
 	{
@@ -59,6 +71,8 @@ public class LocationTable: ITableInformation {
 				{"IsLabLocn", new ColumnInformation() { DataType = "string", ModelName = "IsLabLocn", ColumnName = "IS_LAB_LOCN"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "MOD_BY"}},
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "MOD_DATE"}},
+				{"LocationType", new ColumnInformation() { DataType = "string", ModelName = "LocationType", ColumnName = "location_type"}},
+				{"AreaName", new ColumnInformation() { DataType = "string", ModelName = "AreaName", ColumnName = "area_name"}},
 			};
 
 	public override string ToString() 

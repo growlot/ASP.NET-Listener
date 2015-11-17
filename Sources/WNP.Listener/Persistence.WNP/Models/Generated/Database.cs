@@ -337,6 +337,12 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("acceptance_date")] public DateTime? AcceptanceDate { get; set; }
 		[Column("acceptance_by")] public string AcceptanceBy { get; set; }
 		[Column("acceptance_decision")] public string AcceptanceDecision { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("failure_qty")] public int? FailureQty { get; set; }
+		[Column("failure_max")] public int? FailureMax { get; set; }
+		[Column("rma_mfr_file")] public byte[] RmaMfrFile { get; set; }
+		[Column("rma_mfr_file_date")] public DateTime? RmaMfrFileDate { get; set; }
+		[Column("rma_mfr_file_name")] public string RmaMfrFileName { get; set; }
 	}
     
 	[TableName("wndba.tevent_triggers")]
@@ -451,6 +457,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("allow_purchase")] public string AllowPurchase { get; set; }
+		[Column("auto_receive")] public string AutoReceive { get; set; }
 	}
     
 	[TableName("wndba.tversion")]
@@ -527,6 +536,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("allow_purchase")] public string AllowPurchase { get; set; }
+		[Column("auto_receive")] public string AutoReceive { get; set; }
 	}
     
 	[TableName("wndba.tharmonic_config_data")]
@@ -687,6 +699,15 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("ENCLOSURE_TYPE")] public string EnclosureType { get; set; }
 		[Column("INSTALL_DATE")] public DateTime? InstallDate { get; set; }
 		[Column("ID")] public int? Id { get; set; }
+		[Column("service_point")] public string ServicePoint { get; set; }
+		[Column("meter_point")] public string MeterPoint { get; set; }
+		[Column("has_bracket")] public string HasBracket { get; set; }
+		[Column("sfl_desired_acc_del")] public decimal? SflDesiredAccDel { get; set; }
+		[Column("sll_desired_acc_del")] public decimal? SllDesiredAccDel { get; set; }
+		[Column("spf_desired_acc_del")] public decimal? SpfDesiredAccDel { get; set; }
+		[Column("sfl_desired_acc_rec")] public decimal? SflDesiredAccRec { get; set; }
+		[Column("sll_desired_acc_rec")] public decimal? SllDesiredAccRec { get; set; }
+		[Column("spf_desired_acc_rec")] public decimal? SpfDesiredAccRec { get; set; }
 	}
     
 	[TableName("wndba.trma_batch_out")]
@@ -924,6 +945,15 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("WIRE_LOCATION")] public string WireLocation { get; set; }
 		[Column("ENCLOSURE_TYPE")] public string EnclosureType { get; set; }
 		[Column("INSTALL_DATE")] public DateTime? InstallDate { get; set; }
+		[Column("service_point")] public string ServicePoint { get; set; }
+		[Column("meter_point")] public string MeterPoint { get; set; }
+		[Column("has_bracket")] public string HasBracket { get; set; }
+		[Column("sfl_desired_acc_del")] public decimal? SflDesiredAccDel { get; set; }
+		[Column("sll_desired_acc_del")] public decimal? SllDesiredAccDel { get; set; }
+		[Column("spf_desired_acc_del")] public decimal? SpfDesiredAccDel { get; set; }
+		[Column("sfl_desired_acc_rec")] public decimal? SflDesiredAccRec { get; set; }
+		[Column("sll_desired_acc_rec")] public decimal? SllDesiredAccRec { get; set; }
+		[Column("spf_desired_acc_rec")] public decimal? SpfDesiredAccRec { get; set; }
 	}
     
 	[TableName("wndba.TEQP_TESTBOARD")]
@@ -980,6 +1010,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
 		[Column("ID")] public int? Id { get; set; }
+		[Column("shop_cycle")] public int? ShopCycle { get; set; }
 	}
     
 	[TableName("wndba.teqp_ami")]
@@ -2303,6 +2334,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("create_by")] public string CreateBy { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("allow_purchase")] public string AllowPurchase { get; set; }
+		[Column("auto_receive")] public string AutoReceive { get; set; }
 	}
     
 	[TableName("wndba.pbcattbl")]
@@ -2660,6 +2694,32 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
 	}
     
+	[TableName("wndba.tsite_harmonics")]
+	[PrimaryKey("site", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class SiteHarmonicsEntity 
+	 
+    {
+		[Column("site")] public int? Site { get; set; }
+		[Column("date_read")] public DateTime? DateRead { get; set; }
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("harmonic")] public int? Harmonic { get; set; }
+		[Column("va_mag")] public double? VaMag { get; set; }
+		[Column("va_phase")] public double? VaPhase { get; set; }
+		[Column("vb_mag")] public double? VbMag { get; set; }
+		[Column("vb_phase")] public double? VbPhase { get; set; }
+		[Column("vc_mag")] public double? VcMag { get; set; }
+		[Column("vc_phase")] public double? VcPhase { get; set; }
+		[Column("ia_mag")] public double? IaMag { get; set; }
+		[Column("ia_phase")] public double? IaPhase { get; set; }
+		[Column("ib_mag")] public double? IbMag { get; set; }
+		[Column("ib_phase")] public double? IbPhase { get; set; }
+		[Column("ic_mag")] public double? IcMag { get; set; }
+		[Column("ic_phase")] public double? IcPhase { get; set; }
+		[Column("weco_sn")] public string WecoSn { get; set; }
+		[Column("standard_sn")] public string StandardSn { get; set; }
+	}
+    
 	[TableName("wndba.TLOT_ACCEPT_QUALITY_LEVEL")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
@@ -2740,6 +2800,17 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("ACCEPTANCE_BY")] public string AcceptanceBy { get; set; }
 		[Column("NEW_BATCH_DESC")] public string NewBatchDesc { get; set; }
 		[Column("acceptance_decision")] public string AcceptanceDecision { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("failure_qty")] public int? FailureQty { get; set; }
+		[Column("new_mfr_file")] public byte[] NewMfrFile { get; set; }
+		[Column("new_mfr_file_date")] public DateTime? NewMfrFileDate { get; set; }
+		[Column("inspect_level")] public string InspectLevel { get; set; }
+		[Column("aql")] public string Aql { get; set; }
+		[Column("accept_number")] public int? AcceptNumber { get; set; }
+		[Column("reject_number")] public int? RejectNumber { get; set; }
+		[Column("decision_override_flag")] public string DecisionOverrideFlag { get; set; }
+		[Column("new_mfr_file_name")] public string NewMfrFileName { get; set; }
+		[Column("sample_size_code")] public string SampleSizeCode { get; set; }
 	}
     
 	[TableName("wndba.TLOCATION")]
@@ -2760,6 +2831,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("IS_LAB_LOCN")] public string IsLabLocn { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
+		[Column("location_type")] public string LocationType { get; set; }
+		[Column("area_name")] public string AreaName { get; set; }
 	}
     
 	[TableName("wndba.TTAMPER")]
@@ -2922,6 +2995,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("rma_accept_test_percent")] public string RmaAcceptTestPercent { get; set; }
 		[Column("METER_CLASS")] public int? MeterClass { get; set; }
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("allow_purchase")] public string AllowPurchase { get; set; }
+		[Column("auto_receive")] public string AutoReceive { get; set; }
 	}
     
 	[TableName("wndba.tmeter_emulation")]
@@ -3214,6 +3290,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("repair_by")] public string RepairBy { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
+		[Column("shop_cycle")] public int? ShopCycle { get; set; }
 	}
     
 	[TableName("wndba.TOWNER")]
@@ -3243,6 +3320,9 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("use_rma_accept_testing")] public string UseRmaAcceptTesting { get; set; }
 		[Column("rma_accept_list_source")] public string RmaAcceptListSource { get; set; }
 		[Column("ID")] public int? Id { get; set; }
+		[Column("inspect_level")] public string InspectLevel { get; set; }
+		[Column("aql")] public string Aql { get; set; }
+		[Column("enable_site_autosnapshot")] public string EnableSiteAutosnapshot { get; set; }
 	}
     
 	[TableName("wndba.TPROCESS_FLOW")]
@@ -3491,6 +3571,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("create_by")] public string CreateBy { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
+		[Column("eqp_type")] public string EqpType { get; set; }
 	}
     
 	[TableName("wndba.TSECURITY_GROUPS")]
@@ -3524,6 +3605,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("create_by")] public string CreateBy { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
+		[Column("allow_delete")] public string AllowDelete { get; set; }
 	}
     
 	[TableName("wndba.TSECURITY_USERS")]
@@ -3553,6 +3635,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("DEFAULT_OWNER")] public int? DefaultOwner { get; set; }
 		[Column("DEFAULT_LOCATION")] public string DefaultLocation { get; set; }
 		[Column("employee_id")] public string EmployeeId { get; set; }
+		[Column("allow_issue_to")] public string AllowIssueTo { get; set; }
 	}
     
 	[TableName("wndba.tred_tag")]
@@ -3992,6 +4075,11 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("enable_auto_db_updates")] public string EnableAutoDbUpdates { get; set; }
 		[Column("audit_log_next_index")] public int? AuditLogNextIndex { get; set; }
 		[Column("audit_log_limit")] public int? AuditLogLimit { get; set; }
+		[Column("use_ldap_at_login")] public string UseLdapAtLogin { get; set; }
+		[Column("ldap_server")] public string LdapServer { get; set; }
+		[Column("ldap_domain_name")] public string LdapDomainName { get; set; }
+		[Column("syslog_ip_addr")] public string SyslogIpAddr { get; set; }
+		[Column("syslog_protocol")] public string SyslogProtocol { get; set; }
 	}
     
 	[TableName("wndba.TSYS_VALIDATION")]
@@ -4231,6 +4319,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("in_funct_trigger_1")] public string InFunctTrigger1 { get; set; }
 		[Column("in_funct_trigger_2")] public string InFunctTrigger2 { get; set; }
 		[Column("in_funct_trigger_3")] public string InFunctTrigger3 { get; set; }
+		[Column("location_type")] public string LocationType { get; set; }
+		[Column("process_tag")] public string ProcessTag { get; set; }
 	}
     
 	[TableName("wndba.tlistener_transaction_log")]
@@ -4280,6 +4370,11 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("out_funct_trigger_1")] public string OutFunctTrigger1 { get; set; }
 		[Column("out_funct_trigger_2")] public string OutFunctTrigger2 { get; set; }
 		[Column("out_funct_trigger_3")] public string OutFunctTrigger3 { get; set; }
+		[Column("location_type")] public string LocationType { get; set; }
+		[Column("process_tag")] public string ProcessTag { get; set; }
+		[Column("clear_shelf")] public string ClearShelf { get; set; }
+		[Column("clear_received_by")] public string ClearReceivedBy { get; set; }
+		[Column("clear_vehicle_no")] public string ClearVehicleNo { get; set; }
 	}
     
 	[TableName("wndba.tlistener_transaction_source")]

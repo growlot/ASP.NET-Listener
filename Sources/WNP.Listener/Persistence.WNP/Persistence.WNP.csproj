@@ -386,6 +386,9 @@
     <Compile Include="Metadata\SiteComments.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\SiteHarmonics.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\SiteHist.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>

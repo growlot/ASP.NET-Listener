@@ -93,6 +93,24 @@ public class OwnerTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string Id { get; } = "ID";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string InspectLevel { get; } = "inspect_level";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string Aql { get; } = "aql";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string EnableSiteAutosnapshot { get; } = "enable_site_autosnapshot";
 	
 	public string RealTableName
 	{
@@ -122,6 +140,9 @@ public class OwnerTable: ITableInformation {
 				{"UseRmaAcceptTesting", new ColumnInformation() { DataType = "string", ModelName = "UseRmaAcceptTesting", ColumnName = "use_rma_accept_testing"}},
 				{"RmaAcceptListSource", new ColumnInformation() { DataType = "string", ModelName = "RmaAcceptListSource", ColumnName = "rma_accept_list_source"}},
 				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
+				{"InspectLevel", new ColumnInformation() { DataType = "string", ModelName = "InspectLevel", ColumnName = "inspect_level"}},
+				{"Aql", new ColumnInformation() { DataType = "string", ModelName = "Aql", ColumnName = "aql"}},
+				{"EnableSiteAutosnapshot", new ColumnInformation() { DataType = "string", ModelName = "EnableSiteAutosnapshot", ColumnName = "enable_site_autosnapshot"}},
 			};
 
 	public override string ToString() 

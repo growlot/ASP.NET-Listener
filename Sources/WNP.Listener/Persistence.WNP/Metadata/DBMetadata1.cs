@@ -469,6 +469,13 @@ public static class DBMetadata {
 	public static readonly LotPercentDefTable LotPercentDef = new LotPercentDefTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: tsite_harmonics
+	/// <para />Class Name: tsite_harmonic
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly SiteHarmonicsTable SiteHarmonics = new SiteHarmonicsTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TLOT_ACCEPT_QUALITY_LEVEL
 	/// <para />Class Name: TLOT_ACCEPT_QUALITY_LEVEL
 	/// <para />Is View: False
@@ -907,6 +914,7 @@ public static class DBMetadata {
 				{LotSizeLookup.RealTableName, LotSizeLookup},
 				{ImportExportDefinitions.RealTableName, ImportExportDefinitions},
 				{LotPercentDef.RealTableName, LotPercentDef},
+				{SiteHarmonics.RealTableName, SiteHarmonics},
 				{LotAcceptQualityLevel.RealTableName, LotAcceptQualityLevel},
 				{ImportExportOptions.RealTableName, ImportExportOptions},
 				{NewBatch.RealTableName, NewBatch},
@@ -982,4 +990,3 @@ public class ColumnInformation
 }
 }
 #pragma warning restore 1591
-

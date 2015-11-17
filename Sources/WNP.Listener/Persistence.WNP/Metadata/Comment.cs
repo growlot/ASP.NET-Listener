@@ -105,6 +105,12 @@ public class CommentTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string Id { get; } = "ID";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ShopCycle { get; } = "shop_cycle";
 	
 	public string RealTableName
 	{
@@ -136,6 +142,7 @@ public class CommentTable: ITableInformation {
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "MOD_DATE"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "MOD_BY"}},
 				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
+				{"ShopCycle", new ColumnInformation() { DataType = "int", ModelName = "ShopCycle", ColumnName = "shop_cycle"}},
 			};
 
 	public override string ToString() 

@@ -147,6 +147,12 @@ public class RepairTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModBy { get; } = "mod_by";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ShopCycle { get; } = "shop_cycle";
 	
 	public string RealTableName
 	{
@@ -185,6 +191,7 @@ public class RepairTable: ITableInformation {
 				{"RepairBy", new ColumnInformation() { DataType = "string", ModelName = "RepairBy", ColumnName = "repair_by"}},
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "mod_date"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "mod_by"}},
+				{"ShopCycle", new ColumnInformation() { DataType = "int", ModelName = "ShopCycle", ColumnName = "shop_cycle"}},
 			};
 
 	public override string ToString() 

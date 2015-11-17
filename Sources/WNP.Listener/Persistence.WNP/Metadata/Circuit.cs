@@ -141,6 +141,60 @@ public class CircuitTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string Id { get; } = "ID";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ServicePoint { get; } = "service_point";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string MeterPoint { get; } = "meter_point";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string HasBracket { get; } = "has_bracket";
+		/// <summary>
+	/// <para />Database Type: decimal
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SflDesiredAccDel { get; } = "sfl_desired_acc_del";
+		/// <summary>
+	/// <para />Database Type: decimal
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SllDesiredAccDel { get; } = "sll_desired_acc_del";
+		/// <summary>
+	/// <para />Database Type: decimal
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SpfDesiredAccDel { get; } = "spf_desired_acc_del";
+		/// <summary>
+	/// <para />Database Type: decimal
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SflDesiredAccRec { get; } = "sfl_desired_acc_rec";
+		/// <summary>
+	/// <para />Database Type: decimal
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SllDesiredAccRec { get; } = "sll_desired_acc_rec";
+		/// <summary>
+	/// <para />Database Type: decimal
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SpfDesiredAccRec { get; } = "spf_desired_acc_rec";
 	
 	public string RealTableName
 	{
@@ -178,6 +232,15 @@ public class CircuitTable: ITableInformation {
 				{"EnclosureType", new ColumnInformation() { DataType = "string", ModelName = "EnclosureType", ColumnName = "ENCLOSURE_TYPE"}},
 				{"InstallDate", new ColumnInformation() { DataType = "DateTime", ModelName = "InstallDate", ColumnName = "INSTALL_DATE"}},
 				{"Id", new ColumnInformation() { DataType = "int", ModelName = "Id", ColumnName = "ID"}},
+				{"ServicePoint", new ColumnInformation() { DataType = "string", ModelName = "ServicePoint", ColumnName = "service_point"}},
+				{"MeterPoint", new ColumnInformation() { DataType = "string", ModelName = "MeterPoint", ColumnName = "meter_point"}},
+				{"HasBracket", new ColumnInformation() { DataType = "string", ModelName = "HasBracket", ColumnName = "has_bracket"}},
+				{"SflDesiredAccDel", new ColumnInformation() { DataType = "decimal", ModelName = "SflDesiredAccDel", ColumnName = "sfl_desired_acc_del"}},
+				{"SllDesiredAccDel", new ColumnInformation() { DataType = "decimal", ModelName = "SllDesiredAccDel", ColumnName = "sll_desired_acc_del"}},
+				{"SpfDesiredAccDel", new ColumnInformation() { DataType = "decimal", ModelName = "SpfDesiredAccDel", ColumnName = "spf_desired_acc_del"}},
+				{"SflDesiredAccRec", new ColumnInformation() { DataType = "decimal", ModelName = "SflDesiredAccRec", ColumnName = "sfl_desired_acc_rec"}},
+				{"SllDesiredAccRec", new ColumnInformation() { DataType = "decimal", ModelName = "SllDesiredAccRec", ColumnName = "sll_desired_acc_rec"}},
+				{"SpfDesiredAccRec", new ColumnInformation() { DataType = "decimal", ModelName = "SpfDesiredAccRec", ColumnName = "spf_desired_acc_rec"}},
 			};
 
 	public override string ToString() 

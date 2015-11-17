@@ -105,6 +105,36 @@ public class SysControlTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string AuditLogLimit { get; } = "audit_log_limit";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string UseLdapAtLogin { get; } = "use_ldap_at_login";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string LdapServer { get; } = "ldap_server";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string LdapDomainName { get; } = "ldap_domain_name";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SyslogIpAddr { get; } = "syslog_ip_addr";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string SyslogProtocol { get; } = "syslog_protocol";
 	
 	public string RealTableName
 	{
@@ -136,6 +166,11 @@ public class SysControlTable: ITableInformation {
 				{"EnableAutoDbUpdates", new ColumnInformation() { DataType = "string", ModelName = "EnableAutoDbUpdates", ColumnName = "enable_auto_db_updates"}},
 				{"AuditLogNextIndex", new ColumnInformation() { DataType = "int", ModelName = "AuditLogNextIndex", ColumnName = "audit_log_next_index"}},
 				{"AuditLogLimit", new ColumnInformation() { DataType = "int", ModelName = "AuditLogLimit", ColumnName = "audit_log_limit"}},
+				{"UseLdapAtLogin", new ColumnInformation() { DataType = "string", ModelName = "UseLdapAtLogin", ColumnName = "use_ldap_at_login"}},
+				{"LdapServer", new ColumnInformation() { DataType = "string", ModelName = "LdapServer", ColumnName = "ldap_server"}},
+				{"LdapDomainName", new ColumnInformation() { DataType = "string", ModelName = "LdapDomainName", ColumnName = "ldap_domain_name"}},
+				{"SyslogIpAddr", new ColumnInformation() { DataType = "string", ModelName = "SyslogIpAddr", ColumnName = "syslog_ip_addr"}},
+				{"SyslogProtocol", new ColumnInformation() { DataType = "string", ModelName = "SyslogProtocol", ColumnName = "syslog_protocol"}},
 			};
 
 	public override string ToString() 

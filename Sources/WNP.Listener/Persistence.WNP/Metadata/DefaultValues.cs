@@ -57,6 +57,12 @@ public class DefaultValuesTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModBy { get; } = "mod_by";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: False
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string EqpType { get; } = "eqp_type";
 	
 	public string RealTableName
 	{
@@ -80,6 +86,7 @@ public class DefaultValuesTable: ITableInformation {
 				{"CreateBy", new ColumnInformation() { DataType = "string", ModelName = "CreateBy", ColumnName = "create_by"}},
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "mod_date"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "mod_by"}},
+				{"EqpType", new ColumnInformation() { DataType = "string", ModelName = "EqpType", ColumnName = "eqp_type"}},
 			};
 
 	public override string ToString() 

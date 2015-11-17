@@ -639,6 +639,24 @@ public class MeterCodeTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string IsFirstArticle { get; } = "is_first_article";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string AnsiSelectMethod { get; } = "ansi_select_method";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string AllowPurchase { get; } = "allow_purchase";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string AutoReceive { get; } = "auto_receive";
 	
 	public string RealTableName
 	{
@@ -759,6 +777,9 @@ public class MeterCodeTable: ITableInformation {
 				{"RmaAcceptTestPercent", new ColumnInformation() { DataType = "string", ModelName = "RmaAcceptTestPercent", ColumnName = "rma_accept_test_percent"}},
 				{"MeterClass", new ColumnInformation() { DataType = "int", ModelName = "MeterClass", ColumnName = "METER_CLASS"}},
 				{"IsFirstArticle", new ColumnInformation() { DataType = "string", ModelName = "IsFirstArticle", ColumnName = "is_first_article"}},
+				{"AnsiSelectMethod", new ColumnInformation() { DataType = "string", ModelName = "AnsiSelectMethod", ColumnName = "ansi_select_method"}},
+				{"AllowPurchase", new ColumnInformation() { DataType = "string", ModelName = "AllowPurchase", ColumnName = "allow_purchase"}},
+				{"AutoReceive", new ColumnInformation() { DataType = "string", ModelName = "AutoReceive", ColumnName = "auto_receive"}},
 			};
 
 	public override string ToString() 

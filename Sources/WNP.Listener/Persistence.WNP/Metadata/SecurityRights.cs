@@ -57,6 +57,12 @@ public class SecurityRightsTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModBy { get; } = "mod_by";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string AllowDelete { get; } = "allow_delete";
 	
 	public string RealTableName
 	{
@@ -80,6 +86,7 @@ public class SecurityRightsTable: ITableInformation {
 				{"CreateBy", new ColumnInformation() { DataType = "string", ModelName = "CreateBy", ColumnName = "create_by"}},
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "mod_date"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "mod_by"}},
+				{"AllowDelete", new ColumnInformation() { DataType = "string", ModelName = "AllowDelete", ColumnName = "allow_delete"}},
 			};
 
 	public override string ToString() 
