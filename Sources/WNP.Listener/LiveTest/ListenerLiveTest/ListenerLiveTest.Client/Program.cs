@@ -24,7 +24,8 @@ namespace ListenerLiveTest.Client
 
             //UseManager(parallelCount, totalRequests);
             //UseClient(totalRequests);
-            UseClientForBatch();
+            //UseClientForBatch();
+            QueryData(new TransactionFilter { BatchNumber = "B1" });
 
             Console.WriteLine("Press Enter to exit...");
             Console.ReadLine();
@@ -44,6 +45,20 @@ namespace ListenerLiveTest.Client
                     TestDate = DateTime.Now
                 });
             }
+        }
+
+        private static void QueryData(TransactionFilter filter)
+        {
+            var client = new ListenerClient("http://localhost:9000/listener");
+
+
+            var result = client.SearchTransactions(filter);
+            foreach (var transactionInfoResponseMessage in result)
+            {
+                Log.Logger.Information("Entity Key: {0}, Created Date: {1}, Entity Category: {2}", null,
+                    transactionInfoResponseMessage.EntityKey, transactionInfoResponseMessage.EntityCategory);
+            }
+
         }
 
         private static void UseClientForBatch()

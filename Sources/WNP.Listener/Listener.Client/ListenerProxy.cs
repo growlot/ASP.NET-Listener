@@ -15,29 +15,29 @@
 
         private IHttpClientAdapter _hClient = null;
 
-        public ListenerProxy() : this(new HttpClientAdapter()) { }
+        public ListenerProxy(Dictionary<string, string> headers) : this(new HttpClientAdapter(),headers) { }
 
-        public ListenerProxy(IHttpClientAdapter adapter)
+        public ListenerProxy(IHttpClientAdapter adapter, Dictionary<string, string> headers)
         {
             this._hClient = adapter;
-        }
-
-        public Task<string> OpenAsync(Uri uri, object data, Dictionary<string, string> headers = null)
-        {
-            var d = data;
-            IHttpClientAdapter client = this._hClient;
-
-            Task<HttpResponseMessage> response;
 
             if (headers != null)
             {
                 foreach (KeyValuePair<string, string> keyValuePair in headers)
                 {
-                    client.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value);
+                    _hClient.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value);
                 }
                 //client.DefaultRequestHeaders.Add("AMS-Company", "CCD");
                 //client.DefaultRequestHeaders.Add("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e");
             }
+        }
+
+        public Task<string> OpenAsync(Uri uri, object data)
+        {
+            var d = data;
+            IHttpClientAdapter client = this._hClient;
+
+            Task<HttpResponseMessage> response;
 
             if (d != null)
             {
@@ -72,5 +72,45 @@
                 return t.Result.Content.ReadAsStringAsync();
             }).Unwrap();
         }
+
+        public Task<string> GetAsync(
+            Uri uri)
+        {
+            IHttpClientAdapter client = this._hClient;
+            var response = client.GetAsync(uri);
+
+            return response.ContinueWith(t =>
+            {
+                
+                Log.Logger.Information("Received from {0}: {1}", uri, t.Result.StatusCode);
+                if (t.Result.StatusCode != HttpStatusCode.OK && t.Result.StatusCode != HttpStatusCode.NoContent)
+                {
+                    throw new ListenerRequestFailedException(t.Result.StatusCode);
+                }
+                return t.Result.Content.ReadAsStringAsync();
+            }).Unwrap();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~ListenerProxy()
+        {
+            // Finalizer calls Dispose(false)
+            this.Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this._hClient.Dispose();
+            }
+        }
+
+       
     }
 }

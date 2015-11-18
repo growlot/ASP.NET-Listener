@@ -59,7 +59,7 @@ namespace AMSLLC.Listener.ODataService
                 routingConventions: conventions,
                 defaultHandler: routeHandlersWnp);
 
-            var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener", ContainerName = "AMSLLC.Listener" };
+            var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener" };
             this.PrepareODataController<TransactionRegistryEntity, Guid>(builder, a => a.RecordKey, (b, configuration) =>
             {
                 // bound actions

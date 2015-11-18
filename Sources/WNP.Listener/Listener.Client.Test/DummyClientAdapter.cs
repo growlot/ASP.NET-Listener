@@ -26,5 +26,11 @@ namespace AMSLLC.Listener.Client.Test
         {
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError));
         }
+
+        public Task<HttpResponseMessage> GetAsync(
+            Uri uri)
+        {
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+        }
     }
 }

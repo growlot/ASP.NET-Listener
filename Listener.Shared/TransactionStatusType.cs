@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Communication
+namespace AMSLLC.Listener.Shared
 {
     /// <summary>
     /// Defines transaction statuses

@@ -4,12 +4,19 @@ using System.Collections.Generic;
 namespace AMSLLC.Listener.Client
 {
     using System.Dynamic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Text;
+    using AMSLLC.Listener;
+    using AMSLLC.Listener.Persistence.Listener;
     using Exception;
     using Message;
+    using Microsoft.OData.Client;
     using Newtonsoft.Json;
     using Serilog;
+    using Shared;
 
-    public class ListenerClient
+    public class ListenerClient : IDisposable
     {
         private readonly Uri _baseUri = null;
         private IListenerProxy _proxy = null;
@@ -19,7 +26,7 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
         public ListenerClient(string baseUri)
-            : this(baseUri, new ListenerProxy())
+            : this(baseUri, new ListenerProxy(new ListenerRequestHeaderDictionary()))
         {
 
         }
@@ -39,7 +46,8 @@ namespace AMSLLC.Listener.Client
         /// Initializes a new instance of the <see cref="ListenerClient"/> class.
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
-        public ListenerClient(Uri baseUri) : this(baseUri, new ListenerProxy())
+        public ListenerClient(Uri baseUri) : this(baseUri, new ListenerProxy(
+                new ListenerRequestHeaderDictionary()))
         {
         }
 
@@ -97,10 +105,109 @@ namespace AMSLLC.Listener.Client
             this.Execute(new Uri("listener/BuildBatch", UriKind.Relative), request.BatchNumber);
         }
 
+        /// <summary>
+        /// Searches the transactions.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns>ICollection&lt;TransactionInfoResponseMessage&gt;.</returns>
         public ICollection<TransactionInfoResponseMessage> SearchTransactions(TransactionFilter filter)
         {
-            return null;
-        } 
+            Log.Logger.Information("Querying transaction with filter {0}", JsonConvert.SerializeObject(filter));
+            var container = new Container(this._baseUri);
+            var result = (filter == null ? container.TransactionRegistryDetails : container.TransactionRegistryDetails.Where(this.BuildQuery(filter))).ToList();
+            return result.Select(
+                s => new TransactionInfoResponseMessage
+                {
+                    CreatedDate = s.CreatedDateTime.UtcDateTime,
+                    Debug = s.Details,
+                    EventStartDate = s.StartDate.HasValue ? s.StartDate.Value.UtcDateTime : (DateTime?)null,
+                    EntityCategory = s.EntityCategory,
+                    EntityKey = s.EntityKey,
+                    Message = s.Message,
+                    OperationKey = s.OperationName,
+                    TransactionStatus = (TransactionStatusType)s.TransactionStatusId
+                }).ToList();
+        }
+
+        private Expression<Func<TransactionRegistryViewEntity, bool>> BuildQuery(TransactionFilter filter)
+        {
+            Expression<Func<TransactionRegistryViewEntity, bool>> baseExpression = (o) => true;
+            if (filter != null)
+            {
+                if (!string.IsNullOrWhiteSpace(filter.EntityCategory))
+                {
+                    baseExpression = baseExpression.Compose(
+                        f => f.EntityCategory == filter.EntityCategory,
+                        Expression.AndAlso);
+                }
+
+                if (!string.IsNullOrWhiteSpace(filter.EntityKey))
+                {
+                    baseExpression = baseExpression.Compose(f => f.EntityKey == filter.EntityKey, Expression.AndAlso);
+                }
+
+                if (!string.IsNullOrWhiteSpace(filter.BatchNumber))
+                {
+                    baseExpression = baseExpression.Compose(
+                        f => f.BatchNumber == filter.BatchNumber,
+                        Expression.AndAlso);
+                }
+
+                if (filter.TransactionDate.HasValue)
+                {
+                    baseExpression = baseExpression.Compose(
+                        f => f.StartDate == filter.TransactionDate,
+                        Expression.AndAlso);
+                }
+
+                if (filter.StatusTypes.Any())
+                {
+                    baseExpression =
+                        baseExpression.Compose(
+                            f => filter.StatusTypes.Contains((TransactionStatusType)f.TransactionStatusId),
+                            Expression.AndAlso);
+                }
+            }
+            return baseExpression;
+        }
+
+
+
+        //private string BuildTransactionFilterQuery(
+        //    TransactionFilter filter)
+        //{
+        //    /*
+        //    public string EntityCategory { get; set; }
+        //public string EntityKey { get; set; }
+        //public string BatchNumber { get; set; }
+        //public List<TransactionStatusType> StatusTypes { get; } = new List<TransactionStatusType>();
+        //public DateTime? TransactionDate { get; set; }
+        //    */
+
+        //    List<string> returnValue = new List<string>();
+
+        //    if (!string.IsNullOrWhiteSpace(filter.EntityCategory))
+        //    {
+        //        returnValue.Add($"EntityCategory eq '{filter.EntityCategory}'");
+        //    }
+
+        //    if (!string.IsNullOrWhiteSpace(filter.EntityKey))
+        //    {
+        //        returnValue.Add($"EntityKey eq '{filter.EntityKey}'");
+        //    }
+
+        //    if (!string.IsNullOrWhiteSpace(filter.BatchNumber))
+        //    {
+        //        returnValue.Add($"BatchNumber eq '{filter.BatchNumber}'");
+        //    }
+
+        //    if (filter.TransactionDate.HasValue)
+        //    {
+        //        returnValue.Add($"CreatedDateTime eq '{filter.TransactionDate.Value}'");
+        //    }
+
+        //    return string.Join("&", returnValue);
+        //}
 
         private void Execute(
             Uri relativeUri,
@@ -169,8 +276,7 @@ namespace AMSLLC.Listener.Client
         {
             var openTask = this._proxy.OpenAsync(
                 new Uri(this._baseUri, relativeUri),
-                message,
-                new ListenerRequestHeaderDictionary());
+                message);
 
             openTask.Wait();
             return openTask.Result;
@@ -189,8 +295,7 @@ namespace AMSLLC.Listener.Client
                         {
                             Message = excMessage,
                             Details = stacktrace
-                        }),
-                    new ListenerRequestHeaderDictionary());
+                        }));
             t.Wait();
         }
 
@@ -200,8 +305,7 @@ namespace AMSLLC.Listener.Client
             var openedTask =
                  this._proxy.OpenAsync(
                     new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Process()", UriKind.Relative)),
-                    null,
-                    new ListenerRequestHeaderDictionary());
+                    null);
 
             openedTask.Wait();
         }
@@ -212,10 +316,30 @@ namespace AMSLLC.Listener.Client
             var succeedTask =
                  this._proxy.OpenAsync(
                     new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({key})/AMSLLC.Listener.Succeed()", UriKind.Relative)),
-                    null,
-                    new ListenerRequestHeaderDictionary());
+                    null);
 
             succeedTask.Wait();
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~ListenerClient()
+        {
+            // Finalizer calls Dispose(false)
+            this.Dispose(false);
+        }
+
+        // The bulk of the clean-up code is implemented in Dispose(bool)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this._proxy.Dispose();
+            }
         }
     }
 }

@@ -9,5 +9,7 @@ namespace AMSLLC.Listener.Client
     {
         HttpRequestHeaders DefaultRequestHeaders { get; }
         Task<HttpResponseMessage> PostAsync(Uri uri, StringContent content);
+
+        Task<HttpResponseMessage> GetAsync(Uri uri);
     }
 }

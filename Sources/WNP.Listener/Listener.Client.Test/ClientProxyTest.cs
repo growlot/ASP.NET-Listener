@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.Client.Test
         [ExpectedException(typeof(FailedToOpenTransactionException))]
         public void TestListenerClientSuccess()
         {
-            var proxy = new ListenerProxy(new DummyClientAdapter());
+            var proxy = new ListenerProxy(new DummyClientAdapter(), new ListenerRequestHeaderDictionary());
            
             var lc = new ListenerClient("http://localhost", proxy);
 

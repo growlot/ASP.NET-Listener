@@ -18,7 +18,7 @@
         {
             var proxyMock = new Mock<IListenerProxy>();
             proxyMock.Setup(
-                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>(), It.IsAny<Dictionary<string, string>>()))
+                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>()))
                 .ReturnsAsync(basicResponse);
             var lc = new ListenerClient("http://localhost", proxyMock.Object);
 
@@ -33,7 +33,7 @@
         {
             var proxyMock = new Mock<IListenerProxy>();
             proxyMock.Setup(
-                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>(), It.IsAny<Dictionary<string, string>>())).ThrowsAsync(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
+                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>())).ThrowsAsync(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
             var lc = new ListenerClient("http://localhost", proxyMock.Object);
 
             lc.ProcessDeviceUpdate(new DeviceUpdateMessage());
@@ -46,7 +46,7 @@
         {
             var proxyMock = new Mock<IListenerProxy>();
             proxyMock.Setup(
-                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>(), It.IsAny<Dictionary<string, string>>()))
+                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>()))
                 .ReturnsAsync(basicResponse);
             var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
 
@@ -72,7 +72,7 @@
         {
             var proxyMock = new Mock<IListenerProxy>();
             proxyMock.Setup(
-                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>(), It.IsAny<Dictionary<string, string>>()))
+                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>()))
                 .ReturnsAsync(basicResponse);
             var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
 

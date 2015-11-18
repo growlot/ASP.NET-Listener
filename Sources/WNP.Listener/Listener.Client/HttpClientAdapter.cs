@@ -29,6 +29,12 @@ namespace AMSLLC.Listener.Client
             return this._client.PostAsync(uri, content);
         }
 
+        public Task<HttpResponseMessage> GetAsync(
+            Uri uri)
+        {
+            return this._client.GetAsync(uri);
+        }
+
         public void Dispose()
         {
             Dispose(true);

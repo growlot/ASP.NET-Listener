@@ -20,7 +20,7 @@ namespace AMSLLC.Listener.Client.Message
         /// Event example: Test
         /// </summary>
         /// <value>The event start date.</value>
-        public string EventStartDate { get; set; }
+        public DateTime? EventStartDate { get; set; }
         public TransactionStatusType TransactionStatus { get; set; }
         public string Message { get; set; }
         public string Debug { get; set; }
