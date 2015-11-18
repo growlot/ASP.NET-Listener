@@ -116,6 +116,8 @@ namespace AMSLLC.Listener.ODataService
             {
                 case "~/entityset":
                 case "~/entityset/key":
+                case "~/entityset/action":
+                case "~/entityset/key/action":
                     var entitySetTableName = this.GetEntitySetTableName(odataPath);
                     if (entitySetTableName != null)
                     {

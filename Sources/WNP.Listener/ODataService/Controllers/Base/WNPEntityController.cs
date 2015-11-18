@@ -221,7 +221,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var fqnActionName = actionSegment?.ActionName;
 
             Debug.Assert(fqnActionName != null, "fqnActionName != null");
-            var actionName = fqnActionName.Substring(fqnActionName.IndexOf("_", StringComparison.Ordinal) + 1);
+            var actionName = fqnActionName.Substring(fqnActionName.LastIndexOf(".", StringComparison.Ordinal) + 1);
 
             var actionsContainerType = this.metadataService.GetModelMapping(this.metadataService.GetEntityType(this.EdmEntityClrType.FullName)).ActionsContainer;
             if (actionsContainerType == null)

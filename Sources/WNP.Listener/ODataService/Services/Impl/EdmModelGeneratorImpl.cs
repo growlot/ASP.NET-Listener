@@ -105,15 +105,15 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             var etcType = entityTypeConfiguration.GetType();
 
             object actionConfiguration;
-            var actionPrefix = actionsContainer.Name;
-            var actionPrefixAttribute =
-                actionsContainer.GetCustomAttributes(typeof (ActionPrefixAttribute)).FirstOrDefault() as
-                    ActionPrefixAttribute;
+            ////var actionPrefix = actionsContainer.Name;
+            ////var actionPrefixAttribute =
+            ////    actionsContainer.GetCustomAttributes(typeof (ActionPrefixAttribute)).FirstOrDefault() as
+            ////        ActionPrefixAttribute;
 
-            if (actionPrefixAttribute != null)
-            {
-                actionPrefix = actionPrefixAttribute.Prefix;
-            }
+            ////if (actionPrefixAttribute != null)
+            ////{
+            ////    actionPrefix = actionPrefixAttribute.Prefix;
+            ////}
 
             if (isCollectionWide)
             {
@@ -124,14 +124,14 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
 
                 actionConfiguration = actionMethodInfo.Invoke(
                     collectionProperty,
-                    new[] {$"{actionPrefix}_{actionMethod.Name}"});
+                    new[] { actionMethod.Name });
             }
             else
             {
                 var actionMethodInfo = etcType.GetMethod("Action");
                 actionConfiguration = actionMethodInfo.Invoke(
                     entityTypeConfiguration,
-                    new[] {$"{actionPrefix}_{actionMethod.Name}"});
+                    new[] { actionMethod.Name });
             }
 
             return actionConfiguration as ActionConfiguration;
@@ -151,18 +151,9 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
                     type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                         .Where(info => info.CustomAttributes.Any(data => data.AttributeType == typeof (UnboundActionAttribute)));
 
-                var actionPrefix = type.Name;
-                var actionPrefixAttribute =
-                    type.GetCustomAttributes(typeof (ActionPrefixAttribute)).FirstOrDefault() as ActionPrefixAttribute;
-
-                if (actionPrefixAttribute != null)
-                {
-                    actionPrefix = actionPrefixAttribute.Prefix;
-                }
-
                 actionMethodsList.Map(info =>
                 {
-                    var actionConfiguration = builder.Action($"{actionPrefix}_{info.Name}");
+                    var actionConfiguration = builder.Action(info.Name);
                     CreateActionParameters(info, actionConfiguration);
                 });
             });

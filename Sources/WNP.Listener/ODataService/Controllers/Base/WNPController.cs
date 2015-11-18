@@ -66,8 +66,8 @@
 
             Debug.Assert(fqnActionName != null, "fqnActionName != null");
 
-            var underscorePosition = fqnActionName.IndexOf("_", StringComparison.Ordinal);
-            var containerTypeName = fqnActionName.Substring(0, underscorePosition);
+            var underscorePosition = fqnActionName.LastIndexOf(".", StringComparison.Ordinal);
+            var containerTypeName = "Unbound"; // fqnActionName.Substring(0, underscorePosition);
             var actionName = fqnActionName.Substring(underscorePosition + 1);
 
             return await this.InvokeAction(this.actionConfigurator.GetUnboundActionContainer(containerTypeName), actionName);
