@@ -185,11 +185,13 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
                     // resolve data type from database
                     var dataType = column.DataType;
-                    if (dataType.Equals("DateTime", StringComparison.OrdinalIgnoreCase))
+                    if (dataType.Equals("DateTime", StringComparison.OrdinalIgnoreCase)
+                        || dataType.Equals("date", StringComparison.OrdinalIgnoreCase))
                     {
                         dataType = "DateTimeOffset";
                     }
-                    else if (dataType.Equals("varchar", StringComparison.OrdinalIgnoreCase))
+                    else if (dataType.Equals("varchar", StringComparison.OrdinalIgnoreCase)
+                        || dataType.Equals("nvarchar", StringComparison.OrdinalIgnoreCase))
                     {
                         dataType = "string";
                     }
@@ -329,7 +331,11 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     }
 
                     var nullable = string.Empty;
-                    if (field.Value.DataType == "int" || field.Value.DataType == "DateTimeOffset")
+                    if (field.Value.DataType == "int"
+                        || field.Value.DataType == "DateTimeOffset"
+                        || field.Value.DataType == "decimal"
+                        || field.Value.DataType == "float"
+                        || field.Value.DataType == "char")
                     {
                         nullable = "?";
                     }
@@ -362,7 +368,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                             }}
                     ")));
 
-                    setFromEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" this.{field.Key} = ({field.Value.DataType}{nullable})Converters.Convert(entity.{fieldName}, typeof({field.Value.DataType}));")));
+                    setFromEntityMethod.Statements.Add(new CodeSnippetStatement(StringUtilities.Invariant($" this.{field.Key} = ({field.Value.DataType}{nullable})Converters.Convert(entity.{fieldName}, typeof({field.Value.DataType}{nullable}));")));
                 }
 
                 getEntityMethod.Statements.Add(new CodeSnippetStatement("return result;"));

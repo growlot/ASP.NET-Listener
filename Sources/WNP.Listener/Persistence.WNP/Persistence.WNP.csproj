@@ -84,6 +84,7 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="DomainEventHandlers\CircuitDetailsUpdatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\EquipmentInstalledInCircuitEventHandler.cs" />
     <Compile Include="DomainEventHandlers\EventPesistenceHandler.cs" />
     <Compile Include="DomainEventHandlers\MeterBillingInformationUpdatedEventHandler.cs" />

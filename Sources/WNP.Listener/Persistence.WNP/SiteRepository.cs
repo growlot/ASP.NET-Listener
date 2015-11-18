@@ -117,7 +117,7 @@ WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1",
         /// <inheritdoc/>
         public Task<IMemento> GetMeter(string equipmentNumber)
         {
-            var meterEntity = this.dbContext.First<EqpMeterEntity>(
+            var meterEntity = this.dbContext.FirstOrDefault<EqpMeterEntity>(
                 $@"
 SELECT {DBMetadata.EqpMeter.EqpNo}, {DBMetadata.EqpMeter.Site}, {DBMetadata.EqpMeter.Circuit}, 
        {DBMetadata.EqpMeter.Scalar}, {DBMetadata.EqpMeter.EnergyMult}, {DBMetadata.EqpMeter.Kh}, 
@@ -126,6 +126,11 @@ FROM {DBMetadata.EqpMeter.FullTableName}
 WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
                 this.operatingCompany,
                 equipmentNumber);
+
+            if (meterEntity == null)
+            {
+                return Task.FromResult<IMemento>(null);
+            }
 
             decimal value;
             if (!decimal.TryParse(meterEntity.Kh, out value))
@@ -195,6 +200,9 @@ WHERE {DBMetadata.Circuit.Owner} = @0 and {DBMetadata.Circuit.Site} = @1",
                 var circuitMemento = new CircuitMemento(
                     id: circuitEntity.Circuit.Value,
                     description: circuitEntity.CircuitDesc,
+                    meterPoint: circuitEntity.MeterPoint,
+                    servicePoint: circuitEntity.ServicePoint,
+                    hasBracket: circuitEntity.HasBracket == "Y" ? true : false,
                     longitude: (decimal?)circuitEntity.Longitude,
                     latitude: (decimal?)circuitEntity.Latitude,
                     serviceLocation: circuitEntity.ServiceLocation,

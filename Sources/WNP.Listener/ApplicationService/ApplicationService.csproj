@@ -88,10 +88,12 @@
     <Compile Include="CommandHandlers\CommandHandlerBase.cs" />
     <Compile Include="CommandHandlers\CreateCircuitCommandHandler.cs" />
     <Compile Include="CommandHandlers\InstallMeterCommandHandler.cs" />
+    <Compile Include="CommandHandlers\UpdateCircuitDetailsCommandHandler.cs" />
     <Compile Include="Commands\CreateCircuitCommand.cs" />
     <Compile Include="CommandHandlers\UpdateSiteDetailsCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateSiteBillingAccountCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateSiteAddressCommandHandler.cs" />
+    <Compile Include="Commands\UpdateCircuitDetailsCommand.cs" />
     <Compile Include="Commands\UpdateSiteAddressCommand.cs" />
     <Compile Include="Commands\UpdateSiteBillingAccountCommand.cs" />
     <Compile Include="BatchBuilder\MeterTestResultBatchBuilder.cs" />

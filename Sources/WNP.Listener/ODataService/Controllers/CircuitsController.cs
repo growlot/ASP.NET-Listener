@@ -2,6 +2,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
+using AMSLLC.Listener.ApplicationService.Commands;
+
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
@@ -22,6 +24,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using MetadataService.Attributes;
     using System.Net;
     using Utilities;
+    using System.Web.OData;
 
     /// <summary>
     /// Controller for Circuits.
@@ -102,6 +105,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
             if (existingCircuit != null)
             {
                 var circuitDelta = this.GetRequestEntityDelta<CircuitEntity>();
+                return this.UpdateCircuit(existingCircuit, circuitDelta, circuitKeyList.ToArray());
+
                 if (circuitDelta.GetChangedPropertyNames().Count() > 0)
                 {
                     throw new NotImplementedException("Circuit update is currently not implemented.");
@@ -111,19 +116,28 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
             else
             {
-                var descriptionFieldName = circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc.ToUpperInvariant()];
-                if (circuitModelMapping.FieldInfo[descriptionFieldName].IsPrimaryKey)
-                {
-                    var circuit = this.GetRequestEntity<CircuitEntity>();
+                var circuit = this.GetRequestEntity<CircuitEntity>();
+                circuit.Site = (int)circuitKeyList.First(item => item.Key == circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site]).Value;
 
-                    circuit.Site = (int)circuitKey.First(item => item.Key == circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site]).Value;
-                    circuit.CircuitDesc = (string)circuitKey.First(item => item.Key == circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc]).Value;
-                    return this.CreateCircuit(circuit);
+                var primaryKeyFieldName = circuitModelMapping.FieldInfo.First(fi => fi.Value.IsPrimaryKey).Key;
+                if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.MeterPoint.ToUpper()] == primaryKeyFieldName)
+                {
+                    circuit.MeterPoint = (string)circuitKeyList.First(item => item.Key == primaryKeyFieldName).Value;
+                }
+                else if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.ServicePoint.ToUpper()] == primaryKeyFieldName)
+                {
+                    circuit.ServicePoint = (string)circuitKeyList.First(item => item.Key == primaryKeyFieldName).Value;
+                }
+                else if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc.ToUpper()] == primaryKeyFieldName)
+                {
+                    circuit.CircuitDesc = (string)circuitKeyList.First(item => item.Key == primaryKeyFieldName).Value;
                 }
                 else
                 {
-                    return this.PrepareGetResponse(existingCircuit);
+                    throw new NotSupportedException($"Field {primaryKeyFieldName} is not supported as primary key.");
                 }
+
+                return this.CreateCircuit(circuit);
             }
         }
 
@@ -246,12 +260,15 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 SiteId = circuit.Site.Value,
                 Description = circuit.CircuitDesc,
                 EnclosureType = circuit.EnclosureType,
+                HasBracket = circuit.HasBracket == "Y" ? true : false,
                 InstallDate = circuit.InstallDate,
                 Latitude = (decimal?)circuit.Latitude,
                 Longitude = (decimal?)circuit.Longitude,
+                MeterPoint = circuit.MeterPoint,
                 NumberOfConductorsPerPhase = circuit.ConductorsPerPhase,
                 ServiceAmperage = (decimal?)circuit.ServiceAmps,
                 ServiceLocation = circuit.ServiceLocation,
+                ServicePoint = circuit.ServicePoint,
                 ServiceVoltage = (decimal?)circuit.ServiceVoltage,
                 WireLocation = circuit.WireLocation,
                 WireSize = circuit.WireSize,
@@ -274,6 +291,82 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var createdCircuit = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<CircuitEntity>($"WHERE {DBMetadata.Circuit.Owner}=@0 and {DBMetadata.Circuit.Site}=@1 and {DBMetadata.Circuit.CircuitDesc}=@2", this.Owner, circuit.Site, circuit.CircuitDesc);
 
             return await this.PrepareCreatedResponse(createdCircuit);
+        }
+
+        private async Task<IHttpActionResult> UpdateCircuit(CircuitEntity existingCircuit, Delta<CircuitEntity> circuitDelta, KeyValuePair<string, object>[] key)
+        {
+            var changedProperties = circuitDelta.GetChangedPropertyNames();
+
+            if (changedProperties.Contains(nameof(SiteEntity.InterconnectUtility))
+                || changedProperties.Contains(nameof(SiteEntity.IsInterconnect)))
+            {
+                throw new NotImplementedException("Update of the properties InterconnectUtility, IsInterconnect, is not yet implemented");
+            }
+
+            List<Task> commandResults = new List<Task>();
+
+            if (changedProperties.Contains(nameof(CircuitEntity.CircuitDesc))
+                || changedProperties.Contains(nameof(CircuitEntity.EnclosureType))
+                || changedProperties.Contains(nameof(CircuitEntity.ServicePoint))
+                || changedProperties.Contains(nameof(CircuitEntity.InstallDate))
+                || changedProperties.Contains(nameof(CircuitEntity.MeterPoint))
+                || changedProperties.Contains(nameof(CircuitEntity.HasBracket)))
+            {
+                var updateCircuitDetails = new UpdateCircuitDetailsCommand()
+                {
+                    Owner = this.Owner,
+                    SiteId = existingCircuit.Site.Value,
+                    CircuitId = existingCircuit.Circuit.Value,
+                    CircuitDescription = GetChangedOrCurrent(circuitDelta, nameof(CircuitEntity.CircuitDesc), existingCircuit.CircuitDesc),
+                    EnclosureType = GetChangedOrCurrent(circuitDelta, nameof(CircuitEntity.EnclosureType), existingCircuit.EnclosureType),
+                    ServicePoint = GetChangedOrCurrent(circuitDelta, nameof(CircuitEntity.ServicePoint), existingCircuit.ServicePoint),
+                    InstallDate = GetChangedOrCurrent(circuitDelta, nameof(CircuitEntity.InstallDate), existingCircuit.InstallDate),
+                    MeterPoint = GetChangedOrCurrent(circuitDelta, nameof(CircuitEntity.MeterPoint), existingCircuit.MeterPoint),
+                    HasBracket = GetChangedOrCurrent(circuitDelta, nameof(CircuitEntity.HasBracket), existingCircuit.HasBracket) == "Y" ? true : false,
+                };
+
+                commandResults.Add(this.commandBus.PublishAsync(updateCircuitDetails));
+            }
+
+            if (changedProperties.Contains(nameof(CircuitEntity.Latitude))
+                || changedProperties.Contains(nameof(CircuitEntity.Longitude)))
+            {
+                throw new NotImplementedException("Update of the properties Latitude, Longitude is not yet implemented");
+            }
+
+            if (changedProperties.Contains(nameof(CircuitEntity.SflDesiredAccDel))
+                || changedProperties.Contains(nameof(CircuitEntity.SflDesiredAccRec))
+                || changedProperties.Contains(nameof(CircuitEntity.SllDesiredAccDel))
+                || changedProperties.Contains(nameof(CircuitEntity.SllDesiredAccRec))
+                || changedProperties.Contains(nameof(CircuitEntity.SpfDesiredAccDel))
+                || changedProperties.Contains(nameof(CircuitEntity.SpfDesiredAccRec))
+                )
+            {
+                throw new NotImplementedException("Update of the properties SflDesiredAccDel, SflDesiredAccRec, SllDesiredAccDel, SllDesiredAccRec, SpfDesiredAccDel, SpfDesiredAccRec is not yet implemented");
+            }
+
+            if (changedProperties.Contains(nameof(CircuitEntity.ServiceLocation))
+                || changedProperties.Contains(nameof(CircuitEntity.ServiceVoltage))
+                || changedProperties.Contains(nameof(CircuitEntity.ServiceAmps))
+                || changedProperties.Contains(nameof(CircuitEntity.ServicePhase))
+                || changedProperties.Contains(nameof(CircuitEntity.ServiceWire)))
+            {
+                throw new NotImplementedException("Update of the properties ServiceLocation, ServiceVoltage, ServiceAmps, ServicePhase, ServiceWire is not yet implemented");
+            }
+
+            if (changedProperties.Contains(nameof(CircuitEntity.WireType))
+                || changedProperties.Contains(nameof(CircuitEntity.WireSize))
+                || changedProperties.Contains(nameof(CircuitEntity.ConductorsPerPhase))
+                || changedProperties.Contains(nameof(CircuitEntity.WireLocation)))
+            {
+                throw new NotImplementedException("Update of the properties WireType, WireSize, ConductorsPerPhase, WireLocation is not yet implemented");
+            }
+
+            await Task.WhenAll(commandResults);
+
+            var updateEntity = this.GetExisting<CircuitEntity>(key);
+
+            return await this.PrepareUpdatedResponse(updateEntity);
         }
     }
 }

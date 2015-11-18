@@ -71,6 +71,7 @@
     <Compile Include="OwnerAggregate\OwnerMemento.cs" />
     <Compile Include="OwnerAggregate\OwnerSite.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Circuit.cs" />
+    <Compile Include="SiteAggregate\CircuitChild\CircuitDetailsUpdatedEvent.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Equipment\EquipmentStatus.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Equipment\InstallationPoint.cs" />
     <Compile Include="SiteAggregate\CircuitChild\Equipment\TransformerSelectedRatioUpdatedEvent.cs" />

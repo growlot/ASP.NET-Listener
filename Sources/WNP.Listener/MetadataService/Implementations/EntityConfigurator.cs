@@ -73,7 +73,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
             var circuitConfiguration = new EntityConfiguration(Circuit.FullTableName)
                 .Contained()
-                .HasKey(Circuit.CircuitDesc);
+                .HasKey(Circuit.MeterPoint);
 
             this.configurations.Add(Site.FullTableName, siteConfiguration);
             this.configurations.Add(Circuit.FullTableName, circuitConfiguration);

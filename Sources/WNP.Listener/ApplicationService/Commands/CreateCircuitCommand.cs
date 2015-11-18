@@ -138,5 +138,29 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// The install date.
         /// </value>
         public DateTime? InstallDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the service point.
+        /// </summary>
+        /// <value>
+        /// The service point.
+        /// </value>
+        public string ServicePoint { get; set; }
+
+        /// <summary>
+        /// Gets or sets the meter point.
+        /// </summary>
+        /// <value>
+        /// The meter point.
+        /// </value>
+        public string MeterPoint { get; set; }
+
+        /// <summary>
+        /// Gets or sets the has bracket.
+        /// </summary>
+        /// <value>
+        /// The has bracket.
+        /// </value>
+        public bool HasBracket { get; set; }
     }
 }

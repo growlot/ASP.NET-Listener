@@ -82,11 +82,6 @@ namespace AMSLLC.Listener.Utilities
         {
             object result = null;
 
-            if (Conversions.ContainsKey(targetType))
-            {
-                return Conversions[targetType](data);
-            }
-
             // If the type is nullable and the result should be null, set a null value.
             if (targetType.IsNullable() && (data == null || data == DBNull.Value))
             {
@@ -96,6 +91,11 @@ namespace AMSLLC.Listener.Utilities
 
             // Convert.ChangeType fails on Nullable<T> types.  We want to try to cast to the underlying type anyway.
             var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+            if (Conversions.ContainsKey(underlyingType))
+            {
+                return Conversions[underlyingType](data);
+            }
 
             try
             {

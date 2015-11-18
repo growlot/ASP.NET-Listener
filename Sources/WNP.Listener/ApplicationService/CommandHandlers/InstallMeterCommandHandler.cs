@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService.CommandHandlers
 {
+    using System;
     using System.Threading.Tasks;
     using Commands;
     using Domain;
@@ -35,6 +36,11 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
             ((IOriginator)site).SetMemento(siteMemento);
 
             IMemento meterMemento = await this.UnitOfWork.SitesRepository.GetMeter(command.EquipmentNumber);
+            if (meterMemento == null)
+            {
+                throw new InvalidOperationException("Can not install meter to circuit, because specified meter was not found.");
+            }
+
             var meter = new CircuitMeter();
             ((IOriginator)meter).SetMemento(meterMemento);
 

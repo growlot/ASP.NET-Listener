@@ -17,6 +17,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <param name="siteId">The site identifier.</param>
         /// <param name="circuitId">The circuit identifier.</param>
         /// <param name="description">The description.</param>
+        /// <param name="meterPoint">The meter point.</param>
+        /// <param name="servicePoint">The service point.</param>
+        /// <param name="hasBracket">Indicator to determine if circuit has a bracket.</param>
         /// <param name="longitude">The longitude.</param>
         /// <param name="latitude">The latitude.</param>
         /// <param name="serviceLocation">The service location.</param>
@@ -34,6 +37,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             int siteId,
             int circuitId,
             string description,
+            string meterPoint,
+            string servicePoint,
+            bool hasBracket,
             decimal? longitude,
             decimal? latitude,
             string serviceLocation,
@@ -51,6 +57,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             this.SiteId = siteId;
             this.CircuitId = circuitId;
             this.Description = description;
+            this.MeterPoint = meterPoint;
+            this.ServicePoint = servicePoint;
+            this.HasBracket = hasBracket;
             this.Longitude = longitude;
             this.Latitude = latitude;
             this.ServiceLocation = serviceLocation;
@@ -89,6 +98,30 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// The circuit description.
         /// </value>
         public string Description { get; private set; }
+
+        /// <summary>
+        /// Gets the meter point.
+        /// </summary>
+        /// <value>
+        /// The meter point.
+        /// </value>
+        public string MeterPoint { get; private set; }
+
+        /// <summary>
+        /// Gets the service point.
+        /// </summary>
+        /// <value>
+        /// The service point.
+        /// </value>
+        public string ServicePoint { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this circuit has bracket.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this circuit has bracket; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasBracket { get; private set; }
 
         /// <summary>
         /// Gets the longitude.

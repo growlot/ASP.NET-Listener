@@ -43,22 +43,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <inheritdoc/>
         public override string GetEntityTableName() => DBMetadata.Site.FullTableName;
 
-        /////// <summary>
-        /////// Gets the circuits of this site.
-        /////// </summary>
-        /////// <returns>The list of circuits.</returns>
-        ////public Task<IHttpActionResult> GetCircuits()
-        ////{
-        ////    if (!this.ModelState.IsValid)
-        ////    {
-        ////        return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
-        ////    }
-
-        ////    var queryOptions = this.ConstructQueryOptions();
-
-        ////    return Task.FromResult<IHttpActionResult>(this.Ok());
-        ////}
-
         /// <summary>
         /// Adds new Site.
         /// </summary>

@@ -16,6 +16,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
     {
         private IList<IDomainEvent> events;
         private string description;
+        private string meterPoint;
+        private string servicePoint;
+        private bool hasBracket;
         private GeoLocation location;
         private ElectricService service;
         private string enclosureType;
@@ -41,6 +44,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <param name="siteId">The site identifier.</param>
         /// <param name="id">The identifier.</param>
         /// <param name="description">The description.</param>
+        /// <param name="meterPoint">The meter point.</param>
+        /// <param name="servicePoint">The service point.</param>
+        /// <param name="hasBracket">Indicator to determine if circuit has a bracket.</param>
         /// <param name="location">The location.</param>
         /// <param name="service">The service.</param>
         /// <param name="enclosureType">Type of the enclosure.</param>
@@ -50,6 +56,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             int siteId,
             int id,
             string description,
+            string meterPoint,
+            string servicePoint,
+            bool hasBracket,
             GeoLocation location,
             ElectricService service,
             string enclosureType,
@@ -58,6 +67,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             this.events = events;
             this.Id = id;
             this.description = description;
+            this.meterPoint = meterPoint;
+            this.servicePoint = servicePoint;
+            this.hasBracket = hasBracket;
             this.location = location;
             this.service = service;
             this.enclosureType = enclosureType;
@@ -68,6 +80,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
                     siteId: siteId,
                     circuitId: this.Id,
                     description: this.description,
+                    meterPoint: this.meterPoint,
+                    servicePoint: this.servicePoint,
+                    hasBracket: this.hasBracket,
                     longitude: this.location?.Longitude,
                     latitude: this.location?.Latitude,
                     serviceLocation: this.service?.Location,
@@ -90,6 +105,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <param name="siteId">The site identifier.</param>
         /// <param name="id">The identifier.</param>
         /// <param name="description">The description.</param>
+        /// <param name="meterPoint">The meter point.</param>
+        /// <param name="servicePoint">The service point.</param>
+        /// <param name="hasBracket">Indicator to determine if circuit has a bracket.</param>
         /// <param name="location">The location.</param>
         /// <param name="service">The service.</param>
         /// <param name="enclosureType">Type of the enclosure.</param>
@@ -102,6 +120,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             int siteId,
             int id,
             string description,
+            string meterPoint,
+            string servicePoint,
+            bool hasBracket,
             GeoLocation location,
             ElectricService service,
             string enclosureType,
@@ -112,6 +133,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
                 siteId: siteId,
                 id: id,
                 description: description,
+                meterPoint: meterPoint,
+                servicePoint: servicePoint,
+                hasBracket: hasBracket,
                 location: location,
                 service: service,
                 enclosureType: enclosureType,
@@ -119,13 +143,52 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         }
 
         /// <summary>
-        /// Checks if specified description is same as current description.
+        /// Updates the circuit details.
+        /// </summary>
+        /// <param name="siteId">The site identifier.</param>
+        /// <param name="newDescription">The description.</param>
+        /// <param name="newEnclosureType">Type of the enclosure.</param>
+        /// <param name="newHasBracket">The has bracket.</param>
+        /// <param name="newInstallDate">The install date.</param>
+        /// <param name="newMeterPoint">The meter point.</param>
+        /// <param name="newServicePoint">The service point.</param>
+        internal void UpdateDetails(int siteId, string newDescription, string newEnclosureType, bool newHasBracket, DateTime? newInstallDate, string newMeterPoint, string newServicePoint)
+        {
+            this.description = newDescription;
+            this.enclosureType = newEnclosureType;
+            this.hasBracket = newHasBracket;
+            this.installDate = newInstallDate;
+            this.meterPoint = newMeterPoint;
+            this.servicePoint = newServicePoint;
+
+            this.events.Add(
+                new CircuitDetailsUpdatedEvent(
+                    siteId: siteId,
+                    circuitId: this.Id,
+                    description: this.description,
+                    hasBracket: this.hasBracket,
+                    meterPoint: this.meterPoint,
+                    servicePoint: this.servicePoint,
+                    enclosureType: this.enclosureType,
+                    installDate: this.installDate));
+        }
+
+        /// <summary>
+        /// Checks if specified values are not colliding with current circuit values.
         /// </summary>
         /// <param name="newDescription">The description.</param>
-        /// <returns>True if description match, false otherwise</returns>
-        public bool SameDescription(string newDescription)
+        /// <param name="newMeterPoint">The meter point.</param>
+        internal void EnsureUniqueness(string newDescription, string newMeterPoint)
         {
-            return this.description.Equals(newDescription, StringComparison.OrdinalIgnoreCase);
+            if (this.description.Equals(newDescription, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Circuit with same description already exists in this site.");
+            }
+
+            if (this.meterPoint != null && this.meterPoint.Equals(newMeterPoint, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Circuit with same meter point already exists in this site.");
+            }
         }
 
         /// <summary>
@@ -136,7 +199,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
         /// <param name="meterInstallDate">The install date.</param>
         /// <param name="installUser">The install user.</param>
         /// <param name="installServiceOrder">The service order information.</param>
-        public void InstallMeter(
+        internal void InstallMeter(
             int siteId,
             CircuitMeter meter,
             DateTime meterInstallDate,
@@ -188,6 +251,9 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             this.description = circuitMemento.Description;
             this.enclosureType = circuitMemento.EnclosureType;
             this.installDate = circuitMemento.InstallDate;
+            this.meterPoint = circuitMemento.MeterPoint;
+            this.servicePoint = circuitMemento.ServicePoint;
+            this.hasBracket = circuitMemento.HasBracket;
 
             if (circuitMemento.Latitude.HasValue && circuitMemento.Longitude.HasValue)
             {

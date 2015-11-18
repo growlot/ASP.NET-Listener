@@ -57,6 +57,9 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
 
             site.AddCircuit(
                 command.Description,
+                command.MeterPoint,
+                command.ServicePoint,
+                command.HasBracket,
                 location,
                 service,
                 command.EnclosureType,

@@ -159,12 +159,18 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         /// Adds new circuit to the site.
         /// </summary>
         /// <param name="circuitDescription">The description.</param>
+        /// <param name="meterPoint">The meter point.</param>
+        /// <param name="servicePoint">The service point.</param>
+        /// <param name="hasBracket">Indicator to determine if circuit has a bracket.</param>
         /// <param name="location">The location.</param>
         /// <param name="service">The service.</param>
         /// <param name="enclosureType">Type of the enclosure.</param>
         /// <param name="installDate">The install date.</param>
         public void AddCircuit(
             string circuitDescription,
+            string meterPoint,
+            string servicePoint,
+            bool hasBracket,
             GeoLocation location,
             ElectricService service,
             string enclosureType,
@@ -177,10 +183,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
 
             foreach (var existingCircuit in this.circuits)
             {
-                if (existingCircuit.SameDescription(circuitDescription))
-                {
-                    throw new InvalidOperationException("Can not add Circuit, because description is not unique.");
-                }
+                existingCircuit.EnsureUniqueness(circuitDescription, meterPoint);
             }
 
             Circuit.CreateCircuit(
@@ -188,10 +191,45 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
                 this.Id,
                 this.GetNextCirciutId(),
                 circuitDescription,
+                meterPoint,
+                servicePoint,
+                hasBracket,
                 location,
                 service,
                 enclosureType,
                 installDate);
+        }
+
+        /// <summary>
+        /// Updates the circuit details.
+        /// </summary>
+        /// <param name="circuitId">The circuit identifier.</param>
+        /// <param name="circuitDescription">The circuit description.</param>
+        /// <param name="enclosureType">Type of the enclosure.</param>
+        /// <param name="hasBracket">The has bracket.</param>
+        /// <param name="installDate">The install date.</param>
+        /// <param name="meterPoint">The meter point.</param>
+        /// <param name="servicePoint">The service point.</param>
+        public void UpdateCircuitDetails(int circuitId, string circuitDescription, string enclosureType, bool hasBracket, DateTime? installDate, string meterPoint, string servicePoint)
+        {
+            var circuit = this.circuits.First(c => c.Id == circuitId);
+
+            foreach (var existingCircuit in this.circuits)
+            {
+                if (existingCircuit.Id != circuitId)
+                {
+                    existingCircuit.EnsureUniqueness(circuitDescription, meterPoint);
+                }
+            }
+
+            circuit.UpdateDetails(
+                siteId: this.Id,
+                newDescription: circuitDescription,
+                newEnclosureType: enclosureType,
+                newHasBracket: hasBracket,
+                newInstallDate: installDate,
+                newMeterPoint: meterPoint,
+                newServicePoint: servicePoint);
         }
 
         /// <summary>

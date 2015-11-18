@@ -58,6 +58,8 @@ namespace AMSLLC.Listener.ODataService
 
             this.commandBus.Subscribe<CreateCircuitCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<CreateCircuitCommandHandler>().HandleAsync(command));
+            this.commandBus.Subscribe<UpdateCircuitDetailsCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<UpdateCircuitDetailsCommandHandler>().HandleAsync(command));
 
             this.commandBus.Subscribe<InstallMeterCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<InstallMeterCommandHandler>().HandleAsync(command));
@@ -116,6 +118,8 @@ namespace AMSLLC.Listener.ODataService
 
             this.domainEventBus.SubscribeAsync<CircuitCreatedEvent>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<CircuitCreatedEventHandler>().HandleAsync(domainEvent));
+            this.domainEventBus.SubscribeAsync<CircuitDetailsUpdatedEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<CircuitDetailsUpdatedEventHandler>().HandleAsync(domainEvent));
 
             this.domainEventBus.SubscribeAsync<EquipmentInstalledInCircuitEvent>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<EquipmentInstalledInCircuitEventHandler>().HandleAsync(domainEvent));
