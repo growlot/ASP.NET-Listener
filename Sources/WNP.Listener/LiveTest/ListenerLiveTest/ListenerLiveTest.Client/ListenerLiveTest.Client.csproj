@@ -36,6 +36,10 @@
     <Reference Include="AMSLLC.Listener.Client">
       <HintPath>..\..\..\Listener.Client\bin\Debug\AMSLLC.Listener.Client.dll</HintPath>
     </Reference>
+    <Reference Include="AMSLLC.Listener.Shared, Version=2.2.0.0, Culture=neutral, PublicKeyToken=51490ee0cc295bc0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Listener.Shared\bin\Debug\AMSLLC.Listener.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>

@@ -9,6 +9,7 @@ namespace ListenerLiveTest.Client
     using System.Threading.Tasks;
     using AMSLLC.Listener.Client;
     using AMSLLC.Listener.Client.Message;
+    using AMSLLC.Listener.Shared;
     using Communication;
     using Message;
     using Serilog;
@@ -25,7 +26,10 @@ namespace ListenerLiveTest.Client
             //UseManager(parallelCount, totalRequests);
             //UseClient(totalRequests);
             //UseClientForBatch();
-            QueryData(new TransactionFilter { BatchNumber = "B1" });
+            //new TransactionFilter { BatchNumber = "B1" }
+            var filter = new TransactionFilter();
+            filter.StatusTypes.Add(TransactionStatusType.Failed);
+            QueryData(filter);
 
             Console.WriteLine("Press Enter to exit...");
             Console.ReadLine();
@@ -55,8 +59,8 @@ namespace ListenerLiveTest.Client
             var result = client.SearchTransactions(filter);
             foreach (var transactionInfoResponseMessage in result)
             {
-                Log.Logger.Information("Entity Key: {0}, Created Date: {1}, Entity Category: {2}", null,
-                    transactionInfoResponseMessage.EntityKey, transactionInfoResponseMessage.EntityCategory);
+                Log.Logger.Information("Entity Key: {0}, Created Date: {1}, Entity Category: {2}, Message: {3}",
+                    transactionInfoResponseMessage.EntityKey, transactionInfoResponseMessage.CreatedDate, transactionInfoResponseMessage.EntityCategory, transactionInfoResponseMessage.Message);
             }
 
         }

@@ -159,13 +159,18 @@ namespace AMSLLC.Listener.Client
                         f => f.StartDate == filter.TransactionDate,
                         Expression.AndAlso);
                 }
-
-                if (filter.StatusTypes.Any())
+                var str = filter.StatusTypes.Select(s => (int)s);
+                if (str.Any())
                 {
-                    baseExpression =
-                        baseExpression.Compose(
-                            f => filter.StatusTypes.Contains((TransactionStatusType)f.TransactionStatusId),
-                            Expression.AndAlso);
+                    Expression<Func<TransactionRegistryViewEntity, bool>> inner = (o) => false;
+                    foreach (int i in str)
+                    {
+                        inner =
+                        inner.Compose(
+                            f => f.TransactionStatusId == i,
+                            Expression.OrElse);
+                    }
+                    baseExpression = baseExpression.Compose(inner, Expression.AndAlso);
                 }
             }
             return baseExpression;
