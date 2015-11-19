@@ -32,7 +32,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
         /// Initializes a new instance of the <see cref="CircuitMeter"/> class.
         /// </summary>
         /// <param name="events">The events.</param>
-        public CircuitMeter(IList<IDomainEvent> events)
+        internal CircuitMeter(IList<IDomainEvent> events)
         {
             this.events = events;
         }
@@ -41,7 +41,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
         /// Activates the related entity by giving acces to aggregate root event list.
         /// </summary>
         /// <param name="aggregateRootEvents">The aggregate root events.</param>
-        public void ActivateEvents(IList<IDomainEvent> aggregateRootEvents)
+        internal void ActivateEvents(IList<IDomainEvent> aggregateRootEvents)
         {
             this.events = aggregateRootEvents;
         }
@@ -51,7 +51,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
         /// </summary>
         /// <param name="circuitMultiplier">The circuit multiplier.</param>
         /// <exception cref="System.InvalidOperationException">Can not update billing information, because entity doesn't belong to any aggregate root.</exception>
-        public void UpdateBillingInformation(decimal circuitMultiplier)
+        internal void UpdateBillingInformation(decimal circuitMultiplier)
         {
             if (this.events == null)
             {
@@ -66,9 +66,23 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
                 this.billingMultiplier = newBillingMultiplier;
                 this.billingKh = newBillingKh;
 
-                var multiplierUpdatedEvent = new MeterBillingInformationUpdatedEvent(this.Id, this.billingMultiplier, this.billingKh);
-                this.events.Add(multiplierUpdatedEvent);
+                var billingInformationUpdatedEvent = new MeterBillingInformationUpdatedEvent(this.Id, this.billingMultiplier, this.billingKh);
+                this.events.Add(billingInformationUpdatedEvent);
             }
+        }
+
+        /// <summary>
+        /// Removes the billing information from this meter.
+        /// </summary>
+        internal void RemoveBillingInformation()
+        {
+            if (this.events == null)
+            {
+                throw new InvalidOperationException("Can not remove billing information, because entity doesn't belong to any aggregate root.");
+            }
+
+            var billingInformationRemovedEvent = new MeterBillingInformationUpdatedEvent(this.Id, null, null);
+            this.events.Add(billingInformationRemovedEvent);
         }
 
         /// <summary>
@@ -76,7 +90,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild.Equipment
         /// </summary>
         /// <param name="reason">The reason why meter can't be installed. Null if it can be installed.</param>
         /// <returns>True if meter can be installed, false otherwise.</returns>
-        public bool CanBeInstalled(out string reason)
+        internal bool CanBeInstalled(out string reason)
         {
             reason = null;
             if (this.status.IsRetired())

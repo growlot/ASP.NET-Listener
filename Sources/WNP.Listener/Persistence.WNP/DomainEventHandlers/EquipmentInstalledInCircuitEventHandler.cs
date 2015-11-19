@@ -53,45 +53,21 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
                         $@"
 SET 
 {DBMetadata.EqpMeter.Site} = @0,
-{DBMetadata.EqpMeter.Circuit} = @1
+{DBMetadata.EqpMeter.Circuit} = @1,
+{DBMetadata.EqpMeter.ModBy} = @2,
+{DBMetadata.EqpMeter.ModDate} = @3
 WHERE
-{DBMetadata.EqpMeter.Owner} = @2
-and {DBMetadata.EqpMeter.EqpNo} = @3
+{DBMetadata.EqpMeter.Owner} = @4
+and {DBMetadata.EqpMeter.EqpNo} = @5
 ",
                         domainEvent.SiteId,
                         domainEvent.CircuitId,
+                        this.User,
+                        this.TimeProvider.Now(),
                         this.Owner,
                         domainEvent.EquipmentNumber);
 
                     // result.Add(this.UpdateAsync(meter, meterColumns));
-                    break;
-                case "CT":
-                    var currentTransformer = new EqpCtEntity()
-                    {
-                        Owner = this.Owner,
-                        EqpNo = domainEvent.EquipmentNumber,
-                        Site = domainEvent.SiteId,
-                        Circuit = domainEvent.CircuitId
-                    };
-                    var currentTransformerColumns = new List<string>();
-                    currentTransformerColumns.Add(DBMetadata.EqpCt.Site);
-                    currentTransformerColumns.Add(DBMetadata.EqpCt.Circuit);
-
-                    result.Add(this.UpdateAsync(currentTransformer, currentTransformerColumns));
-                    break;
-                case "PT":
-                    var potentialTransformer = new EqpPtEntity()
-                    {
-                        Owner = this.Owner,
-                        EqpNo = domainEvent.EquipmentNumber,
-                        Site = domainEvent.SiteId,
-                        Circuit = domainEvent.CircuitId
-                    };
-                    var potentialTransformerColumns = new List<string>();
-                    potentialTransformerColumns.Add(DBMetadata.EqpPt.Site);
-                    potentialTransformerColumns.Add(DBMetadata.EqpPt.Circuit);
-
-                    result.Add(this.UpdateAsync(potentialTransformer, potentialTransformerColumns));
                     break;
                 default:
                     throw new InvalidOperationException(StringUtilities.Invariant($"Can not persist the equipment installation information, because equipment type {domainEvent} is not supported."));
@@ -124,7 +100,7 @@ WHERE {DBMetadata.SiteInstallHistory.Owner} = @0 and {DBMetadata.SiteInstallHist
                 Circuit = domainEvent.CircuitId,
                 AccountNo = siteEntity.AccountNo,
                 PremiseNo = siteEntity.PremiseNo,
-                InstallStatus = "P",
+                InstallStatus = "I",
                 InstallDate = domainEvent.InstallDate,
                 InstallBy = domainEvent.InstallUser,
                 InstallServiceOrderComplete = domainEvent.InstallOrderCompleted,

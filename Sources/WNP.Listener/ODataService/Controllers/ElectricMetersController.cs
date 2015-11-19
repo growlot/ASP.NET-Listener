@@ -7,13 +7,21 @@
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
-    using AMSLLC.Listener.MetadataService.Attributes;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
+    using System.Web.Http;
     using ApplicationService;
+    using ApplicationService.Commands;
     using Base;
     using MetadataService;
+    using MetadataService.Attributes;
+    using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
     using Services.FilterTransformer;
+    using Utilities;
 
     /// <summary>
     /// Controller for electric meters
@@ -37,49 +45,81 @@ namespace AMSLLC.Listener.ODataService.Controllers
         public override string GetEntityTableName() => DBMetadata.EqpMeter.FullTableName;
 
         /// <summary>
-        /// Example URI: ~/ElectricMeters('1')/AMSLLC.Listener.ElectricMeter_Test
+        /// Uninstalls meter.
+        /// Example URI: ~/ElectricMeters('1')/AMSLLC.Listener.Listener.Uninstall
         /// POST data:
-        /// {mystr: "user"}
-        /// </summary>
-        /// <param name="mystr"></param>
-        /// <returns></returns>
-        [BoundAction]
-        public string Test(string mystr)
-        {
-            return mystr;
-        }
-
-        /// <summary>
-        /// Installs meter.
-        /// Example URI: ~/ElectricMeters('1')/AMSLLC.Listener.Listener.ElectricMeter_Install
-        /// POST data:
-        /// {siteId: 1, circuitIndex: 1, userName: "user", installationDate: "2015-07-07"}
+        /// {userName: "user", installationDate: "2015-07-07"}
         /// </summary>
         /// <param name="equipmentNumber">Electric meter equipment number used as a key parameter to select specific meter</param>
-        /// <param name="siteId">Site where equipment will be installed</param>
-        /// <param name="circuitIndex">Circuit index in the site </param>
-        /// <param name="userName">User name of the users who did the installation</param>
-        /// <param name="installationDate">Time when installation was performed</param>
+        /// <param name="uninstallUser">User name of the users who did the uninstallation</param>
+        /// <param name="uninstallDate">Time when uninstall was performed</param>
+        /// <param name="uninstallReason">The reason for uninstallation.</param>
+        /// <param name="uninstallServiceOrderStarted">The uninstall service order started.</param>
+        /// <param name="uninstallServiceOrderCompleted">The uninstall service order completed.</param>
+        /// <returns>
+        /// The result of action.
+        /// </returns>
         [BoundAction]
-        public void Install([BoundEntityKey] string equipmentNumber, int siteId, int circuitIndex, string userName, DateTime installationDate)
+        public async Task<IHttpActionResult> Uninstall(
+            [BoundEntityKey] string equipmentNumber,
+            string uninstallUser,
+            DateTime uninstallDate,
+            string uninstallReason,
+            DateTime? uninstallServiceOrderStarted = null,
+            DateTime? uninstallServiceOrderCompleted = null)
         {
-            ////    if (!ModelState.IsValid)
-            ////    {
-            ////        return BadRequest();
-            ////    }
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
 
-            ////    int siteId = (int)parameters[this.metadataService.GetModelMappingByTableName("teqp_meter").ColumnToModelMappings["site"]];
-            ////    int circuitId = (int)parameters[this.metadataService.GetModelMappingByTableName("teqp_meter").ColumnToModelMappings["circuit"]];
-            ////    string installerId = (string)parameters[this.metadataService.GetModelMappingByTableName("tsite_install_history").ColumnToModelMappings["install_by"]];
-            ////    DateTime installDate = (DateTime)parameters[this.metadataService.GetModelMappingByTableName("tsite_install_history").ColumnToModelMappings["install_date"]];
-            ////    //DateTime installServiceOrderIssueDate = (DateTime)parameters[this.metadataService.GetModelMappingByTableName("tsite_install_history").ColumnToModelMappings["install_service_order_start"]];
-            ////    //DateTime installServiceOrderCompleteDate = (DateTime)parameters[this.metadataService.GetModelMappingByTableName("tsite_install_history").ColumnToModelMappings["install_service_order_complete"]];
+            this.ConstructQueryOptions();
+            var meterModelMapping = this.metadataService.GetModelMappingByTableName(DBMetadata.EqpMeter.FullTableName);
 
-            ////    User selectedUser = Init.Users.FirstOrDefault(item => item.UserName == key);
-            ////    selectedUser.DefaultLocation = location;
+            var meterKey = this.GetRequestKey(meterModelMapping, 1);
+            if (meterKey == null)
+            {
+                return this.BadRequest($"Invalid key specified for the {meterModelMapping.ClassName}.");
+            }
 
-            ////    return CreateOkResponse(oDataModelType, result);
-            ////    return StatusCode(HttpStatusCode.NoContent);
+            var existingMeter = this.GetMeter<EqpMeterEntity>(meterKey, meterModelMapping);
+            if (existingMeter == null)
+            {
+                return this.NotFound();
+            }
+
+            if (!existingMeter.Site.HasValue || !existingMeter.Circuit.HasValue)
+            {
+                throw new InvalidOperationException(StringUtilities.Invariant($"Meter can not be uninstalled, becasue it is not currently installed."));
+            }
+
+            var uninstallMeterCommand = new UninstallMeterCommand()
+            {
+                CircuitId = existingMeter.Circuit.Value,
+                EquipmentNumber = existingMeter.EqpNo,
+                SiteId = existingMeter.Site.Value,
+                UninstallDate = uninstallDate,
+                UninstallReason = uninstallReason,
+                UninstallServiceOrderCompleted = uninstallServiceOrderCompleted,
+                UninstallServiceOrderStarted = uninstallServiceOrderStarted,
+                UninstallUser = uninstallUser
+            };
+
+            await this.commandBus.PublishAsync(uninstallMeterCommand);
+            return this.StatusCode(HttpStatusCode.NoContent);
+        }
+
+        private TEntity GetMeter<TEntity>(KeyValuePair<string, object>[] key, MetadataEntityModel modelMapping)
+        {
+            var sql =
+                Sql.Builder.Select(DBMetadata.EqpMeter.EqpNo, DBMetadata.EqpMeter.Site, DBMetadata.EqpMeter.Circuit)
+                    .From($"{modelMapping.TableName}")
+                    .Where(
+                        key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
+                            .Aggregate((s, s1) => $"{s} AND {s1}"),
+                        key.Select(kvp => kvp.Value).ToArray());
+
+            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
         }
 
         /// <summary>

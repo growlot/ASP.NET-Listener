@@ -247,8 +247,39 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             string installUser,
             ServiceOrder installServiceOrder)
         {
-            var circuit = this.circuits.First(item => item.Id == circuitId);
+            var circuit = this.circuits.FirstOrDefault(item => item.Id == circuitId);
+            if (circuit == null)
+            {
+                throw new InvalidOperationException("Can not install the meter, because circuit with ID {0} is not found in site {1} (ID: {2}).".FormatWith(circuitId, this.description, this.Id));
+            }
+
             circuit.InstallMeter(this.Id, meter, installDate, installUser, installServiceOrder);
+        }
+
+        /// <summary>
+        /// Uninstalls the meter.
+        /// </summary>
+        /// <param name="circuitId">The circuit identifier.</param>
+        /// <param name="meterId">The meter identifier.</param>
+        /// <param name="uninstallDate">The uninstall date.</param>
+        /// <param name="uninstallReason">The uninstall reason.</param>
+        /// <param name="uninstallUser">The uninstall user.</param>
+        /// <param name="uninstallServiceOrder">The uninstall service order.</param>
+        public void UninstallMeter(
+            int circuitId,
+            string meterId,
+            DateTime uninstallDate,
+            string uninstallReason,
+            string uninstallUser,
+            ServiceOrder uninstallServiceOrder)
+        {
+            var circuit = this.circuits.FirstOrDefault(item => item.Id == circuitId);
+            if (circuit == null)
+            {
+                throw new InvalidOperationException("Can not uninstall the meter, because circuit with ID {0} is not found in site {1} (ID: {2}).".FormatWith(circuitId, this.description, this.Id));
+            }
+
+            circuit.UninstallMeter(meterId, uninstallDate, uninstallReason, uninstallUser, uninstallServiceOrder);
         }
 
         /// <summary>

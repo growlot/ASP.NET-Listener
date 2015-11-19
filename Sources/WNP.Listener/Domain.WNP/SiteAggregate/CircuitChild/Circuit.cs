@@ -243,6 +243,41 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate.CircuitChild
             meter.UpdateBillingInformation(this.circuitMultiplier);
         }
 
+        /// <summary>
+        /// Uninstalls the meter.
+        /// </summary>
+        /// <param name="meterId">The meter identifier.</param>
+        /// <param name="uninstallDate">The uninstall date.</param>
+        /// <param name="uninstallReason">The uninstall reason.</param>
+        /// <param name="uninstallUser">The uninstall user.</param>
+        /// <param name="uninstallServiceOrder">The uninstall service order.</param>
+        internal void UninstallMeter(
+            string meterId,
+            DateTime uninstallDate,
+            string uninstallReason,
+            string uninstallUser,
+            ServiceOrder uninstallServiceOrder)
+        {
+            var meter = this.meters.FirstOrDefault(item => item.Id == meterId);
+            if (meter == null)
+            {
+                throw new InvalidOperationException("Can not uninstall the meter, because meter with equipment number {0} is not found in circuit {1} (ID: {2}).".FormatWith(meterId, this.description, this.Id));
+            }
+
+            this.meters.Remove(meter);
+            var meterRemovedEvent = new EquipmentUninstalledFromCircuitEvent(
+                equipmentType: EquipmentType.ElectricMeter.Code,
+                equipmentNumber: meter.Id,
+                uninstallDate: uninstallDate,
+                uninstallUser: uninstallUser,
+                uninstallReason: uninstallReason,
+                orderIssued: uninstallServiceOrder.OrderIssued,
+                orderCompleted: uninstallServiceOrder.OrderCompleted);
+
+            this.events.Add(meterRemovedEvent);
+            meter.RemoveBillingInformation();
+        }
+
         /// <inheritdoc/>
         protected override void SetMemento(IMemento memento)
         {

@@ -208,7 +208,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     {
                         CircuitId = existingCircuit.Circuit.Value,
                         EquipmentNumber = equipmentNumber,
-                        EquipmentType = equipmentType,
                         InstallDate = installDate,
                         InstallServiceOrderCompleted = installServiceOrderCompleted,
                         InstallServiceOrderStarted = installServiceOrderStarted,

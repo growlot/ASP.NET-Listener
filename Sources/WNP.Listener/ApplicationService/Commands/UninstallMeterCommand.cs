@@ -1,4 +1,4 @@
-﻿// <copyright file="InstallMeterCommand.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="UninstallMeterCommand.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.ApplicationService.Commands
     /// <summary>
     /// Install meter command
     /// </summary>
-    public class InstallMeterCommand : ICommand
+    public class UninstallMeterCommand : ICommand
     {
         /// <summary>
         /// Gets or sets the site identifier.
@@ -36,35 +36,43 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string EquipmentNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the install date.
+        /// Gets or sets the uninstall date.
         /// </summary>
         /// <value>
-        /// The install date.
+        /// The uninstall date.
         /// </value>
-        public DateTime InstallDate { get; set; }
+        public DateTime UninstallDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the install user.
+        /// Gets or sets the uninstall user.
         /// </summary>
         /// <value>
-        /// The install user.
+        /// The uninstall user.
         /// </value>
-        public string InstallUser { get; set; }
+        public string UninstallUser { get; set; }
 
         /// <summary>
-        /// Gets or sets the install service order started.
+        /// Gets or sets the uninstall service order started.
         /// </summary>
         /// <value>
-        /// The install service order started.
+        /// The uninstall service order started.
         /// </value>
-        public DateTime? InstallServiceOrderStarted { get; set; }
+        public DateTime? UninstallServiceOrderStarted { get; set; }
 
         /// <summary>
-        /// Gets or sets the install service order completed.
+        /// Gets or sets the uninstall service order completed.
         /// </summary>
         /// <value>
-        /// The install service order completed.
+        /// The uninstall service order completed.
         /// </value>
-        public DateTime? InstallServiceOrderCompleted { get; set; }
+        public DateTime? UninstallServiceOrderCompleted { get; set; }
+
+        /// <summary>
+        /// Gets or sets the uninstall reason.
+        /// </summary>
+        /// <value>
+        /// The uninstall reason.
+        /// </value>
+        public string UninstallReason { get; set; }
     }
 }

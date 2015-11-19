@@ -63,6 +63,8 @@ namespace AMSLLC.Listener.ODataService
 
             this.commandBus.Subscribe<InstallMeterCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<InstallMeterCommandHandler>().HandleAsync(command));
+            this.commandBus.Subscribe<UninstallMeterCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<UninstallMeterCommandHandler>().HandleAsync(command));
         }
 
         /// <summary>
@@ -123,6 +125,8 @@ namespace AMSLLC.Listener.ODataService
 
             this.domainEventBus.SubscribeAsync<EquipmentInstalledInCircuitEvent>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<EquipmentInstalledInCircuitEventHandler>().HandleAsync(domainEvent));
+            this.domainEventBus.SubscribeAsync<EquipmentUninstalledFromCircuitEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<EquipmentUninstalledFromCircuitEventHandler>().HandleAsync(domainEvent));
             this.domainEventBus.SubscribeAsync<MeterBillingInformationUpdatedEvent>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<MeterBillingInformationUpdatedEventHandler>().HandleAsync(domainEvent));
         }
