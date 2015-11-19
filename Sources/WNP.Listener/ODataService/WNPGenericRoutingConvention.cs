@@ -69,6 +69,8 @@ namespace AMSLLC.Listener.ODataService
                         return "EntityActionHandler";
                     case "~/unboundaction":
                         return "UnboundActionHandler";
+                    case "~/entityset/key/navigation":
+                        return "Post";
                 }
             }
 
