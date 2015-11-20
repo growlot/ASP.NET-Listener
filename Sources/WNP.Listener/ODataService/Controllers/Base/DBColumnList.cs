@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using AMSLLC.Listener.MetadataService;
 
     /// <summary>
+    /// Helper class for generating list of columns to be SELECTed with random aliases.
     /// </summary>
     public class DbColumnList
     {
@@ -21,27 +22,62 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
         private readonly MetadataEntityModel[] relationModels;
 
-        private readonly Random random = new Random();
+        private readonly Random random = new Random(Guid.NewGuid().GetHashCode());
 
         private readonly List<string> queryColumnList = new List<string>();
 
-        private readonly Dictionary<string, string> randomQueryColToModelMapping = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> queryColToModelMapping = new Dictionary<string, string>();
 
-        private Dictionary<string, MetadataEntityModel> randomQueryColToEntityModel = new Dictionary<string, MetadataEntityModel>();
+        private readonly Dictionary<string, MetadataEntityModel> queryColToEntityModel = new Dictionary<string, MetadataEntityModel>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbColumnList"/> class.
         /// </summary>
-        /// <param name="queryOption"></param>
-        /// <param name="mainModel"></param>
-        /// <param name="relationModels"></param>
+        /// <param name="queryOption">SelectExpandQueryOption instance from request.</param>
+        /// <param name="mainModel">Main entity model.</param>
+        /// <param name="relationModels">All relation models that are included in the request via $expand.</param>
         public DbColumnList(SelectExpandQueryOption queryOption, MetadataEntityModel mainModel, params MetadataEntityModel[] relationModels)
         {
             this.queryOption = queryOption;
             this.mainModel = mainModel;
             this.relationModels = relationModels;
 
-            var fieldList = queryOption?.RawSelect?.Split(',');
+            this.Init();
+        }
+
+        /// <summary>
+        /// Get random generated query column list for the specified model.
+        /// </summary>
+        /// <param name="model">MetadataEntityModel for which generate the list.</param>
+        /// <returns>Random generated query column list for the specified model.</returns>
+        public string[] GetQueryColumnListForModel(MetadataEntityModel model)
+            => this.queryColToEntityModel.Where(kvp => kvp.Value == model).Select(kvp => kvp.Key).ToArray();
+
+        /// <summary>
+        /// Get the resulted query column list with aliases.
+        /// </summary>
+        /// <returns>The object array containing resulted query column list with aliases</returns>
+        public object[] GetQueryColumnList()
+            => this.queryColumnList.Cast<object>().ToArray();
+
+        /// <summary>
+        /// Get model column using generated query column name.
+        /// </summary>
+        /// <param name="dbQueryColumnName">Generated query column name to get model column name by.</param>
+        /// <returns>Model column name.</returns>
+        public string GetModelColumnByDbQueryName(string dbQueryColumnName)
+            => this.queryColToModelMapping[dbQueryColumnName];
+
+        /// <summary>
+        /// Get MetadataEntityModel by generated query column name.
+        /// </summary>
+        /// <returns>Entity Model related to the generated query column name.</returns>
+        public MetadataEntityModel GetEntityModelByDbQueryName(string dbQueryColumnName)
+            => this.queryColToEntityModel[dbQueryColumnName];
+
+        private void Init()
+        {
+            var fieldList = this.queryOption?.RawSelect?.Split(',');
 
             if (fieldList != null)
             {
@@ -52,20 +88,21 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     if (dotIndex == -1)
                     {
                         this.queryColumnList.Add(
-                            $"{mainModel.TableName}.{mainModel.ModelToColumnMappings[field]} AS {this.GenerateRandomColumnName(mainModel, field)}");
+                            $"{this.mainModel.TableName}.{this.mainModel.ModelToColumnMappings[field]} AS {this.GenerateRandomColumnName(this.mainModel, field)}");
                     }
 
                     // this is related entity
                     else
                     {
                         var modelName = field.Substring(0, dotIndex);
-                        var model = relationModels?.First(entityModel => entityModel.ClassName == modelName);
+                        var model = this.relationModels?.First(entityModel => entityModel.ClassName == modelName);
 
                         if (model != null)
                         {
-                            var dbColumnName = model.ModelToColumnMappings[field.Substring(dotIndex)];
+                            var fieldName = field.Substring(dotIndex + 1);
+                            var dbColumnName = model.ModelToColumnMappings[fieldName];
                             this.queryColumnList.Add(
-                                $"{model.TableName}.{dbColumnName} AS {this.GenerateRandomColumnName(model, field)}");
+                                $"{model.TableName}.{dbColumnName} AS {this.GenerateRandomColumnName(model, fieldName)}");
                         }
                     }
                 }
@@ -81,32 +118,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                                     $"{model.TableName}.{field} AS {this.GenerateRandomColumnName(model, model.ColumnToModelMappings[field])}"));
                         };
 
-                addColsActions(mainModel);
-                relationModels?.Map(addColsActions);
+                addColsActions(this.mainModel);
+                this.relationModels?.Map(addColsActions);
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public object[] GetQueryColumnList()
-            => this.queryColumnList.Cast<object>().ToArray();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dbQueryColumnName"></param>
-        /// <returns></returns>
-        public string GetModelColumnByDbQueryName(string dbQueryColumnName)
-            => this.randomQueryColToModelMapping[dbQueryColumnName];
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public MetadataEntityModel GetEntityModelByDbQueryName(string dbQueryColumnName)
-            => this.randomQueryColToEntityModel[dbQueryColumnName];
 
         private string GenerateRandomColumnName(MetadataEntityModel entityModel, string modelColName)
         {
@@ -115,8 +130,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var randomColumnName =
                 new string(Enumerable.Repeat(Chars, 4).Select(s => s[this.random.Next(s.Length)]).ToArray());
 
-            this.randomQueryColToModelMapping.Add(randomColumnName, modelColName);
-            this.randomQueryColToEntityModel.Add(randomColumnName, entityModel);
+            this.queryColToModelMapping.Add(randomColumnName, modelColName);
+            this.queryColToEntityModel.Add(randomColumnName, entityModel);
 
             return randomColumnName;
         }

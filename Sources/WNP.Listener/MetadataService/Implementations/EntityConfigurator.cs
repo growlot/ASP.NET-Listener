@@ -38,10 +38,8 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                         Reading.FullTableName,
                         true,
                         new ColumnMatch(MeterTestResults.Owner, Reading.Owner),
-                        new ColumnMatch(MeterTestResults.EqpNo, Reading.EqpNo))
-
-// ,
-// new ColumnMatch(MeterTestResults.TestDateStart, Reading.ReadDate))
+                        new ColumnMatch(MeterTestResults.EqpNo, Reading.EqpNo),
+                        new ColumnMatch(MeterTestResults.TestDateStart, Reading.ReadDate))
                     .HasMany(
                         Comment.FullTableName,
                         true,

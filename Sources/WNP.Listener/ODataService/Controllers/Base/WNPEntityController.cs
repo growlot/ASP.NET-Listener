@@ -2,8 +2,6 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-using Serilog;
-
 namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
     using System;
@@ -260,10 +258,14 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             var expandedItems = expands as ExpandedNavigationSelectItem[] ?? expands?.ToArray();
 
+            var relatedEntityModels =
+                expandedItems?.Select(
+                    item => this.metadataService.GetModelMapping(item.NavigationSource.EntityType().Name)).ToArray();
+
             var dbColumnList = new DbColumnList(
                 this.queryOptions.SelectExpand,
                 model,
-                expandedItems?.Select(item => this.metadataService.GetModelMapping(item.NavigationSource.EntityType().Name)).ToArray());
+                relatedEntityModels);
 
             var sql =
                 Sql.Builder.Select(dbColumnList.GetQueryColumnList())
@@ -286,7 +288,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         .Select(m => $"{parentTable}.{m.SourceColumn} = {entityModel.TableName}.{m.TargetColumn}")
                         .Aggregate((m1, m2) => $"{m1} AND {m2}");
 
-                    sql = sql.InnerJoin(entityModel.TableName).On(onClause);
+                    sql = sql.LeftJoin(entityModel.TableName).On(onClause);
                 }
             }
 
@@ -295,7 +297,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     orderedKey.Select((kvp, ind) => $"{model.TableName}.{model.ModelToColumnMappings[kvp.Key]}=@{ind}")
                         .Aggregate((s, s1) => $"{s} AND {s1}"), orderedKey.Select(kvp => kvp.Value).ToArray());
 
-            var dbContext = ((WNPUnitOfWork) this.unitOfWork).DbContext;
+            var dbContext = ((WNPUnitOfWork)this.unitOfWork).DbContext;
 
             var dbResults = dbContext.Fetch<dynamic>(sql);
 
@@ -309,25 +311,23 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 return this.NotFound();
             }
 
-            var entityInstance = this.CreateEdmEntity();
-
-            if (expandedItems != null)
-            {
-                foreach (var item in expandedItems)
-                {
-                    var propertyName = item.NavigationSource.Name;
-
-                    var property = this.EdmEntityClrType.GetProperty(propertyName);
-                    var propInstance = Activator.CreateInstance(property.PropertyType);
-
-                    property.SetValue(entityInstance, propInstance);
-                }
-            }
+            var entityInstance = this.CreateEdmEntity(expandedItems);
 
             foreach (var dbResult in dbResults)
             {
                 var rawData = (IDictionary<string, object>)dbResult;
                 var expandInstances = new Dictionary<Type, object>();
+                var emptyRelations = new List<string>();
+
+                relatedEntityModels?.Map(
+                    entityModel =>
+                        {
+                            var colList = dbColumnList.GetQueryColumnListForModel(entityModel);
+                            if (rawData.Where(kvp => colList.Contains(kvp.Key)).All(kvp => kvp.Value == null))
+                            {
+                                emptyRelations.Add(entityModel.ClassName);
+                            }
+                        });
 
                 foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
                 {
@@ -341,6 +341,12 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     }
                     else
                     {
+                        // all values for this relation is null, so don't try to map
+                        if (emptyRelations.Contains(entityModel.ClassName))
+                        {
+                            continue;
+                        }
+
                         var clrType =
                             this.metadataService.GetEntityType(
                                 $"{this.metadataService.ODataModelNamespace}.{entityModel.ClassName}");
@@ -367,11 +373,14 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     {
                         var clrType = this.metadataService.GetEntityType(item.NavigationSource.EntityType().ShortQualifiedName());
 
-                        var expandProperty = this.EdmEntityClrType.GetProperty(item.NavigationSource.Name);
-                        var expandPropertyInstance = expandProperty.GetMethod.Invoke(entityInstance, new object[] { });
+                        if (expandInstances.ContainsKey(clrType))
+                        {
+                            var expandProperty = this.EdmEntityClrType.GetProperty(item.NavigationSource.Name);
+                            var expandPropertyInstance = expandProperty.GetMethod.Invoke(entityInstance, new object[] { });
 
-                        var addMethod = expandPropertyInstance.GetType().GetMethod("Add");
-                        addMethod.Invoke(expandPropertyInstance, new object[] { expandInstances[clrType] });
+                            var addMethod = expandPropertyInstance.GetType().GetMethod("Add");
+                            addMethod.Invoke(expandPropertyInstance, new object[] { expandInstances[clrType] });
+                        }
                     }
                 }
             }
@@ -482,18 +491,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             }
             else
             {
-                if (entityConfig.IsOwnerSpecific)
-                {
-                    key.Add(
-                        modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[1].ToUpperInvariant()],
-                        JsonConvert.DeserializeObject(jsonKey.Value));
-                }
-                else
-                {
-                    key.Add(
-                        modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
-                        JsonConvert.DeserializeObject(jsonKey.Value));
-                }
+                key.Add(
+                    entityConfig.IsOwnerSpecific
+                        ? modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[1].ToUpperInvariant()]
+                        : modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
+                    JsonConvert.DeserializeObject(jsonKey.Value));
             }
 
             return key.ToArray();
@@ -755,8 +757,24 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         private IList CreateResultList()
             => (IList)Activator.CreateInstance(this.GetGenericListType());
 
-        private object CreateEdmEntity()
-            => Activator.CreateInstance(this.EdmEntityClrType);
+        private object CreateEdmEntity(ExpandedNavigationSelectItem[] expandedItems = null)
+        {
+            var entityInstance = Activator.CreateInstance(this.EdmEntityClrType);
+            if (expandedItems != null)
+            {
+                foreach (var item in expandedItems)
+                {
+                    var propertyName = item.NavigationSource.Name;
+
+                    var property = this.EdmEntityClrType.GetProperty(propertyName);
+                    var propInstance = Activator.CreateInstance(property.PropertyType);
+
+                    property.SetValue(entityInstance, propInstance);
+                }
+            }
+
+            return entityInstance;
+        }
 
         private object CreateEdmEntityDelta()
             => MemoryCache.Default.GetOrAddExisting(
