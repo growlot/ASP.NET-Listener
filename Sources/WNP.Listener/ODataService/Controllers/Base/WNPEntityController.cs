@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Formatting;
@@ -23,10 +24,12 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Web.OData.Routing;
     using ApplicationService;
     using MetadataService;
+    using Microsoft.OData.Core.UriParser.Semantic;
     using Microsoft.OData.Edm;
     using Newtonsoft.Json;
     using Persistence.WNP;
     using Repository.WNP;
+    using Serilog;
     using Services.FilterTransformer;
     using Utilities;
 
@@ -77,8 +80,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var skip = this.queryOptions.Skip?.Value ?? 0;
             var top = this.queryOptions.Top?.Value ?? 10;
 
+            var dbColumnList = new DbColumnList(this.queryOptions.SelectExpand, modelMapping);
+
             var sql =
-                Sql.Builder.Select(this.GetDBColumnsList(this.queryOptions.SelectExpand, modelMapping))
+                Sql.Builder.Select(dbColumnList.GetQueryColumnList())
                            .From($"{modelMapping.TableName}");
 
             var sqlWhere = this.filterTransformer.TransformFilterQueryOption(this.queryOptions.Filter);
@@ -103,7 +108,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 var rawData = (IDictionary<string, object>)record;
                 foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                 {
-                    var property = this.EdmEntityClrType.GetProperty(modelMapping.ColumnToModelMappings[key.ToUpperInvariant()]);
+                    var property = this.EdmEntityClrType.GetProperty(dbColumnList.GetModelColumnByDbQueryName(key.ToUpperInvariant()));
                     property.SetValue(entityInstance, Converters.Convert(rawData[key], property.PropertyType));
                 }
 
@@ -160,8 +165,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     var childEntityModel = this.metadataService.GetModelMapping(childEntityType.Name);
 
                     var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, this.queryOptions, false);
+                    var dbColumnList = sql.Item2;
 
-                    var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql);
+                    var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql.Item1);
 
                     // create actual result object we will be sending over the wire
                     var result = this.CreateResultList();
@@ -173,7 +179,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         var rawData = (IDictionary<string, object>)record;
                         foreach (var key in rawData.Keys.Where(key => key != "peta_rn"))
                         {
-                            var property = this.EdmEntityClrType.GetProperty(model.ColumnToModelMappings[key.ToUpperInvariant()]);
+                            var property =
+                                this.EdmEntityClrType.GetProperty(
+                                    dbColumnList.GetModelColumnByDbQueryName(key.ToUpperInvariant()));
+
                             property.SetValue(entityInstance, Converters.Convert(rawData[key], property.PropertyType));
                         }
 
@@ -243,21 +252,54 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             this.ConstructQueryOptions();
             this.queryOptions.Validate(this.defaultODataValidationSettings);
 
-            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            var model = this.metadataService.GetModelMapping(this.EdmEntityClrType);
 
-            var orderedKey = this.GetRequestKey(modelMapping, 1);
+            var orderedKey = this.GetRequestKey(model, 1);
+            var expands =
+                this.queryOptions.SelectExpand?.SelectExpandClause.SelectedItems.OfType<ExpandedNavigationSelectItem>();
+
+            var expandedItems = expands as ExpandedNavigationSelectItem[] ?? expands?.ToArray();
+
+            var dbColumnList = new DbColumnList(
+                this.queryOptions.SelectExpand,
+                model,
+                expandedItems?.Select(item => this.metadataService.GetModelMapping(item.NavigationSource.EntityType().Name)).ToArray());
 
             var sql =
-                Sql.Builder.Select(this.GetDBColumnsList(this.queryOptions.SelectExpand, modelMapping))
-                    .From($"{modelMapping.TableName}")
-                    .Where(
-                        orderedKey.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                            .Aggregate((s, s1) => $"{s} AND {s1}"),
-                        orderedKey.Select(kvp => kvp.Value).ToArray());
+                Sql.Builder.Select(dbColumnList.GetQueryColumnList())
+                    .From($"{model.TableName}");
 
-            var dbResults = ((WNPUnitOfWork) this.unitOfWork).DbContext.Fetch<dynamic>(sql);
+            var modelConfig = model.EntityConfiguration;
+            var parentTable = modelConfig.TableName;
 
-            if (dbResults.Count > 1)
+            if (expandedItems != null)
+            {
+                foreach (var expand in expandedItems)
+                {
+                    var entityToExpand = expand.NavigationSource.EntityType().Name;
+                    var entityModel = this.metadataService.GetModelMapping(entityToExpand);
+
+                    var relConfig = modelConfig.Relations.FirstOrDefault(
+                        information => information.TargetTableName == entityModel.TableName);
+
+                    var onClause = relConfig.MatchOn
+                        .Select(m => $"{parentTable}.{m.SourceColumn} = {entityModel.TableName}.{m.TargetColumn}")
+                        .Aggregate((m1, m2) => $"{m1} AND {m2}");
+
+                    sql = sql.InnerJoin(entityModel.TableName).On(onClause);
+                }
+            }
+
+            sql =
+                sql.Where(
+                    orderedKey.Select((kvp, ind) => $"{model.TableName}.{model.ModelToColumnMappings[kvp.Key]}=@{ind}")
+                        .Aggregate((s, s1) => $"{s} AND {s1}"), orderedKey.Select(kvp => kvp.Value).ToArray());
+
+            var dbContext = ((WNPUnitOfWork) this.unitOfWork).DbContext;
+
+            var dbResults = dbContext.Fetch<dynamic>(sql);
+
+            if (expandedItems == null && dbResults.Count > 1)
             {
                 return this.BadRequest("Request returned more than 1 record.");
             }
@@ -269,11 +311,69 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             var entityInstance = this.CreateEdmEntity();
 
-            var rawData = (IDictionary<string, object>) dbResults[0];
-            foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
+            if (expandedItems != null)
             {
-                var property = this.EdmEntityClrType.GetProperty(modelMapping.ColumnToModelMappings[kk.ToUpperInvariant()]);
-                property.SetValue(entityInstance, Converters.Convert(rawData[kk], property.PropertyType));
+                foreach (var item in expandedItems)
+                {
+                    var propertyName = item.NavigationSource.Name;
+
+                    var property = this.EdmEntityClrType.GetProperty(propertyName);
+                    var propInstance = Activator.CreateInstance(property.PropertyType);
+
+                    property.SetValue(entityInstance, propInstance);
+                }
+            }
+
+            foreach (var dbResult in dbResults)
+            {
+                var rawData = (IDictionary<string, object>)dbResult;
+                var expandInstances = new Dictionary<Type, object>();
+
+                foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
+                {
+                    var entityModel = dbColumnList.GetEntityModelByDbQueryName(kk);
+                    var fieldName = dbColumnList.GetModelColumnByDbQueryName(kk);
+
+                    if (entityModel == model)
+                    {
+                        var property = this.EdmEntityClrType.GetProperty(fieldName);
+                        property.SetValue(entityInstance, Converters.Convert(rawData[kk], property.PropertyType));
+                    }
+                    else
+                    {
+                        var clrType =
+                            this.metadataService.GetEntityType(
+                                $"{this.metadataService.ODataModelNamespace}.{entityModel.ClassName}");
+
+                        object instance = null;
+                        if (expandInstances.ContainsKey(clrType))
+                        {
+                            instance = expandInstances[clrType];
+                        }
+                        else
+                        {
+                            instance = Activator.CreateInstance(clrType);
+                            expandInstances.Add(clrType, instance);
+                        }
+
+                        var property = clrType.GetProperty(fieldName);
+                        property.SetValue(instance, Converters.Convert(rawData[kk], property.PropertyType));
+                    }
+                }
+
+                if (expandedItems != null)
+                {
+                    foreach (var item in expandedItems)
+                    {
+                        var clrType = this.metadataService.GetEntityType(item.NavigationSource.EntityType().ShortQualifiedName());
+
+                        var expandProperty = this.EdmEntityClrType.GetProperty(item.NavigationSource.Name);
+                        var expandPropertyInstance = expandProperty.GetMethod.Invoke(entityInstance, new object[] { });
+
+                        var addMethod = expandPropertyInstance.GetType().GetMethod("Add");
+                        addMethod.Invoke(expandPropertyInstance, new object[] { expandInstances[clrType] });
+                    }
+                }
             }
 
             return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
@@ -311,10 +411,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     if (navSource.Type.TypeKind == EdmTypeKind.Collection)
                     {
                         var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, this.queryOptions, true);
+                        var dbColumnList = sql.Item2;
 
-                        Log.Debug("Generated SQL:{GeneratedSQL}\n\nParameters: {Parameters}\n", sql.SQL, sql.Arguments);
+                        Log.Debug("Generated SQL:{GeneratedSQL}\n\nParameters: {Parameters}\n", sql.Item1.SQL, sql.Item1.Arguments);
 
-                        var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.Fetch<dynamic>(sql);
+                        var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.Fetch<dynamic>(sql.Item1);
                         if (dbResults.Count > 1)
                         {
                             return this.BadRequest("Request returned more than 1 record.");
@@ -331,7 +432,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         var rawData = (IDictionary<string, object>)dbResults[0];
                         foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
                         {
-                            var property = this.EdmEntityClrType.GetProperty(childEntityModel.ColumnToModelMappings[kk.ToUpperInvariant()]);
+                            var property =
+                                this.EdmEntityClrType.GetProperty(
+                                    dbColumnList.GetModelColumnByDbQueryName(kk.ToUpperInvariant()));
+
                             property.SetValue(entityInstance, Converters.Convert(rawData[kk], property.PropertyType));
                         }
 
@@ -395,11 +499,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return key.ToArray();
         }
 
-        private Sql GetNavigationSql(MetadataEntityModel parentEntityModel, MetadataEntityModel childEntityModel, ODataQueryOptions queryOptions, bool byChildKey)
+        private Tuple<Sql, DbColumnList> GetNavigationSql(MetadataEntityModel parentEntityModel, MetadataEntityModel childEntityModel, ODataQueryOptions queryOptions, bool byChildKey)
         {
             var childTable = childEntityModel.TableName;
             var relConfig =
-                parentEntityModel.EntityConfiguration.ManyRelations.FirstOrDefault(
+                parentEntityModel.EntityConfiguration.Relations.FirstOrDefault(
                     ri => ri.TargetTableName == childTable);
 
             if (relConfig == null)
@@ -413,7 +517,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 .Select(m => $"{parentTable}.{m.SourceColumn} = {childTable}.{m.TargetColumn}")
                 .Aggregate((m1, m2) => $"{m1} AND {m2}");
 
-            var dbColumnsList = this.GetDBColumnsList(queryOptions.SelectExpand, childEntityModel);
+            var dbColumnsList = new DbColumnList(queryOptions.SelectExpand, childEntityModel);
 
             var parentKey = this.GetRequestKey(parentEntityModel, 1);
             KeyValuePair<string, object>[] childKey = null;
@@ -448,13 +552,13 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             whereArgs.AddRange(filterArgs ?? new object[] { });
 
             var sql =
-                Sql.Builder.Select(dbColumnsList)
+                Sql.Builder.Select(dbColumnsList.GetQueryColumnList())
                     .From($"{parentTable}")
                     .InnerJoin($"{childTable}")
                     .On(onClause)
                     .Where(whereClause, whereArgs.ToArray());
 
-            return sql;
+            return new Tuple<Sql, DbColumnList>(sql, dbColumnsList);
         }
 
         private static string GenerateWhereBodyForKey(KeyValuePair<string, object>[] key, string table, MetadataEntityModel model, int offset = 0)
@@ -537,8 +641,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var responseContent = this.CreateEdmEntity();
             try
             {
-                var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
-                setFromEntityMethod.Invoke(responseContent, new object[] { entity });
+            var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
+            setFromEntityMethod.Invoke(responseContent, new object[] { entity });
             }
             catch (Exception ex)
             {
@@ -619,12 +723,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
         private string GetRequestContents(HttpRequestMessage request)
             => this.Request.Content.ReadAsStringAsync().Result;
-
-        private string[] GetDBColumnsList(SelectExpandQueryOption queryOptions, MetadataEntityModel model)
-        {
-            var fieldList = queryOptions?.RawSelect.Split(',') ?? model.ModelToColumnMappings.Keys.ToArray();
-            return fieldList.Select(item => $"{model.TableName}.{model.ModelToColumnMappings[item]}").ToArray();
-        }
 
         private MethodInfo GetOkMethodList()
             => MemoryCache.Default.GetOrAddExisting(

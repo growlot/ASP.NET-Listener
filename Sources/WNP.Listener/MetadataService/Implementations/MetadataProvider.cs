@@ -100,22 +100,22 @@ namespace AMSLLC.Listener.MetadataService.Implementations
         public MetadataEntityModel GetModelMappingByTableName(string tableName) =>
             oDataModelMappings.First(modelMappings => modelMappings.Value.TableName == tableName).Value;
 
-        private static void AddManyRelations(EntityConfiguration entityConfig, CodeTypeDeclaration codeClass)
+        private static void AddRelations(EntityConfiguration entityConfig, CodeTypeDeclaration codeClass)
         {
-            foreach (var manyRelation in entityConfig.ManyRelations)
+            foreach (var relation in entityConfig.Relations)
             {
                 var targetEntity =
                     oDataModelMappings.Values.FirstOrDefault(
-                        model => model.TableName == manyRelation.TargetTableName);
+                        model => model.TableName == relation.TargetTableName);
 
                 if (targetEntity == null)
                 {
                     throw new ArgumentException(
-                        StringUtilities.Invariant($"Target class for required relation {manyRelation.TargetTableName} not found"));
+                        StringUtilities.Invariant($"Target class for required relation {relation.TargetTableName} not found"));
                 }
 
                 var containmentAttribute = string.Empty;
-                if (manyRelation.IsContained)
+                if (relation.IsContained)
                 {
                     containmentAttribute = "[Contained]";
                 }
@@ -123,32 +123,11 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 var property = new CodeSnippetTypeMember
                 {
                     Text =
-                        StringUtilities.Invariant(
-                            $"{containmentAttribute} public List<{targetEntity.ClassName}> {targetEntity.ClassName}s {{get; set;}}")
-                };
-
-                codeClass.Members.Add(property);
-            }
-        }
-
-        private static void AddRequiredRelations(EntityConfiguration entityConfig, CodeTypeDeclaration codeClass)
-        {
-            foreach (var requiredRelation in entityConfig.RequiredRelations)
-            {
-                var targetEntity =
-                    oDataModelMappings.Values.FirstOrDefault(
-                        model => model.TableName == requiredRelation.TargetTableName);
-
-                if (targetEntity == null)
-                {
-                    throw new ArgumentException(
-                        StringUtilities.Invariant(
-                            $"Target class for required relation {requiredRelation.TargetTableName} not found"));
-                }
-
-                var property = new CodeSnippetTypeMember
-                {
-                    Text = StringUtilities.Invariant($"public {targetEntity.ClassName} {targetEntity.ClassName} {{get; set;}}")
+                        relation.RelationType == RelationType.OneToMany
+                            ? StringUtilities.Invariant(
+                                $"{containmentAttribute} public List<{targetEntity.ClassName}> {targetEntity.ClassName}s {{get; set;}}")
+                            : StringUtilities.Invariant(
+                                $"public {targetEntity.ClassName} {targetEntity.ClassName} {{get; set;}}")
                 };
 
                 codeClass.Members.Add(property);
@@ -313,8 +292,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
                 setFromEntityMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(entityName), "entity"));
 
-                AddRequiredRelations(entityConfig, codeClass);
-                AddManyRelations(entityConfig, codeClass);
+                AddRelations(entityConfig, codeClass);
 
                 foreach (var field in table.FieldInfo)
                 {

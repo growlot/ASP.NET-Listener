@@ -123,6 +123,7 @@
     <Compile Include="IUnboundActionsContainer.cs" />
     <Compile Include="IWNPEntityController.cs" />
     <Compile Include="RelationInformation.cs" />
+    <Compile Include="RelationType.cs" />
     <Compile Include="WNPMetadataMapping.cs" />
     <Compile Include="MetadataFieldInfo.cs" />
     <Compile Include="MetadataEntityModel.cs" />

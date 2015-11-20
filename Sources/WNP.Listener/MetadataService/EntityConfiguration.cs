@@ -32,13 +32,7 @@ namespace AMSLLC.Listener.MetadataService
         public bool IsOwnerSpecific { get; private set; } = false;
 
         /// <summary />
-        public Collection<RelationInformation> RequiredRelations { get; } = new Collection<RelationInformation>();
-
-        /// <summary />
-        public Collection<RelationInformation> OptionalRelations { get; } = new Collection<RelationInformation>();
-
-        /// <summary />
-        public Collection<RelationInformation> ManyRelations { get; } = new Collection<RelationInformation>();
+        public Collection<RelationInformation> Relations { get; } = new Collection<RelationInformation>();
 
         /// <summary>
         /// Defines if this entity is contained in parent
@@ -101,7 +95,7 @@ namespace AMSLLC.Listener.MetadataService
         /// <returns>Current instance of EntityConfiguration</returns>
         public EntityConfiguration HasRequired(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.RequiredRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
+            this.Relations.Add(new RelationInformation(RelationType.OneToOneRequired, tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
 
             return this;
         }
@@ -115,7 +109,7 @@ namespace AMSLLC.Listener.MetadataService
         /// <returns>Current instance of EntityConfiguration</returns>
         public EntityConfiguration HasOptional(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.OptionalRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
+            this.Relations.Add(new RelationInformation(RelationType.OneToOneOptional, tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
 
             return this;
         }
@@ -129,7 +123,7 @@ namespace AMSLLC.Listener.MetadataService
         /// <returns>Current instance of EntityConfiguration</returns>
         public EntityConfiguration HasMany(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.ManyRelations.Add(new RelationInformation(tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
+            this.Relations.Add(new RelationInformation(RelationType.OneToMany, tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
 
             return this;
         }
