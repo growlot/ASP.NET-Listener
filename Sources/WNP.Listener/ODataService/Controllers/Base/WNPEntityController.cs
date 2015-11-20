@@ -375,11 +375,22 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
                         if (expandInstances.ContainsKey(clrType))
                         {
-                            var expandProperty = this.EdmEntityClrType.GetProperty(item.NavigationSource.Name);
-                            var expandPropertyInstance = expandProperty.GetMethod.Invoke(entityInstance, new object[] { });
+                            var navProperty = (NavigationPropertySegment)item.PathToNavigationProperty.FirstSegment;
+                            var singleResult = navProperty.EdmType.TypeKind != EdmTypeKind.Collection;
 
-                            var addMethod = expandPropertyInstance.GetType().GetMethod("Add");
-                            addMethod.Invoke(expandPropertyInstance, new object[] { expandInstances[clrType] });
+                            var propertyName = navProperty.NavigationProperty.Name;
+                            var expandProperty = this.EdmEntityClrType.GetProperty(propertyName);
+
+                            if (singleResult)
+                            {
+                                expandProperty.SetValue(entityInstance, expandInstances[clrType]);
+                            }
+                            else
+                            {
+                                var expandPropertyInstance = expandProperty.GetMethod.Invoke(entityInstance, new object[] { });
+                                var addMethod = expandPropertyInstance.GetType().GetMethod("Add");
+                                addMethod.Invoke(expandPropertyInstance, new object[] { expandInstances[clrType] });
+                            }
                         }
                     }
                 }
@@ -764,7 +775,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             {
                 foreach (var item in expandedItems)
                 {
-                    var propertyName = item.NavigationSource.Name;
+                    var propertyName = ((NavigationPropertySegment)item.PathToNavigationProperty.FirstSegment).NavigationProperty.Name;
+                    //var propertyName = item.NavigationSource.Name;
 
                     var property = this.EdmEntityClrType.GetProperty(propertyName);
                     var propInstance = Activator.CreateInstance(property.PropertyType);
