@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Client
     using System.Linq;
     using System.Linq.Expressions;
     using System.Text;
+    using System.Threading.Tasks;
     using AMSLLC.Listener;
     using AMSLLC.Listener.Persistence.Listener;
     using Exception;
@@ -106,6 +107,60 @@ namespace AMSLLC.Listener.Client
         }
 
         /// <summary>
+        /// Opens the transaction asynchronously.
+        /// </summary>
+        /// <returns>Task.</returns>
+        public Task<string> OpenTransactionAsync<TRequest>(TRequest request) where TRequest : BaseListenerRequestMessage
+        {
+            return this._proxy.OpenAsync(
+                 new Uri(this._baseUri, new Uri("listener/Open")),
+                 request);
+        }
+
+        /// <summary>
+        /// Process the transaction asynchronously.
+        /// </summary>
+        /// <returns>Task.</returns>
+        public Task ProcessTransactionAsync<TRequest>(TRequest request) where TRequest : BaseListenerRequestMessage
+        {
+            return this._proxy.OpenAsync(
+                 new Uri(this._baseUri, new Uri("listener/Process")),
+                 request);
+        }
+
+        /// <summary>
+        /// Succeed the transaction asynchronously.
+        /// </summary>
+        /// <returns>Task.</returns>
+        public Task SucceedTransactionAsync(string transactionKey)
+        {
+            return this._proxy.OpenAsync(
+                 new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Succeed()", UriKind.Relative)), null);
+        }
+
+        /// <summary>
+        /// Tasks the fail transaction.
+        /// </summary>
+        /// <param name="transactionKey">The transaction key.</param>
+        /// <param name="excMessage">The exc message.</param>
+        /// <param name="stackTrace">The stack trace.</param>
+        /// <returns>Task.</returns>
+        public Task FailTransactionAsync(
+            string transactionKey,
+            string excMessage,
+            string stackTrace)
+        {
+            return this._proxy.OpenAsync(
+                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Fail()", UriKind.Relative)),
+                    JsonConvert.SerializeObject(
+                        new ProcessingFailedRequestMessage
+                        {
+                            Message = excMessage,
+                            Details = stackTrace
+                        }));
+        }
+
+        /// <summary>
         /// Searches the transactions.
         /// </summary>
         /// <param name="filter">The filter.</param>
@@ -175,44 +230,6 @@ namespace AMSLLC.Listener.Client
             }
             return baseExpression;
         }
-
-
-
-        //private string BuildTransactionFilterQuery(
-        //    TransactionFilter filter)
-        //{
-        //    /*
-        //    public string EntityCategory { get; set; }
-        //public string EntityKey { get; set; }
-        //public string BatchNumber { get; set; }
-        //public List<TransactionStatusType> StatusTypes { get; } = new List<TransactionStatusType>();
-        //public DateTime? TransactionDate { get; set; }
-        //    */
-
-        //    List<string> returnValue = new List<string>();
-
-        //    if (!string.IsNullOrWhiteSpace(filter.EntityCategory))
-        //    {
-        //        returnValue.Add($"EntityCategory eq '{filter.EntityCategory}'");
-        //    }
-
-        //    if (!string.IsNullOrWhiteSpace(filter.EntityKey))
-        //    {
-        //        returnValue.Add($"EntityKey eq '{filter.EntityKey}'");
-        //    }
-
-        //    if (!string.IsNullOrWhiteSpace(filter.BatchNumber))
-        //    {
-        //        returnValue.Add($"BatchNumber eq '{filter.BatchNumber}'");
-        //    }
-
-        //    if (filter.TransactionDate.HasValue)
-        //    {
-        //        returnValue.Add($"CreatedDateTime eq '{filter.TransactionDate.Value}'");
-        //    }
-
-        //    return string.Join("&", returnValue);
-        //}
 
         private void Execute(
             Uri relativeUri,

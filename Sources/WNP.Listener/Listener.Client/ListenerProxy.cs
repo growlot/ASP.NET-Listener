@@ -25,7 +25,7 @@
             {
                 foreach (KeyValuePair<string, string> keyValuePair in headers)
                 {
-                    _hClient.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value);
+                    this._hClient.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value);
                 }
                 //client.DefaultRequestHeaders.Add("AMS-Company", "CCD");
                 //client.DefaultRequestHeaders.Add("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e");
@@ -35,7 +35,6 @@
         public Task<string> OpenAsync(Uri uri, object data)
         {
             var d = data;
-            IHttpClientAdapter client = this._hClient;
 
             Task<HttpResponseMessage> response;
 
@@ -43,27 +42,26 @@
             {
                 if (d is string)
                 {
-                    response = client.PostAsync(
+                    response = this._hClient.PostAsync(
                         uri,
                         new StringContent($"={d}", Encoding.UTF8, "application/x-www-form-urlencoded"));
                 }
                 else
                 {
-                    client.DefaultRequestHeaders.Accept.Add(
+                    this._hClient.DefaultRequestHeaders.Accept.Add(
                         new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    response = client.PostAsync(
+                    response = this._hClient.PostAsync(
                         uri,
                         new StringContent(JsonConvert.SerializeObject(d), Encoding.UTF8, "application/json"));
                 }
             }
             else
             {
-                response = client.PostAsync(uri, new StringContent(string.Empty, Encoding.UTF8));
+                response = this._hClient.PostAsync(uri, new StringContent(string.Empty, Encoding.UTF8));
             }
 
             return response.ContinueWith(t =>
             {
-                client.Dispose();
                 Log.Logger.Information("Received from {0}: {1}", uri, t.Result.StatusCode);
                 if (t.Result.StatusCode != HttpStatusCode.OK && t.Result.StatusCode != HttpStatusCode.NoContent)
                 {

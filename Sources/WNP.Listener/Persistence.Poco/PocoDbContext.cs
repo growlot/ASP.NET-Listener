@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.Persistence.Poco
         public override void OnExecutingCommand(
             IDbCommand cmd)
         {
-            Log.Information(cmd.CommandText);
+            Log.Debug(cmd.CommandText);
             base.OnExecutingCommand(cmd);
         }
     }

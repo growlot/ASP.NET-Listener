@@ -135,9 +135,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ListenerODataClient.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ListenerODataClient.cs</LastGenOutput>

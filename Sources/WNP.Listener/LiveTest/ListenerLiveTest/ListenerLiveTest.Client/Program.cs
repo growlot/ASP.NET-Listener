@@ -19,20 +19,39 @@ namespace ListenerLiveTest.Client
         static void Main(string[] args)
         {
             const int parallelCount = 3;
-            const int totalRequests = 10;
+            
             var log = new LoggerConfiguration().ReadFrom.AppSettings().CreateLogger();
             Log.Logger = log;
 
-            //UseManager(parallelCount, totalRequests);
-            //UseClient(totalRequests);
-            //UseClientForBatch();
-            //new TransactionFilter { BatchNumber = "B1" }
-            var filter = new TransactionFilter();
-            filter.StatusTypes.Add(TransactionStatusType.Failed);
-            QueryData(filter);
-
-            Console.WriteLine("Press Enter to exit...");
-            Console.ReadLine();
+            if (args == null || args.Length == 0)
+            {
+                Log.Error("Please specify request type");
+            }
+            else
+            {
+                var key = args[0];
+                switch (key.ToUpperInvariant())
+                {
+                    case "-CLIENT":
+                        UseClient(int.Parse(args[1]));
+                        break;
+                    case "-MANAGER":
+                        UseManager(parallelCount, int.Parse(args[1]));
+                        break;
+                    case "-BATCHCLIENT":
+                        UseClientForBatch();
+                        break;
+                    case "-QUERY":
+                        var filter = new TransactionFilter();
+                        filter.StatusTypes.Add(TransactionStatusType.Failed);
+                        QueryData(filter);
+                        break;
+                    case "-EXPLICIT":
+                        break;
+                }              
+                Console.WriteLine("Finished...");
+                //Console.ReadLine();
+            }
         }
 
         private static void UseClient(int totalRequests)

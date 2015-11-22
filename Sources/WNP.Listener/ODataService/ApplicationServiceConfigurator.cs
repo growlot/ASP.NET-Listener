@@ -79,28 +79,26 @@ namespace AMSLLC.Listener.ODataService
                 domainEvent => this.transactionService.Cancel(new CancelTransactionsCommand(domainEvent.RecordKeys)));
 
             this.domainEventBus.SubscribeAsync<TransactionDataReady>(
-                domainEvent =>
+                async domainEvent =>
                 {
-                    return this.transactionService.Processing(
+                    await this.transactionService.Processing(
                         new ProcessingTransactionCommand
                         {
                             RecordKey = domainEvent.RecordKey
-                        }).ContinueWith(
-                            t => t.IsCompleted
-                                ? Task.WhenAll(
-                                    domainEvent.Endpoint.Select(
-                                        ep =>
-                                        {
-                                            var dispatcher =
-                                                ApplicationIntegration.DependencyResolver
-                                                    .ResolveNamed<ICommunicationHandler>(
-                                                        "communication-{0}".FormatWith(ep.Protocol));
-                                            return dispatcher.Handle(
-                                                domainEvent,
-                                                ep.ConnectionConfiguration,
-                                                ep.ProtocolConfiguration);
-                                        }))
-                                : t);
+                        });
+
+                    await Task.WhenAll(
+                        domainEvent.Endpoint.Select(
+                            ep =>
+                            {
+                                var dispatcher =
+                                    ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>(
+                                        "communication-{0}".FormatWith(ep.Protocol));
+                                return dispatcher.Handle(
+                                    domainEvent,
+                                    ep.ConnectionConfiguration,
+                                    ep.ProtocolConfiguration);
+                            }));
                 });
         }
 

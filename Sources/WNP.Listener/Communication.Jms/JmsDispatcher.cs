@@ -11,6 +11,7 @@ namespace AMSLLC.Listener.Communication.Jms
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using Repository;
+    using Serilog;
     using Utilities;
     using WebLogic.Messaging;
 
@@ -86,7 +87,6 @@ namespace AMSLLC.Listener.Communication.Jms
             }
 
             await this.transactionDataRepository.SaveDataAsync(request.RecordKey, request.Data);
-
             this.PutMessage(cfg, request, jmsAdapterConfiguration);
         }
 
@@ -107,6 +107,8 @@ namespace AMSLLC.Listener.Communication.Jms
             {
                 throw new ArgumentNullException(nameof(request));
             }
+
+            Log.Information("JMS: Sending message to {0}:{1}", configuration.Host, configuration.Port);
 
             // create properties dictionary
             IDictionary<string, object> paramMap = new Dictionary<string, object>();
@@ -149,6 +151,7 @@ namespace AMSLLC.Listener.Communication.Jms
             connection.Close();
 
             context.CloseAll();
+            Log.Information("JMS: Message sent");
         }
 
         private static ITextMessage CreateMessage(ISession session, TransactionDataReady data, ProtocolConfiguration configuration)

@@ -37,15 +37,5 @@
             : base(connectionStringName)
         {
         }
-
-        /// <summary>
-        /// Called when [executing command].
-        /// </summary>
-        /// <param name="cmd">The command.</param>
-        public override void OnExecutingCommand(IDbCommand cmd)
-        {
-            Log.Information(cmd.CommandText);
-            base.OnExecutingCommand(cmd);
-        }
     }
 }
