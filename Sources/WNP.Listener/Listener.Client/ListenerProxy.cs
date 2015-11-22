@@ -27,8 +27,6 @@
                 {
                     this._hClient.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value);
                 }
-                //client.DefaultRequestHeaders.Add("AMS-Company", "CCD");
-                //client.DefaultRequestHeaders.Add("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e");
             }
         }
 

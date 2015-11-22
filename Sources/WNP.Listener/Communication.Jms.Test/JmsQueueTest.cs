@@ -66,8 +66,8 @@ namespace AMSLLC.Listener.Communication.Jms.Test
         public void TestMessageTypeBuilder()
         {
             const string template = "Type{EntityCategory}:{OperationKey}.{EntityCategory}?";
-            const string expected = "TypeElectricMeters:Install.ElectricMeters?";
-            var data = new DataMessage { EntityCategory = "ElectricMeters", OperationKey = "Install", SomeOtherProperty = 99 };
+            const string expected = "TypeEM:Install.EM?";
+            var data = new DataMessage { EntityCategory = "EM", OperationKey = "Install", SomeOtherProperty = 99 };
             var actual = JmsDispatcher.CreateMessageType(data, template);
             Assert.AreEqual(expected, actual);
         }

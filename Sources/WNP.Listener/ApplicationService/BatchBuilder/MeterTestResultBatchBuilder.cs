@@ -46,7 +46,7 @@ namespace AMSLLC.Listener.ApplicationService.BatchBuilder
                     new BatchTransactionEntry
                     {
                         OperationKey = "Add",
-                        EntityCategory = "ElectricMeters",
+                        EntityCategory = "EM",
                         Priority = 1,
                         Data = JsonConvert.SerializeObject(
                             new Meter
@@ -62,7 +62,7 @@ namespace AMSLLC.Listener.ApplicationService.BatchBuilder
                     new BatchTransactionEntry
                     {
                         OperationKey = "Test",
-                        EntityCategory = "ElectricMeters",
+                        EntityCategory = "EM",
                         Priority = 2,
                         Data = JsonConvert.SerializeObject(
                             new MeterTest
