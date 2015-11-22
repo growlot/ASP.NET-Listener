@@ -64,7 +64,7 @@ namespace ListenerLiveTest.Client
                 {
                     CompanyId = "SomeCompany",
                     EquipmentNumber = Guid.NewGuid().ToString(),
-                    EquipmentType = "ElectricMeters",
+                    EquipmentType = "EM",
                     TestDate = DateTime.Now
                 });
             }
@@ -103,7 +103,7 @@ namespace ListenerLiveTest.Client
                         List<object> data = new List<object>();
                         for (int i = 0; i < totalRequests; i++)
                         {
-                            data.Add(new OpenTransactionRequestMessage("ElectricMeters", "Install")
+                            data.Add(new OpenTransactionRequestMessage("EM", "Install")
                             {
                                 EntityKey = Guid.NewGuid().ToString("D")
                             });
