@@ -193,45 +193,67 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         /// <inheritdoc/>
         public async Task Process(ProcessTransactionCommand requestMessage)
         {
-            using (var scope = ApplicationServiceScope.Create())
+            try
             {
-                var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
-                var memento =
-                    await
-                        sourceRepository.GetExecutionContextAsync(requestMessage.RecordKey);
-
-                // var dataString = await sourceRepository.GetTransactionDataAsync(requestMessage.RecordKey);
-                var transactionExecution =
-                    scope.DomainBuilder.Create<TransactionExecution>();
-
-                ((IOriginator)transactionExecution).SetMemento(memento);
-
-                switch (requestMessage.RetryPolicy)
+                using (var scope = ApplicationServiceScope.Create())
                 {
-                    case RetryPolicyType.Retry:
-                        Log.Logger.Information("Retrying transaction {0} with {1} children", transactionExecution.RecordKey, transactionExecution.ChildTransactions.Count);
-                        await transactionExecution.Retry();
-                        break;
-                    case RetryPolicyType.Force:
-                        Log.Logger.Information("Forcing transaction retry for {0} with {1} children", transactionExecution.RecordKey, transactionExecution.ChildTransactions.Count);
-                        await transactionExecution.ForceRetry();
-                        break;
-                    default:
-                        Log.Logger.Information("Processing transaction {0} with {1} children", transactionExecution.RecordKey, transactionExecution.ChildTransactions.Count);
-                        await transactionExecution.Process();
-                        break;
-                }
+                    var sourceRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
+                    var memento = await sourceRepository.GetExecutionContextAsync(requestMessage.RecordKey);
 
-                var hashList =
-                    new Dictionary<Guid, string>(
-                        transactionExecution.ChildTransactions.Where(c => c.Dirty).ToDictionary(s => s.RecordKey, s => s.OutgoingHash))
+                    // var dataString = await sourceRepository.GetTransactionDataAsync(requestMessage.RecordKey);
+                    var transactionExecution = scope.DomainBuilder.Create<TransactionExecution>();
+
+                    ((IOriginator)transactionExecution).SetMemento(memento);
+
+                    switch (requestMessage.RetryPolicy)
                     {
+                        case RetryPolicyType.Retry:
+                            Log.Logger.Information(
+                                "Retrying transaction {0} with {1} children",
+                                transactionExecution.RecordKey,
+                                transactionExecution.ChildTransactions.Count);
+                            await transactionExecution.Retry();
+                            break;
+                        case RetryPolicyType.Force:
+                            Log.Logger.Information(
+                                "Forcing transaction retry for {0} with {1} children",
+                                transactionExecution.RecordKey,
+                                transactionExecution.ChildTransactions.Count);
+                            await transactionExecution.ForceRetry();
+                            break;
+                        default:
+                            Log.Logger.Information(
+                                "Processing transaction {0} with {1} children",
+                                transactionExecution.RecordKey,
+                                transactionExecution.ChildTransactions.Count);
+                            await transactionExecution.Process();
+                            break;
+                    }
+
+                    var hashList =
+                        new Dictionary<Guid, string>(
+                            transactionExecution.ChildTransactions.Where(c => c.Dirty)
+                                .ToDictionary(s => s.RecordKey, s => s.OutgoingHash))
                         {
-                            transactionExecution.RecordKey, transactionExecution.OutgoingHash
-                        }
-                    };
-                Log.Logger.Information("Updating hash list {0}", JsonConvert.SerializeObject(hashList));
-                await sourceRepository.UpdateHashAsync(hashList);
+                            {
+                                transactionExecution.RecordKey, transactionExecution.OutgoingHash
+                            }
+                        };
+                    Log.Logger.Information("Updating hash list {0}", JsonConvert.SerializeObject(hashList));
+                    await sourceRepository.UpdateHashAsync(hashList);
+                }
+            }
+            catch (Exception exc)
+            {
+                Log.Logger.Information("Error while processing {0}. Failing transaction.", requestMessage.RecordKey);
+                await this.Failed(
+                    new FailTransactionCommand
+                    {
+                        RecordKey = requestMessage.RecordKey,
+                        Details = exc.StackTrace,
+                        Message = exc.Message
+                    });
+                throw;
             }
         }
 

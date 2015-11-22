@@ -110,7 +110,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 },
                 ComplexProperty = new TestSubData
                 {
-                        AnotherValue = "Hello, World!",
+                    AnotherValue = "Hello, World!",
                     NestedData = new TestSubData
                     {
                         AnotherValue = "Hey!"
@@ -295,7 +295,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 {
                     commHandlerData = ((TransactionDataReady)data).Data;
                     actualKey = ((TransactionDataReady)data).RecordKey;
-                            }).Returns(Task.CompletedTask);
+                }).Returns(Task.CompletedTask);
 
             var builderMock = new Mock<IProtocolConfigurationBuilder>();
 
@@ -406,7 +406,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 },
                 ComplexProperty = new TestSubData
                 {
-                        AnotherValue = "Hello, World!",
+                    AnotherValue = "Hello, World!",
                     NestedData = new TestSubData
                     {
                         AnotherValue = "Hey!"
@@ -851,10 +851,13 @@ namespace AMSLLC.Listener.ApplicationService.Test
             Dictionary<Guid, int> priorities = new Dictionary<Guid, int>
             {
                 {
-                    Guid.NewGuid(), 4
+                    Guid.NewGuid(), 0
                 },
                 {
-                    Guid.NewGuid(), 5
+                    Guid.NewGuid(), 0
+                },
+                {
+                    Guid.NewGuid(), 1
                 },
                 {
                     Guid.NewGuid(), 1
@@ -864,21 +867,30 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 },
                 {
                     Guid.NewGuid(), 2
-                },
-                {
-                    Guid.NewGuid(), 1
-                },
-                {
-                    Guid.NewGuid(), 1
-                },
-                {
-                    Guid.NewGuid(), 4
-                },
-                {
-                    Guid.NewGuid(), 5
                 },
                 {
                     Guid.NewGuid(), 3
+                },
+                {
+                    Guid.NewGuid(), 3
+                },
+                {
+                    Guid.NewGuid(), 4
+                },
+                {
+                    Guid.NewGuid(), 4
+                },
+                {
+                    Guid.NewGuid(), 5
+                },
+                {
+                    Guid.NewGuid(), 5
+                },
+                {
+                    Guid.NewGuid(), 6
+                },
+                {
+                    Guid.NewGuid(), 6
                 }
             };
 
@@ -886,24 +898,14 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 priorities.Select(keyValuePair => this.CreateBatchChild(keyValuePair.Key, keyValuePair.Value))
                     .ToList();
 
-            foreach (TransactionExecutionMemento transactionExecutionMemento in batch.Where(s => s.Priority == 4))
+            foreach (TransactionExecutionMemento transactionExecutionMemento in batch)
             {
-                transactionExecutionMemento.Status = TransactionStatusType.Failed;
-            }
-
-            foreach (TransactionExecutionMemento transactionExecutionMemento in batch.Where(s => s.Priority == 5))
-            {
-                transactionExecutionMemento.Status = TransactionStatusType.Skipped;
-            }
-
-            foreach (TransactionExecutionMemento transactionExecutionMemento in batch.Where(s => s.Priority == 2))
-            {
-                transactionExecutionMemento.Status = TransactionStatusType.Success;
+                transactionExecutionMemento.Status = (TransactionStatusType)(transactionExecutionMemento.Priority ?? 0);
             }
 
             var expectedCount =
                 batch.Count(
-                    s => s.Status == TransactionStatusType.Failed || s.Status == TransactionStatusType.Pending);
+                    s => s.Status == TransactionStatusType.Failed || s.Status == TransactionStatusType.Pending || s.Status == TransactionStatusType.Canceled);
             Assert.AreNotEqual(0, expectedCount);
 
 
@@ -968,7 +970,6 @@ namespace AMSLLC.Listener.ApplicationService.Test
             di.Rebind<ICommandBus>(busImpl);
             di.Rebind<IDomainEventBus>(busImpl);
             di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
-            // di.Rebind<ITransactionRepository>(transactionRepositoryMock.Object);
             di.Rebind<IEndpointDataProcessor>(jmsEndpointProcessorMock.Object);
             di.Rebind<IConnectionConfigurationBuilder>(jmsConnectionBuilder.Object).Named("connection-builder-jms");
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
@@ -1002,7 +1003,217 @@ namespace AMSLLC.Listener.ApplicationService.Test
         [TestMethod]
         public async Task ForceRetryBatch()
         {
-            Assert.Inconclusive("Implement this");
+
+            var recordKey = Guid.NewGuid().ToString("D");
+
+            var busImpl = new InMemoryBus();
+            InMemoryBus.Reset();
+            var domainBuilderMock = new Mock<DomainBuilder>()
+            {
+                CallBase = true
+            };
+            var jmsEndpointProcessorMock = new Mock<IEndpointDataProcessor>();
+            var jmsConnectionBuilder = new Mock<IConnectionConfigurationBuilder>();
+            var communicationHandler = new Mock<ICommunicationHandler>();
+            var builderMock = new Mock<IProtocolConfigurationBuilder>();
+            var transactionRepositoryMock = new Mock<ITransactionRepository>();
+            var hashBuilder = new Mock<ITransactionHashBuilder>();
+            var integrationEndpointConfiguration = new Mock<IntegrationEndpointConfiguration>()
+            {
+                CallBase = true
+            };
+
+            var transactionExecutionDomain = new Mock<TransactionExecution>(busImpl, hashBuilder.Object)
+            {
+                CallBase = true
+            };
+            transactionExecutionDomain.As<IOriginator>();
+            transactionExecutionDomain.As<IWithDomainBuilder>();
+            transactionExecutionDomain.Setup(t => t.DomainBuilder).Returns(domainBuilderMock.Object);
+
+            domainBuilderMock.Setup(d => d.Create<TransactionExecution>()).Returns(transactionExecutionDomain.Object);
+            domainBuilderMock.Setup(d => d.Create<IntegrationEndpointConfiguration>())
+                .Returns(integrationEndpointConfiguration.Object);
+
+            ConcurrentStack<Guid> handledTransactions = new ConcurrentStack<Guid>();
+
+            communicationHandler.Setup(
+                s =>
+                    s.Handle(
+                        It.IsAny<object>(),
+                        It.IsAny<IConnectionConfiguration>(),
+                        It.IsAny<IProtocolConfiguration>())).Callback(
+                            (object obj,
+                                IConnectionConfiguration ccfg,
+                                IProtocolConfiguration pcfg) =>
+                            {
+                                TransactionDataReady dataReady = (TransactionDataReady)obj;
+                                handledTransactions.Push(dataReady.RecordKey);
+                            }).Returns(Task.CompletedTask);
+
+            Dictionary<Guid, int> priorities = new Dictionary<Guid, int>
+            {
+                {
+                    Guid.NewGuid(), 0
+                },
+                {
+                    Guid.NewGuid(), 0
+                },
+                {
+                    Guid.NewGuid(), 1
+                },
+                {
+                    Guid.NewGuid(), 1
+                },
+                {
+                    Guid.NewGuid(), 2
+                },
+                {
+                    Guid.NewGuid(), 2
+                },
+                {
+                    Guid.NewGuid(), 3
+                },
+                {
+                    Guid.NewGuid(), 3
+                },
+                {
+                    Guid.NewGuid(), 4
+                },
+                {
+                    Guid.NewGuid(), 4
+                },
+                {
+                    Guid.NewGuid(), 5
+                },
+                {
+                    Guid.NewGuid(), 5
+                },
+                {
+                    Guid.NewGuid(), 6
+                },
+                {
+                    Guid.NewGuid(), 6
+                }
+            };
+
+            var batch =
+                priorities.Select(keyValuePair => this.CreateBatchChild(keyValuePair.Key, keyValuePair.Value))
+                    .ToList();
+
+            foreach (TransactionExecutionMemento transactionExecutionMemento in batch)
+            {
+                transactionExecutionMemento.Status = (TransactionStatusType)(transactionExecutionMemento.Priority ?? 0);
+            }
+
+            //foreach (TransactionExecutionMemento transactionExecutionMemento in batch.Where(s => s.Priority == 5))
+            //{
+            //    transactionExecutionMemento.Status = TransactionStatusType.Skipped;
+            //}
+
+            //foreach (TransactionExecutionMemento transactionExecutionMemento in batch.Where(s => s.Priority == 2))
+            //{
+            //    transactionExecutionMemento.Status = TransactionStatusType.Success;
+            //}
+
+            var expectedCount =
+                  batch.Count(
+                      s =>
+                          s.Status == TransactionStatusType.Canceled || s.Status == TransactionStatusType.Failed ||
+                          s.Status == TransactionStatusType.Pending || s.Status == TransactionStatusType.Invalid ||
+                          s.Status == TransactionStatusType.Skipped || s.Status == TransactionStatusType.Processing);
+            Assert.AreNotEqual(0, expectedCount);
+
+
+            transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(
+                    new TransactionExecutionMemento(
+                        0,
+                        Guid.Parse(recordKey),
+                        0,
+                        new[]
+                        {
+                            new IntegrationEndpointConfigurationMemento(
+                                "jms",
+                                string.Empty,
+                                string.Empty,
+                                EndpointTriggerType.Always)
+                        },
+                        new List<FieldConfigurationMemento>(),
+                        batch,
+                        new object(),
+                        new List<Guid>(),
+                        TransactionStatusType.Pending,
+                        null));
+
+            transactionRepositoryMock.Setup(s => s.GetRegistryEntry(It.IsAny<Guid>()))
+                .ReturnsAsync(
+                    new TransactionRegistryMemento(
+                        0,
+                        Guid.Parse(recordKey),
+                        null,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        TransactionStatusType.Processing,
+                        string.Empty,
+                        DateTime.Now,
+                        null,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        0,
+                        new List<TransactionRegistryMemento>()));
+
+            transactionRepositoryMock.Setup(s => s.UpdateHashAsync(It.IsAny<Dictionary<Guid, string>>()))
+                .Callback((Dictionary<Guid, string> d) => Log.Logger.Information("Received number of child hash: {0}", d.Count())).Returns(Task.CompletedTask);
+
+            jmsEndpointProcessorMock.Setup(s => s.Process(It.IsAny<object>(), It.IsAny<IList<FieldConfiguration>>()))
+                .Returns(
+                    new EndpointDataProcessorResult
+                    {
+                        Data = new object(),
+                        Hash = string.Empty
+                    });
+
+            var di = ApplicationIntegration.DependencyResolver as TestDependencyInjectionAdapter;
+
+            di.Rebind<IDependencyInjectionModule>(
+                new AppServiceTestContainerInitializer(transactionRepositoryMock.Object))
+                .Named("ApplicationScopeModule");
+
+            di.Rebind<ICommandBus>(busImpl);
+            di.Rebind<IDomainEventBus>(busImpl);
+            di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
+            di.Rebind<IEndpointDataProcessor>(jmsEndpointProcessorMock.Object);
+            di.Rebind<IConnectionConfigurationBuilder>(jmsConnectionBuilder.Object).Named("connection-builder-jms");
+            di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
+            di.Rebind<IProtocolConfigurationBuilder>(builderMock.Object).Named("protocol-builder-jms");
+
+            var configurator = di.ResolveType<ApplicationServiceConfigurator>();
+            configurator.RegisterCommandHandlers();
+            configurator.RegisterSagaHandlers();
+
+            var service = di.ResolveType<ITransactionService>();
+
+            await service.Process(
+                new ProcessTransactionCommand
+                {
+                    RecordKey = Guid.Parse(recordKey),
+                    RetryPolicy = RetryPolicyType.Force
+                });
+
+            communicationHandler.Verify(
+                s =>
+                    s.Handle(
+                        It.IsAny<object>(),
+                        It.IsAny<IConnectionConfiguration>(),
+                        It.IsAny<IProtocolConfiguration>()),
+                Times.Exactly(expectedCount));
+
+            // +1 for root transaction
+            transactionRepositoryMock.Verify(s => s.UpdateHashAsync(It.Is<Dictionary<Guid, string>>(d => d.Count() == expectedCount + 1)), Times.Once);
         }
 
         #endregion

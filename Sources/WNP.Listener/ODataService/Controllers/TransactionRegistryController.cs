@@ -144,7 +144,15 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
                     foreach (var jToken in bodyArray.Cast<IDictionary<string, object>>())
                     {
-                        message.Batch.Add(new BatchTransactionEntry { OperationKey = jToken["OperationKey"]?.ToString(), EntityCategory = jToken["EntityCategory"]?.ToString(), Data = JsonConvert.SerializeObject(jToken) });
+                        int p;
+                        message.Batch.Add(
+                            new BatchTransactionEntry
+                            {
+                                OperationKey = jToken["OperationKey"]?.ToString(),
+                                EntityCategory = jToken["EntityCategory"]?.ToString(),
+                                Data = JsonConvert.SerializeObject(jToken),
+                                Priority = int.TryParse(jToken["Priority"]?.ToString(), out p) ? p : (int?)null
+                            });
                     }
                 }
 

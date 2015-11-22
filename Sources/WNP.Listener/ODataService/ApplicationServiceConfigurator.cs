@@ -81,24 +81,38 @@ namespace AMSLLC.Listener.ODataService
             this.domainEventBus.SubscribeAsync<TransactionDataReady>(
                 async domainEvent =>
                 {
-                    await this.transactionService.Processing(
-                        new ProcessingTransactionCommand
-                        {
-                            RecordKey = domainEvent.RecordKey
-                        });
-
-                    await Task.WhenAll(
-                        domainEvent.Endpoint.Select(
-                            ep =>
+                    try
+                    {
+                        await this.transactionService.Processing(
+                            new ProcessingTransactionCommand
                             {
-                                var dispatcher =
-                                    ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>(
-                                        "communication-{0}".FormatWith(ep.Protocol));
-                                return dispatcher.Handle(
-                                    domainEvent,
-                                    ep.ConnectionConfiguration,
-                                    ep.ProtocolConfiguration);
-                            }));
+                                RecordKey = domainEvent.RecordKey
+                            });
+
+                        await Task.WhenAll(
+                            domainEvent.Endpoint.Select(
+                                ep =>
+                                {
+                                    var dispatcher =
+                                        ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>
+                                            ("communication-{0}".FormatWith(ep.Protocol));
+                                    return dispatcher.Handle(
+                                        domainEvent,
+                                        ep.ConnectionConfiguration,
+                                        ep.ProtocolConfiguration);
+                                }));
+                    }
+                    catch (Exception exc)
+                    {
+                        await this.transactionService.Failed(
+                            new FailTransactionCommand
+                            {
+                                RecordKey = domainEvent.RecordKey,
+                                Message = exc.Message,
+                                Details = exc.StackTrace
+                            });
+                        throw;
+                    }
                 });
         }
 
