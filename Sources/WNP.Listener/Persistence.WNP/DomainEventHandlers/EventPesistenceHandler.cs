@@ -86,10 +86,22 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         /// <returns>The empty task.</returns>
         protected Task InsertAsync<TEntity>(TEntity entity)
         {
+            return this.InsertAsync<TEntity>(entity, this.TimeProvider.Now());
+        }
+
+        /// <summary>
+        /// Inserts the entity asynchronously and specifies create time.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <param name="createDate">The create date.</param>
+        /// <returns>The empty task.</returns>
+        protected Task InsertAsync<TEntity>(TEntity entity, DateTime createDate)
+        {
             if (entity is ITrackCreation)
             {
                 ((ITrackCreation)entity).CreateBy = this.User;
-                ((ITrackCreation)entity).CreateDate = this.TimeProvider.Now();
+                ((ITrackCreation)entity).CreateDate = createDate;
             }
 
             if (entity is IUseId)

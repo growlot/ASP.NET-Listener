@@ -15,6 +15,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         private WNPDBContext dbContext;
         private IOwnerRepository ownerRepository;
         private ISiteRepository siteRepository;
+        private IWorkstationRepository workstationRepository;
         private int operatingCompany;
 
         /// <summary>
@@ -77,6 +78,20 @@ namespace AMSLLC.Listener.Persistence.WNP
                 }
 
                 return this.siteRepository;
+            }
+        }
+
+        /// <inheritdoc/>
+        public IWorkstationRepository WorkstationRepository
+        {
+            get
+            {
+                if (this.workstationRepository == null)
+                {
+                    this.workstationRepository = new WorkstationRepository(this.dbContext, this.operatingCompany);
+                }
+
+                return this.workstationRepository;
             }
         }
 

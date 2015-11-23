@@ -65,6 +65,7 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="EquipmentId.cs" />
     <Compile Include="EquipmentType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="OwnerAggregate\Owner.cs" />
@@ -103,6 +104,15 @@
     <Compile Include="SiteAggregate\Site.cs" />
     <Compile Include="SiteAggregate\SiteAddressUpdated.cs" />
     <Compile Include="SiteAggregate\SiteMemento.cs" />
+    <Compile Include="WorkstationAggregate\BusinessAction.cs" />
+    <Compile Include="WorkstationAggregate\EquipmentState.cs" />
+    <Compile Include="WorkstationAggregate\EquipmentStateChangedEvent.cs" />
+    <Compile Include="WorkstationAggregate\EquipmentStateMemento.cs" />
+    <Compile Include="WorkstationAggregate\IncomingRule.cs" />
+    <Compile Include="WorkstationAggregate\Workstation.cs" />
+    <Compile Include="WorkstationAggregate\IncomingRuleMemento.cs" />
+    <Compile Include="WorkstationAggregate\BusinessActionMemento.cs" />
+    <Compile Include="WorkstationAggregate\WorkstationMemento.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Metadata\" />

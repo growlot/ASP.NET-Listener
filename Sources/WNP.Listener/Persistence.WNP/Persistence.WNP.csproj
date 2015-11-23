@@ -85,6 +85,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="DomainEventHandlers\CircuitDetailsUpdatedEventHandler.cs" />
+    <Compile Include="DomainEventHandlers\EquipmentStateChangedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\EquipmentUninstalledFromCircuitEventHandler.cs" />
     <Compile Include="DomainEventHandlers\EquipmentInstalledInCircuitEventHandler.cs" />
     <Compile Include="DomainEventHandlers\EventPesistenceHandler.cs" />
@@ -477,6 +478,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WNPDbContext.cs" />
     <Compile Include="WNPUnitOfWork.cs" />
+    <Compile Include="WorkstationRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\FxCopRuleSets\stylecop.json">

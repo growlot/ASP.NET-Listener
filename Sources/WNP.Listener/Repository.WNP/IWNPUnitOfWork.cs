@@ -27,5 +27,13 @@ namespace AMSLLC.Listener.Repository.WNP
         /// The sites respository.
         /// </value>
         ISiteRepository SitesRepository { get; }
+
+        /// <summary>
+        /// Gets the workstation repository.
+        /// </summary>
+        /// <value>
+        /// The workstation repository.
+        /// </value>
+        IWorkstationRepository WorkstationRepository { get; }
     }
 }

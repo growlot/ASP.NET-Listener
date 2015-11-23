@@ -18,6 +18,7 @@ namespace AMSLLC.Listener.ODataService
     using Domain.WNP.SiteAggregate;
     using Domain.WNP.SiteAggregate.CircuitChild;
     using Domain.WNP.SiteAggregate.CircuitChild.Equipment;
+    using Domain.WNP.WorkstationAggregate;
     using Persistence.WNP.DomainEventHandlers;
 
     /// <summary>
@@ -65,6 +66,9 @@ namespace AMSLLC.Listener.ODataService
                 command => ApplicationIntegration.DependencyResolver.ResolveType<InstallMeterCommandHandler>().HandleAsync(command));
             this.commandBus.Subscribe<UninstallMeterCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<UninstallMeterCommandHandler>().HandleAsync(command));
+
+            this.commandBus.Subscribe<ExecuteBusinessRuleCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<ExecuteBusinessRuleCommandHandler>().HandleAsync(command));
         }
 
         /// <summary>
@@ -141,6 +145,9 @@ namespace AMSLLC.Listener.ODataService
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<EquipmentUninstalledFromCircuitEventHandler>().HandleAsync(domainEvent));
             this.domainEventBus.SubscribeAsync<MeterBillingInformationUpdatedEvent>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<MeterBillingInformationUpdatedEventHandler>().HandleAsync(domainEvent));
+
+            this.domainEventBus.SubscribeAsync<EquipmentStateChangedEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<EquipmentStateChangedEventHandler>().HandleAsync(domainEvent));
         }
     }
 }

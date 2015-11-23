@@ -81,6 +81,7 @@
     <Compile Include="ISiteRepository.cs" />
     <Compile Include="IWnpBatchRepository.cs" />
     <Compile Include="IWNPUnitOfWork.cs" />
+    <Compile Include="IWorkstationRepository.cs" />
     <Compile Include="Model\Meter.cs" />
     <Compile Include="Model\MeterTest.cs" />
     <Compile Include="Model\MeterTestCollection.cs" />
