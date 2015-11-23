@@ -122,7 +122,7 @@
                         return this.BadRequest($"Parameter {entityKeyParameter.Name} is entity key.");
                     }
 
-                    jsonParameters.Add(entityKeyParameter.Name, keySegment.Value);
+                    jsonParameters.Add(entityKeyParameter.Name, JsonConvert.DeserializeObject(keySegment.Value));
                 }
             }
 
