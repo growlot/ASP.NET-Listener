@@ -175,12 +175,13 @@ namespace AMSLLC.Listener.Client
                 {
                     CreatedDate = s.CreatedDateTime.UtcDateTime,
                     Debug = s.Details,
-                    EventStartDate = s.StartDate.HasValue ? s.StartDate.Value.UtcDateTime : (DateTime?)null,
+                    EventStartDate = s.StartDate?.UtcDateTime,
                     EntityCategory = s.EntityCategory,
                     EntityKey = s.EntityKey,
                     Message = s.Message,
                     OperationKey = s.OperationName,
-                    TransactionStatus = (TransactionStatusType)s.TransactionStatusId
+                    TransactionStatus = (TransactionStatusType)s.TransactionStatusId,
+                    TransactionSource = s.ApplicationName
                 }).ToList();
         }
 

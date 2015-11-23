@@ -29,7 +29,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
 		EC.[Name] AS EntityCategory,
 		O.[Name] AS OperationName,
 		A.[RecordKey] AS ApplicationKey,
+		A.[Name] AS ApplicationName,
 		C.[ExternalCode] AS CompanyCode,
+		C.[Name] AS CompanyName,
 		TR.Summary.value('(/root/EntityKey)[1]', 'varchar(50)') AS EntityKey,
 		TR.Summary.value('(/root/BatchNumber)[1]', 'varchar(50)') AS BatchNumber,
 		TR.Summary.value('(/root/StartDate)[1]', 'date') AS StartDate

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generation date: 11/18/2015 9:23:00 AM
+// Generation date: 11/23/2015 5:44:55 AM
 namespace AMSLLC.Listener.Client.AMSLLC.Listener.Persistence.Listener
 {
     /// <summary>
@@ -819,6 +819,29 @@ namespace AMSLLC.Listener.Client.AMSLLC.Listener.Persistence.Listener
         partial void OnApplicationKeyChanging(string value);
         partial void OnApplicationKeyChanged();
         /// <summary>
+        /// There are no comments for Property ApplicationName in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("ApplicationName")]
+        public string ApplicationName
+        {
+            get
+            {
+                return this._ApplicationName;
+            }
+            set
+            {
+                this.OnApplicationNameChanging(value);
+                this._ApplicationName = value;
+                this.OnApplicationNameChanged();
+                this.OnPropertyChanged("ApplicationName");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private string _ApplicationName;
+        partial void OnApplicationNameChanging(string value);
+        partial void OnApplicationNameChanged();
+        /// <summary>
         /// There are no comments for Property CompanyCode in the schema.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
@@ -841,6 +864,29 @@ namespace AMSLLC.Listener.Client.AMSLLC.Listener.Persistence.Listener
         private string _CompanyCode;
         partial void OnCompanyCodeChanging(string value);
         partial void OnCompanyCodeChanged();
+        /// <summary>
+        /// There are no comments for Property CompanyName in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("CompanyName")]
+        public string CompanyName
+        {
+            get
+            {
+                return this._CompanyName;
+            }
+            set
+            {
+                this.OnCompanyNameChanging(value);
+                this._CompanyName = value;
+                this.OnCompanyNameChanged();
+                this.OnPropertyChanged("CompanyName");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private string _CompanyName;
+        partial void OnCompanyNameChanging(string value);
+        partial void OnCompanyNameChanged();
         /// <summary>
         /// There are no comments for Property EntityKey in the schema.
         /// </summary>
@@ -1201,7 +1247,9 @@ namespace AMSLLC.Listener.Client.AMSLLC.Listener
         <Property Name=""EntityCategory"" Type=""Edm.String"" />
         <Property Name=""OperationName"" Type=""Edm.String"" />
         <Property Name=""ApplicationKey"" Type=""Edm.String"" />
+        <Property Name=""ApplicationName"" Type=""Edm.String"" />
         <Property Name=""CompanyCode"" Type=""Edm.String"" />
+        <Property Name=""CompanyName"" Type=""Edm.String"" />
         <Property Name=""EntityKey"" Type=""Edm.String"" />
         <Property Name=""BatchNumber"" Type=""Edm.String"" />
         <Property Name=""StartDate"" Type=""Edm.DateTimeOffset"" />

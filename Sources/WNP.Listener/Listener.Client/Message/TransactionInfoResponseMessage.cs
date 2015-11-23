@@ -24,6 +24,6 @@ namespace AMSLLC.Listener.Client.Message
         public TransactionStatusType TransactionStatus { get; set; }
         public string Message { get; set; }
         public string Debug { get; set; }
-
+        public string TransactionSource { get; set; }
     }
 }

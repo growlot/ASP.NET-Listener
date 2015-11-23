@@ -112,27 +112,6 @@ namespace AMSLLC.Listener.Persistence.Listener
 	
 
     
-	[TableName("TransactionRegistryView")]
-	[ExplicitColumns]
-    public partial class TransactionRegistryViewEntity : ListenerDB.Record<TransactionRegistryViewEntity>  
-    {
-		[Column] public int TransactionId { get; set; }
-		[Column] public Guid RecordKey { get; set; }
-		[Column] public Guid? BatchKey { get; set; }
-		[Column] public int TransactionStatusId { get; set; }
-		[Column] public DateTime CreatedDateTime { get; set; }
-		[Column] public DateTime? UpdatedDateTime { get; set; }
-		[Column] public string Message { get; set; }
-		[Column] public string Details { get; set; }
-		[Column] public string EntityCategory { get; set; }
-		[Column] public string OperationName { get; set; }
-		[Column] public string ApplicationKey { get; set; }
-		[Column] public string CompanyCode { get; set; }
-		[Column] public string EntityKey { get; set; }
-		[Column] public string BatchNumber { get; set; }
-		[Column] public DateTime? StartDate { get; set; }
-	}
-    
 	[TableName("VersionInfo")]
 	[ExplicitColumns]
     public partial class VersionInfoEntity : ListenerDB.Record<VersionInfoEntity>  
@@ -500,5 +479,28 @@ namespace AMSLLC.Listener.Persistence.Listener
     {
 		[Column] public Guid RecordKey { get; set; }
 		[Column] public string MessageData { get; set; }
+	}
+    
+	[TableName("TransactionRegistryView")]
+	[ExplicitColumns]
+    public partial class TransactionRegistryViewEntity : ListenerDB.Record<TransactionRegistryViewEntity>  
+    {
+		[Column] public int TransactionId { get; set; }
+		[Column] public Guid RecordKey { get; set; }
+		[Column] public Guid? BatchKey { get; set; }
+		[Column] public int TransactionStatusId { get; set; }
+		[Column] public DateTime CreatedDateTime { get; set; }
+		[Column] public DateTime? UpdatedDateTime { get; set; }
+		[Column] public string Message { get; set; }
+		[Column] public string Details { get; set; }
+		[Column] public string EntityCategory { get; set; }
+		[Column] public string OperationName { get; set; }
+		[Column] public string ApplicationKey { get; set; }
+		[Column] public string ApplicationName { get; set; }
+		[Column] public string CompanyCode { get; set; }
+		[Column] public string CompanyName { get; set; }
+		[Column] public string EntityKey { get; set; }
+		[Column] public string BatchNumber { get; set; }
+		[Column] public DateTime? StartDate { get; set; }
 	}
 }
