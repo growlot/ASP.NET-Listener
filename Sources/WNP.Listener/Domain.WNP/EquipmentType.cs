@@ -12,7 +12,7 @@ namespace AMSLLC.Listener.Domain.WNP
     /// </summary>
     public class EquipmentType : ValueObject<EquipmentType>
     {
-        private static ICollection<string> supportedEquipentTypes = new List<string>(new[] { "EM", "CT", "PT" });
+        private static List<string> supportedEquipentTypes = new List<string>(new[] { "EM", "CT", "PT" });
         private readonly string equipmentTypeCode;
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace AMSLLC.Listener.Domain.WNP
         {
             if (!supportedEquipentTypes.Contains(equipmentTypeCode))
             {
-                throw new ArgumentOutOfRangeException(nameof(equipmentTypeCode), "Equipment type code is not recognized.");
+                throw new ArgumentOutOfRangeException(nameof(equipmentTypeCode), "Equipment type code is not recognized. Supported codes are: {0}".FormatWith(string.Join(",", supportedEquipentTypes.ToArray())));
             }
 
             this.equipmentTypeCode = equipmentTypeCode;

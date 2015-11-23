@@ -60,15 +60,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
             this.BillingAccountNumber = billingAccountNumber;
             this.IsInterconnect = isInterconnect;
             this.InterconnectUtilityName = interconnectUtilityName;
-
-            if (circuits != null)
-            {
-                this.Circuits = circuits;
-            }
-            else
-            {
-                this.Circuits = new List<CircuitMemento>();
-            }
+            this.Circuits = circuits == null ? new List<CircuitMemento>() : circuits;
         }
 
         /// <summary>

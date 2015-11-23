@@ -12,7 +12,14 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
     using CircuitChild.Equipment;
 
     /// <summary>
-    /// Root aggregate for a Site
+    /// Physical metering sites are controlled in WNP by two entities:
+    /// Site - Describes the physical location of a metering site(address, premise number, etc.) and the current customer(name, account number, etc.).
+    /// Circuit - Describes the connection and attributes of the metering devices to the utility, such as the enclosure, wiring, and physical and electrical parameters.
+    /// Sites can exist as placeholders prior to installing devices, but at least one circuit must be defined prior to installing a device.
+    ///
+    /// Any installed metering device "knows" what site and circuit it is installed on. Any number of meters can be installed on a circuit,
+    /// but in the case of transformer rated meters, all meters on a circuit are fed from any transformers installed on a circuit.
+    /// In large or complex metering situations, a site can have multiple circuits.
     /// </summary>
     public class Site : AggregateRoot<int>
     {

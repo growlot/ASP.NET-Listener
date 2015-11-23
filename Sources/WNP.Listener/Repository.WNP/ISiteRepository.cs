@@ -21,13 +21,6 @@ namespace AMSLLC.Listener.Repository.WNP
         Task<IMemento> GetSite(int siteId);
 
         /// <summary>
-        /// Gets the site by premise number.
-        /// </summary>
-        /// <param name="premiseNumber">The premise number.</param>
-        /// <returns>The site.</returns>
-        Task<IMemento> GetSiteByPremiseNumber(string premiseNumber);
-
-        /// <summary>
         /// Gets the owner with sites that belong to this owner and have same premise number or description.
         /// </summary>
         /// <param name="sitePremiseNumber">The site premise number.</param>

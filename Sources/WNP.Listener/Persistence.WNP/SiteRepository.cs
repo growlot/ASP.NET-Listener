@@ -45,12 +45,6 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetSiteByPremiseNumber(string premiseNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
         public Task<IMemento> GetOwnerWithCollidingSites(string sitePremiseNumber, string siteDescription)
         {
             return this.GetOwnerWithCollidingSites(-1, sitePremiseNumber, siteDescription);

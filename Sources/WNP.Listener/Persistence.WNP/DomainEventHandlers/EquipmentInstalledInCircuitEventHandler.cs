@@ -16,7 +16,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
     using WNP;
 
     /// <summary>
-    /// Persists <see cref="CircuitCreatedEvent"/>
+    /// Persists <see cref="EquipmentInstalledInCircuitEvent"/>
     /// </summary>
     public class EquipmentInstalledInCircuitEventHandler : EventPesistenceHandler, IDomainEventHandler<EquipmentInstalledInCircuitEvent>
     {
@@ -38,17 +38,19 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             switch (domainEvent.EquipmentType)
             {
                 case "EM":
-                    var meter = new EqpMeterEntity()
-                    {
-                        Owner = this.Owner,
-                        EqpNo = domainEvent.EquipmentNumber,
-                        Site = domainEvent.SiteId,
-                        Circuit = domainEvent.CircuitId
-                    };
-                    var meterColumns = new List<string>();
-                    meterColumns.Add(DBMetadata.EqpMeter.Site);
-                    meterColumns.Add(DBMetadata.EqpMeter.Circuit);
+                    ////var meter = new EqpMeterEntity()
+                    ////{
+                    ////    Owner = this.Owner,
+                    ////    EqpNo = domainEvent.EquipmentNumber,
+                    ////    Site = domainEvent.SiteId,
+                    ////    Circuit = domainEvent.CircuitId
+                    ////};
+                    ////var meterColumns = new List<string>();
+                    ////meterColumns.Add(DBMetadata.EqpMeter.Site);
+                    ////meterColumns.Add(DBMetadata.EqpMeter.Circuit);
+                    //// result.Add(this.UpdateAsync(meter, meterColumns));
 
+                    // a workaround because PetaPoco doesn't support composite keys.
                     ((WNPUnitOfWork)this.UnitOfWork).DbContext.Update<EqpMeterEntity>(
                         $@"
 SET 
@@ -67,10 +69,9 @@ and {DBMetadata.EqpMeter.EqpNo} = @5
                         this.Owner,
                         domainEvent.EquipmentNumber);
 
-                    // result.Add(this.UpdateAsync(meter, meterColumns));
                     break;
                 default:
-                    throw new InvalidOperationException(StringUtilities.Invariant($"Can not persist the equipment installation information, because equipment type {domainEvent} is not supported."));
+                    throw new InvalidOperationException(StringUtilities.Invariant($"Can not persist the equipment installation information, because equipment type {domainEvent.EquipmentType} is not supported."));
             }
 
             var siteEntity = ((WNPUnitOfWork)this.UnitOfWork).DbContext.First<SiteEntity>(
