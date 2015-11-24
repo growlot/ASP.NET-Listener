@@ -288,6 +288,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         .Select(m => $"{parentTable}.{m.SourceColumn} = {entityModel.TableName}.{m.TargetColumn}")
                         .Aggregate((m1, m2) => $"{m1} AND {m2}");
 
+                    if (relConfig.MatchValue != null)
+                    {
+                        onClause = $"{onClause} AND {relConfig.MatchValue.TargetColumn} = '{relConfig.MatchValue.TargetColumnValue}'";
+                    }
+
                     sql = sql.LeftJoin(entityModel.TableName).On(onClause);
                 }
             }
@@ -527,6 +532,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var onClause = relConfig.MatchOn
                 .Select(m => $"{parentTable}.{m.SourceColumn} = {childTable}.{m.TargetColumn}")
                 .Aggregate((m1, m2) => $"{m1} AND {m2}");
+
+            if (relConfig.MatchValue != null)
+            {
+                onClause = $"{onClause} AND {relConfig.MatchValue.TargetColumn} = '{relConfig.MatchValue.TargetColumnValue}'";
+            }
 
             var dbColumnsList = new DbColumnList(queryOptions.SelectExpand, childEntityModel);
 

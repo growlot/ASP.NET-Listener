@@ -109,6 +109,7 @@
     <Compile Include="Attributes\BoundEntityKeyAttribute.cs" />
     <Compile Include="Attributes\CollectionWideActionAttribute.cs" />
     <Compile Include="Attributes\UnboundActionAttribute.cs" />
+    <Compile Include="ColumnValueMatch.cs" />
     <Compile Include="ColumnMatch.cs" />
     <Compile Include="EntityConfiguration.cs" />
     <Compile Include="GlobalSuppressions.cs" />

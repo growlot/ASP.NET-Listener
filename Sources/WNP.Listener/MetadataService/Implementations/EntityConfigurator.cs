@@ -41,6 +41,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     new ColumnMatch(MeterTestResults.Owner, Comment.Owner),
                     new ColumnMatch(MeterTestResults.EqpNo, Comment.EqpNo),
                     new ColumnMatch(MeterTestResults.TestDateStart, Comment.CreateDate));
+                    new ColumnValueMatch(Comment.EqpType, "EM"),
 
             var meterConfiguration = new EntityConfiguration(EqpMeter.FullTableName)
                 .OwnerSpecific()
@@ -54,6 +55,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     true,
                     new ColumnMatch(EqpMeter.Owner, Comment.Owner),
                     new ColumnMatch(EqpMeter.EqpNo, Comment.EqpNo));
+                    new ColumnValueMatch(Comment.EqpType, "EM"),
 
             var meterReadingConfiguration = new EntityConfiguration(Reading.FullTableName)
                 .Contained(Reading.Owner, Reading.EqpNo);

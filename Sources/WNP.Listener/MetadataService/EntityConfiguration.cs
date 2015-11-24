@@ -139,6 +139,23 @@ namespace AMSLLC.Listener.MetadataService
         }
 
         /// <summary>
+        /// Defines "virtual" one-to-many relationship with another table (entity)
+        /// </summary>
+        /// <param name="tableName">Table to link to</param>
+        /// <param name="isContained">Defines if this entity is contained in parent</param>
+        /// <param name="matchValue">Force specific field to be of specific value.</param>
+        /// <param name="matchOn">On which field to form a match</param>
+        /// <returns>
+        /// Current instance of EntityConfiguration
+        /// </returns>
+        public EntityConfiguration HasMany(string tableName, bool isContained, ColumnValueMatch matchValue, params ColumnMatch[] matchOn)
+        {
+            this.Relations.Add(new RelationInformation(RelationType.OneToMany, tableName, matchValue, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
+
+            return this;
+        }
+
+        /// <summary>
         /// When composite key is used it usually consists of parent entity key and current entity key parts.
         /// Only current entity key should be used as a key, and parent entity key will be enforced by select joins.
         /// </summary>
