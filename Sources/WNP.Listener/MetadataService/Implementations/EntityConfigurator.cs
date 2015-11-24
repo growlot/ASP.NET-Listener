@@ -24,47 +24,42 @@ namespace AMSLLC.Listener.MetadataService.Implementations
         {
             var meterTestsConfiguration = new EntityConfiguration(MeterTestResults.FullTableName)
                 .OwnerSpecific()
-                    .HasKey(
-                        MeterTestResults.Owner,
-                        MeterTestResults.EqpNo,
-                        MeterTestResults.TestDateStart,
-                        MeterTestResults.StepNo)
-                    .HasRequired(
-                        EqpMeter.FullTableName,
-                        false,
-                        new ColumnMatch(MeterTestResults.Owner, EqpMeter.Owner),
-                        new ColumnMatch(MeterTestResults.EqpNo, EqpMeter.EqpNo))
-                    .HasMany(
-                        Reading.FullTableName,
-                        true,
-                        new ColumnMatch(MeterTestResults.Owner, Reading.Owner),
-                        new ColumnMatch(MeterTestResults.EqpNo, Reading.EqpNo),
-                        new ColumnMatch(MeterTestResults.TestDateStart, Reading.ReadDate))
-                    .HasMany(
-                        Comment.FullTableName,
-                        true,
-                        new ColumnMatch(MeterTestResults.Owner, Comment.Owner),
-                        new ColumnMatch(MeterTestResults.EqpNo, Comment.EqpNo),
-                        new ColumnMatch(MeterTestResults.TestDateStart, Comment.CreateDate));
+                .HasRequired(
+                    EqpMeter.FullTableName,
+                    false,
+                    new ColumnMatch(MeterTestResults.Owner, EqpMeter.Owner),
+                    new ColumnMatch(MeterTestResults.EqpNo, EqpMeter.EqpNo))
+                .HasMany(
+                    Reading.FullTableName,
+                    true,
+                    new ColumnMatch(MeterTestResults.Owner, Reading.Owner),
+                    new ColumnMatch(MeterTestResults.EqpNo, Reading.EqpNo),
+                    new ColumnMatch(MeterTestResults.TestDateStart, Reading.ReadDate))
+                .HasMany(
+                    Comment.FullTableName,
+                    true,
+                    new ColumnMatch(MeterTestResults.Owner, Comment.Owner),
+                    new ColumnMatch(MeterTestResults.EqpNo, Comment.EqpNo),
+                    new ColumnMatch(MeterTestResults.TestDateStart, Comment.CreateDate));
 
             var meterConfiguration = new EntityConfiguration(EqpMeter.FullTableName)
                 .OwnerSpecific()
-                .HasKey(
-                    EqpMeter.Owner,
-                    EqpMeter.EqpNo)
                 .HasMany(
                     Reading.FullTableName,
                     true,
                     new ColumnMatch(EqpMeter.Owner, Reading.Owner),
-                    new ColumnMatch(EqpMeter.EqpNo, Reading.EqpNo));
+                    new ColumnMatch(EqpMeter.EqpNo, Reading.EqpNo))
+                .HasMany(
+                    Comment.FullTableName,
+                    true,
+                    new ColumnMatch(EqpMeter.Owner, Comment.Owner),
+                    new ColumnMatch(EqpMeter.EqpNo, Comment.EqpNo));
 
             var meterReadingConfiguration = new EntityConfiguration(Reading.FullTableName)
-                    .Contained()
-                    .HasKey(Reading.ReadIndex);
+                .Contained(Reading.Owner, Reading.EqpNo);
 
             var commentsConfiguration = new EntityConfiguration(Comment.FullTableName)
-                    .Contained()
-                    .HasKey(Comment.CommentIndex);
+                .Contained(Comment.Owner, Comment.EqpType, Comment.EqpNo);
 
             this.configurations.Add(EqpMeter.FullTableName, meterConfiguration);
             this.configurations.Add(MeterTestResults.FullTableName, meterTestsConfiguration);
@@ -72,9 +67,6 @@ namespace AMSLLC.Listener.MetadataService.Implementations
             this.configurations.Add(Comment.FullTableName, commentsConfiguration);
 
             var siteConfiguration = new EntityConfiguration(Site.FullTableName).OwnerSpecific()
-                .HasKey(
-                    Site.Owner,
-                    Site.PremiseNo)
                 .HasMany(
                     Circuit.FullTableName,
                     true,
@@ -82,8 +74,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     new ColumnMatch(Site.Site, Circuit.Site));
 
             var circuitConfiguration = new EntityConfiguration(Circuit.FullTableName)
-                .Contained()
-                .HasKey(Circuit.MeterPoint);
+                .Contained(Circuit.Owner, Circuit.Site);
 
             this.configurations.Add(Site.FullTableName, siteConfiguration);
             this.configurations.Add(Circuit.FullTableName, circuitConfiguration);

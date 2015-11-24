@@ -503,9 +503,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             else
             {
                 key.Add(
-                    entityConfig.IsOwnerSpecific
-                        ? modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[1].ToUpperInvariant()]
-                        : modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
+                    modelMapping.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
                     JsonConvert.DeserializeObject(jsonKey.Value));
             }
 

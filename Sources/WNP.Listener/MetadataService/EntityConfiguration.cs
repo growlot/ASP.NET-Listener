@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.MetadataService
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -13,6 +14,8 @@ namespace AMSLLC.Listener.MetadataService
     /// </summary>
     public class EntityConfiguration
     {
+        private IEnumerable<string> parentKey = null;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityConfiguration"/> class.
         /// </summary>
@@ -64,11 +67,17 @@ namespace AMSLLC.Listener.MetadataService
 
         /// <summary>
         /// Defines if this entity is contained in parent
+        /// Parent key fields should be excluded from the current entity key.
         /// </summary>
-        /// <returns>Current instance of EntityConfiguration</returns>
-        public EntityConfiguration Contained()
+        /// <param name="parentKeyFields">The parent key columns.</param>
+        /// <returns>
+        /// Current instance of EntityConfiguration
+        /// </returns>
+        public EntityConfiguration Contained(params string[] parentKeyFields)
         {
             this.IsContained = true;
+            this.parentKey = parentKeyFields;
+            this.UpdateKeys();
 
             return this;
         }
@@ -82,6 +91,7 @@ namespace AMSLLC.Listener.MetadataService
         public EntityConfiguration HasKey(params string[] columnNames)
         {
             this.Key = columnNames;
+            this.UpdateKeys();
 
             return this;
         }
@@ -126,6 +136,20 @@ namespace AMSLLC.Listener.MetadataService
             this.Relations.Add(new RelationInformation(RelationType.OneToMany, tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
 
             return this;
+        }
+
+        /// <summary>
+        /// When composite key is used it usually consists of parent entity key and current entity key parts.
+        /// Only current entity key should be used as a key, and parent entity key will be enforced by select joins.
+        /// </summary>
+        private void UpdateKeys()
+        {
+            if (this.parentKey != null && this.Key != null)
+            {
+                var tempList = this.Key.ToList();
+                tempList.RemoveAll(item => this.parentKey.Contains(item, StringComparer.OrdinalIgnoreCase));
+                this.Key = tempList;
+            }
         }
     }
 }

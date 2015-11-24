@@ -198,9 +198,8 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 Func<KeyValuePair<string, MetadataFieldInfo>, bool> predicate =
                     fi => fi.Value.IsPrimaryKey && modelToColumnMappings[fi.Key].ToUpperInvariant() != "OWNER";
 
-                var entityConfiguration = this.entityConfigurator.GetEntityConfiguration(fqTableName)
-                                          ??
-                                          EntityConfiguration.CreateDefault(fqTableName, fieldsInfo.Where(predicate).Select(fi => modelToColumnMappings[fi.Key]).ToArray());
+                var entityConfiguration = this.entityConfigurator.GetEntityConfiguration(fqTableName) ?? new EntityConfiguration(fqTableName);
+                entityConfiguration.HasKey(fieldsInfo.Where(predicate).Select(fi => modelToColumnMappings[fi.Key]).ToArray());
 
                 var oDataModelMapping = new MetadataEntityModel(
                     fqTableName,
