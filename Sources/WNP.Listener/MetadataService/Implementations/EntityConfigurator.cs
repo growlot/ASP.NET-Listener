@@ -27,35 +27,35 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 .HasRequired(
                     EqpMeter.FullTableName,
                     false,
-                    new ColumnMatch(MeterTestResults.Owner, EqpMeter.Owner),
-                    new ColumnMatch(MeterTestResults.EqpNo, EqpMeter.EqpNo))
+                    new ColumnMatch(EqpMeter.Owner, MeterTestResults.Owner),
+                    new ColumnMatch(EqpMeter.EqpNo, MeterTestResults.EqpNo))
                 .HasMany(
                     Reading.FullTableName,
                     true,
-                    new ColumnMatch(MeterTestResults.Owner, Reading.Owner),
-                    new ColumnMatch(MeterTestResults.EqpNo, Reading.EqpNo),
-                    new ColumnMatch(MeterTestResults.TestDateStart, Reading.ReadDate))
+                    new ColumnMatch(Reading.Owner, MeterTestResults.Owner),
+                    new ColumnMatch(Reading.EqpNo, MeterTestResults.EqpNo),
+                    new ColumnMatch(Reading.ReadDate, MeterTestResults.TestDateStart))
                 .HasMany(
                     Comment.FullTableName,
                     true,
-                    new ColumnMatch(MeterTestResults.Owner, Comment.Owner),
-                    new ColumnMatch(MeterTestResults.EqpNo, Comment.EqpNo),
-                    new ColumnMatch(MeterTestResults.TestDateStart, Comment.CreateDate));
                     new ColumnValueMatch(Comment.EqpType, "EM"),
+                    new ColumnMatch(Comment.Owner, MeterTestResults.Owner),
+                    new ColumnMatch(Comment.EqpNo, MeterTestResults.EqpNo),
+                    new ColumnMatch(Comment.CreateDate, MeterTestResults.TestDateStart));
 
             var meterConfiguration = new EntityConfiguration(EqpMeter.FullTableName)
                 .OwnerSpecific()
                 .HasMany(
                     Reading.FullTableName,
                     true,
-                    new ColumnMatch(EqpMeter.Owner, Reading.Owner),
-                    new ColumnMatch(EqpMeter.EqpNo, Reading.EqpNo))
+                    new ColumnMatch(Reading.Owner, EqpMeter.Owner),
+                    new ColumnMatch(Reading.EqpNo, EqpMeter.EqpNo))
                 .HasMany(
                     Comment.FullTableName,
                     true,
-                    new ColumnMatch(EqpMeter.Owner, Comment.Owner),
-                    new ColumnMatch(EqpMeter.EqpNo, Comment.EqpNo));
                     new ColumnValueMatch(Comment.EqpType, "EM"),
+                    new ColumnMatch(Comment.Owner, EqpMeter.Owner),
+                    new ColumnMatch(Comment.EqpNo, EqpMeter.EqpNo));
 
             var meterReadingConfiguration = new EntityConfiguration(Reading.FullTableName)
                 .Contained(Reading.Owner, Reading.EqpNo);
@@ -72,8 +72,8 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 .HasMany(
                     Circuit.FullTableName,
                     true,
-                    new ColumnMatch(Site.Owner, Circuit.Owner),
-                    new ColumnMatch(Site.Site, Circuit.Site));
+                    new ColumnMatch(Circuit.Owner, Site.Owner),
+                    new ColumnMatch(Circuit.Site, Site.Site));
 
             var circuitConfiguration = new EntityConfiguration(Circuit.FullTableName)
                 .Contained(Circuit.Owner, Circuit.Site);

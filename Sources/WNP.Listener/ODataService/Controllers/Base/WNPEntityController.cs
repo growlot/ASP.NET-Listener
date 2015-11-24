@@ -285,7 +285,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         information => information.TargetTableName == entityModel.TableName);
 
                     var onClause = relConfig.MatchOn
-                        .Select(m => $"{parentTable}.{m.SourceColumn} = {entityModel.TableName}.{m.TargetColumn}")
+                        .Select(m => $"{entityModel.TableName}.{m.SourceColumn} = {parentTable}.{m.TargetColumn}")
                         .Aggregate((m1, m2) => $"{m1} AND {m2}");
 
                     if (relConfig.MatchValue != null)
@@ -530,7 +530,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             // make join
             var parentTable = parentEntityModel.TableName;
             var onClause = relConfig.MatchOn
-                .Select(m => $"{parentTable}.{m.SourceColumn} = {childTable}.{m.TargetColumn}")
+                .Select(m => $"{childTable}.{m.SourceColumn} = {parentTable}.{m.TargetColumn}")
                 .Aggregate((m1, m2) => $"{m1} AND {m2}");
 
             if (relConfig.MatchValue != null)
