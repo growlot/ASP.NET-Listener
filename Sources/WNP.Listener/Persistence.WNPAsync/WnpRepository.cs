@@ -11,6 +11,7 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
     using Repository;
     using Repository.WNP;
     using Repository.WNP.Model;
+    using Serilog;
     using WNP;
     using WNP.Metadata;
 
@@ -46,6 +47,8 @@ FROM
 	INNER JOIN {DBMetadata.EqpMeter.FullTableName} M ON TR.{DBMetadata.MeterTestResults.EqpNo} = M.{DBMetadata.EqpMeter.EqpNo}
 WHERE
 	M.{DBMetadata.EqpMeter.NewBatchNo} = @0 AND TR.{DBMetadata.MeterTestResults.StepNo} = 1";
+
+            Log.Logger.Information("Querying WNP for batch information: {0} (batch number: {1})", sql, batchNumber);
 
             var tests = await this.persistenceAdapter.GetListAsync<MeterTestResultsEntity>(sql, false, batchNumber);
             return Enumerable.GroupBy(

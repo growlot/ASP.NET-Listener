@@ -43,6 +43,13 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     requestMessage.CompanyCode,
                     requestMessage.SourceApplicationKey);
 
+                Log.Logger.Information(
+                    "Searching for enabled operation. Application Key: {0}, Company Code: {1}, Operation Name: {2}, Entity Name: {3}",
+                    requestMessage.SourceApplicationKey,
+                    requestMessage.CompanyCode,
+                    requestMessage.OperationKey,
+                    requestMessage.EntityName);
+
                 var enabledOperations = await transactionRepository.GetEnabledEntityOperations();
                 var enabledOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0

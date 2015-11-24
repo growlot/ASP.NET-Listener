@@ -39,5 +39,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The endpoint.</value>
         public ICollection<IntegrationEndpointConfiguration> Endpoint { get; } = new List<IntegrationEndpointConfiguration>();
+
+        /// <summary>
+        /// Gets or sets the automatic succeed flag.
+        /// Should be set to true if batch is executed as whole from root
+        /// </summary>
+        /// <value>The automatic succeed.</value>
+        public bool AutoSucceed { get; set; }
     }
 }

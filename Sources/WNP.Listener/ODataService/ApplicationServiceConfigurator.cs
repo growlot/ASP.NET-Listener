@@ -105,6 +105,14 @@ namespace AMSLLC.Listener.ODataService
                                         ep.ConnectionConfiguration,
                                         ep.ProtocolConfiguration);
                                 }));
+                        if (domainEvent.AutoSucceed)
+                        {
+                            await this.transactionService.Success(
+                                new SucceedTransactionCommand
+                                {
+                                    RecordKey = domainEvent.RecordKey
+                                });
+                        }
                     }
                     catch (Exception exc)
                     {

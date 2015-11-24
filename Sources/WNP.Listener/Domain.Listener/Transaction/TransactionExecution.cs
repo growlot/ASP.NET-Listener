@@ -175,7 +175,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             }
         }
 
-        private static List<IDomainEvent> ProcessTransaction(ITransactionExecutionData transactionExecutionData, ITransactionHashBuilder hashBuilder)
+        private static List<IDomainEvent> ProcessTransaction(ITransactionExecutionData transactionExecutionData, ITransactionHashBuilder hashBuilder, bool autoSucceed = false)
         {
             var returnValue = new List<IDomainEvent>();
             var processor = ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
@@ -206,7 +206,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                         Data = preparedData.Data
                     },
                     RecordKey = transactionExecutionData.RecordKey,
-                    TransactionHash = transactionExecutionData.OutgoingHash
+                    TransactionHash = transactionExecutionData.OutgoingHash,
+                    AutoSucceed = autoSucceed
                 };
 
                 foreach (var cfg in transactionExecutionData.EndpointConfigurations)
@@ -304,7 +305,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 
                     childTransactionEntity.Dirty = true;
 
-                    returnValue[priority].AddRange(ProcessTransaction(childTransactionEntity, this.hashBuilder));
+                    returnValue[priority].AddRange(ProcessTransaction(childTransactionEntity, this.hashBuilder, true));
                 }
             }
 

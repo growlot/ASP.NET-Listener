@@ -482,8 +482,8 @@ WHERE TR.RecordKey = @0";
                     TransactionStatusId = (int)transactionRegistry.Status,
                     UpdatedDateTime = transactionRegistry.UpdatedDateTime,
                     AppUser = transactionRegistry.UserName,
-                    Message = transactionRegistry.Message,
-                    Details = transactionRegistry.Details
+                    Message = transactionRegistry.Message == null || transactionRegistry.Message.Length <= 255 ? transactionRegistry.Message : transactionRegistry.Message.Substring(0, 255),
+                    Details = transactionRegistry.Details == null || transactionRegistry.Details.Length <= 4000 ? transactionRegistry.Details : transactionRegistry.Details.Substring(0, 4000)
                 };
 
                 await this.persistence.UpdateAsync(

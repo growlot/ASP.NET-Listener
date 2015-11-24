@@ -78,6 +78,7 @@ namespace AMSLLC.Listener.Bootstrapper
             try
             {
                 Mappers.Register(typeof(WNPMetadataEntry), new WNPMetadataMapping());
+                AsyncPoco.Mappers.Register(typeof(MeterTestResultsEntity), new AsyncMapper());
             }
             catch (ArgumentException)
             {

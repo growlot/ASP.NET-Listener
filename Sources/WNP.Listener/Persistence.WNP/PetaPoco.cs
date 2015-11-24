@@ -2355,6 +2355,23 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
     }
 
+    /// <summary>
+	/// Marks a poco property as a computed column that is populated in queries
+	/// but not used for updates or inserts.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Property)]
+    public class ComputedColumnAttribute : ColumnAttribute
+    {
+        public ComputedColumnAttribute()
+        {
+        }
+
+        public ComputedColumnAttribute(string name)
+            : base(name)
+        {
+        }
+    }
+
 
     /// <summary>
     /// Sets the DB table name to be used for a Poco class.

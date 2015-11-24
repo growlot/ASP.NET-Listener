@@ -15,6 +15,5 @@ namespace AMSLLC.Listener.Client.Message
         public string BatchNumber { get; set; }
         public List<TransactionStatusType> StatusTypes { get; } = new List<TransactionStatusType>();
         public DateTime? TransactionDate { get; set; }
-
     }
 }

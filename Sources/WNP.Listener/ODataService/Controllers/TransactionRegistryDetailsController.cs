@@ -33,7 +33,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                return this._dbContext.TransactionRegistryDetails.AsQueryable();
+                return this._dbContext.TransactionRegistryDetails.Where(s => s.CompanyCode == this.CompanyCode).AsQueryable();
             }
             catch (Exception exc)
             {
@@ -46,7 +46,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                var result = this._dbContext.TransactionRegistryDetails.Where(s => s.RecordKey == key);
+                var result = this._dbContext.TransactionRegistryDetails.Where(s => s.RecordKey == key && s.CompanyCode == this.CompanyCode);
                 return this.Ok(result);
             }
             catch (Exception exc)
