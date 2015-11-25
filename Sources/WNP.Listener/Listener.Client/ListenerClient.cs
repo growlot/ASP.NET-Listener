@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// <copyright file="ListenerClient.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.Client
 {
+    using System;
+    using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
     using System.Linq.Expressions;
-    using System.Text;
     using System.Threading.Tasks;
     using AMSLLC.Listener;
     using AMSLLC.Listener.Persistence.Listener;
@@ -20,6 +22,7 @@ namespace AMSLLC.Listener.Client
     public class ListenerClient : IDisposable
     {
         private readonly Uri _baseUri = null;
+        private Container _container = null;
         private IListenerProxy _proxy = null;
 
         /// <summary>
@@ -29,7 +32,6 @@ namespace AMSLLC.Listener.Client
         public ListenerClient(string baseUri)
             : this(baseUri, new ListenerProxy(new ListenerRequestHeaderDictionary()))
         {
-
         }
 
         /// <summary>
@@ -37,18 +39,19 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
         /// <param name="proxy">The proxy.</param>
-        public ListenerClient(string baseUri, IListenerProxy proxy)
+        public ListenerClient(
+            string baseUri,
+            IListenerProxy proxy)
             : this(new Uri(baseUri), proxy)
         {
-
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListenerClient"/> class.
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
-        public ListenerClient(Uri baseUri) : this(baseUri, new ListenerProxy(
-                new ListenerRequestHeaderDictionary()))
+        public ListenerClient(Uri baseUri)
+            : this(baseUri, new ListenerProxy(new ListenerRequestHeaderDictionary()))
         {
         }
 
@@ -57,17 +60,27 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
         /// <param name="proxy">The proxy.</param>
-        public ListenerClient(Uri baseUri, IListenerProxy proxy)
+        public ListenerClient(
+            Uri baseUri,
+            IListenerProxy proxy)
         {
             this._baseUri = baseUri;
             this._proxy = proxy;
+            this._container = new Container(this._baseUri);
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
         /// Processes the device test result.
         /// </summary>
         /// <param name="request">The request.</param>
-        public void ProcessDeviceTestResult(DeviceTestResultMessage request)
+        public void ProcessDeviceTestResult(
+            DeviceTestResultMessage request)
         {
             this.Execute(
                 new Uri("listener/Open", UriKind.Relative),
@@ -87,12 +100,12 @@ namespace AMSLLC.Listener.Client
             DeviceUpdateMessage request)
         {
             this.Execute(
-                 new Uri("listener/Open", UriKind.Relative),
-                 new DeviceUpdateRequestMessage(request.EquipmentType)
-                 {
-                     EntityKey = request.EquipmentNumber,
-                     Owner = request.CompanyId
-                 });
+                new Uri("listener/Open", UriKind.Relative),
+                new DeviceUpdateRequestMessage(request.EquipmentType)
+                {
+                    EntityKey = request.EquipmentNumber,
+                    Owner = request.CompanyId
+                });
         }
 
         /// <summary>
@@ -107,35 +120,64 @@ namespace AMSLLC.Listener.Client
         }
 
         /// <summary>
+        /// Publish the tracking information.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        public void PublishTracking(
+            ChangeDeviceStatusMessage request)
+        {
+            this.Execute(
+                new Uri("listener/Open", UriKind.Relative),
+                new ChangeDeviceStatusRequestMessage(request.EquipmentType)
+                {
+                    EntityKey = request.EquipmentNumber,
+                    Owner = request.CompanyId,
+                    CreatedDate = request.CreatedDate
+                });
+        }
+
+        /// <summary>
         /// Opens the transaction asynchronously.
         /// </summary>
         /// <returns>Task.</returns>
-        public Task<string> OpenTransactionAsync<TRequest>(TRequest request) where TRequest : BaseListenerRequestMessage
+        public Task<string> OpenTransactionAsync<TRequest>(
+            TRequest request) where TRequest : BaseListenerRequestMessage
         {
-            return this._proxy.OpenAsync(
-                 new Uri(this._baseUri, new Uri("listener/Open")),
-                 request);
+            return this._proxy.OpenAsync(new Uri(this._baseUri, new Uri("listener/Open")), request);
         }
 
         /// <summary>
         /// Process the transaction asynchronously.
         /// </summary>
         /// <returns>Task.</returns>
-        public Task ProcessTransactionAsync<TRequest>(TRequest request) where TRequest : BaseListenerRequestMessage
+        public Task<OperationResponse> ProcessTransactionAsync(
+            string transactionKey)
         {
-            return this._proxy.OpenAsync(
-                 new Uri(this._baseUri, new Uri("listener/Process")),
-                 request);
+            var query = this._container.TransactionRegistry.ByKey(
+                new Dictionary<string, object>
+                {
+                    {
+                        "RecordKey", Guid.Parse(transactionKey)
+                    }
+                }).Process();
+            return query.ExecuteAsync();
         }
 
         /// <summary>
         /// Succeed the transaction asynchronously.
         /// </summary>
         /// <returns>Task.</returns>
-        public Task SucceedTransactionAsync(string transactionKey)
+        public Task<OperationResponse> SucceedTransactionAsync(
+            string transactionKey)
         {
-            return this._proxy.OpenAsync(
-                 new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Succeed()", UriKind.Relative)), null);
+            var query = this._container.TransactionRegistry.ByKey(
+                new Dictionary<string, object>
+                {
+                    {
+                        "RecordKey", Guid.Parse(transactionKey)
+                    }
+                }).Succeed();
+            return query.ExecuteAsync();
         }
 
         /// <summary>
@@ -145,19 +187,19 @@ namespace AMSLLC.Listener.Client
         /// <param name="excMessage">The exc message.</param>
         /// <param name="stackTrace">The stack trace.</param>
         /// <returns>Task.</returns>
-        public Task FailTransactionAsync(
+        public Task<OperationResponse> FailTransactionAsync(
             string transactionKey,
             string excMessage,
             string stackTrace)
         {
-            return this._proxy.OpenAsync(
-                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Fail()", UriKind.Relative)),
-                    JsonConvert.SerializeObject(
-                        new ProcessingFailedRequestMessage
-                        {
-                            Message = excMessage,
-                            Details = stackTrace
-                        }));
+            var query = this._container.TransactionRegistry.ByKey(
+                new Dictionary<string, object>
+                {
+                    {
+                        "RecordKey", Guid.Parse(transactionKey)
+                    }
+                }).Fail(excMessage, stackTrace);
+            return query.ExecuteAsync();
         }
 
         /// <summary>
@@ -165,11 +207,14 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>ICollection&lt;TransactionInfoResponseMessage&gt;.</returns>
-        public ICollection<TransactionInfoResponseMessage> SearchTransactions(TransactionFilter filter)
+        public ICollection<TransactionInfoResponseMessage> SearchTransactions(
+            TransactionFilter filter)
         {
             Log.Logger.Information("Querying transaction with filter {0}", JsonConvert.SerializeObject(filter));
-            var container = new Container(this._baseUri);
-            var result = (filter == null ? container.TransactionRegistryDetails : container.TransactionRegistryDetails.Where(this.BuildQuery(filter))).ToList();
+            var result =
+                (filter == null
+                    ? this._container.TransactionRegistryDetails
+                    : this._container.TransactionRegistryDetails.Where(this.BuildQuery(filter))).ToList();
             return result.Select(
                 s => new TransactionInfoResponseMessage
                 {
@@ -185,7 +230,8 @@ namespace AMSLLC.Listener.Client
                 }).ToList();
         }
 
-        private Expression<Func<TransactionRegistryViewEntity, bool>> BuildQuery(TransactionFilter filter)
+        private Expression<Func<TransactionRegistryViewEntity, bool>> BuildQuery(
+            TransactionFilter filter)
         {
             Expression<Func<TransactionRegistryViewEntity, bool>> baseExpression = (o) => true;
             if (filter != null)
@@ -221,10 +267,7 @@ namespace AMSLLC.Listener.Client
                     Expression<Func<TransactionRegistryViewEntity, bool>> inner = (o) => false;
                     foreach (int i in str)
                     {
-                        inner =
-                        inner.Compose(
-                            f => f.TransactionStatusId == i,
-                            Expression.OrElse);
+                        inner = inner.Compose(f => f.TransactionStatusId == i, Expression.OrElse);
                     }
                     baseExpression = baseExpression.Compose(inner, Expression.AndAlso);
                 }
@@ -250,7 +293,7 @@ namespace AMSLLC.Listener.Client
             }
 
             var responseExpando =
-                    JsonConvert.DeserializeObject<ExpandoObject>(response) as IDictionary<string, object>;
+                JsonConvert.DeserializeObject<ExpandoObject>(response) as IDictionary<string, object>;
             transactionKey = responseExpando["value"]?.ToString();
             Log.Logger.Information("Using transactionKey {0}", transactionKey);
             try
@@ -280,7 +323,6 @@ namespace AMSLLC.Listener.Client
                 throw new FailedToProcessTransactionException(exc.Message, exc);
             }
 
-
             try
             {
                 this.SucceedTransaction(transactionKey);
@@ -297,9 +339,7 @@ namespace AMSLLC.Listener.Client
             Uri relativeUri,
             object message)
         {
-            var openTask = this._proxy.OpenAsync(
-                new Uri(this._baseUri, relativeUri),
-                message);
+            var openTask = this._proxy.OpenAsync(new Uri(this._baseUri, relativeUri), message);
 
             openTask.Wait();
             return openTask.Result;
@@ -311,8 +351,12 @@ namespace AMSLLC.Listener.Client
             string stacktrace)
         {
             var t =
-                 this._proxy.OpenAsync(
-                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Fail()", UriKind.Relative)),
+                this._proxy.OpenAsync(
+                    new Uri(
+                        this._baseUri,
+                        new Uri(
+                            $"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Fail()",
+                            UriKind.Relative)),
                     JsonConvert.SerializeObject(
                         new ProcessingFailedRequestMessage
                         {
@@ -326,8 +370,12 @@ namespace AMSLLC.Listener.Client
             string transactionKey)
         {
             var openedTask =
-                 this._proxy.OpenAsync(
-                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Process()", UriKind.Relative)),
+                this._proxy.OpenAsync(
+                    new Uri(
+                        this._baseUri,
+                        new Uri(
+                            $"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Process()",
+                            UriKind.Relative)),
                     null);
 
             openedTask.Wait();
@@ -337,17 +385,13 @@ namespace AMSLLC.Listener.Client
             string key)
         {
             var succeedTask =
-                 this._proxy.OpenAsync(
-                    new Uri(this._baseUri, new Uri($"listener/TransactionRegistry({key})/AMSLLC.Listener.Succeed()", UriKind.Relative)),
+                this._proxy.OpenAsync(
+                    new Uri(
+                        this._baseUri,
+                        new Uri($"listener/TransactionRegistry({key})/AMSLLC.Listener.Succeed()", UriKind.Relative)),
                     null);
 
             succeedTask.Wait();
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         ~ListenerClient()
@@ -357,7 +401,8 @@ namespace AMSLLC.Listener.Client
         }
 
         // The bulk of the clean-up code is implemented in Dispose(bool)
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(
+            bool disposing)
         {
             if (disposing)
             {

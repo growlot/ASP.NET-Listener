@@ -1,5 +1,7 @@
 ﻿namespace AMSLLC.Listener.Client.Message
 {
+    using System;
+
     public class DeviceUpdateRequestMessage : BaseListenerRequestMessage
     {
         public DeviceUpdateRequestMessage(string entityCategory)
@@ -9,5 +11,6 @@
 
         public string EntityKey { get; set; }
         public string Owner { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

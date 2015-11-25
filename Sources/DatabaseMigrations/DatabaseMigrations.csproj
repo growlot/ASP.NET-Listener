@@ -192,6 +192,7 @@
     <Compile Include="v2.2.0\Migration_202000130_TransactionMessageData_Create.cs" />
     <Compile Include="v2.2.0\Migration_202000140_TransactionStatus_Populate.cs" />
     <Compile Include="v2.2.0\Migration_202000150_TransactionRegistryView_Create.cs" />
+    <Compile Include="v2.2.0\Migration_202000160_AddOperation_StateChange.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Service.Host\ConnectionStrings.config">

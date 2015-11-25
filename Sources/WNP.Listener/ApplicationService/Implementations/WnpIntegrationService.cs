@@ -14,15 +14,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     /// </summary>
     public class WnpIntegrationService : IWnpIntegrationService
     {
-        /// <summary>
-        /// Create batch using data from WNP
-        /// </summary>
-        /// <param name="batchKey">The batch key.</param>
-        /// <param name="companyCode">The company code.</param>
-        /// <param name="applicationKey">The application key.</param>
-        /// <param name="name">The name.</param>
-        /// <returns>Task&lt;IEnumerable&lt;OpenBatchTransactionCommand&gt;&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <inheritdoc/>
         public Task<OpenBatchTransactionCommand> Create(
             string batchKey,
             string companyCode,
