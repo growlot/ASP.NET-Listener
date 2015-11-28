@@ -71,6 +71,7 @@
     <Compile Include="Application\DeviceTypeEnabledForApplication.cs" />
     <Compile Include="DeviceBatch\DeviceBatchProcessing.cs" />
     <Compile Include="DeviceBatch\DeviceBatchProcessingMemento.cs" />
+    <Compile Include="Exception\UnableToSucceedTransactionException.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Lookups\ServiceTypeLookup.cs" />
     <Compile Include="Lookups\DeviceTypeLookup.cs" />

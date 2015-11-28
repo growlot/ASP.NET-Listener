@@ -9,8 +9,10 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Globalization;
     using System.Linq;
     using Communication;
+    using Exception;
     using Shared;
 
     /// <summary>
@@ -189,6 +191,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="scopeDateTime">The scope date time.</param>
         public void Succeed(DateTime scopeDateTime)
         {
+            if (this.Status != TransactionStatusType.Processing)
+            {
+                throw new UnableToSucceedTransactionException(this.RecordKey, "Transaction is not in {0} state, got {1}".FormatWith(CultureInfo.InvariantCulture, TransactionStatusType.Processing, this.Status));
+            }
+
             foreach (var source in this.ChildTransactions.Where(s => s.Status == TransactionStatusType.Processing))
             {
                 source.Status = TransactionStatusType.Success;
@@ -198,7 +205,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             if (this.ChildTransactions.Any()
                 && !this.ChildTransactions.All(s => s.Status == TransactionStatusType.Success || s.Status == TransactionStatusType.Skipped))
             {
-                return;
+                throw new UnableToSucceedTransactionException(this.RecordKey, "Child transactions must be in {0} or {1} state".FormatWith(CultureInfo.InvariantCulture, TransactionStatusType.Success, TransactionStatusType.Skipped));
             }
 
             this.UpdatedDateTime = scopeDateTime;

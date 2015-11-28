@@ -211,7 +211,10 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     var transactionExecution = scope.DomainBuilder.Create<TransactionExecution>();
 
                     ((IOriginator)transactionExecution).SetMemento(memento);
-
+                    Log.Logger.Information(
+                        "{0} endpoints found for {1}",
+                        transactionExecution.EndpointConfigurations.Count,
+                        transactionExecution.RecordKey);
                     switch (requestMessage.RetryPolicy)
                     {
                         case RetryPolicyType.Retry:
@@ -246,7 +249,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                                 transactionExecution.RecordKey, transactionExecution.OutgoingHash
                             }
                         };
-                    Log.Logger.Information("Updating hash list {0}", JsonConvert.SerializeObject(hashList));
+                    Log.Logger.Debug("Updating hash list {0}", JsonConvert.SerializeObject(hashList));
                     await sourceRepository.UpdateHashAsync(hashList);
                 }
             }
@@ -336,7 +339,6 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 ((IOriginator)transactionRegistry).SetMemento(memento);
 
                 transactionRegistry.Processing(scope.ScopeCreated);
-                Log.Logger.Information("Processing transaction {0} with {1} children", transactionRegistry.RecordKey, transactionRegistry.ChildTransactions.Count);
                 await sourceRepository.UpdateTransactionRegistryAsync(transactionRegistry);
             }
         }
@@ -362,7 +364,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     modifiedRegistries.Add(transactionRegistry);
                 }
 
-                Log.Logger.Information("Canceling transactions {0}", JsonConvert.SerializeObject(modifiedRegistries));
+                Log.Logger.Information("Canceling transactions {0}", JsonConvert.SerializeObject(modifiedRegistries.Select(s => s.RecordKey)));
                 await sourceRepository.UpdateTransactionRegistryBulkAsync(modifiedRegistries);
             }
         }

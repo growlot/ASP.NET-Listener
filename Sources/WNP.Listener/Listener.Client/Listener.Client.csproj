@@ -90,6 +90,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="ClientUtilities.cs" />
+    <Compile Include="Exception\FailedToFailTransaction.cs" />
     <Compile Include="Exception\FailedToOpenTransactionException.cs" />
     <Compile Include="Exception\FailedToProcessTransactionException.cs" />
     <Compile Include="Exception\FailedToSucceedTransactionException.cs" />

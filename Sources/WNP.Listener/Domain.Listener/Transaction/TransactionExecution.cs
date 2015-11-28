@@ -262,7 +262,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                         {
                             return this.domainEventBus.PublishBulk(keyValuePair.Value);
                         }
-                    });
+                    }).Unwrap();
             }
 
             return task;
@@ -292,6 +292,9 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             }
             else
             {
+                returnValue[int.MinValue] = new List<IDomainEvent>();
+                returnValue[int.MinValue].AddRange(ProcessTransaction(this, this.hashBuilder));
+
                 foreach (var childTransactionEntity in
                     this.ChildTransactions.Where(
                         s =>

@@ -660,13 +660,22 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         It.IsAny<object>(),
                         It.IsAny<IConnectionConfiguration>(),
                         It.IsAny<IProtocolConfiguration>()),
-                Times.Exactly(priorities.Count));
+                Times.Exactly(priorities.Count + 1)); // +1 for root transaction
 
             Guid currentTransaction;
             int lastPriority = int.MaxValue;
+            bool rootFound = false;
             while (!handledTransactions.IsEmpty)
             {
                 handledTransactions.TryPop(out currentTransaction);
+                if (!priorities.ContainsKey(currentTransaction))
+                {
+                    Assert.AreEqual(1, lastPriority);
+                    Assert.IsFalse(rootFound);
+                    rootFound = true;
+                    continue;
+                }
+
                 Assert.IsTrue(priorities[currentTransaction] <= lastPriority);
                 lastPriority = priorities[currentTransaction];
             }
@@ -988,15 +997,15 @@ namespace AMSLLC.Listener.ApplicationService.Test
                     RetryPolicy = RetryPolicyType.Retry
                 });
 
+            // +1 for root transaction
             communicationHandler.Verify(
                 s =>
                     s.Handle(
                         It.IsAny<object>(),
                         It.IsAny<IConnectionConfiguration>(),
                         It.IsAny<IProtocolConfiguration>()),
-                Times.Exactly(expectedCount));
+                Times.Exactly(expectedCount + 1));
 
-            // +1 for root transaction
             transactionRepositoryMock.Verify(s => s.UpdateHashAsync(It.Is<Dictionary<Guid, string>>(d => d.Count() == expectedCount + 1)), Times.Once);
         }
 
@@ -1204,15 +1213,15 @@ namespace AMSLLC.Listener.ApplicationService.Test
                     RetryPolicy = RetryPolicyType.Force
                 });
 
+            // +1 for root transaction
             communicationHandler.Verify(
                 s =>
                     s.Handle(
                         It.IsAny<object>(),
                         It.IsAny<IConnectionConfiguration>(),
                         It.IsAny<IProtocolConfiguration>()),
-                Times.Exactly(expectedCount));
+                Times.Exactly(expectedCount + 1));
 
-            // +1 for root transaction
             transactionRepositoryMock.Verify(s => s.UpdateHashAsync(It.Is<Dictionary<Guid, string>>(d => d.Count() == expectedCount + 1)), Times.Once);
         }
 

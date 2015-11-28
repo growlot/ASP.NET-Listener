@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ListenerLiveTest.Client.Communication
 {
+    using System.Configuration;
     using System.Dynamic;
     using System.Net.Http;
     using System.Threading;
@@ -64,8 +65,8 @@ namespace ListenerLiveTest.Client.Communication
 
             Task<HttpResponseMessage> response;
 
-            client.DefaultRequestHeaders.Add("AMS-Company", "CCD");
-            client.DefaultRequestHeaders.Add("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e");
+            client.DefaultRequestHeaders.Add("AMS-Company", AppConfig.CompanyCode);
+            client.DefaultRequestHeaders.Add("AMS-Application", AppConfig.ApplicationCode);
 
             if (data != null)
             {

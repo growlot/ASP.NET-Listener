@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.Client
     using System.Dynamic;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Net;
     using System.Threading.Tasks;
     using AMSLLC.Listener;
     using AMSLLC.Listener.Persistence.Listener;
@@ -72,7 +73,7 @@ namespace AMSLLC.Listener.Client
         public void Dispose()
         {
             this.Dispose(true);
-            GC.SuppressFinalize(this);
+            //GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -143,14 +144,14 @@ namespace AMSLLC.Listener.Client
         public Task<string> OpenTransactionAsync<TRequest>(
             TRequest request) where TRequest : BaseListenerRequestMessage
         {
-            return this._proxy.OpenAsync(new Uri(this._baseUri, new Uri("listener/Open")), request);
+            return this._proxy.OpenAsync(new Uri(this._baseUri, new Uri("listener/Open", UriKind.Relative)), request);
         }
 
         /// <summary>
         /// Process the transaction asynchronously.
         /// </summary>
         /// <returns>Task.</returns>
-        public Task<OperationResponse> ProcessTransactionAsync(
+        public Task ProcessTransactionAsync(
             string transactionKey)
         {
             var query = this._container.TransactionRegistry.ByKey(
@@ -160,14 +161,22 @@ namespace AMSLLC.Listener.Client
                         "RecordKey", Guid.Parse(transactionKey)
                     }
                 }).Process();
-            return query.ExecuteAsync();
+            return query.ExecuteAsync().ContinueWith(
+                t =>
+                {
+                    if (t.Exception != null)
+                    {
+                        t.Exception.Handle(x => { Log.Logger.Error("An error has occured while processing transaction {0}", JsonConvert.SerializeObject(t.Exception)); return true; });
+                        throw new FailedToProcessTransactionException();
+                    }
+                });
         }
 
         /// <summary>
         /// Succeed the transaction asynchronously.
         /// </summary>
         /// <returns>Task.</returns>
-        public Task<OperationResponse> SucceedTransactionAsync(
+        public Task SucceedTransactionAsync(
             string transactionKey)
         {
             var query = this._container.TransactionRegistry.ByKey(
@@ -177,7 +186,15 @@ namespace AMSLLC.Listener.Client
                         "RecordKey", Guid.Parse(transactionKey)
                     }
                 }).Succeed();
-            return query.ExecuteAsync();
+            return query.ExecuteAsync().ContinueWith(
+                t =>
+                {
+                    if (t.Exception != null)
+                    {
+                        t.Exception.Handle(x => { Log.Logger.Error("An error has occured while succeeding transaction {0}", JsonConvert.SerializeObject(t.Exception)); return true; });
+                        throw new FailedToSucceedTransactionException();
+                    }
+                });
         }
 
         /// <summary>
@@ -187,7 +204,7 @@ namespace AMSLLC.Listener.Client
         /// <param name="excMessage">The exc message.</param>
         /// <param name="stackTrace">The stack trace.</param>
         /// <returns>Task.</returns>
-        public Task<OperationResponse> FailTransactionAsync(
+        public Task FailTransactionAsync(
             string transactionKey,
             string excMessage,
             string stackTrace)
@@ -199,7 +216,15 @@ namespace AMSLLC.Listener.Client
                         "RecordKey", Guid.Parse(transactionKey)
                     }
                 }).Fail(excMessage, stackTrace);
-            return query.ExecuteAsync();
+            return query.ExecuteAsync().ContinueWith(
+                t =>
+                {
+                    if (t.Exception != null)
+                    {
+                        t.Exception.Handle(x => { Log.Logger.Error("An error has occured while failing transaction {0}", JsonConvert.SerializeObject(t.Exception)); return true; });
+                        throw new FailedToFailTransaction();
+                    }
+                }); ;
         }
 
         /// <summary>
@@ -310,7 +335,7 @@ namespace AMSLLC.Listener.Client
                         string excMessage = x.Message;
                         string stacktrace = x.StackTrace;
                         this.FailTransaction(transactionKey, excMessage, stacktrace);
-                        return false;
+                        return true;
                     });
                 throw new FailedToProcessTransactionException(exc.Message, exc);
             }
