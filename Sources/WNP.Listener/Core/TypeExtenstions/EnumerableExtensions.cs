@@ -7,6 +7,7 @@
 namespace System.Collections.Generic
 {
     using System;
+    using Diagnostics.Contracts;
 
     /// <summary>
     /// Defines custom extensions for <see cref="IEnumerable{T}"/> type
@@ -19,13 +20,10 @@ namespace System.Collections.Generic
         /// <typeparam name="T">Type of elements in series.</typeparam>
         /// <param name="series">The series of elements.</param>
         /// <param name="action">The action to perform for each series element.</param>
-        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this argument can't be null.")]
         public static void Map<T>(this IEnumerable<T> series, Action<T> action)
         {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action), "Can not perform action on elements if action is not specified.");
-            }
+            Contract.Requires<ArgumentNullException>(series != null);
+            Contract.Requires<ArgumentNullException>(action != null);
 
             foreach (T obj in series)
             {

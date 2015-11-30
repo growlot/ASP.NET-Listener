@@ -6,6 +6,7 @@
 
 namespace System
 {
+    using Diagnostics.Contracts;
     using Globalization;
 
     /// <summary>
@@ -21,6 +22,10 @@ namespace System
         /// <returns>The formatted string.</returns>
         public static string FormatWith(this string format, params object[] args)
         {
+            Contract.Requires<ArgumentNullException>(format != null);
+            Contract.Requires<ArgumentNullException>(args != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+
             return format.FormatWith(CultureInfo.InvariantCulture, args);
         }
 
@@ -35,6 +40,11 @@ namespace System
         /// </returns>
         public static string FormatWith(this string format, CultureInfo provider, params object[] args)
         {
+            Contract.Requires<ArgumentNullException>(format != null);
+            Contract.Requires<ArgumentNullException>(provider != null);
+            Contract.Requires<ArgumentNullException>(args != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+
             return string.Format(provider, format, args);
         }
     }

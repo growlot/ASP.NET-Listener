@@ -4,8 +4,9 @@
 
 namespace System
 {
-    using System.Diagnostics.CodeAnalysis;
     using Collections.Generic;
+    using Diagnostics.CodeAnalysis;
+    using Diagnostics.Contracts;
     using Linq;
     using Reflection;
 
@@ -20,9 +21,11 @@ namespace System
         /// <param name="type">The type.</param>
         /// <param name="name">The name.</param>
         /// <returns>The generic method.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this argument can't be null.")]
         public static MethodInfo GetGenericMethod(this Type type, string name)
         {
+            Contract.Requires<ArgumentNullException>(type != null);
+            Contract.Requires<ArgumentNullException>(name != null);
+
             var methods = type
                 .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
                 .Where(mInfo => mInfo.Name == name && mInfo.IsGenericMethod)
@@ -46,12 +49,16 @@ namespace System
         /// <param name="name">The name.</param>
         /// <param name="parameterTypes">The parameter types. Use null for generic types.</param>
         /// <returns>The generic method.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this argument can't be null.")]
         public static MethodInfo GetGenericMethod(this Type type, string name, Type[] parameterTypes)
         {
+            Contract.Requires<ArgumentNullException>(type != null);
+            Contract.Requires<ArgumentNullException>(name != null);
+            Contract.Requires<ArgumentNullException>(parameterTypes != null);
+
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
             foreach (var method in methods.Where(m => m.Name == name && m.IsGenericMethodDefinition == true))
             {
+                Contract.Assume(method != null, "Method is enumerated from list of methods and should never be null");
                 var methodParameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
 
                 if (methodParameterTypes.SequenceEqual(parameterTypes, new SimpleTypeComparer()))
@@ -68,9 +75,10 @@ namespace System
         /// </summary>
         /// <param name="type">Type to check.</param>
         /// <returns>true if type is Nullable, false otherwise</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this parameter can't be null")]
         public static bool IsNullable(this Type type)
         {
+            Contract.Requires<ArgumentNullException>(type != null);
+
             return !type.IsValueType || Nullable.GetUnderlyingType(type) != null;
         }
 
@@ -79,9 +87,10 @@ namespace System
         /// </summary>
         /// <param name="type">Type to get default value of.</param>
         /// <returns>Default value of the Type provided.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this parameter can't be null")]
         public static object GetDefault(this Type type)
         {
+            Contract.Requires<ArgumentNullException>(type != null);
+
             if (type.IsValueType)
             {
                 return Activator.CreateInstance(type);
@@ -112,9 +121,7 @@ namespace System
                     return false;
                 }
 
-                return left.Assembly == right.Assembly &&
-                    left.Namespace == right.Namespace &&
-                    left.Name == right.Name;
+                return left.FullName == right.FullName;
             }
 
             public int GetHashCode(Type obj)

@@ -5,6 +5,7 @@
 namespace System.Reflection
 {
     using Collections.Generic;
+    using Diagnostics.Contracts;
     using Linq;
 
     /// <summary>
@@ -20,9 +21,11 @@ namespace System.Reflection
         /// <param name="parameters">The parameters provided as name-value dictionary.</param>
         /// <returns>The object returned by invoked method.</returns>
         [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "obj", Justification = "Provides consistent identifier name with Invoke method.")]
-        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "This is extension method, so this parameter can't be null")]
         public static object InvokeWithNamedParameters(this MethodBase methodBase, object obj, IDictionary<string, object> parameters)
         {
+            Contract.Requires<ArgumentNullException>(methodBase != null);
+            Contract.Requires<ArgumentNullException>(parameters != null);
+
             var paramNames = methodBase.GetParameters().Select(p => p.Name).ToArray();
             var paramValues = new object[paramNames.Length];
 
