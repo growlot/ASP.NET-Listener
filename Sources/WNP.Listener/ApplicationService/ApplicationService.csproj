@@ -86,11 +86,13 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="CommandHandlers\CommandHandlerBase.cs" />
+    <Compile Include="CommandHandlers\AddElectricMeterReadingCommandHandler.cs" />
     <Compile Include="CommandHandlers\ExecuteBusinessRuleCommandHandler.cs" />
     <Compile Include="CommandHandlers\CreateCircuitCommandHandler.cs" />
     <Compile Include="CommandHandlers\UninstallMeterCommandHandler.cs" />
     <Compile Include="CommandHandlers\InstallMeterCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateCircuitDetailsCommandHandler.cs" />
+    <Compile Include="Commands\AddElectricMeterReadingCommand.cs" />
     <Compile Include="Commands\CreateCircuitCommand.cs" />
     <Compile Include="CommandHandlers\UpdateSiteDetailsCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateSiteBillingAccountCommandHandler.cs" />

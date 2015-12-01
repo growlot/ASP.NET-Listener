@@ -35,5 +35,13 @@ namespace AMSLLC.Listener.Repository.WNP
         /// The workstation repository.
         /// </value>
         IWorkstationRepository WorkstationRepository { get; }
+
+        /// <summary>
+        /// Gets the equipment repository.
+        /// </summary>
+        /// <value>
+        /// The equipment repository.
+        /// </value>
+        IEquipmentRepository EquipmentRepository { get; }
     }
 }

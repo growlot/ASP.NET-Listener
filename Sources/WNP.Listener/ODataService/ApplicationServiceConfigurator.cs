@@ -14,6 +14,7 @@ namespace AMSLLC.Listener.ODataService
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
+    using Domain.WNP.ElectricMeterAggregate;
     using Domain.WNP.OwnerAggregate;
     using Domain.WNP.SiteAggregate;
     using Domain.WNP.SiteAggregate.CircuitChild;
@@ -69,6 +70,9 @@ namespace AMSLLC.Listener.ODataService
 
             this.commandBus.Subscribe<ExecuteBusinessRuleCommand>(
                 command => ApplicationIntegration.DependencyResolver.ResolveType<ExecuteBusinessRuleCommandHandler>().HandleAsync(command));
+
+            this.commandBus.Subscribe<AddElectricMeterReadingCommand>(
+                command => ApplicationIntegration.DependencyResolver.ResolveType<AddElectricMeterReadingCommandHandler>().HandleAsync(command));
         }
 
         /// <summary>
@@ -156,6 +160,9 @@ namespace AMSLLC.Listener.ODataService
 
             this.domainEventBus.SubscribeAsync<EquipmentStateChangedEvent>(
                 domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<EquipmentStateChangedEventHandler>().HandleAsync(domainEvent));
+
+            this.domainEventBus.SubscribeAsync<ElectricMeterReadingAddedEvent>(
+                domainEvent => ApplicationIntegration.DependencyResolver.ResolveType<ElectricMeterReadingAddedEventHandler>().HandleAsync(domainEvent));
         }
     }
 }

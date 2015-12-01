@@ -515,6 +515,29 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return key.ToArray();
         }
 
+        /// <summary>
+        /// Gets the entity with database key field only.
+        /// <summary>
+        /// Gets the entity with specified fields only.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="key">The key from metadata.</param>
+        /// <param name="modelMapping">The model mapping.</param>
+        /// <param name="dbFieldNames">The fields that has to be selected.</param>
+        /// <returns>The entity with specified fields retrieved.</returns>
+        protected TEntity GetEntity<TEntity>(KeyValuePair<string, object>[] key, MetadataEntityModel modelMapping, params object[] dbFieldNames)
+        {
+            var sql =
+                Sql.Builder.Select(dbFieldNames)
+                    .From($"{modelMapping.TableName}")
+                    .Where(
+                        key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
+                            .Aggregate((s, s1) => $"{s} AND {s1}"),
+                        key.Select(kvp => kvp.Value).ToArray());
+
+            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
+        }
+
         private Tuple<Sql, DbColumnList> GetNavigationSql(MetadataEntityModel parentEntityModel, MetadataEntityModel childEntityModel, ODataQueryOptions queryOptions, bool byChildKey)
         {
             var childTable = childEntityModel.TableName;

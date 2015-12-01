@@ -65,6 +65,11 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="ElectricMeterAggregate\ElectricMeter.cs" />
+    <Compile Include="ElectricMeterAggregate\ElectricMeterMemento.cs" />
+    <Compile Include="ElectricMeterAggregate\ElectricMeterReading.cs" />
+    <Compile Include="ElectricMeterAggregate\ElectricMeterReadingAddedEvent.cs" />
+    <Compile Include="ElectricMeterAggregate\ElectricMeterReadingMemento.cs" />
     <Compile Include="EquipmentId.cs" />
     <Compile Include="EquipmentType.cs" />
     <Compile Include="GlobalSuppressions.cs" />

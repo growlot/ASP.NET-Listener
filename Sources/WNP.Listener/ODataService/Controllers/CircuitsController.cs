@@ -83,7 +83,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return Task.FromResult<IHttpActionResult>(this.BadRequest($"Invalid key specified for the {siteModelMapping.ClassName}."));
             }
 
-            var existingSite = this.GetSite<SiteEntity>(siteKey, siteModelMapping);
+            var existingSite = this.GetEntity<SiteEntity>(siteKey, siteModelMapping, DBMetadata.Site.Site);
 
             if (existingSite == null)
             {
@@ -176,7 +176,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return this.BadRequest($"Invalid key specified for the {siteModelMapping.ClassName}.");
             }
 
-            var existingSite = this.GetSite<SiteEntity>(siteKey, siteModelMapping);
+            var existingSite = this.GetEntity<SiteEntity>(siteKey, siteModelMapping, DBMetadata.Site.Site);
 
             if (existingSite == null)
             {
@@ -229,19 +229,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             var sql =
                 Sql.Builder.Select("*")
-                    .From($"{modelMapping.TableName}")
-                    .Where(
-                        key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                            .Aggregate((s, s1) => $"{s} AND {s1}"),
-                        key.Select(kvp => kvp.Value).ToArray());
-
-            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
-        }
-
-        private TEntity GetSite<TEntity>(KeyValuePair<string, object>[] key, MetadataEntityModel modelMapping)
-        {
-            var sql =
-                Sql.Builder.Select(DBMetadata.Site.Site)
                     .From($"{modelMapping.TableName}")
                     .Where(
                         key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")

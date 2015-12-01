@@ -4,23 +4,25 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
-    using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
     using ApplicationService;
+    using ApplicationService.Commands;
     using Base;
+    using Core;
     using MetadataService;
-    using MetadataService.Attributes;
+    using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
     using Services.FilterTransformer;
-    using Persistence.WNP;
 
     /// <summary>
     /// Controller for meter readings
     /// </summary>
     public class ReadingController : WNPEntityControllerBase, IBoundActionsContainer
     {
+        private IDateTimeProvider dateTimeProvider;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadingController" /> class.
         /// </summary>
@@ -29,9 +31,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
         /// <param name="commandBus">The command bus.</param>
-        public ReadingController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus)
+        /// <param name="dateTimeProvider">The date time provider.</param>
+        public ReadingController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, IDateTimeProvider dateTimeProvider)
             : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus)
         {
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         /// <inheritdoc/>
@@ -41,43 +45,66 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// Adds new Reading.
         /// </summary>
         /// <returns>The OData response for newly created Reading.</returns>
-        public Task<IHttpActionResult> Post()
+        public async Task<IHttpActionResult> Post()
         {
             if (!this.ModelState.IsValid)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
+                return this.BadRequest(this.ModelState);
+            }
+
+            this.ConstructQueryOptions();
+            var electricMeterModelMapping = this.metadataService.GetModelMappingByTableName(DBMetadata.EqpMeter.FullTableName);
+
+            var electricMeterKey = this.GetRequestKey(electricMeterModelMapping, 1);
+            if (electricMeterKey == null)
+            {
+                return this.BadRequest($"Invalid key specified for the {electricMeterModelMapping.ClassName}.");
+            }
+
+            var existingElectricMeter = this.GetEntity<EqpMeterEntity>(electricMeterKey, electricMeterModelMapping, DBMetadata.EqpMeter.EqpNo);
+
+            if (existingElectricMeter == null)
+            {
+                return this.NotFound();
             }
 
             this.ConstructQueryOptions();
             var reading = this.GetRequestEntity<ReadingEntity>();
-            return this.CreateReading(reading);
+            reading.EqpNo = existingElectricMeter.EqpNo;
+            if (!reading.ReadDate.HasValue)
+            {
+                reading.ReadDate = this.dateTimeProvider.Now();
+            }
+
+            return await this.AddReading(reading);
         }
 
-        private async Task<IHttpActionResult> CreateReading(ReadingEntity reading)
+        private async Task<IHttpActionResult> AddReading(ReadingEntity reading)
         {
-            ////var createSiteCommand = new CreateSiteCommand()
-            ////{
-            ////    Address1 = site.SiteAddress,
-            ////    Address2 = site.SiteAddress2,
-            ////    BillingAccountName = site.AccountName,
-            ////    BillingAccountNumber = site.AccountNo,
-            ////    City = site.SiteCity,
-            ////    Country = site.SiteCountry,
-            ////    Description = site.SiteDescription,
-            ////    Owner = this.Owner,
-            ////    PremiseNumber = site.PremiseNo,
-            ////    State = site.SiteState,
-            ////    Zip = site.SiteZipcode,
-            ////    IsInterconnect = site.IsInterconnect == "Y" ? true : false,
-            ////    InterconnectUtilityName = site.InterconnectUtility
-            ////};
+            var addReading = new AddElectricMeterReadingCommand()
+            {
+                EquipmentNumber = reading.EqpNo,
+                Annunciator = reading.Annunciator,
+                Date = reading.ReadDate.Value,
+                Label = reading.ReadLabel,
+                Occasion = string.IsNullOrEmpty(reading.EventFlag) ? null : (char?)reading.EventFlag.ToCharArray()[0],
+                Source = reading.ReadSrc,
+                User = reading.ReadBy,
+                Value = reading.Reading
+            };
 
-            ////await this.commandBus.PublishAsync(createSiteCommand);
+            await this.commandBus.PublishAsync(addReading);
 
-            ////var createdSite = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, site.SiteDescription);
-            reading.ReadIndex = 100;
-            return await this.PrepareCreatedResponse(reading);
+            var createdReading = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<ReadingEntity>(
+                $@"
+SELECT *
+FROM {DBMetadata.Reading.FullTableName}
+WHERE {DBMetadata.Reading.Owner}=@0 and {DBMetadata.Reading.EqpNo}=@1 and {DBMetadata.Reading.ReadDate}=@2 and {DBMetadata.Reading.ReadLabel}=@3",
+                this.Owner,
+                reading.EqpNo,
+                reading.ReadDate,
+                reading.ReadLabel);
+            return await this.PrepareCreatedResponse(createdReading);
         }
-
     }
 }

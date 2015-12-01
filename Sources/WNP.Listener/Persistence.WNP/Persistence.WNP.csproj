@@ -84,6 +84,7 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="DomainEventHandlers\ElectricMeterReadingAddedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\CircuitDetailsUpdatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\EquipmentStateChangedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\EquipmentUninstalledFromCircuitEventHandler.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="DomainEventHandlers\SiteAddressUpdatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\CircuitCreatedEventHandler.cs" />
     <Compile Include="DomainEventHandlers\SiteCreatedEventHandler.cs" />
+    <Compile Include="EquipmentRepository.cs" />
     <Compile Include="FluentColumnMap.cs" />
     <Compile Include="FluentMapperExtensions.cs" />
     <Compile Include="FluentMapper{T}.cs" />
