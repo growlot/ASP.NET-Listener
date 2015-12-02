@@ -92,7 +92,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 VehicleNumber = vehicleNumber
             };
 
-            await this.commandBus.PublishAsync(executeBusinessRuleCommand);
+            await this.CommandBus.PublishAsync(executeBusinessRuleCommand);
             return this.StatusCode(HttpStatusCode.NoContent);
         }
     }

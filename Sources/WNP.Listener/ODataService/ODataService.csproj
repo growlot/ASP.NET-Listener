@@ -56,11 +56,12 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug.SQLServer\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>bin\Debug\AMSLLC.Listener.ODataService.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug.SQLServer\AMSLLC.Listener.ODataService.XML</DocumentationFile>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">

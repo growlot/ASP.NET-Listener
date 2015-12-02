@@ -84,7 +84,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             this.ConstructQueryOptions();
-            var meterModelMapping = this.metadataService.GetModelMappingByTableName(DBMetadata.EqpMeter.FullTableName);
+            var meterModelMapping = this.MetadataService.GetModelMappingByTableName(DBMetadata.EqpMeter.FullTableName);
 
             var meterKey = this.GetRequestKey(meterModelMapping, 1);
             if (meterKey == null)
@@ -115,7 +115,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 UninstallUser = uninstallUser
             };
 
-            await this.commandBus.PublishAsync(uninstallMeterCommand);
+            await this.CommandBus.PublishAsync(uninstallMeterCommand);
             return this.StatusCode(HttpStatusCode.NoContent);
         }
 

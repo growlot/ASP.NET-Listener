@@ -98,7 +98,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
             else
             {
-                var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
+                var modelMapping = this.MetadataService.GetModelMapping(this.EdmEntityClrType.Name);
                 var premiseNumberFieldName = modelMapping.ColumnToModelMappings[DBMetadata.Site.PremiseNo.ToUpperInvariant()];
 
                 // only allow creation of new site if premise number is primary key
@@ -149,7 +149,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     BillingAccountNumber = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.AccountNo), existingSite.AccountNo)
                 };
 
-                commandResults.Add(this.commandBus.PublishAsync(updateSiteBillingAccount));
+                commandResults.Add(this.CommandBus.PublishAsync(updateSiteBillingAccount));
             }
 
             if (changedProperties.Contains(nameof(SiteEntity.SiteCountry))
@@ -171,7 +171,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     Zip = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.SiteZipcode), existingSite.SiteZipcode)
                 };
 
-                commandResults.Add(this.commandBus.PublishAsync(updateSiteAddress));
+                commandResults.Add(this.CommandBus.PublishAsync(updateSiteAddress));
             }
 
             if (changedProperties.Contains(nameof(SiteEntity.PremiseNo))
@@ -185,7 +185,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     PremiseNumber = GetChangedOrCurrent(siteDelta, nameof(SiteEntity.PremiseNo), existingSite.PremiseNo)
                 };
 
-                commandResults.Add(this.commandBus.PublishAsync(updateSiteDetails));
+                commandResults.Add(this.CommandBus.PublishAsync(updateSiteDetails));
             }
 
             await Task.WhenAll(commandResults);
@@ -214,9 +214,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 InterconnectUtilityName = site.InterconnectUtility
             };
 
-            await this.commandBus.PublishAsync(createSiteCommand);
+            await this.CommandBus.PublishAsync(createSiteCommand);
 
-            var createdSite = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, site.SiteDescription);
+            var createdSite = ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefault<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, site.SiteDescription);
 
             return await this.PrepareCreatedResponse(createdSite);
         }

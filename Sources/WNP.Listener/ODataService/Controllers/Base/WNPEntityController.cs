@@ -81,21 +81,21 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
             this.ConstructQueryOptions();
-            this.queryOptions.Validate(this.defaultODataValidationSettings);
+            this.QueryOptions.Validate(this.defaultODataValidationSettings);
 
-            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
+            var modelMapping = this.MetadataService.GetModelMapping(this.EdmEntityClrType.Name);
 
-            var skip = this.queryOptions.Skip?.Value ?? 0;
-            var top = this.queryOptions.Top?.Value ?? 10;
+            var skip = this.QueryOptions.Skip?.Value ?? 0;
+            var top = this.QueryOptions.Top?.Value ?? 10;
 
-            var selectedFields = this.queryOptions.SelectExpand?.RawSelect?.Split(',');
+            var selectedFields = this.QueryOptions.SelectExpand?.RawSelect?.Split(',');
             var dbColumnList = new DbColumnList(selectedFields, modelMapping);
 
             var sql =
                 Sql.Builder.Select(dbColumnList.GetQueryColumnList())
                            .From($"{modelMapping.TableName}");
 
-            var sqlWhere = this.filterTransformer.TransformFilterQueryOption(this.queryOptions.Filter);
+            var sqlWhere = this.FilterTransformer.TransformFilterQueryOption(this.QueryOptions.Filter);
 
             // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
             ConvertUtcParamsToLocalTime(sqlWhere);
@@ -105,7 +105,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 sql = sql.Where(sqlWhere.Clause, sqlWhere.PositionalParameters);
             }
 
-            var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql);
+            var dbResults = ((WNPUnitOfWork)this.UnitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql);
 
             // create actual result object we will be sending over the wire
             var result = this.CreateResultList();
@@ -127,21 +127,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return this.CreateOkResponseList(result);
         }
 
-        private static void ConvertUtcParamsToLocalTime(WhereClause sqlWhere)
-        {
-            for (int i = 0; i < sqlWhere.PositionalParameters.Length; i++)
-            {
-                DateTimeOffset? parameter = sqlWhere.PositionalParameters[i] as DateTimeOffset?;
-
-                if (parameter != null)
-                {
-                    DateTime localTime = new DateTime(parameter.Value.ToLocalTime().Ticks);
-                    DateTime localTimeAsUtc = DateTime.SpecifyKind(localTime, DateTimeKind.Utc);
-                    sqlWhere.PositionalParameters[i] = (DateTimeOffset) localTimeAsUtc;
-                }
-            }
-        }
-
         /// <summary>
         /// Gets this collection of navigation entities.
         /// </summary>
@@ -151,14 +136,14 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
             this.ConstructQueryOptions();
-            this.queryOptions.Validate(this.defaultODataValidationSettings);
+            this.QueryOptions.Validate(this.defaultODataValidationSettings);
 
-            var model = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
+            var model = this.MetadataService.GetModelMapping(this.EdmEntityClrType.Name);
 
-            var skip = this.queryOptions.Skip?.Value ?? 0;
-            var top = this.queryOptions.Top?.Value ?? 10;
+            var skip = this.QueryOptions.Skip?.Value ?? 0;
+            var top = this.QueryOptions.Top?.Value ?? 10;
 
-            var containedEntitySet = this.queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
+            var containedEntitySet = this.QueryOptions.Context.NavigationSource as IEdmContainedEntitySet;
             if (containedEntitySet != null)
             {
                 var navSource = containedEntitySet;
@@ -170,13 +155,13 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     var childEntityType = navSource.NavigationProperty.ToEntityType();
 
                     // get types' entity models
-                    var parentEntityModel = this.metadataService.GetModelMapping(parentEntityType.Name);
-                    var childEntityModel = this.metadataService.GetModelMapping(childEntityType.Name);
+                    var parentEntityModel = this.MetadataService.GetModelMapping(parentEntityType.Name);
+                    var childEntityModel = this.MetadataService.GetModelMapping(childEntityType.Name);
 
-                    var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, this.queryOptions, false);
+                    var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, this.QueryOptions, false);
                     var dbColumnList = sql.Item2;
 
-                    var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql.Item1);
+                    var dbResults = ((WNPUnitOfWork)this.UnitOfWork).DbContext.SkipTake<dynamic>(skip, top, sql.Item1);
 
                     // create actual result object we will be sending over the wire
                     var result = this.CreateResultList();
@@ -212,7 +197,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         public async Task<IHttpActionResult> EntityActionHandler()
         {
             this.ConstructQueryOptions();
-            var oDataPath = this.queryOptions.Context.Path;
+            var oDataPath = this.QueryOptions.Context.Path;
 
             BoundActionPathSegment actionSegment = null;
             KeyValuePathSegment keySegment = null;
@@ -241,7 +226,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             Debug.Assert(fqnActionName != null, "fqnActionName != null");
             var actionName = fqnActionName.Substring(fqnActionName.LastIndexOf(".", StringComparison.Ordinal) + 1);
 
-            var actionsContainerType = this.metadataService.GetModelMapping(this.metadataService.GetEntityType(this.EdmEntityClrType.FullName)).ActionsContainer;
+            var actionsContainerType = this.MetadataService.GetModelMapping(this.MetadataService.GetEntityType(this.EdmEntityClrType.FullName)).ActionsContainer;
             if (actionsContainerType == null)
             {
                 return this.NotFound();
@@ -259,15 +244,15 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
             this.ConstructQueryOptions();
-            this.queryOptions.Validate(this.defaultODataValidationSettings);
+            this.QueryOptions.Validate(this.defaultODataValidationSettings);
 
-            var selectedFields = this.queryOptions.SelectExpand?.RawSelect?.Split(',');
+            var selectedFields = this.QueryOptions.SelectExpand?.RawSelect?.Split(',');
 
-            var keyPathSegment = this.queryOptions.Context.Path.Segments[1] as KeyValuePathSegment;
+            var keyPathSegment = this.QueryOptions.Context.Path.Segments[1] as KeyValuePathSegment;
             var rawKey = keyPathSegment?.Value;
 
             var expands =
-                this.queryOptions.SelectExpand?.SelectExpandClause?.SelectedItems?.OfType<ExpandedNavigationSelectItem>()
+                this.QueryOptions.SelectExpand?.SelectExpandClause?.SelectedItems?.OfType<ExpandedNavigationSelectItem>()
                     .ToArray();
 
             try
@@ -302,9 +287,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
             this.ConstructQueryOptions();
-            this.queryOptions.Validate(this.defaultODataValidationSettings);
+            this.QueryOptions.Validate(this.defaultODataValidationSettings);
 
-            var containedEntitySet = this.queryOptions.Context.NavigationSource as IEdmContainedEntitySet;
+            var containedEntitySet = this.QueryOptions.Context.NavigationSource as IEdmContainedEntitySet;
             if (containedEntitySet != null)
             {
                 var navSource = containedEntitySet;
@@ -316,19 +301,19 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     var childEntityType = navSource.NavigationProperty.ToEntityType();
 
                     // get types' entity models
-                    var parentEntityModel = this.metadataService.GetModelMapping(parentEntityType.Name);
-                    var childEntityModel = this.metadataService.GetModelMapping(childEntityType.Name);
+                    var parentEntityModel = this.MetadataService.GetModelMapping(parentEntityType.Name);
+                    var childEntityModel = this.MetadataService.GetModelMapping(childEntityType.Name);
 
                     // check if navSource is a Collection so we know we should look into ManyRelations
                     // TODO: should we do this? How 1-1 relationship is defined?
                     if (navSource.Type.TypeKind == EdmTypeKind.Collection)
                     {
-                        var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, this.queryOptions, true);
+                        var sql = this.GetNavigationSql(parentEntityModel, childEntityModel, this.QueryOptions, true);
                         var dbColumnList = sql.Item2;
 
                         Log.Debug("Generated SQL:{GeneratedSQL}\n\nParameters: {Parameters}\n", sql.Item1.SQL, sql.Item1.Arguments);
 
-                        var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.Fetch<dynamic>(sql.Item1);
+                        var dbResults = ((WNPUnitOfWork)this.UnitOfWork).DbContext.Fetch<dynamic>(sql.Item1);
                         if (dbResults.Count > 1)
                         {
                             return this.BadRequest("Request returned more than 1 record.");
@@ -363,6 +348,31 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         }
 
         /// <summary>
+        /// Gets the property value from delta object if it is in delta, or returns current value.
+        /// </summary>
+        /// <typeparam name="T">Type of the property</typeparam>
+        /// <typeparam name="TEntity">The type of the delta entity.</typeparam>
+        /// <param name="delta">The delta.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="currentValue">The current value.</param>
+        /// <returns>Property value.</returns>
+        protected static T GetChangedOrCurrent<T, TEntity>(Delta<TEntity> delta, string propertyName, T currentValue)
+                    where TEntity : class
+        {
+            if (delta.GetChangedPropertyNames().Contains(propertyName))
+            {
+                object value;
+                delta.TryGetPropertyValue(propertyName, out value);
+                if (value != null)
+                {
+                    return (T)value;
+                }
+            }
+
+            return currentValue;
+        }
+
+        /// <summary>
         /// Gets the request key.
         /// </summary>
         /// <param name="modelMapping">The model mapping.</param>
@@ -382,7 +392,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 hasCompositeKey = entityConfig.Key?.Count() > 1;
             }
 
-            var jsonKey = this.queryOptions.Context.Path.Segments[keyPosition] as KeyValuePathSegment;
+            var jsonKey = this.QueryOptions.Context.Path.Segments[keyPosition] as KeyValuePathSegment;
             if (jsonKey == null)
             {
                 throw new ArgumentException("Invalid key specified");
@@ -410,7 +420,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <returns>The key used in request.</returns>
         protected KeyValuePair<string, object>[] GetRequestKey(int keyPosition)
         {
-            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            var modelMapping = this.MetadataService.GetModelMapping(this.EdmEntityClrType);
             return this.GetRequestKey(modelMapping, keyPosition);
         }
 
@@ -432,7 +442,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                             .Aggregate((s, s1) => $"{s} AND {s1}"),
                         key.Select(kvp => kvp.Value).ToArray());
 
-            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
+            return ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
         }
 
         /// <summary>
@@ -443,110 +453,12 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <returns>The entity.</returns>
         protected TEntity GetEntity<TEntity>(KeyValuePair<string, object>[] key)
         {
-            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
-            return this.GetEntity<TEntity>(key, this.metadataService.GetModelMapping(this.EdmEntityClrType), "*");
+            var modelMapping = this.MetadataService.GetModelMapping(this.EdmEntityClrType);
+            return this.GetEntity<TEntity>(key, this.MetadataService.GetModelMapping(this.EdmEntityClrType), "*");
         }
 
-        private Tuple<Sql, DbColumnList> GetNavigationSql(MetadataEntityModel parentEntityModel, MetadataEntityModel childEntityModel, ODataQueryOptions queryOptions, bool byChildKey)
-        {
-            var childTable = childEntityModel.TableName;
-            var relConfig =
-                parentEntityModel.EntityConfiguration.Relations.FirstOrDefault(
-                    ri => ri.TargetTableName == childTable);
-
-            if (relConfig == null)
-            {
-                throw new ArgumentException($"Relationship configuration not found between {parentEntityModel.TableName} and {childTable}");
-            }
-
-            // make join
-            var parentTable = parentEntityModel.TableName;
-            var onClause = relConfig.MatchOn
-                .Select(m => $"{childTable}.{m.SourceColumn} = {parentTable}.{m.TargetColumn}")
-                .Aggregate((m1, m2) => $"{m1} AND {m2}");
-
-            if (relConfig.MatchValue != null)
-            {
-                onClause = $"{onClause} AND {relConfig.MatchValue.TargetColumn} = '{relConfig.MatchValue.TargetColumnValue}'";
-            }
-
-            var selectedFields = this.queryOptions.SelectExpand?.RawSelect?.Split(',');
+            var selectedFields = this.QueryOptions.SelectExpand?.RawSelect?.Split(',');
             var dbColumnsList = new DbColumnList(selectedFields, childEntityModel);
-
-            var parentKey = this.GetRequestKey(parentEntityModel, 1);
-            KeyValuePair<string, object>[] childKey = null;
-
-            object[] filterArgs = null;
-
-            var whereClause = $"{GenerateWhereBodyForKey(parentKey, parentTable, parentEntityModel)}";
-            if (byChildKey)
-            {
-                childKey = this.GetRequestKey(childEntityModel, 3);
-                whereClause +=
-                    $" AND {GenerateWhereBodyForKey(childKey, childTable, childEntityModel, parentKey.Length)}";
-            }
-            else
-            {
-                var sqlFilter = this.filterTransformer.TransformFilterQueryOption(queryOptions.Filter, parentKey.Length);
-
-                // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
-                ConvertUtcParamsToLocalTime(sqlFilter);
-
-                if (!string.IsNullOrWhiteSpace(sqlFilter.Clause))
-                {
-                    whereClause += $" AND {sqlFilter.Clause}";
-                    filterArgs = sqlFilter.PositionalParameters;
-                }
-            }
-
-            var whereArgs =
-                parentKey.Select(kvp => kvp.Value).ToList();
-
-            whereArgs.AddRange(childKey?.Select(kvp => kvp.Value) ?? new object[] { });
-            whereArgs.AddRange(filterArgs ?? new object[] { });
-
-            var sql =
-                Sql.Builder.Select(dbColumnsList.GetQueryColumnList())
-                    .From($"{parentTable}")
-                    .InnerJoin($"{childTable}")
-                    .On(onClause)
-                    .Where(whereClause, whereArgs.ToArray());
-
-            return new Tuple<Sql, DbColumnList>(sql, dbColumnsList);
-        }
-
-        private static string GenerateWhereBodyForKey(KeyValuePair<string, object>[] key, string table, MetadataEntityModel model, int offset = 0)
-        {
-            return key.Select(
-                (kvp, ind) => $"{table}.{model.ModelToColumnMappings[kvp.Key]}=@{ind + offset}")
-                .Aggregate((s, s1) => $"{s} AND {s1}");
-        }
-
-        /// <summary>
-        /// Gets the property value from delta object if it is in delta, or returns current value.
-        /// </summary>
-        /// <typeparam name="T">Type of the property</typeparam>
-        /// <typeparam name="TEntity">The type of the delta entity.</typeparam>
-        /// <param name="delta">The delta.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <param name="currentValue">The current value.</param>
-        /// <returns>Property value.</returns>
-        protected static T GetChangedOrCurrent<T, TEntity>(Delta<TEntity> delta, string propertyName, T currentValue)
-                    where TEntity : class
-        {
-            if (delta.GetChangedPropertyNames().Contains(propertyName))
-            {
-                object value;
-                delta.TryGetPropertyValue(propertyName, out value);
-                if (value != null)
-                {
-                    return (T)value;
-                }
-            }
-
-            return currentValue;
-        }
-
         /// <summary>
         /// Creates the typed OK response from specified list of result objects.
         /// </summary>
@@ -675,6 +587,95 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return entityDelta;
         }
 
+        private static void ConvertUtcParamsToLocalTime(WhereClause sqlWhere)
+        {
+            for (int i = 0; i < sqlWhere.PositionalParameters.Length; i++)
+            {
+                DateTimeOffset? parameter = sqlWhere.PositionalParameters[i] as DateTimeOffset?;
+
+                if (parameter != null)
+                {
+                    DateTime localTime = new DateTime(parameter.Value.ToLocalTime().Ticks);
+                    DateTime localTimeAsUtc = DateTime.SpecifyKind(localTime, DateTimeKind.Utc);
+                    sqlWhere.PositionalParameters[i] = (DateTimeOffset)localTimeAsUtc;
+                }
+            }
+        }
+
+        private static string GenerateWhereBodyForKey(KeyValuePair<string, object>[] key, string table, MetadataEntityModel model, int offset = 0)
+        {
+            return key.Select(
+                (kvp, ind) => $"{table}.{model.ModelToColumnMappings[kvp.Key]}=@{ind + offset}")
+                .Aggregate((s, s1) => $"{s} AND {s1}");
+        }
+
+        private Tuple<Sql, DbColumnList> GetNavigationSql(MetadataEntityModel parentEntityModel, MetadataEntityModel childEntityModel, ODataQueryOptions queryOptions, bool byChildKey)
+        {
+            var childTable = childEntityModel.TableName;
+            var relConfig =
+                parentEntityModel.EntityConfiguration.Relations.FirstOrDefault(
+                    ri => ri.TargetTableName == childTable);
+
+            if (relConfig == null)
+            {
+                throw new ArgumentException($"Relationship configuration not found between {parentEntityModel.TableName} and {childTable}");
+            }
+
+            // make join
+            var parentTable = parentEntityModel.TableName;
+            var onClause = relConfig.MatchOn
+                .Select(m => $"{childTable}.{m.SourceColumn} = {parentTable}.{m.TargetColumn}")
+                .Aggregate((m1, m2) => $"{m1} AND {m2}");
+
+            if (relConfig.MatchValue != null)
+            {
+                onClause = $"{onClause} AND {relConfig.MatchValue.TargetColumn} = '{relConfig.MatchValue.TargetColumnValue}'";
+            }
+
+            var dbColumnsList = new DbColumnList(queryOptions.SelectExpand, childEntityModel);
+
+            var parentKey = this.GetRequestKey(parentEntityModel, 1);
+            KeyValuePair<string, object>[] childKey = null;
+
+            object[] filterArgs = null;
+
+            var whereClause = $"{GenerateWhereBodyForKey(parentKey, parentTable, parentEntityModel)}";
+            if (byChildKey)
+            {
+                childKey = this.GetRequestKey(childEntityModel, 3);
+                whereClause +=
+                    $" AND {GenerateWhereBodyForKey(childKey, childTable, childEntityModel, parentKey.Length)}";
+            }
+            else
+            {
+                var sqlFilter = this.FilterTransformer.TransformFilterQueryOption(queryOptions.Filter, parentKey.Length);
+
+                // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
+                ConvertUtcParamsToLocalTime(sqlFilter);
+
+                if (!string.IsNullOrWhiteSpace(sqlFilter.Clause))
+                {
+                    whereClause += $" AND {sqlFilter.Clause}";
+                    filterArgs = sqlFilter.PositionalParameters;
+                }
+            }
+
+            var whereArgs =
+                parentKey.Select(kvp => kvp.Value).ToList();
+
+            whereArgs.AddRange(childKey?.Select(kvp => kvp.Value) ?? new object[] { });
+            whereArgs.AddRange(filterArgs ?? new object[] { });
+
+            var sql =
+                Sql.Builder.Select(dbColumnsList.GetQueryColumnList())
+                    .From($"{parentTable}")
+                    .InnerJoin($"{childTable}")
+                    .On(onClause)
+                    .Where(whereClause, whereArgs.ToArray());
+
+            return new Tuple<Sql, DbColumnList>(sql, dbColumnsList);
+        }
+
         private string GetRequestContents(HttpRequestMessage request)
             => this.Request.Content.ReadAsStringAsync().Result;
 
@@ -717,7 +718,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 foreach (var item in expandedItems)
                 {
                     var propertyName = ((NavigationPropertySegment)item.PathToNavigationProperty.FirstSegment).NavigationProperty.Name;
-                    //var propertyName = item.NavigationSource.Name;
 
                     var property = this.EdmEntityClrType.GetProperty(propertyName);
                     var propInstance = Activator.CreateInstance(property.PropertyType);

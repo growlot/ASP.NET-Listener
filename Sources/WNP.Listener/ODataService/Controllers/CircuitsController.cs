@@ -82,7 +82,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             this.ConstructQueryOptions();
-            var siteModelMapping = this.metadataService.GetModelMappingByTableName(DBMetadata.Site.FullTableName);
+            var siteModelMapping = this.MetadataService.GetModelMappingByTableName(DBMetadata.Site.FullTableName);
 
             var siteKey = this.GetRequestKey(siteModelMapping, 1);
             if (siteKey == null)
@@ -97,7 +97,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return Task.FromResult<IHttpActionResult>(this.NotFound());
             }
 
-            var circuitModelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            var circuitModelMapping = this.MetadataService.GetModelMapping(this.EdmEntityClrType);
             var circuitKey = this.GetRequestKey(circuitModelMapping, 3);
 
             if (circuitKey == null)
@@ -166,7 +166,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             this.ConstructQueryOptions();
-            var siteModelMapping = this.metadataService.GetModelMappingByTableName(DBMetadata.Site.FullTableName);
+            var siteModelMapping = this.MetadataService.GetModelMappingByTableName(DBMetadata.Site.FullTableName);
 
             var siteKey = this.GetRequestKey(siteModelMapping, 1);
             if (siteKey == null)
@@ -181,7 +181,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return this.NotFound();
             }
 
-            var circuitModelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            var circuitModelMapping = this.MetadataService.GetModelMapping(this.EdmEntityClrType);
             var circuitKey = this.GetRequestKey(circuitModelMapping, 3);
 
             if (circuitKey == null)
@@ -213,7 +213,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                         SiteId = existingCircuit.Site.Value
                     };
 
-                    await this.commandBus.PublishAsync(installMeterCommand);
+                    await this.CommandBus.PublishAsync(installMeterCommand);
                     return this.StatusCode(HttpStatusCode.NoContent);
 
                 default:
@@ -255,9 +255,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 createCircuitCommand.ServiceWires = intValue;
             }
 
-            await this.commandBus.PublishAsync(createCircuitCommand);
+            await this.CommandBus.PublishAsync(createCircuitCommand);
 
-            var createdCircuit = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<CircuitEntity>($"WHERE {DBMetadata.Circuit.Owner}=@0 and {DBMetadata.Circuit.Site}=@1 and {DBMetadata.Circuit.CircuitDesc}=@2", this.Owner, circuit.Site, circuit.CircuitDesc);
+            var createdCircuit = ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefault<CircuitEntity>($"WHERE {DBMetadata.Circuit.Owner}=@0 and {DBMetadata.Circuit.Site}=@1 and {DBMetadata.Circuit.CircuitDesc}=@2", this.Owner, circuit.Site, circuit.CircuitDesc);
 
             return await this.PrepareCreatedResponse(createdCircuit);
         }
@@ -294,7 +294,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     HasBracket = GetChangedOrCurrent(circuitDelta, nameof(CircuitEntity.HasBracket), existingCircuit.HasBracket) == "Y" ? true : false,
                 };
 
-                commandResults.Add(this.commandBus.PublishAsync(updateCircuitDetails));
+                commandResults.Add(this.CommandBus.PublishAsync(updateCircuitDetails));
             }
 
             if (changedProperties.Contains(nameof(CircuitEntity.Latitude))

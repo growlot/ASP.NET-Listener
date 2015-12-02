@@ -62,7 +62,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             this.ConstructQueryOptions();
-            var electricMeterModelMapping = this.metadataService.GetModelMappingByTableName(DBMetadata.EqpMeter.FullTableName);
+            var electricMeterModelMapping = this.MetadataService.GetModelMappingByTableName(DBMetadata.EqpMeter.FullTableName);
 
             var electricMeterKey = this.GetRequestKey(electricMeterModelMapping, 1);
             if (electricMeterKey == null)
@@ -102,9 +102,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 Value = reading.Reading
             };
 
-            await this.commandBus.PublishAsync(addReading);
+            await this.CommandBus.PublishAsync(addReading);
 
-            var createdReading = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<ReadingEntity>(
+            var createdReading = ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefault<ReadingEntity>(
                 $@"
 SELECT *
 FROM {DBMetadata.Reading.FullTableName}
