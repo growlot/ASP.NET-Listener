@@ -2,29 +2,25 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-using AMSLLC.Listener.ApplicationService.Commands;
-
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
-    using System.Web.OData.Routing;
+    using System.Web.OData;
     using ApplicationService;
     using ApplicationService.Commands;
     using Base;
     using MetadataService;
-    using Newtonsoft.Json;
+    using MetadataService.Attributes;
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
     using Services.FilterTransformer;
-    using MetadataService.Attributes;
-    using System.Net;
     using Utilities;
-    using System.Web.OData;
 
     /// <summary>
     /// Controller for Circuits.
@@ -101,18 +97,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var circuitKeyList = circuitKey.ToList();
             circuitKeyList.Add(new KeyValuePair<string, object>(circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site], existingSite.Site));
 
-            var existingCircuit = this.GetExisting<CircuitEntity>(circuitKeyList.ToArray());
+            var existingCircuit = this.GetEntity<CircuitEntity>(circuitKeyList.ToArray());
             if (existingCircuit != null)
             {
                 var circuitDelta = this.GetRequestEntityDelta<CircuitEntity>();
                 return this.UpdateCircuit(existingCircuit, circuitDelta, circuitKeyList.ToArray());
-
-                if (circuitDelta.GetChangedPropertyNames().Count() > 0)
-                {
-                    throw new NotImplementedException("Circuit update is currently not implemented.");
-                }
-
-                return this.PrepareUpdatedResponse(existingCircuit);
             }
             else
             {
@@ -144,7 +133,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <summary>
         /// Adds the equipment to circiut.
         /// </summary>
-        /// <param name="circuitId">The circuit identifier.</param>
         /// <param name="equipmentType">Type of the equipment.</param>
         /// <param name="equipmentNumber">The equipment number.</param>
         /// <param name="installDate">The date when installatio was performed.</param>
@@ -154,7 +142,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <returns>The result of action.</returns>
         [BoundAction]
         public async Task<IHttpActionResult> AddEquipment(
-//                    [BoundEntityKey] string circuitId,
                     string equipmentType,
                     string equipmentNumber,
                     DateTime installDate,
@@ -194,7 +181,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var circuitKeyList = circuitKey.ToList();
             circuitKeyList.Add(new KeyValuePair<string, object>(circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site], existingSite.Site));
 
-            var existingCircuit = this.GetExisting<CircuitEntity>(circuitKeyList.ToArray());
+            var existingCircuit = this.GetEntity<CircuitEntity>(circuitKeyList.ToArray());
 
             if (existingCircuit == null)
             {
@@ -221,21 +208,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 default:
                     throw new NotSupportedException(StringUtilities.Invariant($"Installation of equipment with type {equipmentType} currently not supported."));
             }
-        }
-
-        private TEntity GetExisting<TEntity>(KeyValuePair<string, object>[] key)
-        {
-            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
-
-            var sql =
-                Sql.Builder.Select("*")
-                    .From($"{modelMapping.TableName}")
-                    .Where(
-                        key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                            .Aggregate((s, s1) => $"{s} AND {s1}"),
-                        key.Select(kvp => kvp.Value).ToArray());
-
-            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
         }
 
         private async Task<IHttpActionResult> CreateCircuit(CircuitEntity circuit)
@@ -325,8 +297,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 || changedProperties.Contains(nameof(CircuitEntity.SllDesiredAccDel))
                 || changedProperties.Contains(nameof(CircuitEntity.SllDesiredAccRec))
                 || changedProperties.Contains(nameof(CircuitEntity.SpfDesiredAccDel))
-                || changedProperties.Contains(nameof(CircuitEntity.SpfDesiredAccRec))
-                )
+                || changedProperties.Contains(nameof(CircuitEntity.SpfDesiredAccRec)))
             {
                 throw new NotImplementedException("Update of the properties SflDesiredAccDel, SflDesiredAccRec, SllDesiredAccDel, SllDesiredAccRec, SpfDesiredAccDel, SpfDesiredAccRec is not yet implemented");
             }
@@ -350,7 +321,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await Task.WhenAll(commandResults);
 
-            var updateEntity = this.GetExisting<CircuitEntity>(key);
+            var updateEntity = this.GetEntity<CircuitEntity>(key);
 
             return await this.PrepareUpdatedResponse(updateEntity);
         }

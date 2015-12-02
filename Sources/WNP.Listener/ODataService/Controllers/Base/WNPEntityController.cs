@@ -516,7 +516,16 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         }
 
         /// <summary>
-        /// Gets the entity with database key field only.
+        /// Gets the request key.
+        /// </summary>
+        /// <param name="keyPosition">The key position.</param>
+        /// <returns>The key used in request.</returns>
+        protected KeyValuePair<string, object>[] GetRequestKey(int keyPosition)
+        {
+            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            return this.GetRequestKey(modelMapping, keyPosition);
+        }
+
         /// <summary>
         /// Gets the entity with specified fields only.
         /// </summary>
@@ -536,6 +545,18 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         key.Select(kvp => kvp.Value).ToArray());
 
             return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
+        }
+
+        /// <summary>
+        /// Gets the entity.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns>The entity.</returns>
+        protected TEntity GetEntity<TEntity>(KeyValuePair<string, object>[] key)
+        {
+            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            return this.GetEntity<TEntity>(key, this.metadataService.GetModelMapping(this.EdmEntityClrType), "*");
         }
 
         private Tuple<Sql, DbColumnList> GetNavigationSql(MetadataEntityModel parentEntityModel, MetadataEntityModel childEntityModel, ODataQueryOptions queryOptions, bool byChildKey)

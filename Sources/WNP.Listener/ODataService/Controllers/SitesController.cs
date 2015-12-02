@@ -8,7 +8,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Http;
@@ -72,13 +71,20 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
 
             this.ConstructQueryOptions();
-            var existingSite = this.GetExisting(key);
+
+            var siteKey = this.GetRequestKey(1);
+            if (siteKey == null)
+            {
+                return Task.FromResult<IHttpActionResult>(this.BadRequest($"Invalid key specified."));
+            }
+
+            var existingSite = this.GetEntity<SiteEntity>(siteKey);
 
             // if site exists, update it
             if (existingSite != null)
             {
                 var siteDelta = this.GetRequestEntityDelta<SiteEntity>();
-                return this.UpdateSite(existingSite, siteDelta, key);
+                return this.UpdateSite(existingSite, siteDelta, siteKey);
             }
             else
             {
@@ -101,7 +107,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
         }
 
-        private async Task<IHttpActionResult> UpdateSite(SiteEntity existingSite, Delta<SiteEntity> siteDelta, string key)
+        private async Task<IHttpActionResult> UpdateSite(SiteEntity existingSite, Delta<SiteEntity> siteDelta, KeyValuePair<string, object>[] siteKey)
         {
             var changedProperties = siteDelta.GetChangedPropertyNames();
 
@@ -174,7 +180,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await Task.WhenAll(commandResults);
 
-            var updateEntity = this.GetExisting(key);
+            var updateEntity = this.GetEntity<SiteEntity>(siteKey);
 
             return await this.PrepareUpdatedResponse(updateEntity);
         }
@@ -203,33 +209,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var createdSite = ((WNPUnitOfWork)this.unitOfWork).DbContext.SingleOrDefault<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, site.SiteDescription);
 
             return await this.PrepareCreatedResponse(createdSite);
-        }
-
-        private SiteEntity GetExisting(string key)
-        {
-            var modelMapping = this.metadataService.GetModelMapping(this.EdmEntityClrType.Name);
-
-            var premiseNumberFieldName = modelMapping.ColumnToModelMappings[DBMetadata.Site.PremiseNo.ToUpperInvariant()];
-
-            Sql sql = null;
-            if (modelMapping.FieldInfo[premiseNumberFieldName].IsPrimaryKey)
-            {
-                sql = Sql.Builder
-                    .Select(modelMapping.ModelToColumnMappings.Values.ToArray())
-                    .From(DBMetadata.Site.FullTableName)
-                    .Where($"{DBMetadata.Site.PremiseNo}=@0", key);
-            }
-            else
-            {
-                sql = Sql.Builder
-                    .Select(modelMapping.ModelToColumnMappings.Values.ToArray())
-                    .From(DBMetadata.Site.FullTableName)
-                    .Where($"{DBMetadata.Site.Site}=@0", int.Parse(key, CultureInfo.InvariantCulture));
-            }
-
-            var dbContext = ((WNPUnitOfWork)this.unitOfWork).DbContext;
-            var result = dbContext.FirstOrDefault<SiteEntity>(sql);
-            return result;
         }
     }
 }

@@ -82,7 +82,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return this.BadRequest($"Invalid key specified for the {meterModelMapping.ClassName}.");
             }
 
-            var existingMeter = this.GetMeter<EqpMeterEntity>(meterKey, meterModelMapping);
+            var existingMeter = this.GetEntity<EqpMeterEntity>(meterKey, meterModelMapping, DBMetadata.EqpMeter.EqpNo, DBMetadata.EqpMeter.Site, DBMetadata.EqpMeter.Circuit);
             if (existingMeter == null)
             {
                 return this.NotFound();
@@ -107,19 +107,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await this.commandBus.PublishAsync(uninstallMeterCommand);
             return this.StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private TEntity GetMeter<TEntity>(KeyValuePair<string, object>[] key, MetadataEntityModel modelMapping)
-        {
-            var sql =
-                Sql.Builder.Select(DBMetadata.EqpMeter.EqpNo, DBMetadata.EqpMeter.Site, DBMetadata.EqpMeter.Circuit)
-                    .From($"{modelMapping.TableName}")
-                    .Where(
-                        key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                            .Aggregate((s, s1) => $"{s} AND {s1}"),
-                        key.Select(kvp => kvp.Value).ToArray());
-
-            return ((WNPUnitOfWork)this.unitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
         }
 
         /// <summary>
