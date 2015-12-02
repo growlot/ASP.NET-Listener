@@ -260,7 +260,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
                 codeNamespace.Types.Add(codeClass);
 
-                var entityName = WNPDBHelpers.HumanizeTable(table.TableName);
+                var entityName = WnpDbHelpers.HumanizeTable(table.TableName);
 
                 var getEntityMethod = new CodeMemberMethod
                 {
@@ -321,7 +321,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
                     codeClass.Members.Add(property);
 
-                    var fieldName = WNPDBHelpers.HumanizeField(table.ModelToColumnMappings[field.Key]);
+                    var fieldName = WnpDbHelpers.HumanizeField(table.ModelToColumnMappings[field.Key]);
 
                     if (field.Value.DataType == "DateTimeOffset")
                     {

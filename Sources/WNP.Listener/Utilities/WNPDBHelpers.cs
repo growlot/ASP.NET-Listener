@@ -1,4 +1,4 @@
-﻿// <copyright file="WNPDBHelpers.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="WnpDbHelpers.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Utilities
     /// <summary>
     /// Various helppers related to WNP database naming.
     /// </summary>
-    public static class WNPDBHelpers
+    public static class WnpDbHelpers
     {
         private static Regex rxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
 

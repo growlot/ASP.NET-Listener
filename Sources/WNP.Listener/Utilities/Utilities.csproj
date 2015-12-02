@@ -53,7 +53,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug.SQLServer\</OutputPath>
     <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>bin\Debug\AMSLLC.Listener.Utilities.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug.SQLServer\AMSLLC.Listener.Utilities.XML</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -100,7 +100,7 @@
     <Compile Include="DataPropertyInfo.cs" />
     <Compile Include="DynamicUtilities.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="WNPDBHelpers.cs" />
+    <Compile Include="WnpDbHelpers.cs" />
     <Compile Include="StringUtilities.cs" />
     <Compile Include="TypeExtensions\XmlDocumentExtensions.cs" />
     <Compile Include="TypeExtensions\XDocumentExtensions.cs" />
