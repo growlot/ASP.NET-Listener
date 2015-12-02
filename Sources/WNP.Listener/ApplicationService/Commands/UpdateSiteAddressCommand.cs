@@ -67,8 +67,11 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string Address2 { get; set; }
 
         /// <summary>
-        /// The zip
+        /// Gets or sets the zip code
         /// </summary>
+        /// <value>
+        /// The zip code.
+        /// </value>
         public string Zip { get; set; }
     }
 }

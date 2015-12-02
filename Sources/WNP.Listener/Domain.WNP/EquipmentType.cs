@@ -30,7 +30,7 @@ namespace AMSLLC.Listener.Domain.WNP
         }
 
         /// <summary>
-        /// The electric meter
+        /// Gets the electric meter
         /// </summary>
         public static EquipmentType ElectricMeter
         {
@@ -38,7 +38,7 @@ namespace AMSLLC.Listener.Domain.WNP
         }
 
         /// <summary>
-        /// The current transformer
+        /// Gets the current transformer
         /// </summary>
         public static EquipmentType CurrentTransformer
         {
@@ -46,7 +46,7 @@ namespace AMSLLC.Listener.Domain.WNP
         }
 
         /// <summary>
-        /// The potential transformer
+        /// Gets the potential transformer
         /// </summary>
         public static EquipmentType PotentialTransformer
         {

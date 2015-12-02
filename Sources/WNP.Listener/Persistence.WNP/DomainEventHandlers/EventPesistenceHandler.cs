@@ -38,7 +38,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         protected IWNPUnitOfWork UnitOfWork { get; private set; }
 
         /// <summary>
-        /// The user who initiated the event.
+        /// Gets the user who initiated the event.
         /// </summary>
         protected string User { get; private set; }
 
@@ -51,7 +51,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         protected int Owner { get; private set; }
 
         /// <summary>
-        /// The time provider.
+        /// Gets the time provider.
         /// </summary>
         protected IDateTimeProvider TimeProvider { get; private set; }
 

@@ -45,7 +45,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Data { get; set; }
 
         /// <summary>
-        /// Gets or sets the summary.
+        /// Gets the summary.
         /// </summary>
         /// <value>The summary.</value>
         public Dictionary<string, object> Summary { get; } = new Dictionary<string, object>();
@@ -84,7 +84,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected override void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionRegistryMemento)memento;

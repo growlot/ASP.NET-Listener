@@ -120,9 +120,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\FxCopRuleSets\stylecop.json">
+    <AdditionalFiles Include="..\..\..\FxCopRuleSets\stylecop.json">
       <Link>stylecop.json</Link>
-    </None>
+    </AdditionalFiles>
     <None Include="ListenerODataClient.ttinclude" />
     <None Include="packages.config" />
   </ItemGroup>

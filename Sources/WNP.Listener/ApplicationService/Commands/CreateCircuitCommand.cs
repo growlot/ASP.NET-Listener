@@ -156,7 +156,7 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string MeterPoint { get; set; }
 
         /// <summary>
-        /// Gets or sets the has bracket.
+        /// Gets or sets a value indicating whether this circuit has bracket.
         /// </summary>
         /// <value>
         /// The has bracket.

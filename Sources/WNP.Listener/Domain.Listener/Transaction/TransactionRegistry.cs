@@ -76,13 +76,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public DateTime CreatedDateTime { get; private set; }
 
         /// <summary>
-        /// Gets or sets the updated date time.
+        /// Gets the updated date time.
         /// </summary>
         /// <value>The updated date time.</value>
         public DateTime? UpdatedDateTime { get; private set; }
 
         /// <summary>
-        /// Gets or sets the data.
+        /// Gets the data.
         /// </summary>
         /// <value>The data.</value>
         public string Data { get; private set; }
@@ -100,7 +100,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string Details { get; private set; }
 
         /// <summary>
-        /// Gets or sets the transaction key.
+        /// Gets the transaction key.
         /// </summary>
         /// <value>The transaction key.</value>
         public string IncomingHash { get; private set; }
@@ -266,7 +266,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Sets the memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        /// <exception cref="NotImplementedException"></exception>
         protected override void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionRegistryMemento)memento;

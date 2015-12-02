@@ -19,7 +19,7 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public int Owner { get; set; }
 
         /// <summary>
-        /// Gets the description.
+        /// Gets or sets the description.
         /// </summary>
         /// <value>
         /// The description.
@@ -67,12 +67,15 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string Address2 { get; set; }
 
         /// <summary>
-        /// The zip
+        /// Gets or sets the zip code
         /// </summary>
+        /// <value>
+        /// The zip code.
+        /// </value>
         public string Zip { get; set; }
 
         /// <summary>
-        /// Gets the premise number.
+        /// Gets or sets the premise number.
         /// </summary>
         /// <value>
         /// The premise number.
@@ -96,7 +99,7 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string BillingAccountNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the is interconnect.
+        /// Gets or sets a value indicating whether the site is connected to other utility.
         /// </summary>
         /// <value>
         /// The is interconnect.

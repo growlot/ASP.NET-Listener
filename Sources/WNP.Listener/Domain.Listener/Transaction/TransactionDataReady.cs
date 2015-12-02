@@ -35,13 +35,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string TransactionHash { get; set; }
 
         /// <summary>
-        /// Gets or sets the endpoint.
+        /// Gets the endpoint.
         /// </summary>
         /// <value>The endpoint.</value>
         public ICollection<IntegrationEndpointConfiguration> Endpoint { get; } = new List<IntegrationEndpointConfiguration>();
 
         /// <summary>
-        /// Gets or sets the automatic succeed flag.
+        /// Gets or sets a value indicating whether transaction should be automaticly succeed at the end.
         /// Should be set to true if batch is executed as whole from root
         /// </summary>
         /// <value>The automatic succeed.</value>

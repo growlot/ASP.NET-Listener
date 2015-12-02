@@ -5,11 +5,10 @@
 namespace AMSLLC.Listener.Bootstrapper.Owin
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Web.Http;
-
     using global::Owin;
-
     using Ninject.Web.Common.OwinHost;
 
     /// <summary>
@@ -23,6 +22,7 @@ namespace AMSLLC.Listener.Bootstrapper.Owin
         /// <param name="app">The application builder.</param>
         /// <param name="configuration">The <see cref="HttpConfiguration"/> used to configure the endpoint.</param>
         /// <returns>The application builder.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1625:ElementDocumentationMustNotBeCopiedAndPasted", Justification = "Reviewed.")]
         public static IAppBuilder UseNinjectWebApi(this IAppBuilder app, HttpConfiguration configuration)
         {
             AddOwinModuleToBootstrapper(app, configuration);
@@ -36,6 +36,7 @@ namespace AMSLLC.Listener.Bootstrapper.Owin
         /// <param name="app">The application builder.</param>
         /// <param name="httpServer">The http server.</param>
         /// <returns>The application builder.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1625:ElementDocumentationMustNotBeCopiedAndPasted", Justification = "Reviewed.")]
         public static IAppBuilder UseNinjectWebApi(this IAppBuilder app, HttpServer httpServer)
         {
             if (httpServer == null)

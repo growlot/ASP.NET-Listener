@@ -41,17 +41,17 @@ namespace AMSLLC.Listener.MetadataService
         }
 
         /// <summary>
-        /// Defines if this entity is contained in parent
+        /// Gets a value indicating whether this entity is contained in parent
         /// </summary>
         public bool IsContained { get; }
 
         /// <summary>
-        /// Entity table name that is linked
+        /// Gets the linked entity table name
         /// </summary>
         public string TargetTableName { get; }
 
         /// <summary>
-        /// Column that has to have specific values when tables are joined.
+        /// Gets the column that has to have specific values when tables are joined.
         /// </summary>
         /// <value>
         /// The column that match specific value.
@@ -59,12 +59,12 @@ namespace AMSLLC.Listener.MetadataService
         public ColumnValueMatch MatchValue { get; }
 
         /// <summary>
-        /// Column matches for SQL join
+        /// Gets the column matches for SQL join
         /// </summary>
         public Collection<ColumnMatch> MatchOn { get; }
 
         /// <summary>
-        /// Entity relation type
+        /// Gets the entity relation type
         /// </summary>
         public RelationType RelationType { get; }
     }

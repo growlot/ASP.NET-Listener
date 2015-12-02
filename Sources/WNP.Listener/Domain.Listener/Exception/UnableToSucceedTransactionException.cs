@@ -18,7 +18,6 @@ namespace AMSLLC.Listener.Domain.Listener.Exception
         /// </summary>
         /// <param name="recordKey">The record key.</param>
         /// <param name="message">The message.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public UnableToSucceedTransactionException(
             Guid recordKey,
             string message)

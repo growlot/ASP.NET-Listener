@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public string MapToName { get; set; }
 
         /// <summary>
-        /// Gets or sets the value map.
+        /// Gets the value map.
         /// </summary>
         /// <value>The value map.</value>
         public ValueMapDictionary ValueMap { get; } = new ValueMapDictionary();
@@ -42,7 +42,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public short? OutgoingSequence { get; set; }
 
         /// <summary>
-        /// Gets or sets the include in summary.
+        /// Gets or sets a value indicating whether field configuration should be included in summary.
         /// </summary>
         /// <value>The include in summary.</value>
         public bool IncludeInSummary { get; set; }

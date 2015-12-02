@@ -19,7 +19,8 @@ namespace AMSLLC.Listener.Utilities
         {
             { typeof(decimal), v => System.Convert.ToDecimal(v, CultureInfo.InvariantCulture) },
             { typeof(float), v => System.Convert.ToSingle(v, CultureInfo.InvariantCulture) },
-            { typeof(char), v =>
+            {
+                typeof(char), v =>
                 {
                     if (v == null)
                     {
@@ -52,7 +53,8 @@ namespace AMSLLC.Listener.Utilities
                 }
             },
             { typeof(double), v => System.Convert.ToDouble(v, CultureInfo.InvariantCulture) },
-            { typeof(DateTimeOffset), v =>
+            {
+                typeof(DateTimeOffset), v =>
                 {
                     if (v == null)
                     {

@@ -1,8 +1,6 @@
-﻿// //-----------------------------------------------------------------------
-// <copyright file="FieldConfigurationMemento.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="FieldConfigurationMemento.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-// //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
@@ -61,25 +59,25 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public short? IncomingSequence { get; private set; }
 
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets the name.
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets or sets the name of the map to.
+        /// Gets the name of the map to.
         /// </summary>
         /// <value>The name of the map to.</value>
         public string MapToName { get; private set; }
 
         /// <summary>
-        /// Gets or sets the value map.
+        /// Gets the value map.
         /// </summary>
         /// <value>The value map.</value>
         public Dictionary<string, object> ValueMap { get; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets or sets the include in hash.
+        /// Gets the include in hash.
         /// </summary>
         /// <value>The include in hash.</value>
         public short? OutgoingSequence { get; private set; }

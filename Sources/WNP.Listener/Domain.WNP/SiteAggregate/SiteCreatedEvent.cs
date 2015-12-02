@@ -112,8 +112,11 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         public string Address2 { get; private set; }
 
         /// <summary>
-        /// The zip
+        /// Gets the zip code.
         /// </summary>
+        /// <value>
+        /// The zip code.
+        /// </value>
         public string Zip { get; private set; }
 
         /// <summary>
@@ -141,7 +144,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         public string BillingAccountNumber { get; private set; }
 
         /// <summary>
-        /// Gets the is interconnect.
+        /// Gets a value indicating whether the site is connected to other utility.
         /// </summary>
         /// <value>
         /// The is interconnect.

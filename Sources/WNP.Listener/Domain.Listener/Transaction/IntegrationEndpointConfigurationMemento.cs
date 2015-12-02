@@ -27,13 +27,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         }
 
         /// <summary>
-        /// Gets or sets the key.
+        /// Gets the key.
         /// </summary>
         /// <value>The key.</value>
         public string Protocol { get; private set; }
 
         /// <summary>
-        /// Gets or sets the connection details.
+        /// Gets the connection details.
         /// </summary>
         /// <value>The connection details.</value>
         public string ConnectionDetails { get; private set; }

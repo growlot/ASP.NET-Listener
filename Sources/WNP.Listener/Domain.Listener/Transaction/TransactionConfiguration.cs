@@ -17,7 +17,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected override void SetMemento(IMemento memento)
         {
             throw new NotImplementedException();

@@ -38,7 +38,6 @@ namespace AMSLLC.Listener.Bus
         /// <summary>
         /// Resets this instance.
         /// </summary>
-        /// <exception cref="System.NotImplementedException"></exception>
         public static void Reset()
         {
             DomainEventHandlers.Clear();

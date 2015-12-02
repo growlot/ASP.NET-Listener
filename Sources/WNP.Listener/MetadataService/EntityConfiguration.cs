@@ -38,7 +38,7 @@ namespace AMSLLC.Listener.MetadataService
         public Collection<RelationInformation> Relations { get; } = new Collection<RelationInformation>();
 
         /// <summary>
-        /// Defines if this entity is contained in parent
+        /// Gets or sets a value indicating whether this entity is contained in parent
         /// </summary>
         public bool IsContained { get; set; }
 

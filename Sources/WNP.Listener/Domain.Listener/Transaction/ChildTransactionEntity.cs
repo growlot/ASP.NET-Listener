@@ -71,13 +71,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public TransactionStatusType Status { get; set; }
 
         /// <summary>
-        /// Gets or sets the priority.
+        /// Gets the priority.
         /// </summary>
         /// <value>The priority.</value>
         public int? Priority { get; private set; }
 
         /// <summary>
-        /// Gets the dirty.
+        /// Gets or sets a value indicating whether this transaction is dirty.
         /// </summary>
         /// <value>The dirty.</value>
         public bool Dirty { get; set; }
@@ -86,7 +86,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected override void SetMemento(IMemento memento)
         {
             var myMemento = (TransactionExecutionMemento)memento;

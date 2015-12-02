@@ -27,9 +27,11 @@ namespace AMSLLC.Listener.Bootstrapper
         }
 
         /// <summary>
-        /// Gets the currently running MiniProfiler for the current HttpContext; null if no MiniProfiler was <see cref="M:StackExchange.Profiling.WebRequestProfilerProvider.Start(System.String)"/>ed.
-        ///
+        /// Gets or sets the currently running MiniProfiler for the current HttpContext; null if no MiniProfiler was <see cref="M:StackExchange.Profiling.WebRequestProfilerProvider.Start(System.String)"/>ed.
         /// </summary>
+        /// <value>
+        /// The current profiler.
+        /// </value>
         private MiniProfiler Current
         {
             get { return OwinRequestScopeContext.Current.Context?.Get<MiniProfiler>(":mini-profiler:"); }
@@ -169,8 +171,7 @@ namespace AMSLLC.Listener.Bootstrapper
             private static IUserProvider provider = (IUserProvider)new IpAddressIdentity();
 
             /// <summary>
-            /// Provides user identification for a given profiling request.
-            ///
+            /// Gets or sets user identification for a given profiling request.
             /// </summary>
             public static IUserProvider UserProvider
             {

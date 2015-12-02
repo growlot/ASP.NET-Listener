@@ -87,8 +87,11 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         public string Address2 { get; private set; }
 
         /// <summary>
-        /// The zip
+        /// Gets the zip code.
         /// </summary>
+        /// <value>
+        /// The zip code.
+        /// </value>
         public string Zip { get; private set; }
     }
 }

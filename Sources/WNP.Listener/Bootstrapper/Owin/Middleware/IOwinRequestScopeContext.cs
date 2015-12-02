@@ -17,7 +17,7 @@ namespace AMSLLC.Listener.Bootstrapper.Owin.Middleware
     public interface IOwinRequestScopeContext
     {
         /// <summary>
-        /// Raw Owin Environment dictionary.
+        /// Gets the raw Owin Environment dictionary.
         /// </summary>
         IDictionary<string, object> Environment { get; }
 

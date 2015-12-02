@@ -26,7 +26,7 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public int SiteId { get; set; }
 
         /// <summary>
-        /// Gets the description.
+        /// Gets or sets the description.
         /// </summary>
         /// <value>
         /// The description.
@@ -34,7 +34,7 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets the premise number.
+        /// Gets or sets the premise number.
         /// </summary>
         /// <value>
         /// The premise number.

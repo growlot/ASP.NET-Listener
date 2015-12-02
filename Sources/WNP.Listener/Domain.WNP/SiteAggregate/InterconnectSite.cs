@@ -72,7 +72,7 @@ namespace AMSLLC.Listener.Domain.WNP.SiteAggregate
         }
 
         /// <summary>
-        /// Gets the flag indicating if site is connected to other utility.
+        /// Gets a value indicating whether the site is connected to other utility.
         /// </summary>
         /// <value>
         /// The flag indicating if site is connected to other utility.

@@ -78,7 +78,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public int EntityCategoryOperationId { get; private set; }
 
         /// <summary>
-        /// Gets or sets the field configurations.
+        /// Gets the field configurations.
         /// </summary>
         /// <value>The field configurations.</value>
         public ReadOnlyCollection<FieldConfigurationMemento> FieldConfigurations { get; private set; }

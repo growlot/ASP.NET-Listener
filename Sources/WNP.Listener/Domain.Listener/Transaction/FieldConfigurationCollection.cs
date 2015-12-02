@@ -23,7 +23,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// Initializes a new instance of the <see cref="FieldConfigurationCollection"/> class.
         /// </summary>
         /// <param name="fieldConfigurations">The field configurations.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public FieldConfigurationCollection(IEnumerable<FieldConfiguration> fieldConfigurations)
         {
             if (fieldConfigurations != null)

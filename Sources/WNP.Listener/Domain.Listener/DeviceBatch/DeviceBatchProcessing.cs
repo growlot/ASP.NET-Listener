@@ -21,7 +21,6 @@ namespace AMSLLC.Listener.Domain.Listener.DeviceBatch
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected override void SetMemento(IMemento memento)
         {
             throw new System.NotImplementedException();

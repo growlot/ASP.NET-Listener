@@ -89,13 +89,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public object Data { get; private set; }
 
         /// <summary>
-        /// Gets or sets the duplicate transactions.
+        /// Gets the duplicate transactions.
         /// </summary>
         /// <value>The duplicate hash count.</value>
         public Collection<Guid> DuplicateTransactions { get; } = new Collection<Guid>();
 
         /// <summary>
-        /// Gets or sets the status.
+        /// Gets the status.
         /// </summary>
         /// <value>The status.</value>
         public TransactionStatusType Status { get; private set; }

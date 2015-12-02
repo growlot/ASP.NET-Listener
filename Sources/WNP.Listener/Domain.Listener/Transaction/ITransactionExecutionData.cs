@@ -31,7 +31,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         string OutgoingHash { get; set; }
 
         /// <summary>
-        /// Gets or sets the enabled entity operation identifier.
+        /// Gets the enabled entity operation identifier.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
         int EntityCategoryOperationId { get; }

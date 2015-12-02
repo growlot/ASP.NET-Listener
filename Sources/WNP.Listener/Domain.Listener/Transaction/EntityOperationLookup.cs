@@ -32,13 +32,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         }
 
         /// <summary>
-        /// Gets or sets the name of the entity.
+        /// Gets the name of the entity.
         /// </summary>
         /// <value>The name of the entity.</value>
         public string EntityName { get; }
 
         /// <summary>
-        /// Gets or sets the enabled operation identifier.
+        /// Gets the enabled operation identifier.
         /// </summary>
         /// <value>The enabled operation identifier.</value>
         public int EnabledOperationId { get; }
