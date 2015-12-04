@@ -35,6 +35,7 @@ namespace AMSLLC.Listener.ODataService
         public void Configure(HttpConfiguration config)
         {
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
+            config.Filters.Add(new CommonExceptionFilterAttribute());
 
             // config.MessageHandlers.Add(new MiniProfilerMessageHandler());
             var conventions = ODataRoutingConventions.CreateDefault();

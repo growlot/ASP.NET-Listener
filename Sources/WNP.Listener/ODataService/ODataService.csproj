@@ -188,6 +188,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="ApplicationServiceConfigurator.cs" />
+    <Compile Include="CommonExceptionFilterAttribute.cs" />
     <Compile Include="Controllers\Base\DBColumnList.cs" />
     <Compile Include="Controllers\Base\WNPEntityControllerBase.cs" />
     <Compile Include="Controllers\CircuitsController.cs" />

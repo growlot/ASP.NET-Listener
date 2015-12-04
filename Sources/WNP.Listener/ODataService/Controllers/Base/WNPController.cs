@@ -43,7 +43,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <param name="commandBus">The command bus.</param>
         protected WNPController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus)
         {
-            this.ConstructQueryOptions();
             this.MetadataService = metadataService;
             this.UnitOfWork = unitOfWork;
             this.FilterTransformer = filterTransformer;
@@ -213,7 +212,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     actionName,
                     actionsContainerType.FullName);
 
-                return this.InternalServerError(ex);
+                throw;
             }
         }
 
