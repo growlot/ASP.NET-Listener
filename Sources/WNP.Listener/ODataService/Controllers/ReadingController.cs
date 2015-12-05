@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System.Threading.Tasks;
     using System.Web.Http;
+    using AMSLLC.Listener.ODataService.Services;
     using ApplicationService;
     using ApplicationService.Commands;
     using Base;
@@ -31,9 +32,17 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
         /// <param name="commandBus">The command bus.</param>
+        /// <param name="queryHandlerFactory">The query handler factory.</param>
         /// <param name="dateTimeProvider">The date time provider.</param>
-        public ReadingController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, IDateTimeProvider dateTimeProvider)
-            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus)
+        public ReadingController(
+            IMetadataProvider metadataService,
+            IWNPUnitOfWork unitOfWork,
+            IFilterTransformer filterTransformer,
+            IActionConfigurator actionConfigurator,
+            ICommandBus commandBus,
+            IODataQueryHandlerFactory queryHandlerFactory,
+            IDateTimeProvider dateTimeProvider)
+            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus, queryHandlerFactory)
         {
             this.dateTimeProvider = dateTimeProvider;
         }
@@ -74,7 +83,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             if (!reading.ReadDate.HasValue)
             {
                 reading.ReadDate = this.dateTimeProvider.Now();
-            }
+        }
 
             return await this.AddReading(reading);
         }

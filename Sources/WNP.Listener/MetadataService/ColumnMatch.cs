@@ -20,10 +20,10 @@ namespace AMSLLC.Listener.MetadataService
             this.TargetColumn = targetColumn;
         }
 
-        /// <summary />
+        /// <summary>Gets source column</summary>
         public string SourceColumn { get; }
 
-        /// <summary />
+        /// <summary>Gets target column</summary>
         public string TargetColumn { get; }
     }
 }

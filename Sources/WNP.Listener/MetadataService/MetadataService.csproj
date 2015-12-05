@@ -25,7 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Debug\AMSLLC.Listener.MetadataService.XML</DocumentationFile>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -120,6 +120,8 @@
     <Compile Include="Implementations\ActionConfigurator.cs" />
     <Compile Include="Implementations\EntityConfigurator.cs" />
     <Compile Include="Implementations\MetadataProvider.cs" />
+    <Compile Include="IVirtualODataEntity.cs" />
+    <Compile Include="VirtualRelationInformation.cs" />
     <Compile Include="IODataEntity.cs" />
     <Compile Include="IUnboundActionsContainer.cs" />
     <Compile Include="IWNPEntityController.cs" />

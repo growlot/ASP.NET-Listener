@@ -27,9 +27,21 @@ namespace AMSLLC.Listener.ODataService
         /// </returns>
         public static Dictionary<string, object> ToCompositeKeyDictionary(this KeyValuePathSegment keyValuePathSegment)
         {
-            var result = new Dictionary<string, object>();
+            return ToCompositeKeyDictionary(keyValuePathSegment.Value);
+        }
 
-            var keyRaw = keyValuePathSegment.Value;
+        /// <summary>
+        /// Converts KeyValuePathSegment to Dictionary containing final key names/values.
+        /// </summary>
+        /// <param name="keyRaw">
+        /// The raw json key in string format.
+        /// </param>
+        /// <returns>
+        /// The dictionary, containing final key names/values.
+        /// </returns>
+        public static Dictionary<string, object> ToCompositeKeyDictionary(this string keyRaw)
+        {
+            var result = new Dictionary<string, object>();
 
             var compoundKeyPairs = keyRaw.Split(',');
             if (!compoundKeyPairs.Any())

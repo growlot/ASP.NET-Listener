@@ -17,11 +17,11 @@ namespace AMSLLC.Listener.MetadataService
         /// <summary>
         /// Source entity has 0 or one related entities
         /// </summary>
-        OneToOneOptional,
+        ZeroToOne,
 
         /// <summary>
         /// Source entity has exactly one related entity
         /// </summary>
-        OneToOneRequired,
+        OneToOne,
     }
 }

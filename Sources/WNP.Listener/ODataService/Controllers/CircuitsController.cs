@@ -11,6 +11,10 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.OData;
+    using System.Web.OData.Routing;
+
+    using AMSLLC.Listener.ODataService.Services;
+
     using ApplicationService;
     using ApplicationService.Commands;
     using Base;
@@ -35,8 +39,15 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
         /// <param name="commandBus">The command bus.</param>
-        public CircuitsController(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus)
-            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus)
+        /// <param name="queryHandlerFactory">The query handler factory.</param>
+        public CircuitsController(
+            IMetadataProvider metadataService,
+            IWNPUnitOfWork unitOfWork,
+            IFilterTransformer filterTransformer,
+            IActionConfigurator actionConfigurator,
+            ICommandBus commandBus,
+            IODataQueryHandlerFactory queryHandlerFactory)
+            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus, queryHandlerFactory)
         {
         }
 

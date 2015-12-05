@@ -25,17 +25,20 @@ namespace AMSLLC.Listener.MetadataService
             this.TableName = tableName;
         }
 
-        /// <summary />
+        /// <summary>Gets table name</summary>
         public string TableName { get; }
 
-        /// <summary />
+        /// <summary>Gets key</summary>
         public IEnumerable<string> Key { get; private set; } = null;
 
-        /// <summary />
+        /// <summary>Gets a value indicating whether the entity is owner specific</summary>
         public bool IsOwnerSpecific { get; private set; } = false;
 
-        /// <summary />
+        /// <summary>Gets relations</summary>
         public Collection<RelationInformation> Relations { get; } = new Collection<RelationInformation>();
+
+        /// <summary>Gets virtual relations</summary>
+        public Collection<VirtualRelationInformation> VirtualRelations { get; } = new Collection<VirtualRelationInformation>();
 
         /// <summary>
         /// Gets or sets a value indicating whether this entity is contained in parent
@@ -105,7 +108,12 @@ namespace AMSLLC.Listener.MetadataService
         /// <returns>Current instance of EntityConfiguration</returns>
         public EntityConfiguration HasRequired(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.Relations.Add(new RelationInformation(RelationType.OneToOneRequired, tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
+            this.Relations.Add(
+                new RelationInformation(
+                    RelationType.OneToOne,
+                    tableName,
+                    new Collection<ColumnMatch>(matchOn.ToList()),
+                    isContained));
 
             return this;
         }
@@ -119,7 +127,12 @@ namespace AMSLLC.Listener.MetadataService
         /// <returns>Current instance of EntityConfiguration</returns>
         public EntityConfiguration HasOptional(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.Relations.Add(new RelationInformation(RelationType.OneToOneOptional, tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
+            this.Relations.Add(
+                new RelationInformation(
+                    RelationType.ZeroToOne,
+                    tableName,
+                    new Collection<ColumnMatch>(matchOn.ToList()),
+                    isContained));
 
             return this;
         }
@@ -133,7 +146,12 @@ namespace AMSLLC.Listener.MetadataService
         /// <returns>Current instance of EntityConfiguration</returns>
         public EntityConfiguration HasMany(string tableName, bool isContained, params ColumnMatch[] matchOn)
         {
-            this.Relations.Add(new RelationInformation(RelationType.OneToMany, tableName, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
+            this.Relations.Add(
+                new RelationInformation(
+                    RelationType.OneToMany,
+                    tableName,
+                    new Collection<ColumnMatch>(matchOn.ToList()),
+                    isContained));
 
             return this;
         }
@@ -148,11 +166,57 @@ namespace AMSLLC.Listener.MetadataService
         /// <returns>
         /// Current instance of EntityConfiguration
         /// </returns>
-        public EntityConfiguration HasMany(string tableName, bool isContained, ColumnValueMatch matchValue, params ColumnMatch[] matchOn)
+        public EntityConfiguration HasMany(
+            string tableName,
+            bool isContained,
+            ColumnValueMatch matchValue,
+            params ColumnMatch[] matchOn)
         {
-            this.Relations.Add(new RelationInformation(RelationType.OneToMany, tableName, matchValue, new Collection<ColumnMatch>(matchOn.ToList()), isContained));
+            this.Relations.Add(
+                new RelationInformation(
+                    RelationType.OneToMany,
+                    tableName,
+                    matchValue,
+                    new Collection<ColumnMatch>(matchOn.ToList()),
+                    isContained));
 
             return this;
+        }
+
+        /// <summary>
+        /// Defines relationship
+        /// </summary>
+        /// <param name="relationType">Relation type</param>
+        /// <param name="virtualEntityName">Virtual entity name</param>
+        /// <param name="discriminator">One or more column names by which internal relation is defined</param>
+        /// <param name="columnList">Columns that will form an "internal" entity</param>
+        /// <returns>Current instance of EntityConfiguration</returns>
+        public EntityConfiguration HasVirtualRelation(
+            RelationType relationType,
+            string virtualEntityName,
+            string[] discriminator,
+            string[] columnList)
+        {
+            this.VirtualRelations.Add(
+                new VirtualRelationInformation(
+                    relationType,
+                    virtualEntityName,
+                    new Collection<string>(discriminator),
+                    new Collection<string>(columnList)));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Detect, if this database column name is in one of virtual relations of the entity
+        /// </summary>
+        /// <param name="dbColName">Database column name</param>
+        /// <returns>If this database column name is in one of virtual relations</returns>
+        public bool IsFieldInVirtualRelation(string dbColName)
+        {
+            return
+                this.VirtualRelations.SelectMany(
+                    information => information.ColumnList.Select(s => s.ToUpperInvariant())).Contains(dbColName);
         }
 
         /// <summary>

@@ -4,6 +4,8 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
+    using AMSLLC.Listener.ODataService.Services;
+
     using ApplicationService;
     using MetadataService;
     using Repository.WNP;
@@ -22,9 +24,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
         /// <param name="commandBus">The command bus.</param>
-        /// <param name="test">The test.</param>
-        public WNPEntityControllerBase(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus)
-            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus)
+        /// <param name="queryHandlerFactory">The query handler factory.</param>
+        protected WNPEntityControllerBase(IMetadataProvider metadataService, IWNPUnitOfWork unitOfWork, IFilterTransformer filterTransformer, IActionConfigurator actionConfigurator, ICommandBus commandBus, IODataQueryHandlerFactory queryHandlerFactory)
+            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus, queryHandlerFactory)
         {
         }
 

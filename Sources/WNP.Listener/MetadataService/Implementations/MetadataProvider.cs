@@ -100,6 +100,33 @@ namespace AMSLLC.Listener.MetadataService.Implementations
         public MetadataEntityModel GetModelMappingByTableName(string tableName) =>
             oDataModelMappings.First(modelMappings => modelMappings.Value.TableName == tableName).Value;
 
+        private static void AddVirtualRelation(VirtualRelationInformation relation, MetadataEntityModel model, CodeTypeDeclaration virtualEntityClass)
+        {
+            foreach (var columnName in relation.ColumnList)
+            {
+                var modelFieldName = model.ColumnToModelMappings[columnName.ToUpperInvariant()];
+                var field = model.FieldInfo[modelFieldName];
+                var nullable = string.Empty;
+                if (field.DataType == "int"
+                        || field.DataType == "DateTimeOffset"
+                        || field.DataType == "decimal"
+                        || field.DataType == "float"
+                        || field.DataType == "char")
+                {
+                    nullable = "?";
+                }
+
+                var key = relation.Discriminator.Contains(columnName) ? "[Key] " : string.Empty;
+
+                var property = new CodeSnippetTypeMember
+                {
+                    Text = StringUtilities.Invariant($"{key}public {field.DataType}{nullable} {modelFieldName} {{get; set;}}")
+                };
+
+                virtualEntityClass.Members.Add(property);
+            }
+        }
+
         private static void AddRelations(EntityConfiguration entityConfig, CodeTypeDeclaration codeClass)
         {
             foreach (var relation in entityConfig.Relations)
@@ -213,6 +240,15 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 oDataModelMappings.Add(
                     StringUtilities.Invariant($"{this.ODataModelNamespace}.{modelClassName}"),
                     oDataModelMapping);
+
+/*
+                foreach (var relation in entityConfiguration.VirtualRelations)
+                {
+                    oDataModelMappings.Add(
+                        StringUtilities.Invariant($"{this.ODataModelNamespace}.{relation.VirtualEntityName}"),
+                        new MetadataEntityModel(null, relation.VirtualEntityName, null, null, null, null, null));
+                }
+*/
             }
         }
 
@@ -291,10 +327,46 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
                 setFromEntityMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(entityName), "entity"));
 
+                // Add ordinary relations
                 AddRelations(entityConfig, codeClass);
 
+                // Add virtual relations
+                var fieldsToSkip = new List<string>();
+                foreach (var relation in table.EntityConfiguration.VirtualRelations)
+                {
+                    var virtualEntityClass = new CodeTypeDeclaration(relation.VirtualEntityName)
+                    {
+                        IsClass = true,
+                        TypeAttributes = TypeAttributes.Public,
+                        BaseTypes = { typeof(IVirtualODataEntity) }
+                    };
+
+                    AddVirtualRelation(relation, table, virtualEntityClass);
+
+                    var property = new CodeSnippetTypeMember
+                                       {
+                                           Text =
+                                               relation.RelationType == RelationType.OneToMany
+                                                   ? StringUtilities.Invariant(
+                                                       $"[Contained] public List<{relation.VirtualEntityName}> {relation.VirtualEntityName}s {{get; set;}}")
+                                                   : StringUtilities.Invariant(
+                                                       $"[Contained] public {relation.VirtualEntityName} {relation.VirtualEntityName} {{get; set;}}")
+                                       };
+
+                    codeNamespace.Types.Add(virtualEntityClass);
+                    codeClass.Members.Add(property);
+
+                    fieldsToSkip.AddRange(relation.ColumnList.Select(s => table.ColumnToModelMappings[s.ToUpperInvariant()]));
+                }
+
+                // Add regular fields
                 foreach (var field in table.FieldInfo)
                 {
+                    if (fieldsToSkip.Contains(field.Key))
+                    {
+                        continue;
+                    }
+
                     var property = new CodeSnippetTypeMember();
 
                     // we don't want to expose Owner as OData key, so if this is part of

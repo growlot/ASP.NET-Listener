@@ -20,6 +20,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Web.OData.Formatter;
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
+
+    using AMSLLC.Listener.ODataService.Services;
+    using AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler;
+
     using ApplicationService;
     using MetadataService;
     using Microsoft.OData.Core.UriParser.Semantic;
@@ -36,24 +40,30 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     /// </summary>
     public class WNPEntityController : WNPController
     {
+        private readonly IODataQueryHandlerFactory queryHandlerFactory;
+
         private readonly ODataValidationSettings defaultODataValidationSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WNPEntityController"/> class.
         /// </summary>
         /// <param name="metadataService">The metadata service.</param>
-        /// <param name="unitofwork">The unitofwork.</param>
+        /// <param name="unitOfWork">The unitOfWork.</param>
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
         /// <param name="commandBus">The command bus.</param>
+        /// <param name="queryHandlerFactory">The query builder</param>
         public WNPEntityController(
             IMetadataProvider metadataService,
-            IWNPUnitOfWork unitofwork,
+            IWNPUnitOfWork unitOfWork,
             IFilterTransformer filterTransformer,
             IActionConfigurator actionConfigurator,
-            ICommandBus commandBus)
-            : base(metadataService, unitofwork, filterTransformer, actionConfigurator, commandBus)
+            ICommandBus commandBus,
+            IODataQueryHandlerFactory queryHandlerFactory)
+            : base(metadataService, unitOfWork, filterTransformer, actionConfigurator, commandBus)
         {
+            this.queryHandlerFactory = queryHandlerFactory;
+
             this.defaultODataValidationSettings = new ODataValidationSettings()
             {
                 AllowedQueryOptions =
@@ -78,7 +88,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var skip = this.queryOptions.Skip?.Value ?? 0;
             var top = this.queryOptions.Top?.Value ?? 10;
 
-            var dbColumnList = new DbColumnList(this.queryOptions.SelectExpand, modelMapping);
+            var selectedFields = this.queryOptions.SelectExpand?.RawSelect?.Split(',');
+            var dbColumnList = new DbColumnList(selectedFields, modelMapping);
 
             var sql =
                 Sql.Builder.Select(dbColumnList.GetQueryColumnList())
@@ -250,158 +261,35 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             this.ConstructQueryOptions();
             this.queryOptions.Validate(this.defaultODataValidationSettings);
 
-            var model = this.metadataService.GetModelMapping(this.EdmEntityClrType);
+            var selectedFields = this.queryOptions.SelectExpand?.RawSelect?.Split(',');
 
-            var orderedKey = this.GetRequestKey(model, 1);
+            var keyPathSegment = this.queryOptions.Context.Path.Segments[1] as KeyValuePathSegment;
+            var rawKey = keyPathSegment?.Value;
+
             var expands =
-                this.queryOptions.SelectExpand?.SelectExpandClause.SelectedItems.OfType<ExpandedNavigationSelectItem>();
+                this.queryOptions.SelectExpand?.SelectExpandClause?.SelectedItems?.OfType<ExpandedNavigationSelectItem>()
+                    .ToArray();
 
-            var expandedItems = expands as ExpandedNavigationSelectItem[] ?? expands?.ToArray();
-
-            var relatedEntityModels =
-                expandedItems?.Select(
-                    item => this.metadataService.GetModelMapping(item.NavigationSource.EntityType().Name)).ToArray();
-
-            var dbColumnList = new DbColumnList(
-                this.queryOptions.SelectExpand,
-                model,
-                relatedEntityModels);
-
-            var sql =
-                Sql.Builder.Select(dbColumnList.GetQueryColumnList())
-                    .From($"{model.TableName}");
-
-            var modelConfig = model.EntityConfiguration;
-            var parentTable = modelConfig.TableName;
-
-            if (expandedItems != null)
+            try
             {
-                foreach (var expand in expandedItems)
-                {
-                    var entityToExpand = expand.NavigationSource.EntityType().Name;
-                    var entityModel = this.metadataService.GetModelMapping(entityToExpand);
+                var entityInstance =
+                    this.queryHandlerFactory.NewSingleResultQuery()
+                        .OnType(this.EdmEntityClrType)
+                        .WithKey(rawKey)
+                        .Expand(expands?.Select(item => item.NavigationSource.EntityType().Name).ToArray())
+                        .SelectFields(selectedFields)
+                        .FetchSingle();
 
-                    var relConfig = modelConfig.Relations.FirstOrDefault(
-                        information => information.TargetTableName == entityModel.TableName);
-
-                    var onClause = relConfig.MatchOn
-                        .Select(m => $"{entityModel.TableName}.{m.SourceColumn} = {parentTable}.{m.TargetColumn}")
-                        .Aggregate((m1, m2) => $"{m1} AND {m2}");
-
-                    if (relConfig.MatchValue != null)
-                    {
-                        onClause = $"{onClause} AND {relConfig.MatchValue.TargetColumn} = '{relConfig.MatchValue.TargetColumnValue}'";
-                    }
-
-                    sql = sql.LeftJoin(entityModel.TableName).On(onClause);
-                }
+                return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
             }
-
-            sql =
-                sql.Where(
-                    orderedKey.Select((kvp, ind) => $"{model.TableName}.{model.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                        .Aggregate((s, s1) => $"{s} AND {s1}"), orderedKey.Select(kvp => kvp.Value).ToArray());
-
-            var dbContext = ((WNPUnitOfWork)this.unitOfWork).DbContext;
-
-            var dbResults = dbContext.Fetch<dynamic>(sql);
-
-            if (expandedItems == null && dbResults.Count > 1)
+            catch (InvalidNumberOfRecordsException e)
             {
-                return this.BadRequest("Request returned more than 1 record.");
+                return this.BadRequest(e.Message);
             }
-
-            if (dbResults.Count == 0)
+            catch (EntityNotFoundException e)
             {
-                return this.NotFound();
+                return this.BadRequest(e.Message);
             }
-
-            var entityInstance = this.CreateEdmEntity(expandedItems);
-
-            foreach (var dbResult in dbResults)
-            {
-                var rawData = (IDictionary<string, object>)dbResult;
-                var expandInstances = new Dictionary<Type, object>();
-                var emptyRelations = new List<string>();
-
-                relatedEntityModels?.Map(
-                    entityModel =>
-                        {
-                            var colList = dbColumnList.GetQueryColumnListForModel(entityModel);
-                            if (rawData.Where(kvp => colList.Contains(kvp.Key)).All(kvp => kvp.Value == null))
-                            {
-                                emptyRelations.Add(entityModel.ClassName);
-                            }
-                        });
-
-                foreach (var kk in rawData.Keys.Where(k => k != "peta_rn"))
-                {
-                    var entityModel = dbColumnList.GetEntityModelByDbQueryName(kk);
-                    var fieldName = dbColumnList.GetModelColumnByDbQueryName(kk);
-
-                    if (entityModel == model)
-                    {
-                        var property = this.EdmEntityClrType.GetProperty(fieldName);
-                        property.SetValue(entityInstance, Converters.Convert(rawData[kk], property.PropertyType));
-                    }
-                    else
-                    {
-                        // all values for this relation is null, so don't try to map
-                        if (emptyRelations.Contains(entityModel.ClassName))
-                        {
-                            continue;
-                        }
-
-                        var clrType =
-                            this.metadataService.GetEntityType(
-                                $"{this.metadataService.ODataModelNamespace}.{entityModel.ClassName}");
-
-                        object instance = null;
-                        if (expandInstances.ContainsKey(clrType))
-                        {
-                            instance = expandInstances[clrType];
-                        }
-                        else
-                        {
-                            instance = Activator.CreateInstance(clrType);
-                            expandInstances.Add(clrType, instance);
-                        }
-
-                        var property = clrType.GetProperty(fieldName);
-                        property.SetValue(instance, Converters.Convert(rawData[kk], property.PropertyType));
-                    }
-                }
-
-                if (expandedItems != null)
-                {
-                    foreach (var item in expandedItems)
-                    {
-                        var clrType = this.metadataService.GetEntityType(item.NavigationSource.EntityType().ShortQualifiedName());
-
-                        if (expandInstances.ContainsKey(clrType))
-                        {
-                            var navProperty = (NavigationPropertySegment)item.PathToNavigationProperty.FirstSegment;
-                            var singleResult = navProperty.EdmType.TypeKind != EdmTypeKind.Collection;
-
-                            var propertyName = navProperty.NavigationProperty.Name;
-                            var expandProperty = this.EdmEntityClrType.GetProperty(propertyName);
-
-                            if (singleResult)
-                            {
-                                expandProperty.SetValue(entityInstance, expandInstances[clrType]);
-                            }
-                            else
-                            {
-                                var expandPropertyInstance = expandProperty.GetMethod.Invoke(entityInstance, new object[] { });
-                                var addMethod = expandPropertyInstance.GetType().GetMethod("Add");
-                                addMethod.Invoke(expandPropertyInstance, new object[] { expandInstances[clrType] });
-                            }
-                        }
-                    }
-                }
-            }
-
-            return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
         }
 
         /// <summary>
@@ -582,7 +470,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 onClause = $"{onClause} AND {relConfig.MatchValue.TargetColumn} = '{relConfig.MatchValue.TargetColumnValue}'";
             }
 
-            var dbColumnsList = new DbColumnList(queryOptions.SelectExpand, childEntityModel);
+            var selectedFields = this.queryOptions.SelectExpand?.RawSelect?.Split(',');
+            var dbColumnsList = new DbColumnList(selectedFields, childEntityModel);
 
             var parentKey = this.GetRequestKey(parentEntityModel, 1);
             KeyValuePair<string, object>[] childKey = null;

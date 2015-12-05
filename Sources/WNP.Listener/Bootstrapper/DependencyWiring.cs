@@ -5,6 +5,9 @@
 namespace AMSLLC.Listener.Bootstrapper
 {
     using System;
+
+    using AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler;
+
     using ApplicationService;
     using ApplicationService.BatchBuilder;
     using ApplicationService.Implementations;
@@ -136,6 +139,7 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
             this.Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
             this.Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
+            this.Kernel.Bind<IODataQueryHandlerFactory>().To<ODataQueryHandlerFactory>().InRequestScope();
 
             this.Kernel.Bind<IDependencyInjectionModule>().To<ApplicationScopeDIInitializer>().InSingletonScope().Named("ApplicationScopeModule");
         }
