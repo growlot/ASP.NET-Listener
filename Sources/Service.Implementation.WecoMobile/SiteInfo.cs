@@ -68,6 +68,11 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         private static readonly Configuration AssemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
+        /// The leave as is constant.
+        /// </summary>
+        private const string LeaveAsIs = "*LEAVE_AS_IS*";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SiteInfo"/> class.
         /// </summary>
         public SiteInfo()
@@ -456,22 +461,53 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// <param name="equipment">The meter.</param>
         private void CheckOutDevice<T>(string vehicle, string user, T equipment) where T : WnpModel.Equipment
         {
-            if (equipment.Location != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.Location"].Value ||
-                equipment.ShopStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.ShopStatus"].Value ||
-                equipment.EquipmentStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.EquipmentStatus"].Value ||
-                equipment.TestProgram != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.TestProgram"].Value)
+            var trackingOutLocation = AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.Location"].Value;
+            var trackingOutLocationType = AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.LocationType"].Value;
+            string message;
+
+            switch (trackingOutLocationType)
             {
-                string message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceCheckOutNotAllowed", CultureInfo.CurrentCulture));
-                Log.Error(message);
-                throw new ArgumentException(message);
+                case "S":
+                    if (equipment.Location != trackingOutLocation ||
+                        equipment.ShopStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.ShopStatus"].Value ||
+                        equipment.EquipmentStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.EquipmentStatus"].Value ||
+                        equipment.TestProgram != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.TestProgram"].Value)
+                    {
+                        message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceCheckOutNotAllowed", CultureInfo.CurrentCulture));
+                        Log.Error(message);
+                        throw new ArgumentException(message);
+                    }
+                    break;
+                case "A":
+                    var locationArea = this.wnpSystem.GetLocationArea(equipment.Owner, equipment.Location);
+                    if (locationArea != trackingOutLocation ||
+                        equipment.ShopStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.ShopStatus"].Value ||
+                        equipment.EquipmentStatus != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.EquipmentStatus"].Value ||
+                        equipment.TestProgram != AssemblyConfig.AppSettings.Settings["TrackingRules.Incomming.Checkout.TestProgram"].Value)
+                    {
+                        message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("DeviceCheckOutNotAllowed", CultureInfo.CurrentCulture));
+                        Log.Error(message);
+                        throw new ArgumentException(message);
+                    }
+                    break;
+                default:
+                    message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("LocationTypeNotSupported", CultureInfo.CurrentCulture), trackingOutLocationType);
+                    Log.Error(message);
+                    throw new ArgumentException(message);
             }
+
+            var newLocation = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.Location"].Value;
+            var newShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.ShopStatus"].Value;
+            var newEquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.EquipmentStatus"].Value;
+            var newTestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.TestProgram"].Value;
 
             equipment.VehicleNumber = vehicle;
             equipment.ReceivedBy = user;
-            equipment.Location = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.Location"].Value;
-            equipment.ShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.ShopStatus"].Value;
-            equipment.EquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.EquipmentStatus"].Value;
-            equipment.TestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.TestProgram"].Value;
+            equipment.Location = newLocation == LeaveAsIs ? equipment.Location : newLocation;
+            equipment.ShopStatus = newShopStatus == LeaveAsIs ? equipment.ShopStatus : newShopStatus;
+            equipment.EquipmentStatus = newEquipmentStatus == LeaveAsIs ? equipment.EquipmentStatus : newEquipmentStatus;
+            equipment.TestProgram = newTestProgram == LeaveAsIs ? equipment.TestProgram : newTestProgram;
+
             this.wnpSystem.AddOrReplaceEquipment<T>(equipment);
         }
 
@@ -482,30 +518,40 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// <param name="equipment">The equipment.</param>
         private void CheckInDevice<T>(T equipment) where T : WnpModel.Equipment
         {
-            string untestedEquipmentStatus = AssemblyConfig.AppSettings.Settings["EquipmentStatus.Untested"].Value;
-            string stockEquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.Checkout.EquipmentStatus"].Value;
+            string testedTestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.TestProgram"].Value;
+            string untestedTestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.TestProgram"].Value;
 
-            if (equipment.EquipmentStatus == stockEquipmentStatus)
+            if (equipment.TestProgram == testedTestProgram)
             {
+                var newLocation = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.Location"].Value;
+                var newShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.ShopStatus"].Value;
+                var newEquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.EquipmentStatus"].Value;
+                var newTestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.TestProgram"].Value;
+
                 equipment.VehicleNumber = null;
                 equipment.ReceivedBy = null;
-                equipment.Location = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.Location"].Value;
-                equipment.ShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.ShopStatus"].Value;
-                equipment.EquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.EquipmentStatus"].Value;
-                equipment.TestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromTruck.TestProgram"].Value;
+                equipment.Location = newLocation == LeaveAsIs ? equipment.Location : newLocation;
+                equipment.ShopStatus = newShopStatus == LeaveAsIs ? equipment.ShopStatus : newShopStatus;
+                equipment.EquipmentStatus = newEquipmentStatus == LeaveAsIs ? equipment.EquipmentStatus : newEquipmentStatus;
+                equipment.TestProgram = newTestProgram == LeaveAsIs ? equipment.TestProgram : newTestProgram;
             }
-            else if (equipment.EquipmentStatus == untestedEquipmentStatus)
+            else if (equipment.TestProgram == untestedTestProgram)
             {
+                var newLocation = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.Location"].Value;
+                var newShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.ShopStatus"].Value;
+                var newEquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.EquipmentStatus"].Value;
+                var newTestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.TestProgram"].Value;
+
                 equipment.VehicleNumber = null;
                 equipment.ReceivedBy = null;
-                equipment.Location = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.Location"].Value;
-                equipment.ShopStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.ShopStatus"].Value;
-                equipment.EquipmentStatus = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.EquipmentStatus"].Value;
-                equipment.TestProgram = AssemblyConfig.AppSettings.Settings["TrackingRules.Outgoing.CheckinFromField.TestProgram"].Value;
+                equipment.Location = newLocation == LeaveAsIs ? equipment.Location : newLocation;
+                equipment.ShopStatus = newShopStatus == LeaveAsIs ? equipment.ShopStatus : newShopStatus;
+                equipment.EquipmentStatus = newEquipmentStatus == LeaveAsIs ? equipment.EquipmentStatus : newEquipmentStatus;
+                equipment.TestProgram = newTestProgram == LeaveAsIs ? equipment.TestProgram : newTestProgram;
             }
             else
             {
-                string message1 = string.Format(CultureInfo.InvariantCulture, "Equipment with status {0} can not be checked in", equipment.EquipmentStatus);
+                string message1 = string.Format(CultureInfo.InvariantCulture, "Equipment with test program {0} can not be checked in", equipment.TestProgram);
                 Log.Error(message1);
                 throw new ArgumentException(message1);
             }

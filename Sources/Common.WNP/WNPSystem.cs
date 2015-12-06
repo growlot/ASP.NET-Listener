@@ -986,5 +986,21 @@ namespace AMSLLC.Listener.Common.WNP
 
             return this.persistenceManager.RetrieveFirstEqual<User>(criteria);
         }
+
+        /// <summary>
+        /// Gets the location area.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="location">The location.</param>
+        /// <returns>The are of the location</returns>
+        public string GetLocationArea(Owner owner, string location)
+        {
+            DetachedCriteria criteria = DetachedCriteria.For<Location>();
+            criteria.Add(Restrictions.Eq("Owner", owner));
+            criteria.Add(Restrictions.Eq("LocationName", location));
+
+            Location retrievedLocation = this.persistenceManager.RetrieveFirstEqual<Location>(criteria);
+            return retrievedLocation.Area;
+        }
     }
 }

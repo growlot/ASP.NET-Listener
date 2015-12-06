@@ -201,4 +201,7 @@
   <data name="DeviceCheckOutNotAllowed" xml:space="preserve">
     <value>Device can not be checked out, because it's current state doesn't allow this operation.</value>
   </data>
+  <data name="LocationTypeNotSupported" xml:space="preserve">
+    <value>Location type {0} not supported.</value>
+  </data>
 </root>

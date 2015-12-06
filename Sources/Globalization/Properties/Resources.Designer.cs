@@ -187,6 +187,15 @@ namespace AMSLLC.Listener.Globalization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Location type {0} not supported..
+        /// </summary>
+        internal static string LocationTypeNotSupported {
+            get {
+                return ResourceManager.GetString("LocationTypeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meter with equipment number {0} is not found..
         /// </summary>
         internal static string MeterNotFound {
