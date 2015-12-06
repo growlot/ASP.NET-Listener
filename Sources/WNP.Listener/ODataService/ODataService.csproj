@@ -267,6 +267,10 @@
       <Project>{7937EB80-3944-4AB3-96E3-4745CFC5E21A}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Listener.Shared\Listener.Shared.csproj">
+      <Project>{ed495806-3082-49a2-a243-ebeaff4029b8}</Project>
+      <Name>Listener.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MetadataService\MetadataService.csproj">
       <Project>{702b10d4-57d6-4406-a159-715f658ae54d}</Project>
       <Name>MetadataService</Name>

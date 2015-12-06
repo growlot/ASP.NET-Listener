@@ -20,6 +20,7 @@ namespace AMSLLC.Listener.ODataService
     using MetadataService;
     using Persistence.Listener;
     using Services;
+    using Shared;
 
     public class ODataServiceConfigurator
     {
@@ -89,7 +90,18 @@ namespace AMSLLC.Listener.ODataService
             });
 
             this.PrepareODataController<TransactionMessageDatumEntity, Guid>(builder, a => a.RecordKey);
-            this.PrepareODataController<TransactionRegistryViewEntity, Guid>(builder, a => a.RecordKey, null, "TransactionRegistryDetails");
+            this.PrepareODataController<TransactionRegistryViewEntity, Guid>(
+                builder,
+                a => a.RecordKey,
+                (modelBuilder,
+                    configuration) =>
+                {
+                    var cntFunc = configuration.Collection.Function("CountByStatus");
+                    cntFunc.CollectionParameter<int>("statusTypes");
+                    //cntFunc.Parameter<DateTime>("sinceDate");
+                    cntFunc.Returns<int>();
+                },
+                "TransactionRegistryDetails");
 
             // Create a message handler chain with an end-point.
             DelegatingHandler[] handlers = new DelegatingHandler[] { new ListenerMessageHandler() };

@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.Bootstrapper
 {
+    using System.Web.Cors;
     using System.Web.Http;
 
     using AMSLLC.Listener.Bootstrapper.Owin;
@@ -11,7 +12,7 @@ namespace AMSLLC.Listener.Bootstrapper
     using Core.Ninject;
 
     using global::Owin;
-
+    using Microsoft.Owin.Cors;
     using Ninject;
     using Ninject.Web.Common.OwinHost;
 
@@ -66,6 +67,8 @@ namespace AMSLLC.Listener.Bootstrapper
 
         private void InitOwinHost(IAppBuilder app, INinjectDependencyInjectionAdapter diAdapter)
         {
+            // var policy = new CorsPolicy {AllowAnyHeader = true, AllowAnyMethod = true, AllowAnyOrigin = true, SupportsCredentials = };
+            app.UseCors(CorsOptions.AllowAll);
             app.UseRequestScopeContext();
 
             diAdapter.Initialize(container => app.UseNinjectMiddleware(() => container));
