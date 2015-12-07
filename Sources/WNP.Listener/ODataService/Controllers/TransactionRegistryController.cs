@@ -66,7 +66,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                var result = this._dbContext.TransactionRegistry.Where(s => s.RecordKey == key);
+                var result = this._dbContext.TransactionRegistry.SingleOrDefault(s => s.RecordKey == key);
                 return this.Ok(result);
             }
             catch (Exception exc)

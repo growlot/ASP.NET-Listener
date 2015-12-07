@@ -46,7 +46,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                var result = this._dbContext.Endpoint.Where(s => s.EndpointId == key);
+                var result = this._dbContext.Endpoint.SingleOrDefault(s => s.EndpointId == key);
                 return this.Ok(result);
             }
             catch (Exception exc)
