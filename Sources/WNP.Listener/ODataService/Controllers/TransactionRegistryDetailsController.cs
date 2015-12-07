@@ -67,7 +67,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
         }
 
         [HttpGet]
-        //[ODataRoute("CountByStatus")]//(statusType={statusType},sinceDate={sinceDate})
         public IHttpActionResult CountByStatus([FromODataUri]IEnumerable<int> statusTypes)//[FromODataUri]IEnumerable<int> statusTypes, [FromODataUri] string sinceDate
         {
             try

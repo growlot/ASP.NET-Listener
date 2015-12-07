@@ -90,6 +90,18 @@ namespace AMSLLC.Listener.ODataService
             });
 
             this.PrepareODataController<TransactionMessageDatumEntity, Guid>(builder, a => a.RecordKey);
+            this.PrepareODataController<EndpointEntity, int>(
+                builder,
+                a => a.EndpointId,
+                (modelBuilder,
+                    configuration) =>
+                {
+                    this.MapPetaPocoEntity<ProtocolTypeEntity, int>(modelBuilder, a => a.ProtocolTypeId);
+                    this.MapPetaPocoEntity<EndpointTriggerTypeEntity, int>(modelBuilder, a => a.EndpointTriggerTypeId);
+
+                    configuration.ContainsRequired(entity => entity.ProtocolType);
+                    configuration.ContainsRequired(entity => entity.EndpointTriggerType);
+                });
             this.PrepareODataController<TransactionRegistryViewEntity, Guid>(
                 builder,
                 a => a.RecordKey,
@@ -102,6 +114,8 @@ namespace AMSLLC.Listener.ODataService
                     cntFunc.Returns<int>();
                 },
                 "TransactionRegistryDetails");
+
+
 
             // Create a message handler chain with an end-point.
             DelegatingHandler[] handlers = new DelegatingHandler[] { new ListenerMessageHandler() };

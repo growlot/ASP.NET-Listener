@@ -27,6 +27,9 @@ namespace AMSLLC.Listener.ODataService
         [CLSCompliant(false)]
         public DbSet<TransactionRegistryViewEntity> TransactionRegistryDetails { get; set; }
 
+        [CLSCompliant(false)]
+        public DbSet<EndpointEntity> Endpoint { get; set; }
+
 
 
         /// <inheritdoc/>
@@ -35,6 +38,9 @@ namespace AMSLLC.Listener.ODataService
             this.MapPetaPocoEntity<TransactionRegistryEntity, Guid>(modelBuilder, a => a.RecordKey);
             this.MapPetaPocoEntity<TransactionMessageDatumEntity, Guid>(modelBuilder, a => a.RecordKey);
             this.MapPetaPocoEntity<TransactionRegistryViewEntity, Guid>(modelBuilder, a => a.RecordKey);
+            this.MapPetaPocoEntity<EndpointEntity, int>(modelBuilder, a => a.EndpointId);
+            this.MapPetaPocoEntity<ProtocolTypeEntity, int>(modelBuilder, a => a.ProtocolTypeId);
+            this.MapPetaPocoEntity<EndpointTriggerTypeEntity, int>(modelBuilder, a => a.EndpointTriggerTypeId);
 
             base.OnModelCreating(modelBuilder);
         }
