@@ -80,5 +80,13 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// The vehicle number.
         /// </value>
         public string VehicleNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the location.
+        /// </summary>
+        /// <value>
+        /// The location.
+        /// </value>
+        public string Location { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="newEquipmentStatus">The new equipment status.</param>
         /// <param name="newDetailedStatus">The new detailed status.</param>
         /// <param name="newLocation">The new location.</param>
-        /// <param name="locationType">Type of the location.</param>
+        /// <param name="newLocationType">The type of new location.</param>
         /// <param name="incrementCycle">if set to <c>true</c> [increment cycle].</param>
         /// <param name="clearBox">if set to <c>true</c> [clear box].</param>
         /// <param name="clearPallet">if set to <c>true</c> [clear pallet].</param>
@@ -31,8 +31,8 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             string newWorkflow,
             string newEquipmentStatus,
             string newDetailedStatus,
-            string newLocation,
-            string locationType,
+            IMemento newLocation,
+            string newLocationType,
             bool incrementCycle,
             bool clearBox,
             bool clearPallet,
@@ -46,7 +46,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             this.NewEquipmentStatus = newEquipmentStatus;
             this.NewDetailedStatus = newDetailedStatus;
             this.NewLocation = newLocation;
-            this.LocationType = locationType;
+            this.NewLocationType = newLocationType;
             this.IncrementCycle = incrementCycle;
             this.ClearBox = clearBox;
             this.ClearPallet = clearPallet;
@@ -65,9 +65,9 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
 
         internal string NewDetailedStatus { get; private set; }
 
-        internal string NewLocation { get; private set; }
+        internal IMemento NewLocation { get; private set; }
 
-        internal string LocationType { get; private set; }
+        internal string NewLocationType { get; private set; }
 
         internal bool IncrementCycle { get; private set; }
 

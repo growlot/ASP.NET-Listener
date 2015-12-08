@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             bool isAllowed,
             string equipmentStatus,
             string detailedStatus,
-            string location,
+            IMemento location,
             string locationType,
             string message)
         {
@@ -45,7 +45,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
 
         internal string DetailedStatus { get; private set; }
 
-        internal string Location { get; private set; }
+        internal IMemento Location { get; private set; }
 
         internal string LocationType { get; private set; }
 

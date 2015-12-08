@@ -15,7 +15,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         private readonly bool isAllowed;
         private readonly string equipmentStatus;
         private readonly string detailedStatus;
-        private readonly string location;
+        private readonly Location location;
         private readonly string locationType;
         private readonly string message;
 
@@ -34,7 +34,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             bool isAllowed,
             string equipmentStatus,
             string detailedStatus,
-            string location,
+            Location location,
             string locationType,
             string message)
         {
@@ -104,12 +104,12 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         }
 
         /// <summary>
-        /// Gets the equipment location.
+        /// Gets location of equipment.
         /// </summary>
         /// <value>
-        /// The equpiment location.
+        /// The location of equpiment.
         /// </value>
-        public string Location
+        public Location Location
         {
             get
             {
@@ -118,10 +118,10 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         }
 
         /// <summary>
-        /// Gets the type of the location.
+        /// Gets the type of equipment location.
         /// </summary>
         /// <value>
-        /// The type of the location.
+        /// The type of equipment location.
         /// </value>
         public string LocationType
         {

@@ -114,6 +114,8 @@
     <Compile Include="WorkstationAggregate\EquipmentStateChangedEvent.cs" />
     <Compile Include="WorkstationAggregate\EquipmentStateMemento.cs" />
     <Compile Include="WorkstationAggregate\IncomingRule.cs" />
+    <Compile Include="WorkstationAggregate\Location.cs" />
+    <Compile Include="WorkstationAggregate\LocationMemento.cs" />
     <Compile Include="WorkstationAggregate\Workstation.cs" />
     <Compile Include="WorkstationAggregate\IncomingRuleMemento.cs" />
     <Compile Include="WorkstationAggregate\BusinessActionMemento.cs" />

@@ -20,6 +20,13 @@ namespace AMSLLC.Listener.Repository.WNP
         Task<IMemento> GetWorkstation(string name);
 
         /// <summary>
+        /// Gets the location.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>The location memento</returns>
+        Task<IMemento> GetLocation(string name);
+
+        /// <summary>
         /// Gets the state of the equipment.
         /// </summary>
         /// <param name="equipmentType">Type of the equipment.</param>

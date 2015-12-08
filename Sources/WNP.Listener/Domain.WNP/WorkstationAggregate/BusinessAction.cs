@@ -14,8 +14,8 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         private readonly string newWorkflow;
         private readonly string newEquipmentStatus;
         private readonly string newDetailedStatus;
-        private readonly string newLocation;
-        private readonly string locationType;
+        private readonly Location newLocation;
+        private readonly string newLocationType;
         private readonly bool incrementCycle;
         private readonly bool clearBox;
         private readonly bool clearPallet;
@@ -31,8 +31,8 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="newWorkflow">The new workflow.</param>
         /// <param name="newEquipmentStatus">The new equipment status.</param>
         /// <param name="newDetailedStatus">The new detailed status.</param>
-        /// <param name="newLocation">The new location.</param>
-        /// <param name="locationType">Type of the location.</param>
+        /// <param name="newLocation">New location.</param>
+        /// <param name="newLocationType">Type of new location.</param>
         /// <param name="incrementCycle">if set to <c>true</c> [increment cycle].</param>
         /// <param name="clearBox">if set to <c>true</c> [clear box].</param>
         /// <param name="clearPallet">if set to <c>true</c> [clear pallet].</param>
@@ -45,8 +45,8 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             string newWorkflow,
             string newEquipmentStatus,
             string newDetailedStatus,
-            string newLocation,
-            string locationType,
+            Location newLocation,
+            string newLocationType,
             bool incrementCycle,
             bool clearBox,
             bool clearPallet,
@@ -60,7 +60,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             this.newEquipmentStatus = newEquipmentStatus;
             this.newDetailedStatus = newDetailedStatus;
             this.newLocation = newLocation;
-            this.locationType = locationType;
+            this.newLocationType = newLocationType;
             this.incrementCycle = incrementCycle;
             this.clearBox = clearBox;
             this.clearPallet = clearPallet;
@@ -145,7 +145,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <value>
         /// The new location.
         /// </value>
-        public string NewLocation
+        public Location NewLocation
         {
             get
             {
@@ -154,16 +154,16 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         }
 
         /// <summary>
-        /// Gets the type of the location.
+        /// Gets the type of new location.
         /// </summary>
         /// <value>
-        /// The type of the location.
+        /// The type of new location.
         /// </value>
-        public string LocationType
+        public string NewLocationType
         {
             get
             {
-                return this.locationType;
+                return this.newLocationType;
             }
         }
 

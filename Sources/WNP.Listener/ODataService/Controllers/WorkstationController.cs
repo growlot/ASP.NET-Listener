@@ -59,6 +59,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="shelfId">The shelf identifier.</param>
         /// <param name="issuedTo">The issued to.</param>
         /// <param name="vehicleNumber">The vehicle number.</param>
+        /// <param name="location">The location.</param>
         /// <returns>
         /// A <see cref="Task" /> representing the asynchronous operation result.
         /// </returns>
@@ -72,7 +73,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
             string palletNumber = null,
             string shelfId = null,
             string issuedTo = null,
-            string vehicleNumber = null)
+            string vehicleNumber = null,
+            string location = null)
         {
             if (!this.ModelState.IsValid)
             {
@@ -89,7 +91,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 PalletNumber = palletNumber,
                 ShelfId = shelfId,
                 IssuedTo = issuedTo,
-                VehicleNumber = vehicleNumber
+                VehicleNumber = vehicleNumber,
+                Location = location
             };
 
             await this.CommandBus.PublishAsync(executeBusinessRuleCommand);

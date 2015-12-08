@@ -18,7 +18,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
 
         private IList<IDomainEvent> events;
         private string workflow;
-        private string location;
+        private Location location;
         private string equipmentStatus;
         private string detailedStatus;
         private int shopCycle;
@@ -60,7 +60,8 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         internal bool MatchIncomingRule(IncomingRule rule)
         {
             if (rule.Workflow != this.workflow
-                || rule.Location != this.location
+                || (rule.LocationType != null && !this.location.BelongsTo(rule.LocationType))
+                || (rule.Location != null && !rule.Location.Equals(this.location))
                 || rule.EquipmentStatus != this.equipmentStatus
                 || rule.DetailedStatus != this.detailedStatus)
             {
@@ -80,6 +81,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="newShelfId">The shelf identifier.</param>
         /// <param name="newIssuedTo">The issued to.</param>
         /// <param name="newVehicleNumber">The vehicle number.</param>
+        /// <param name="newLocation">The new location. Only used if action defines location type instead of specific location.</param>
         /// <exception cref="System.InvalidOperationException">Can not update equipment state, because entity doesn't belong to any aggregate root.</exception>
         internal void UpdateState(
             string workstationId,
@@ -88,15 +90,26 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             string newPalletNumber,
             string newShelfId,
             string newIssuedTo,
-            string newVehicleNumber)
+            string newVehicleNumber,
+            Location newLocation)
         {
             if (this.events == null)
             {
                 throw new InvalidOperationException("Can not update equipment state, because entity doesn't belong to any aggregate root.");
             }
 
+            // if action didn't have specific location configured, then use location specified by user
+            if (action.NewLocation != null)
+            {
+                // leave as is can be configured only for specific locations
+                this.location = action.NewLocation.Id == LeaveAsIs ? this.location : action.NewLocation;
+            }
+            else
+            {
+                this.location = newLocation;
+            }
+
             this.workflow = action.NewWorkflow == LeaveAsIs ? this.workflow : action.NewWorkflow;
-            this.location = action.NewLocation == LeaveAsIs ? this.location : action.NewLocation;
             this.equipmentStatus = action.NewEquipmentStatus == LeaveAsIs ? this.equipmentStatus : action.NewEquipmentStatus;
             this.detailedStatus = action.NewEquipmentStatus == LeaveAsIs ? this.detailedStatus : action.NewDetailedStatus;
             this.boxNumber = newBoxNumber;
@@ -117,7 +130,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
                 equipmentType: this.Id.EquipmentType,
                 workstation: workstationId,
                 workflow: this.workflow,
-                location: this.location,
+                location: this.location.Id,
                 equipmentStatus: this.equipmentStatus,
                 detailedStatus: this.detailedStatus,
                 shopCycle: this.shopCycle,
@@ -133,9 +146,14 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         protected override void SetMemento(IMemento memento)
         {
             var equipmentStateMemento = (EquipmentStateMemento)memento;
+            if (equipmentStateMemento.Location != null)
+            {
+                this.location = new Location();
+                ((IOriginator)this.location).SetMemento(equipmentStateMemento.Location);
+            }
+
             this.Id = new EquipmentId(equipmentStateMemento.EquipmentType, equipmentStateMemento.EquipmentNumber);
             this.workflow = equipmentStateMemento.Workflow;
-            this.location = equipmentStateMemento.Location;
             this.equipmentStatus = equipmentStateMemento.EquipmentStatus;
             this.detailedStatus = equipmentStateMemento.DetailedStatus;
             this.shopCycle = equipmentStateMemento.ShopCycle;

@@ -37,6 +37,14 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
             var equipmentState = new EquipmentState();
             ((IOriginator)equipmentState).SetMemento(equipmentStateMemento);
 
+            Location location = null;
+            if (command.Location != null)
+            {
+                var locationMemento = await this.UnitOfWork.WorkstationRepository.GetLocation(command.Location);
+                location = new Location();
+                ((IOriginator)location).SetMemento(locationMemento);
+            }
+
             workstation.PerformBusinessAction(
                 equipmentState,
                 command.ActionName,
@@ -44,7 +52,8 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
                 command.PalletNumber,
                 command.ShelfId,
                 command.IssuedTo,
-                command.VehicleNumber);
+                command.VehicleNumber,
+                location);
 
             await this.PublishEvents(workstation);
         }

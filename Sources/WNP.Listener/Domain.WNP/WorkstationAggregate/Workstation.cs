@@ -28,6 +28,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="shelfId">The shelf identifier.</param>
         /// <param name="issuedTo">The issued to.</param>
         /// <param name="vehicleId">The vehicle identifier.</param>
+        /// <param name="location">The location.</param>
         /// <exception cref="System.ArgumentNullException">Can not perform business action, because equipment is not specified.</exception>
         /// <exception cref="System.ArgumentException">Can not perform business action, becasue there is no action with name {0} defined in workstation {1}.FormatWith(actionName, this.Id)</exception>
         /// <exception cref="System.InvalidOperationException">Can not perform business action, becasue equipment state doesn't allow it: {0}.FormatWith(rule.Message)
@@ -40,7 +41,8 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             string palletNumber,
             string shelfId,
             string issuedTo,
-            string vehicleId)
+            string vehicleId,
+            Location location)
         {
             if (equipment == null)
             {
@@ -70,7 +72,8 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
                         newPalletNumber: palletNumber,
                         newShelfId: shelfId,
                         newIssuedTo: issuedTo,
-                        newVehicleNumber: vehicleId);
+                        newVehicleNumber: vehicleId,
+                        newLocation: location);
                     return;
                 }
             }
@@ -97,12 +100,19 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             foreach (var item in workstationMemento.IncomingRules)
             {
                 var incomingRuleMemento = (IncomingRuleMemento)item;
+                Location location = null;
+                if (incomingRuleMemento.Location != null)
+                {
+                    location = new Location();
+                    ((IOriginator)location).SetMemento(incomingRuleMemento.Location);
+                }
+
                 var incomingRule = new IncomingRule(
                     workflow: incomingRuleMemento.Workflow,
                     isAllowed: incomingRuleMemento.IsAllowed,
                     equipmentStatus: incomingRuleMemento.EquipmentStatus,
                     detailedStatus: incomingRuleMemento.DetailedStatus,
-                    location: incomingRuleMemento.Location,
+                    location: location,
                     locationType: incomingRuleMemento.LocationType,
                     message: incomingRuleMemento.Message);
                 this.incomingRules.Add(incomingRule);
@@ -111,14 +121,21 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             foreach (var item in workstationMemento.BusinessActions)
             {
                 var businessActionMemento = (BusinessActionMemento)item;
+                Location location = null;
+                if (businessActionMemento.NewLocation != null)
+                {
+                    location = new Location();
+                    ((IOriginator)location).SetMemento(businessActionMemento.NewLocation);
+                }
+
                 var businessAction = new BusinessAction(
                     actionName: businessActionMemento.ActionName,
                     currentWorkflow: businessActionMemento.CurrentWorkflow,
                     newWorkflow: businessActionMemento.NewWorkflow,
                     newEquipmentStatus: businessActionMemento.NewEquipmentStatus,
                     newDetailedStatus: businessActionMemento.NewDetailedStatus,
-                    newLocation: businessActionMemento.NewLocation,
-                    locationType: businessActionMemento.LocationType,
+                    newLocation: location,
+                    newLocationType: businessActionMemento.NewLocationType,
                     incrementCycle: businessActionMemento.IncrementCycle,
                     clearBox: businessActionMemento.ClearBox,
                     clearPallet: businessActionMemento.ClearPallet,

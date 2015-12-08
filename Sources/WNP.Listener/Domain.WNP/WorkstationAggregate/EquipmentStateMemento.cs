@@ -28,7 +28,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             string equipmentNumber,
             string equipmentType,
             string workflow,
-            string location,
+            IMemento location,
             string equipmentStatus,
             string detailedStatus,
             int shopCycle,
@@ -58,7 +58,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
 
         internal string Workflow { get; private set; }
 
-        internal string Location { get; private set; }
+        internal IMemento Location { get; private set; }
 
         internal string EquipmentStatus { get; private set; }
 
