@@ -37,10 +37,10 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </summary>
         private ResourceManager stringManager = Init.StringManager;
 
-        /// <summary>
-        /// The transaction log manager
-        /// </summary>
-        private ITransactionManager transactionLogManager;
+        /////// <summary>
+        /////// The transaction log manager
+        /////// </summary>
+        ////private ITransactionManager transactionLogManager;
 
         /// <summary>
         /// The device manager
@@ -77,7 +77,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// </summary>
         public SiteInfo()
         {
-            this.transactionLogManager = StaticPersistence.TransactionLogManager;
+            // this.transactionLogManager = StaticPersistence.TransactionLogManager;
             this.deviceManager = StaticPersistence.DeviceManager;
             this.wnpSystem = StaticPersistence.WnpSystem;
             this.ownerId = int.Parse(AssemblyConfig.AppSettings.Settings["WecoMobile.Owner"].Value, CultureInfo.InvariantCulture);
@@ -99,13 +99,13 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
 
             Log.Info("GetSiteInfo started.");
 
-            IList<ListenerModel.TransactionType> transactionTypes = this.transactionLogManager.GetTransactionTypes(TransactionDataLookup.Site, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WebServiceCall, "WecoMobile");
+            ////IList<ListenerModel.TransactionType> transactionTypes = this.transactionLogManager.GetTransactionTypes(TransactionDataLookup.Site, TransactionDirectionLookup.Outgoing, TransactionSourceLookup.WebServiceCall, "WecoMobile");
 
-            // do nothing if no transactions are configured for this action.
-            if (transactionTypes.Count == 0)
-            {
-                throw new NotImplementedException("Transaction for Site data retrieval by WECO mobile web service is not configured.");
-            }
+            ////// do nothing if no transactions are configured for this action.
+            ////if (transactionTypes.Count == 0)
+            ////{
+            ////    throw new NotImplementedException("Transaction for Site data retrieval by WECO mobile web service is not configured.");
+            ////}
 
             this.response = new ListenerModel.Site();
             if (!string.IsNullOrWhiteSpace(request.ServiceType) && !string.IsNullOrWhiteSpace(request.EquipmentType) && !string.IsNullOrWhiteSpace(request.EquipmentNumber))
@@ -680,6 +680,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         {
             equipment.VehicleNumber = device.VehicleNumber;
             equipment.ReceivedBy = device.ReceivedBy;
+            equipment.TestProgram = device.TestProgram;
             equipment.Location = device.Location;
             equipment.ShopStatus = device.ShopStatus;
             equipment.EquipmentStatus = device.EquipmentStatus;
@@ -1142,6 +1143,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
             {
                 Company = this.deviceManager.GetCompanyByInternalCode(this.ownerId.ToString(CultureInfo.InvariantCulture)),
                 EquipmentNumber = equipment.EquipmentNumber,
+                TestProgram = equipment.TestProgram,
                 EquipmentStatus = equipment.EquipmentStatus,
                 Location = equipment.Location,
                 Manufacturer = equipment.Manufacturer,

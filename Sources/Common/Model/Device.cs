@@ -159,6 +159,14 @@ namespace AMSLLC.Listener.Common.Model
         public string ModelNumber { get; set; }
 
         /// <summary>
+        /// Gets or sets the test program.
+        /// </summary>
+        /// <value>
+        /// The test program.
+        /// </value>
+        public string TestProgram { get; set; }
+
+        /// <summary>
         /// Gets or sets  the location.
         /// </summary>
         /// <value>
