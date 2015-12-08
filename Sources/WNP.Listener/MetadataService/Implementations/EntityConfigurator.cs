@@ -107,6 +107,20 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
             this.configurations.Add(Site.FullTableName, siteConfiguration);
             this.configurations.Add(Circuit.FullTableName, circuitConfiguration);
+
+            var workstationConfiguration = new EntityConfiguration(Workstation.FullTableName)
+                .OwnerSpecific()
+                .HasMany(
+                    TrackingOut.FullTableName,
+                    true,
+                    new ColumnMatch(Workstation.Owner, TrackingOut.Owner),
+                    new ColumnMatch(Workstation.Workstation, TrackingOut.Workstation));
+
+            var trackingOutConfiguration = new EntityConfiguration(TrackingOut.FullTableName)
+                .Contained(TrackingOut.Owner, TrackingOut.Workstation);
+
+            this.configurations.Add(Workstation.FullTableName, workstationConfiguration);
+            this.configurations.Add(TrackingOut.FullTableName, trackingOutConfiguration);
         }
 
         /// <inheritdoc />
