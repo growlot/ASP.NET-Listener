@@ -457,8 +457,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             return this.GetEntity<TEntity>(key, this.MetadataService.GetModelMapping(this.EdmEntityClrType), "*");
         }
 
-            var selectedFields = this.QueryOptions.SelectExpand?.RawSelect?.Split(',');
-            var dbColumnsList = new DbColumnList(selectedFields, childEntityModel);
         /// <summary>
         /// Creates the typed OK response from specified list of result objects.
         /// </summary>
@@ -632,7 +630,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 onClause = $"{onClause} AND {relConfig.MatchValue.TargetColumn} = '{relConfig.MatchValue.TargetColumnValue}'";
             }
 
-            var dbColumnsList = new DbColumnList(queryOptions.SelectExpand, childEntityModel);
+            var dbColumnsList = new DbColumnList(this.QueryOptions.SelectExpand.RawSelect.Split(','), childEntityModel);
 
             var parentKey = this.GetRequestKey(parentEntityModel, 1);
             KeyValuePair<string, object>[] childKey = null;

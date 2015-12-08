@@ -30,22 +30,36 @@ namespace AMSLLC.Listener.MetadataService.Implementations
         public EntityConfigurator()
         {
             var meterTestsConfiguration =
-                new EntityConfiguration(MeterTestResults.FullTableName).OwnerSpecific()
+                new EntityConfiguration(MeterTestResults.FullTableName)
+                    .OwnerSpecific()
                     .HasVirtualRelation(
                         RelationType.OneToMany,
                         "TestStep",
                         new[] { MeterTestResults.StepNo },
                         new[]
-                            {
-                                MeterTestResults.AccuracyStatus, MeterTestResults.Af, MeterTestResults.Al,
-                                MeterTestResults.DesiredAccuracy, MeterTestResults.Element, MeterTestResults.Frequency,
-                                MeterTestResults.HarmonicConfiguration, MeterTestResults.HarmonicRevision,
-                                MeterTestResults.LowerLimit, MeterTestResults.Optics, MeterTestResults.PhaseAngle,
-                                MeterTestResults.ReversePower, MeterTestResults.ServiceType, MeterTestResults.StepDuration,
-                                MeterTestResults.StepNo, MeterTestResults.TestVolts, MeterTestResults.TestAmps,
-                                MeterTestResults.UpperLimit, MeterTestResults.TestType, MeterTestResults.TestRevs,
-                                MeterTestResults.StandardMode
-                            })
+                        {
+                            MeterTestResults.AccuracyStatus,
+                            MeterTestResults.Af,
+                            MeterTestResults.Al,
+                            MeterTestResults.DesiredAccuracy,
+                            MeterTestResults.Element,
+                            MeterTestResults.Frequency,
+                            MeterTestResults.HarmonicConfiguration,
+                            MeterTestResults.HarmonicRevision,
+                            MeterTestResults.LowerLimit,
+                            MeterTestResults.Optics,
+                            MeterTestResults.PhaseAngle,
+                            MeterTestResults.ReversePower,
+                            MeterTestResults.ServiceType,
+                            MeterTestResults.StepDuration,
+                            MeterTestResults.StepNo,
+                            MeterTestResults.TestVolts,
+                            MeterTestResults.TestAmps,
+                            MeterTestResults.UpperLimit,
+                            MeterTestResults.TestType,
+                            MeterTestResults.TestRevs,
+                            MeterTestResults.StandardMode
+                        })
                     .HasRequired(
                         EqpMeter.FullTableName,
                         false,
@@ -65,20 +79,19 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                         new ColumnMatch(Comment.EqpNo, MeterTestResults.EqpNo),
                         new ColumnMatch(Comment.CreateDate, MeterTestResults.TestDateStart));
 
-            var meterConfiguration =
-                new EntityConfiguration(EqpMeter.FullTableName).OwnerSpecific()
-                    .HasMany(
-                        Reading.FullTableName,
-                        true,
-                        new ColumnMatch(Reading.Owner, EqpMeter.Owner),
-                        new ColumnMatch(Reading.EqpNo, EqpMeter.EqpNo))
-                    .HasMany(
-                        Comment.FullTableName,
-                        true,
-                        new ColumnValueMatch(Comment.EqpType, "EM"),
-                        new ColumnMatch(Comment.Owner, EqpMeter.Owner),
-                        new ColumnMatch(Comment.EqpNo, EqpMeter.EqpNo));
-
+            var meterConfiguration = new EntityConfiguration(EqpMeter.FullTableName)
+                .OwnerSpecific()
+                .HasMany(
+                    Reading.FullTableName,
+                    true,
+                    new ColumnMatch(Reading.Owner, EqpMeter.Owner),
+                    new ColumnMatch(Reading.EqpNo, EqpMeter.EqpNo))
+                .HasMany(
+                    Comment.FullTableName,
+                    true,
+                    new ColumnValueMatch(Comment.EqpType, "EM"),
+                    new ColumnMatch(Comment.Owner, EqpMeter.Owner),
+                    new ColumnMatch(Comment.EqpNo, EqpMeter.EqpNo));
             var meterReadingConfiguration = new EntityConfiguration(Reading.FullTableName).Contained(
                 Reading.Owner,
                 Reading.EqpNo);
