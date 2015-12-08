@@ -28,9 +28,19 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
     public class SiteInfo : ISiteInfo
     {
         /// <summary>
+        /// The leave as is constant.
+        /// </summary>
+        private const string LeaveAsIs = "*LEAVE_AS_IS*";
+
+        /// <summary>
         /// The logger
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
+        /// The assembly configuration
+        /// </summary>
+        private static readonly Configuration AssemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
         /// The string manager
@@ -61,16 +71,6 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         /// The owner identifier
         /// </summary>
         private int ownerId;
-
-        /// <summary>
-        /// The assembly configuration
-        /// </summary>
-        private static readonly Configuration AssemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
-
-        /// <summary>
-        /// The leave as is constant.
-        /// </summary>
-        private const string LeaveAsIs = "*LEAVE_AS_IS*";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteInfo"/> class.
@@ -291,7 +291,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         }
 
         /// <summary>
-        /// Checks out device to specified user and assignes it to specified truck.
+        /// Checks out device to specified user and assigns it to specified truck.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>The checked out device</returns>
@@ -453,7 +453,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
         }
 
         /// <summary>
-        /// Checks the out the device, by applying "hardcoded" incomming and outgoing tracking rule.
+        /// Checks the out the device, by applying "hardcoded" incoming and outgoing tracking rule.
         /// </summary>
         /// <typeparam name="T">The equipment type</typeparam>
         /// <param name="vehicle">The vehicle.</param>
@@ -477,6 +477,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                         Log.Error(message);
                         throw new ArgumentException(message);
                     }
+
                     break;
                 case "A":
                     var locationArea = this.wnpSystem.GetLocationArea(equipment.Owner, equipment.Location);
@@ -489,6 +490,7 @@ namespace AMSLLC.Listener.Service.Implementation.WecoMobile
                         Log.Error(message);
                         throw new ArgumentException(message);
                     }
+
                     break;
                 default:
                     message = string.Format(CultureInfo.InvariantCulture, this.stringManager.GetString("LocationTypeNotSupported", CultureInfo.CurrentCulture), trackingOutLocationType);
