@@ -102,8 +102,8 @@ namespace AMSLLC.Listener.ODataService
                                 ep =>
                                 {
                                     var dispatcher =
-                                        ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>
-                                            ("communication-{0}".FormatWith(ep.Protocol));
+                                        ApplicationIntegration.DependencyResolver.ResolveNamed<ICommunicationHandler>(
+                                            "communication-{0}".FormatWith(ep.Protocol));
                                     return dispatcher.Handle(
                                         domainEvent,
                                         ep.ConnectionConfiguration,

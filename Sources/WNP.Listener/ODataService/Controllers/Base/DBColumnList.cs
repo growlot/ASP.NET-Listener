@@ -73,7 +73,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <summary>
         /// Get MetadataEntityModel by generated query column name.
         /// </summary>
-        /// <returns>Entity Model related to the generated query column name.</returns>
+        /// <param name="dbQueryColumnName">Name of the database query column.</param>
+        /// <returns>
+        /// Entity Model related to the generated query column name.
+        /// </returns>
         public MetadataEntityModel GetEntityModelByDbQueryName(string dbQueryColumnName)
             => this.queryColToEntityModel[dbQueryColumnName];
 
