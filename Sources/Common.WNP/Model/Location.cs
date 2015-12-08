@@ -13,7 +13,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
     public class Location
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocationName"/> class.
+        /// Initializes a new instance of the <see cref="Location"/> class.
         /// </summary>
         public Location()
             : this(-1)
@@ -21,7 +21,7 @@ namespace AMSLLC.Listener.Common.WNP.Model
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocationName"/> class.
+        /// Initializes a new instance of the <see cref="Location"/> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         public Location(int id)
