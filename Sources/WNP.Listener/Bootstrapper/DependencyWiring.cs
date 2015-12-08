@@ -135,7 +135,6 @@ namespace AMSLLC.Listener.Bootstrapper
             this.Kernel.Bind<ListenerODataContext>().ToSelf().InRequestScope();
             this.Kernel.Bind<ODataServiceConfigurator>().ToSelf().InSingletonScope();
             this.Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();
-            this.Kernel.Bind<IODataRouteManager>().To<ODataRouteManagerImpl>();
             this.Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
             this.Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
             this.Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
