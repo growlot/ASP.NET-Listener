@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService
+namespace AMSLLC.Listener.ODataService.DbContext
 {
     using System;
     using System.Data.Entity;
@@ -14,6 +14,12 @@ namespace AMSLLC.Listener.ODataService
     {
         public ListenerODataContext()
             : base("name=ListenerContext")
+        {
+            Database.SetInitializer<ListenerODataContext>(null);
+        }
+
+        public ListenerODataContext(string connectionString)
+            : base(connectionString)
         {
             Database.SetInitializer<ListenerODataContext>(null);
         }
@@ -60,6 +66,7 @@ namespace AMSLLC.Listener.ODataService
             //        $"Specified {keyPropertyName} as primary key, {primaryKeyAttribute.Value} expected");
             // }
             return modelBuilder.Entity<T>().HasKey(primaryKeySelector).ToTable(tableNameAttribute.Value);
+
 
             // tps.HasIdLink((ctxt) => ctxt.Url.CreateODataLink(new EntitySetPathSegment("Products"), new KeyValuePathSegment("id")), false);
         }

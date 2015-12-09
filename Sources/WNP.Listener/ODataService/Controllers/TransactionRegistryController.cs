@@ -18,6 +18,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using ApplicationService;
     using ApplicationService.Commands;
     using ApplicationService.Model;
+    using DbContext;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using Persistence.Listener;
@@ -26,10 +27,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
     /// <summary>
     /// Transaction registry controller
     /// </summary>
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.Equal | AllowedLogicalOperators.And | AllowedLogicalOperators.Or)]
-    public class TransactionRegistryController : ODataController
+    public partial class TransactionRegistryController : ODataController
     {
-        private readonly ListenerODataContext _dbContext;
+
         private readonly ITransactionService _transactionService;
         private readonly IWnpIntegrationService _wnpIntegrationService;
 
@@ -44,36 +44,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
             this._dbContext = dbctx;
             this._transactionService = transactionService;
             this._wnpIntegrationService = wnpService;
-        }
-
-        private string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
-        private string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
-
-        public IQueryable<TransactionRegistryEntity> Get()
-        {
-            try
-            {
-                return this._dbContext.TransactionRegistry.AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        public IHttpActionResult Get([FromODataUri] Guid key)
-        {
-            try
-            {
-                var result = this._dbContext.TransactionRegistry.SingleOrDefault(s => s.RecordKey == key);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
         }
 
         /// <summary>

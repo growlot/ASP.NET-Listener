@@ -112,8 +112,7 @@ namespace AMSLLC.Listener.ODataService
                     cntFunc.CollectionParameter<int>("statusTypes");
                     //cntFunc.Parameter<DateTime>("sinceDate");
                     cntFunc.Returns<int>();
-                },
-                "TransactionRegistryDetails");
+                });
 
 
 
@@ -155,15 +154,23 @@ namespace AMSLLC.Listener.ODataService
             Expression<Func<T, TKey>> primaryKeySelector, string tableName = null)
             where T : class
         {
-            if (string.IsNullOrWhiteSpace(tableName))
+            //if (string.IsNullOrWhiteSpace(tableName))
+            //{
+            var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
+            if (tableNameAttribute != null)
             {
-                var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
                 modelBuilder.EntitySet<T>(tableNameAttribute.Value);
             }
             else
             {
-                modelBuilder.EntitySet<T>(tableName);
+                var n = typeof(T).Name;
+                modelBuilder.EntitySet<T>(n.Substring(0, n.Length - 6));
             }
+            //}
+            //else
+            //{
+            //    modelBuilder.EntitySet<T>(tableName);
+            //}
             modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
         }
     }

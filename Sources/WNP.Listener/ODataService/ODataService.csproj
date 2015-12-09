@@ -187,16 +187,17 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="..\ODataService.Generate\ListenerController.generated.cs">
+      <Link>Controllers\ListenerController.generated.cs</Link>
+    </Compile>
     <Compile Include="ApplicationServiceConfigurator.cs" />
     <Compile Include="CommonExceptionFilterAttribute.cs" />
     <Compile Include="Controllers\Base\DBColumnList.cs" />
     <Compile Include="Controllers\Base\WNPEntityControllerBase.cs" />
     <Compile Include="Controllers\CircuitsController.cs" />
     <Compile Include="Controllers\ElectricMetersController.cs" />
-    <Compile Include="Controllers\EndpointController.cs" />
     <Compile Include="Controllers\MeterTestResultsController.cs" />
     <Compile Include="Controllers\SitesController.cs" />
-    <Compile Include="Controllers\TransactionMessageDataController.cs" />
     <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\TransactionRegistryDetailsController.cs" />
     <Compile Include="Controllers\UnboundActionsController.cs" />
@@ -206,7 +207,6 @@
     <Compile Include="Controllers\WorkstationController.cs" />
     <Compile Include="HttpMessageHandlers\RequestScopeHandler.cs" />
     <Compile Include="KeyValuePathSegmentExtensions.cs" />
-    <Compile Include="ListenerODataContext.cs" />
     <Compile Include="ListenerRequestHeaderMap.cs" />
     <Compile Include="HttpMessageHandlers\ListenerMessageHandler.cs" />
     <Compile Include="HttpMessageHandlers\TransactionalODataBatchHandler.cs" />
@@ -276,9 +276,17 @@
       <Project>{702b10d4-57d6-4406-a159-715f658ae54d}</Project>
       <Name>MetadataService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ODataService.DbContext\ODataService.DbContext.csproj">
+      <Project>{8c89907c-9d45-4165-b6f4-b17b55cde435}</Project>
+      <Name>ODataService.DbContext</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Persistence.Listener\Persistence.Listener.csproj">
       <Project>{5a7fea99-bb93-4bda-91ae-2ddec17e3d21}</Project>
       <Name>Persistence.Listener</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistence.Poco\Persistence.Poco.csproj">
+      <Project>{91d72e44-f89a-4e9d-9646-e44fa0b04778}</Project>
+      <Name>Persistence.Poco</Name>
     </ProjectReference>
     <ProjectReference Include="..\Persistence.WNP\Persistence.WNP.csproj">
       <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>

@@ -15,14 +15,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
     using Core;
+    using DbContext;
     using Persistence.Listener;
     using Serilog;
     using Shared;
 
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-    public class TransactionRegistryDetailsController : ODataController
+    public partial class TransactionRegistryDetailsController : ODataController
     {
-        private readonly ListenerODataContext _dbContext;
+
         private readonly IDateTimeProvider _dateTimeProvider;
 
         /// <summary>
@@ -34,36 +34,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             this._dbContext = dbctx;
             this._dateTimeProvider = dateTimeProvider;
-        }
-
-        public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
-        public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
-
-        public IQueryable<TransactionRegistryViewEntity> Get()
-        {
-            try
-            {
-                return this._dbContext.TransactionRegistryDetails.Where(s => s.CompanyCode == this.CompanyCode && s.ApplicationKey == this.ApplicationKey).AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        public IHttpActionResult Get([FromODataUri] Guid key)
-        {
-            try
-            {
-                var result = this._dbContext.TransactionRegistryDetails.SingleOrDefault(s => s.RecordKey == key && s.CompanyCode == this.CompanyCode && s.ApplicationKey == this.ApplicationKey);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
         }
 
         [HttpGet]

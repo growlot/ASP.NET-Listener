@@ -1,0 +1,12 @@
+﻿<#@ assembly name="$(msbuildprojectdirectory)\..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll" #>
+<#@ assembly name="$(msbuildprojectdirectory)\..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll" #>
+<#@ assembly name="$(msbuildprojectdirectory)\..\ODataService.DbContext\bin\Debug\AMSLLC.Listener.ODataService.DbContext.dll" #>
+<#@ assembly name="$(msbuildprojectdirectory)\..\..\..\3rdParty\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll" #>
+<#@ import namespace="System.Data.Entity" #>
+<#@ include file="ListenerController.ttinclude" #>
+<#+
+public static class Configuration
+{
+	
+}
+#>
