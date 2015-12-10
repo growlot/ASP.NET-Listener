@@ -27,7 +27,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     /// <summary>
     /// Transaction registry controller
     /// </summary>
-    public partial class TransactionRegistryController : ODataController
+    public partial class TransactionRegistryController
     {
 
         private readonly ITransactionService _transactionService;

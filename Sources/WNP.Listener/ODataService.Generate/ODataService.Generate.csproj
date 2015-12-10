@@ -66,6 +66,7 @@
     <Content Include="ListenerController.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ListenerController.generated.cs</LastGenOutput>
+      <FormatOutput>False</FormatOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -76,13 +77,11 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ODataService.DbContext\ODataService.DbContext.csproj">
-      <Project>{8c89907c-9d45-4165-b6f4-b17b55cde435}</Project>
-      <Name>ODataService.DbContext</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>copy /Y "$(msbuildprojectdirectory)\..\Persistence.Listener\bin\Debug\AMSLLC.Listener.Persistence.Listener.dll" "$(TargetDir)"
+copy /Y "$(msbuildprojectdirectory)\..\ODataService.DbContext\bin\Debug\AMSLLC.Listener.ODataService.DbContext.dll" "$(TargetDir)"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

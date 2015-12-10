@@ -36,6 +36,13 @@ namespace AMSLLC.Listener.ODataService.DbContext
         [CLSCompliant(false)]
         public DbSet<EndpointEntity> Endpoint { get; set; }
 
+        [CLSCompliant(false)]
+        public DbSet<ProtocolTypeEntity> ProtocolType { get; set; }
+
+        [CLSCompliant(false)]
+        public DbSet<EndpointTriggerTypeEntity> EndpointTriggerType { get; set; }
+
+
 
 
         /// <inheritdoc/>

@@ -20,7 +20,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Serilog;
     using Shared;
 
-    public partial class TransactionRegistryDetailsController : ODataController
+    public partial class TransactionRegistryDetailsController
     {
 
         private readonly IDateTimeProvider _dateTimeProvider;

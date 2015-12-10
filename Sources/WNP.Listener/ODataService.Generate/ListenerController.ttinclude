@@ -1,4 +1,9 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="$(msbuildprojectdirectory)\..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll" #>
+<#@ assembly name="$(msbuildprojectdirectory)\..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll" #>
+<#@ assembly name="$(TargetDir)\AMSLLC.Listener.ODataService.DbContext.dll" #>
+<#@ assembly name="$(msbuildprojectdirectory)\..\..\..\3rdParty\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll" #>
+<#@ import namespace="System.Data.Entity" #>
 <#@ assembly name="System.Core" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
@@ -8,20 +13,35 @@
 <#@ import namespace="System.Data.Entity.Infrastructure" #>
 <#@ import namespace="System.Data.Entity.Core.Metadata.Edm" #>
 <#@ output extension=".generated.cs" #>
+// <copyright file="ODataListenerServiceConfigurator.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
 using System;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.OData;
+using System.Web.OData.Builder;
 using AMSLLC.Listener.ODataService;
 using AMSLLC.Listener.ODataService.DbContext;
 using AMSLLC.Listener.Persistence.Listener;
 using System.Web.OData.Query;
 using Serilog;
+using System.CodeDom.Compiler;
+
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	public abstract partial class BaseListenerODataController: ODataController{
+		protected string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
+
+		protected string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+	}
+
 <#
-	var listenerContext = new ListenerODataContext("Server=localhost\\sqlexpress;Database=ListenerKCPL220;User Id=wndba; Password=Wn+dbapw1;MultipleActiveResultSets=True;App=EntityFramework");
+	var listenerContext = new ListenerODataContext(Configuration.ConnectionString);
 	  
 	foreach (var type in typeof(ListenerODataContext).GetProperties().Where(p=>p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))){
 	var entityType = type.PropertyType.GetGenericArguments()[0].Name;
@@ -29,53 +49,135 @@ using Serilog;
 		var keyName = key.Name;
 	var keyType = key.PrimitiveType;
 #>
-[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-public partial class <#= type.Name #>Controller : ODataController{
-		private readonly ListenerODataContext _dbContext;
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class <#= type.Name #>Controller : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="<#= type.Name #>Controller" /> class.
-        /// </summary>
-        /// <param name="dbctx">The db context.</param>
-        public <#= type.Name #>Controller(ListenerODataContext dbctx)
-        {
-            this._dbContext = dbctx;
-        }
+			/// <summary>
+			/// Initializes a new instance of the <see cref="<#= type.Name #>Controller" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public <#= type.Name #>Controller(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
 
-        public string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
-        public string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<<#= entityType #>> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<<#= entityType #>>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
 
-        public IQueryable<<#= entityType #>> Get()
-        {
-            try
-            {
-                return this._dbContext.Set<<#= entityType #>>().AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        public IHttpActionResult Get([FromODataUri] <#= keyType #> key)
-        {
-            try
-            {
-                var result = this._dbContext.Set<<#= entityType #>>().SingleOrDefault(s => s.<#= keyName #> == key);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-}
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] <#= keyType #> key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<<#= entityType #>>().SingleOrDefault(s => s.<#= keyName #> == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+	}
 
 <#
 }
 #>
+[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+public partial class ODataControllerConfigurator{
+
+	/// <summary>
+    /// Execute configurator to setup OData controllers
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+	public void Run(ODataModelBuilder builder){
+	
+<#
+	foreach (var type in typeof(ListenerODataContext).GetProperties().Where(p=>p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))){
+	var entityType = type.PropertyType.GetGenericArguments()[0].Name;
+	EdmProperty key = GetKeyNames(listenerContext, type.PropertyType.GetGenericArguments()[0]).First();
+		var keyName = key.Name;
+	var keyType = key.PrimitiveType;
+#>
+		this.Setup<#= type.Name #>Controller(builder);
+	<#
+	}
+	#>
+	}
+
+<#  
+	foreach (var type in typeof(ListenerODataContext).GetProperties().Where(p=>p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))){
+	var entityType = type.PropertyType.GetGenericArguments()[0].Name;
+	EdmProperty key = GetKeyNames(listenerContext, type.PropertyType.GetGenericArguments()[0]).First();
+		var keyName = key.Name;
+	var keyType = key.PrimitiveType;
+#>
+			/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void Setup<#= type.Name #>Controller(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<<#= entityType #>>> actionBuilder = null){
+				this.PrepareODataController<<#= entityType #>, <#= keyType #>>(builder, a => a.<#= keyName #>, actionBuilder);
+			}
+
+	<#
+	}
+	#>
+
+	private void PrepareODataController<TEntity, TKey>(
+            ODataModelBuilder builder,
+            Expression<Func<TEntity, TKey>> primaryKeySelector,
+            Action<ODataModelBuilder, EntityTypeConfiguration<TEntity>> actionBuilder = null,
+            string tableName = null) where TEntity : class
+        {
+            // separate OData endpoint for Listener API
+            this.MapPetaPocoEntity(builder, primaryKeySelector, tableName);
+
+            var entityType = builder.EntityType<TEntity>();
+
+            actionBuilder?.Invoke(builder, entityType);
+        }
+
+        protected void MapPetaPocoEntity<T, TKey>(
+            ODataModelBuilder modelBuilder,
+            Expression<Func<T, TKey>> primaryKeySelector, string tableName = null)
+            where T : class
+        {
+            var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
+            if (tableNameAttribute != null)
+            {
+                modelBuilder.EntitySet<T>(tableNameAttribute.Value);
+            }
+            else
+            {
+                var n = typeof(T).Name;
+                modelBuilder.EntitySet<T>(n.Substring(0, n.Length - 6));
+            }
+            modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
+        }
+
+	}
 }
 
 <#+

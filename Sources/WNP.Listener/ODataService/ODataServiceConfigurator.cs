@@ -62,59 +62,8 @@ namespace AMSLLC.Listener.ODataService
                 defaultHandler: routeHandlersWnp);
 
             var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener" };
-            this.PrepareODataController<TransactionRegistryEntity, Guid>(builder, a => a.RecordKey, (b, configuration) =>
-            {
-                // bound actions
-                configuration.Action("Process");
-                configuration.Action("Succeed");
 
-                var failAction = configuration.Action("Fail");
-                failAction.Parameter<string>("Message");
-                failAction.Parameter<string>("Details").OptionalParameter = true;
-
-                // unbound actions
-                var openAction = b.Action("Open");
-                this.ConfigureHeader(openAction, builder);
-                openAction.Returns<string>();
-
-                var openBatchAction = b.Action("Batch");
-                this.ConfigureHeader(openBatchAction, builder);
-                openBatchAction.Returns<string>();
-
-                var buildBatchAction = b.Action("BuildBatch");
-                this.ConfigureHeader(buildBatchAction, builder);
-                buildBatchAction.Parameter<string>("batchKey").OptionalParameter = false;
-                buildBatchAction.Returns<string>();
-
-                configuration.Ignore(p => p.TransactionId);
-            });
-
-            this.PrepareODataController<TransactionMessageDatumEntity, Guid>(builder, a => a.RecordKey);
-            this.PrepareODataController<EndpointEntity, int>(
-                builder,
-                a => a.EndpointId,
-                (modelBuilder,
-                    configuration) =>
-                {
-                    this.MapPetaPocoEntity<ProtocolTypeEntity, int>(modelBuilder, a => a.ProtocolTypeId);
-                    this.MapPetaPocoEntity<EndpointTriggerTypeEntity, int>(modelBuilder, a => a.EndpointTriggerTypeId);
-
-                    configuration.ContainsRequired(entity => entity.ProtocolType);
-                    configuration.ContainsRequired(entity => entity.EndpointTriggerType);
-                });
-            this.PrepareODataController<TransactionRegistryViewEntity, Guid>(
-                builder,
-                a => a.RecordKey,
-                (modelBuilder,
-                    configuration) =>
-                {
-                    var cntFunc = configuration.Collection.Function("CountByStatus");
-                    cntFunc.CollectionParameter<int>("statusTypes");
-                    //cntFunc.Parameter<DateTime>("sinceDate");
-                    cntFunc.Returns<int>();
-                });
-
-
+            new ODataListenerServiceConfigurator().Run(builder);
 
             // Create a message handler chain with an end-point.
             DelegatingHandler[] handlers = new DelegatingHandler[] { new ListenerMessageHandler() };
@@ -124,54 +73,6 @@ namespace AMSLLC.Listener.ODataService
                 routePrefix: "listener",
                 model: builder.GetEdmModel(),
                 defaultHandler: routeHandlers);
-        }
-
-        private void PrepareODataController<TEntity, TKey>(
-            ODataModelBuilder builder,
-            Expression<Func<TEntity, TKey>> primaryKeySelector,
-            Action<ODataModelBuilder, EntityTypeConfiguration<TEntity>> actionBuilder = null,
-            string tableName = null) where TEntity : class
-        {
-            // separate OData endpoint for Listener API
-            this.MapPetaPocoEntity(builder, primaryKeySelector, tableName);
-
-            var entityType = builder.EntityType<TEntity>();
-
-            actionBuilder?.Invoke(builder, entityType);
-        }
-
-        private void ConfigureHeader(ActionConfiguration action, ODataModelBuilder model)
-        {
-            foreach (var parameterDefinition in ListenerRequestHeaderMap.Instance)
-            {
-                var parameter = action.AddParameter(parameterDefinition.Key, model.GetTypeConfigurationOrNull(parameterDefinition.Value));
-                parameter.OptionalParameter = true;
-            }
-        }
-
-        private void MapPetaPocoEntity<T, TKey>(
-            ODataModelBuilder modelBuilder,
-            Expression<Func<T, TKey>> primaryKeySelector, string tableName = null)
-            where T : class
-        {
-            //if (string.IsNullOrWhiteSpace(tableName))
-            //{
-            var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
-            if (tableNameAttribute != null)
-            {
-                modelBuilder.EntitySet<T>(tableNameAttribute.Value);
-            }
-            else
-            {
-                var n = typeof(T).Name;
-                modelBuilder.EntitySet<T>(n.Substring(0, n.Length - 6));
-            }
-            //}
-            //else
-            //{
-            //    modelBuilder.EntitySet<T>(tableName);
-            //}
-            modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
         }
     }
 }

@@ -210,6 +210,7 @@
     <Compile Include="ListenerRequestHeaderMap.cs" />
     <Compile Include="HttpMessageHandlers\ListenerMessageHandler.cs" />
     <Compile Include="HttpMessageHandlers\TransactionalODataBatchHandler.cs" />
+    <Compile Include="ODataListenerServiceConfigurator.cs" />
     <Compile Include="ODataServiceConfigurator.cs" />
     <Compile Include="HttpMessageHandlers\MiniProfilerMessageHandler.cs" />
     <Compile Include="Services\Impl\ODataQueryHandler\EntityNotFoundException.cs" />
