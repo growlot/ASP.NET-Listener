@@ -137,8 +137,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void Setup<#= type.Name #>Controller(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<<#= entityType #>>> actionBuilder = null){
-				this.PrepareODataController<<#= entityType #>, <#= keyType #>>(builder, a => a.<#= keyName #>, actionBuilder);
+			protected virtual void Setup<#= type.Name #>Controller(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<<#= entityType #>>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<<#= entityType #>, <#= keyType #>>(builder, a => a.<#= keyName #>, actionBuilder, tableName);
 			}
 
 	<#
@@ -164,15 +164,14 @@ public partial class ODataControllerConfigurator{
             Expression<Func<T, TKey>> primaryKeySelector, string tableName = null)
             where T : class
         {
-            var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
-            if (tableNameAttribute != null)
+            if (string.IsNullOrWhiteSpace(tableName))
             {
+                var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
                 modelBuilder.EntitySet<T>(tableNameAttribute.Value);
             }
             else
             {
-                var n = typeof(T).Name;
-                modelBuilder.EntitySet<T>(n.Substring(0, n.Length - 6));
+                modelBuilder.EntitySet<T>(tableName);
             }
             modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
         }

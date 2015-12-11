@@ -197,6 +197,7 @@
     <Compile Include="Controllers\CircuitsController.cs" />
     <Compile Include="Controllers\ElectricMetersController.cs" />
     <Compile Include="Controllers\MeterTestResultsController.cs" />
+    <Compile Include="Controllers\ProtocolMetadataController.cs" />
     <Compile Include="Controllers\SitesController.cs" />
     <Compile Include="Controllers\TransactionRegistryController.cs" />
     <Compile Include="Controllers\TransactionRegistryDetailsController.cs" />
@@ -210,6 +211,9 @@
     <Compile Include="ListenerRequestHeaderMap.cs" />
     <Compile Include="HttpMessageHandlers\ListenerMessageHandler.cs" />
     <Compile Include="HttpMessageHandlers\TransactionalODataBatchHandler.cs" />
+    <Compile Include="Model\CommonDataType.cs" />
+    <Compile Include="Model\ProtocolMetadata.cs" />
+    <Compile Include="Model\ProtocolMetadataModel.cs" />
     <Compile Include="ODataListenerServiceConfigurator.cs" />
     <Compile Include="ODataServiceConfigurator.cs" />
     <Compile Include="HttpMessageHandlers\MiniProfilerMessageHandler.cs" />

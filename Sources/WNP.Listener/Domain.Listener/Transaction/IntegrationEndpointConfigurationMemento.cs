@@ -12,6 +12,13 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     public class IntegrationEndpointConfigurationMemento : IMemento
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="IntegrationEndpointConfigurationMemento"/> class.
+        /// </summary>
+        public IntegrationEndpointConfigurationMemento()
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="IntegrationEndpointConfigurationMemento" /> class.
         /// </summary>
         /// <param name="protocol">The protocol.</param>

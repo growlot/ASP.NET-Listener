@@ -362,9 +362,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupTransactionRegistryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null)
+        protected virtual void SetupTransactionRegistryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null, string tableName = null)
         {
-            this.PrepareODataController<TransactionRegistryEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder);
+            this.PrepareODataController<TransactionRegistryEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
         }
 
         /// <summary>
@@ -372,9 +372,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupTransactionMessageDataController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionMessageDatumEntity>> actionBuilder = null)
+        protected virtual void SetupTransactionMessageDataController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionMessageDatumEntity>> actionBuilder = null, string tableName = null)
         {
-            this.PrepareODataController<TransactionMessageDatumEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder);
+            this.PrepareODataController<TransactionMessageDatumEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
         }
 
         /// <summary>
@@ -382,9 +382,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupTransactionRegistryDetailsController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null)
+        protected virtual void SetupTransactionRegistryDetailsController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null, string tableName = null)
         {
-            this.PrepareODataController<TransactionRegistryViewEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder);
+            this.PrepareODataController<TransactionRegistryViewEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
         }
 
         /// <summary>
@@ -392,9 +392,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null)
+        protected virtual void SetupEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null, string tableName = null)
         {
-            this.PrepareODataController<EndpointEntity, System.Int32>(builder, a => a.EndpointId, actionBuilder);
+            this.PrepareODataController<EndpointEntity, System.Int32>(builder, a => a.EndpointId, actionBuilder, tableName);
         }
 
         /// <summary>
@@ -402,9 +402,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupProtocolTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ProtocolTypeEntity>> actionBuilder = null)
+        protected virtual void SetupProtocolTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ProtocolTypeEntity>> actionBuilder = null, string tableName = null)
         {
-            this.PrepareODataController<ProtocolTypeEntity, System.Int32>(builder, a => a.ProtocolTypeId, actionBuilder);
+            this.PrepareODataController<ProtocolTypeEntity, System.Int32>(builder, a => a.ProtocolTypeId, actionBuilder, tableName);
         }
 
         /// <summary>
@@ -412,9 +412,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupEndpointTriggerTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointTriggerTypeEntity>> actionBuilder = null)
+        protected virtual void SetupEndpointTriggerTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointTriggerTypeEntity>> actionBuilder = null, string tableName = null)
         {
-            this.PrepareODataController<EndpointTriggerTypeEntity, System.Int32>(builder, a => a.EndpointTriggerTypeId, actionBuilder);
+            this.PrepareODataController<EndpointTriggerTypeEntity, System.Int32>(builder, a => a.EndpointTriggerTypeId, actionBuilder, tableName);
         }
 
 
@@ -437,15 +437,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
             Expression<Func<T, TKey>> primaryKeySelector, string tableName = null)
             where T : class
         {
-            var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
-            if (tableNameAttribute != null)
+            if (string.IsNullOrWhiteSpace(tableName))
             {
+                var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
                 modelBuilder.EntitySet<T>(tableNameAttribute.Value);
             }
             else
             {
-                var n = typeof(T).Name;
-                modelBuilder.EntitySet<T>(n.Substring(0, n.Length - 6));
+                modelBuilder.EntitySet<T>(tableName);
             }
             modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
         }

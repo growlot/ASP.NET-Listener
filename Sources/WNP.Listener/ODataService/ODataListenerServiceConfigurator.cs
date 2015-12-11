@@ -13,7 +13,7 @@ namespace AMSLLC.Listener.ODataService
     {
         protected override void SetupTransactionRegistryController(
             ODataModelBuilder builder,
-            Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null)
+            Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null, string tableName = null)
         {
             base.SetupTransactionRegistryController(
                 builder,
@@ -43,12 +43,12 @@ namespace AMSLLC.Listener.ODataService
                     buildBatchAction.Returns<string>();
 
                     configuration.Ignore(p => p.TransactionId);
-                });
+                }, tableName);
         }
 
         protected override void SetupEndpointController(
             ODataModelBuilder builder,
-            Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null)
+            Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null, string tableName = null)
         {
             base.SetupEndpointController(
                 builder,
@@ -57,12 +57,12 @@ namespace AMSLLC.Listener.ODataService
                 {
                     configuration.ContainsRequired(entity => entity.ProtocolType);
                     configuration.ContainsRequired(entity => entity.EndpointTriggerType);
-                });
+                }, tableName);
         }
 
         protected override void SetupTransactionRegistryDetailsController(
             ODataModelBuilder builder,
-            Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null)
+            Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null, string tableName = null)
         {
             base.SetupTransactionRegistryDetailsController(
                 builder,
@@ -71,9 +71,8 @@ namespace AMSLLC.Listener.ODataService
                 {
                     var cntFunc = configuration.Collection.Function("CountByStatus");
                     cntFunc.CollectionParameter<int>("statusTypes");
-                    //cntFunc.Parameter<DateTime>("sinceDate");
                     cntFunc.Returns<int>();
-                });
+                }, "TransactionRegistryDetails");
         }
 
         private void ConfigureHeader(
