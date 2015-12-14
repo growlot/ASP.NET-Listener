@@ -18,7 +18,6 @@ namespace AMSLLC.Listener.ODataService
     using System.Web.OData.Routing.Conventions;
     using HttpMessageHandlers;
     using MetadataService;
-    using Model;
     using Persistence.Listener;
     using Services;
     using Shared;
@@ -74,15 +73,6 @@ namespace AMSLLC.Listener.ODataService
                 routePrefix: "listener",
                 model: builder.GetEdmModel(),
                 defaultHandler: routeHandlers);
-
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new
-                {
-                    id = RouteParameter.Optional
-                });
-
         }
     }
 }

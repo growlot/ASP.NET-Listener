@@ -25,7 +25,7 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
             CancellationToken cancellationToken)
         {
             var content = await request.Content.ReadAsStringAsync();
-            if (IsJson(content))
+            if (IsJson(content) && request.Method.Method.ToUpper() != "PATCH")
             {
                 var contentAsExpando =
                     JsonConvert.DeserializeObject<ExpandoObject>(content) as IDictionary<string, object>;

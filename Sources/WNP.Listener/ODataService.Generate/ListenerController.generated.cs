@@ -17,6 +17,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Web.OData.Query;
     using Serilog;
     using System.CodeDom.Compiler;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System.Data.Entity;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Http.Formatting;
+    using System.Web.OData.Formatter;
+    using Newtonsoft.Json;
 
     [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
     public abstract partial class BaseListenerODataController : ODataController
@@ -76,6 +84,40 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 throw;
             }
         }
+
+        /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, [FromBody]TransactionRegistryEntity update)
+        {
+            try
+            {
+                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
+
+                if (key != update.RecordKey)
+                {
+                    Log.Warning("Expected key: {0}, got: {1}", key, update.RecordKey);
+                    return BadRequest();
+                }
+                this._dbContext.Entry(update).State = EntityState.Modified;
+
+                await this._dbContext.SaveChangesAsync();
+
+                return this.Updated(update);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
     }
 
     [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
@@ -121,6 +163,40 @@ namespace AMSLLC.Listener.ODataService.Controllers
             {
                 var result = this._dbContext.Set<TransactionMessageDatumEntity>().SingleOrDefault(s => s.RecordKey == key);
                 return this.Ok(result);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, [FromBody]TransactionMessageDatumEntity update)
+        {
+            try
+            {
+                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
+
+                if (key != update.RecordKey)
+                {
+                    Log.Warning("Expected key: {0}, got: {1}", key, update.RecordKey);
+                    return BadRequest();
+                }
+                this._dbContext.Entry(update).State = EntityState.Modified;
+
+                await this._dbContext.SaveChangesAsync();
+
+                return this.Updated(update);
             }
             catch (Exception exc)
             {
@@ -180,6 +256,40 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 throw;
             }
         }
+
+        /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, [FromBody]TransactionRegistryViewEntity update)
+        {
+            try
+            {
+                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
+
+                if (key != update.RecordKey)
+                {
+                    Log.Warning("Expected key: {0}, got: {1}", key, update.RecordKey);
+                    return BadRequest();
+                }
+                this._dbContext.Entry(update).State = EntityState.Modified;
+
+                await this._dbContext.SaveChangesAsync();
+
+                return this.Updated(update);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
     }
 
     [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
@@ -225,6 +335,41 @@ namespace AMSLLC.Listener.ODataService.Controllers
             {
                 var result = this._dbContext.Set<EndpointEntity>().SingleOrDefault(s => s.EndpointId == key);
                 return this.Ok(result);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<EndpointEntity> delta)
+        {
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
+
+                var record = await this._dbContext.Endpoint.SingleOrDefaultAsync(t => t.EndpointId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
             }
             catch (Exception exc)
             {
@@ -284,6 +429,40 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 throw;
             }
         }
+
+        /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, [FromBody]ProtocolTypeEntity update)
+        {
+            try
+            {
+                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
+
+                if (key != update.ProtocolTypeId)
+                {
+                    Log.Warning("Expected key: {0}, got: {1}", key, update.ProtocolTypeId);
+                    return BadRequest();
+                }
+                this._dbContext.Entry(update).State = EntityState.Modified;
+
+                await this._dbContext.SaveChangesAsync();
+
+                return this.Updated(update);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
     }
 
     [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
@@ -329,6 +508,40 @@ namespace AMSLLC.Listener.ODataService.Controllers
             {
                 var result = this._dbContext.Set<EndpointTriggerTypeEntity>().SingleOrDefault(s => s.EndpointTriggerTypeId == key);
                 return this.Ok(result);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, [FromBody]EndpointTriggerTypeEntity update)
+        {
+            try
+            {
+                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
+
+                if (key != update.EndpointTriggerTypeId)
+                {
+                    Log.Warning("Expected key: {0}, got: {1}", key, update.EndpointTriggerTypeId);
+                    return BadRequest();
+                }
+                this._dbContext.Entry(update).State = EntityState.Modified;
+
+                await this._dbContext.SaveChangesAsync();
+
+                return this.Updated(update);
             }
             catch (Exception exc)
             {

@@ -32,6 +32,9 @@ using AMSLLC.Listener.Persistence.Listener;
 using System.Web.OData.Query;
 using Serilog;
 using System.CodeDom.Compiler;
+using System.Threading.Tasks;
+using System.Data.Entity;
+using Newtonsoft.Json;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	public abstract partial class BaseListenerODataController: ODataController{
@@ -91,6 +94,40 @@ using System.CodeDom.Compiler;
 				{
 					var result = this._dbContext.Set<<#= entityType #>>().SingleOrDefault(s => s.<#= keyName #> == key);
 					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+			/// Update entity
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public async Task<IHttpActionResult> Put([FromODataUri] <#= keyType #> key, [FromBody]<#= entityType #> update)
+			{
+				try
+				{
+					Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
+					if (!ModelState.IsValid)
+					{
+						Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+						return BadRequest(ModelState);
+					}				
+
+					if (key != update.<#= keyName #>)
+					{
+						Log.Warning("Expected key: {0}, got: {1}", key, update.<#= keyName #>);
+						return BadRequest();
+					}
+					this._dbContext.Entry(update).State = EntityState.Modified;
+
+					await this._dbContext.SaveChangesAsync();
+
+					return this.Updated(update);
 				}
 				catch (Exception exc)
 				{
