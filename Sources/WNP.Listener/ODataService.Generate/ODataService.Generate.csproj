@@ -80,7 +80,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>copy /Y "$(msbuildprojectdirectory)\..\Persistence.Listener\bin\Debug\AMSLLC.Listener.Persistence.Listener.dll" "$(TargetDir)"
-copy /Y "$(msbuildprojectdirectory)\..\ODataService.DbContext\bin\Debug\AMSLLC.Listener.ODataService.DbContext.dll" "$(TargetDir)"</PreBuildEvent>
+copy /Y "$(msbuildprojectdirectory)\..\ODataService\bin\Debug\AMSLLC.Listener.ODataService.dll" "$(TargetDir)"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

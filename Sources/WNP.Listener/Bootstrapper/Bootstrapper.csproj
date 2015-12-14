@@ -254,10 +254,6 @@
       <Project>{702B10D4-57D6-4406-A159-715F658AE54D}</Project>
       <Name>MetadataService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ODataService.DbContext\ODataService.DbContext.csproj">
-      <Project>{8c89907c-9d45-4165-b6f4-b17b55cde435}</Project>
-      <Name>ODataService.DbContext</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ODataService\ODataService.csproj">
       <Project>{28de87b5-514b-4996-b65a-9d8f9e4578e0}</Project>
       <Name>ODataService</Name>

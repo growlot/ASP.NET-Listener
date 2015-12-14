@@ -4,351 +4,85 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
-    using System;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
-    using System.Web.Http;
-    using System.Web.OData;
-    using System.Web.OData.Builder;
-    using AMSLLC.Listener.ODataService;
-    using AMSLLC.Listener.ODataService.DbContext;
-    using AMSLLC.Listener.Persistence.Listener;
-    using System.Web.OData.Query;
-    using Serilog;
-    using System.CodeDom.Compiler;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using System.Data.Entity;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Formatting;
-    using System.Web.OData.Formatter;
-    using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Web.Http;
+using System.Web.OData;
+using System.Web.OData.Builder;
+using AMSLLC.Listener.ODataService;
+using AMSLLC.Listener.Persistence.Listener;
+using System.Web.OData.Query;
+using Serilog;
+using System.CodeDom.Compiler;
+using System.Threading.Tasks;
+using System.Data.Entity;
+using Newtonsoft.Json;
 
-    [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-    public abstract partial class BaseListenerODataController : ODataController
-    {
-        protected string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	public abstract partial class BaseListenerODataController: ODataController{
+		protected string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
 
-        protected string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
-    }
+		protected string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+	}
 
-    [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-    public partial class TransactionRegistryController : BaseListenerODataController
-    {
-        private readonly ListenerODataContext _dbContext;
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class TransactionRegistryController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionRegistryController" /> class.
-        /// </summary>
-        /// <param name="dbctx">The db context.</param>
-        public TransactionRegistryController(ListenerODataContext dbctx)
-        {
-            this._dbContext = dbctx;
-        }
+			/// <summary>
+			/// Initializes a new instance of the <see cref="TransactionRegistryController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public TransactionRegistryController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
 
-        /// <summary>
-        /// Get the IQueryable of the served entity.
-        /// </summary>
-        /// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
-        public IQueryable<TransactionRegistryEntity> Get()
-        {
-            try
-            {
-                return this._dbContext.Set<TransactionRegistryEntity>().AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<TransactionRegistryEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<TransactionRegistryEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
 
-        /// <summary>
-        /// Get the single entity or null using primary key
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public IHttpActionResult Get([FromODataUri] System.Guid key)
-        {
-            try
-            {
-                var result = this._dbContext.Set<TransactionRegistryEntity>().SingleOrDefault(s => s.RecordKey == key);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Guid key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<TransactionRegistryEntity>().SingleOrDefault(s => s.RecordKey == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
 
-        /// <summary>
+			/// <summary>
         /// Update entity
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, [FromBody]TransactionRegistryEntity update)
-        {
-            try
-            {
-                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
-                if (!ModelState.IsValid)
-                {
-                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
-                    return BadRequest(ModelState);
-                }
-
-                if (key != update.RecordKey)
-                {
-                    Log.Warning("Expected key: {0}, got: {1}", key, update.RecordKey);
-                    return BadRequest();
-                }
-                this._dbContext.Entry(update).State = EntityState.Modified;
-
-                await this._dbContext.SaveChangesAsync();
-
-                return this.Updated(update);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-    }
-
-    [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-    public partial class TransactionMessageDataController : BaseListenerODataController
-    {
-        private readonly ListenerODataContext _dbContext;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionMessageDataController" /> class.
-        /// </summary>
-        /// <param name="dbctx">The db context.</param>
-        public TransactionMessageDataController(ListenerODataContext dbctx)
-        {
-            this._dbContext = dbctx;
-        }
-
-        /// <summary>
-        /// Get the IQueryable of the served entity.
-        /// </summary>
-        /// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
-        public IQueryable<TransactionMessageDatumEntity> Get()
-        {
-            try
-            {
-                return this._dbContext.Set<TransactionMessageDatumEntity>().AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Get the single entity or null using primary key
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public IHttpActionResult Get([FromODataUri] System.Guid key)
-        {
-            try
-            {
-                var result = this._dbContext.Set<TransactionMessageDatumEntity>().SingleOrDefault(s => s.RecordKey == key);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Update entity
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, [FromBody]TransactionMessageDatumEntity update)
-        {
-            try
-            {
-                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
-                if (!ModelState.IsValid)
-                {
-                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
-                    return BadRequest(ModelState);
-                }
-
-                if (key != update.RecordKey)
-                {
-                    Log.Warning("Expected key: {0}, got: {1}", key, update.RecordKey);
-                    return BadRequest();
-                }
-                this._dbContext.Entry(update).State = EntityState.Modified;
-
-                await this._dbContext.SaveChangesAsync();
-
-                return this.Updated(update);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-    }
-
-    [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-    public partial class TransactionRegistryDetailsController : BaseListenerODataController
-    {
-        private readonly ListenerODataContext _dbContext;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionRegistryDetailsController" /> class.
-        /// </summary>
-        /// <param name="dbctx">The db context.</param>
-        public TransactionRegistryDetailsController(ListenerODataContext dbctx)
-        {
-            this._dbContext = dbctx;
-        }
-
-        /// <summary>
-        /// Get the IQueryable of the served entity.
-        /// </summary>
-        /// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
-        public IQueryable<TransactionRegistryViewEntity> Get()
-        {
-            try
-            {
-                return this._dbContext.Set<TransactionRegistryViewEntity>().AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Get the single entity or null using primary key
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public IHttpActionResult Get([FromODataUri] System.Guid key)
-        {
-            try
-            {
-                var result = this._dbContext.Set<TransactionRegistryViewEntity>().SingleOrDefault(s => s.RecordKey == key);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Update entity
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, [FromBody]TransactionRegistryViewEntity update)
-        {
-            try
-            {
-                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
-                if (!ModelState.IsValid)
-                {
-                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
-                    return BadRequest(ModelState);
-                }
-
-                if (key != update.RecordKey)
-                {
-                    Log.Warning("Expected key: {0}, got: {1}", key, update.RecordKey);
-                    return BadRequest();
-                }
-                this._dbContext.Entry(update).State = EntityState.Modified;
-
-                await this._dbContext.SaveChangesAsync();
-
-                return this.Updated(update);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-    }
-
-    [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-    public partial class EndpointController : BaseListenerODataController
-    {
-        private readonly ListenerODataContext _dbContext;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EndpointController" /> class.
-        /// </summary>
-        /// <param name="dbctx">The db context.</param>
-        public EndpointController(ListenerODataContext dbctx)
-        {
-            this._dbContext = dbctx;
-        }
-
-        /// <summary>
-        /// Get the IQueryable of the served entity.
-        /// </summary>
-        /// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
-        public IQueryable<EndpointEntity> Get()
-        {
-            try
-            {
-                return this._dbContext.Set<EndpointEntity>().AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Get the single entity or null using primary key
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public IHttpActionResult Get([FromODataUri] System.Int32 key)
-        {
-            try
-            {
-                var result = this._dbContext.Set<EndpointEntity>().SingleOrDefault(s => s.EndpointId == key);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Update entity
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<EndpointEntity> delta)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<TransactionRegistryEntity> delta)
         {
             try
             {
@@ -359,7 +93,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var record = await this._dbContext.Endpoint.SingleOrDefaultAsync(t => t.EndpointId == key);
+                var record = await this._dbContext.Set<TransactionRegistryEntity>().SingleOrDefaultAsync(s => s.RecordKey == key);
 
                 if (record == null)
                 {
@@ -377,85 +111,85 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 throw;
             }
         }
-    }
+	}
 
-    [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-    public partial class ProtocolTypeController : BaseListenerODataController
-    {
-        private readonly ListenerODataContext _dbContext;
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class TransactionMessageDataController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProtocolTypeController" /> class.
-        /// </summary>
-        /// <param name="dbctx">The db context.</param>
-        public ProtocolTypeController(ListenerODataContext dbctx)
-        {
-            this._dbContext = dbctx;
-        }
+			/// <summary>
+			/// Initializes a new instance of the <see cref="TransactionMessageDataController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public TransactionMessageDataController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
 
-        /// <summary>
-        /// Get the IQueryable of the served entity.
-        /// </summary>
-        /// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
-        public IQueryable<ProtocolTypeEntity> Get()
-        {
-            try
-            {
-                return this._dbContext.Set<ProtocolTypeEntity>().AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<TransactionMessageDatumEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<TransactionMessageDatumEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
 
-        /// <summary>
-        /// Get the single entity or null using primary key
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public IHttpActionResult Get([FromODataUri] System.Int32 key)
-        {
-            try
-            {
-                var result = this._dbContext.Set<ProtocolTypeEntity>().SingleOrDefault(s => s.ProtocolTypeId == key);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Guid key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<TransactionMessageDatumEntity>().SingleOrDefault(s => s.RecordKey == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
 
-        /// <summary>
+			/// <summary>
         /// Update entity
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, [FromBody]ProtocolTypeEntity update)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<TransactionMessageDatumEntity> delta)
         {
             try
             {
-                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
                 if (!ModelState.IsValid)
                 {
                     Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
                     return BadRequest(ModelState);
                 }
 
-                if (key != update.ProtocolTypeId)
+                var record = await this._dbContext.Set<TransactionMessageDatumEntity>().SingleOrDefaultAsync(s => s.RecordKey == key);
+
+                if (record == null)
                 {
-                    Log.Warning("Expected key: {0}, got: {1}", key, update.ProtocolTypeId);
-                    return BadRequest();
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
                 }
-                this._dbContext.Entry(update).State = EntityState.Modified;
 
+                delta.Patch(record);
                 await this._dbContext.SaveChangesAsync();
-
-                return this.Updated(update);
+                return this.Updated(record);
             }
             catch (Exception exc)
             {
@@ -463,85 +197,85 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 throw;
             }
         }
-    }
+	}
 
-    [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-    [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-    public partial class EndpointTriggerTypeController : BaseListenerODataController
-    {
-        private readonly ListenerODataContext _dbContext;
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class TransactionRegistryDetailsController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EndpointTriggerTypeController" /> class.
-        /// </summary>
-        /// <param name="dbctx">The db context.</param>
-        public EndpointTriggerTypeController(ListenerODataContext dbctx)
-        {
-            this._dbContext = dbctx;
-        }
+			/// <summary>
+			/// Initializes a new instance of the <see cref="TransactionRegistryDetailsController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public TransactionRegistryDetailsController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
 
-        /// <summary>
-        /// Get the IQueryable of the served entity.
-        /// </summary>
-        /// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
-        public IQueryable<EndpointTriggerTypeEntity> Get()
-        {
-            try
-            {
-                return this._dbContext.Set<EndpointTriggerTypeEntity>().AsQueryable();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<TransactionRegistryViewEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<TransactionRegistryViewEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
 
-        /// <summary>
-        /// Get the single entity or null using primary key
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public IHttpActionResult Get([FromODataUri] System.Int32 key)
-        {
-            try
-            {
-                var result = this._dbContext.Set<EndpointTriggerTypeEntity>().SingleOrDefault(s => s.EndpointTriggerTypeId == key);
-                return this.Ok(result);
-            }
-            catch (Exception exc)
-            {
-                Log.Error(exc, "Operation Failed");
-                throw;
-            }
-        }
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Guid key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<TransactionRegistryViewEntity>().SingleOrDefault(s => s.RecordKey == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
 
-        /// <summary>
+			/// <summary>
         /// Update entity
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>System.Web.Http.IHttpActionResult.</returns>
-        public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, [FromBody]EndpointTriggerTypeEntity update)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<TransactionRegistryViewEntity> delta)
         {
             try
             {
-                Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
                 if (!ModelState.IsValid)
                 {
                     Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
                     return BadRequest(ModelState);
                 }
 
-                if (key != update.EndpointTriggerTypeId)
+                var record = await this._dbContext.Set<TransactionRegistryViewEntity>().SingleOrDefaultAsync(s => s.RecordKey == key);
+
+                if (record == null)
                 {
-                    Log.Warning("Expected key: {0}, got: {1}", key, update.EndpointTriggerTypeId);
-                    return BadRequest();
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
                 }
-                this._dbContext.Entry(update).State = EntityState.Modified;
 
+                delta.Patch(record);
                 await this._dbContext.SaveChangesAsync();
-
-                return this.Updated(update);
+                return this.Updated(record);
             }
             catch (Exception exc)
             {
@@ -549,93 +283,343 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 throw;
             }
         }
-    }
+	}
 
-    [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-    public partial class ODataControllerConfigurator
-    {
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class EndpointController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
 
-        /// <summary>
-        /// Execute configurator to setup OData controllers
+			/// <summary>
+			/// Initializes a new instance of the <see cref="EndpointController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public EndpointController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
+
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<EndpointEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<EndpointEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Int32 key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<EndpointEntity>().SingleOrDefault(s => s.EndpointId == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+        /// Update entity
         /// </summary>
-        /// <param name="builder">The builder.</param>
-        public void Run(ODataModelBuilder builder)
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<EndpointEntity> delta)
         {
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
 
-            this.SetupTransactionRegistryController(builder);
-            this.SetupTransactionMessageDataController(builder);
-            this.SetupTransactionRegistryDetailsController(builder);
-            this.SetupEndpointController(builder);
-            this.SetupProtocolTypeController(builder);
-            this.SetupEndpointTriggerTypeController(builder);
+                var record = await this._dbContext.Set<EndpointEntity>().SingleOrDefaultAsync(s => s.EndpointId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
         }
+	}
 
-        /// <summary>
-        /// Setup the controller.
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class ProtocolTypeController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="ProtocolTypeController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public ProtocolTypeController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
+
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<ProtocolTypeEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<ProtocolTypeEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Int32 key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<ProtocolTypeEntity>().SingleOrDefault(s => s.ProtocolTypeId == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+        /// Update entity
         /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupTransactionRegistryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null, string tableName = null)
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<ProtocolTypeEntity> delta)
         {
-            this.PrepareODataController<TransactionRegistryEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
-        }
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
 
-        /// <summary>
-        /// Setup the controller.
+                var record = await this._dbContext.Set<ProtocolTypeEntity>().SingleOrDefaultAsync(s => s.ProtocolTypeId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+	}
+
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class EndpointTriggerTypeController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="EndpointTriggerTypeController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public EndpointTriggerTypeController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
+
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<EndpointTriggerTypeEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<EndpointTriggerTypeEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Int32 key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<EndpointTriggerTypeEntity>().SingleOrDefault(s => s.EndpointTriggerTypeId == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+        /// Update entity
         /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupTransactionMessageDataController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionMessageDatumEntity>> actionBuilder = null, string tableName = null)
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<EndpointTriggerTypeEntity> delta)
         {
-            this.PrepareODataController<TransactionMessageDatumEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
+
+                var record = await this._dbContext.Set<EndpointTriggerTypeEntity>().SingleOrDefaultAsync(s => s.EndpointTriggerTypeId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
         }
+	}
 
-        /// <summary>
-        /// Setup the controller.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupTransactionRegistryDetailsController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null, string tableName = null)
-        {
-            this.PrepareODataController<TransactionRegistryViewEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
-        }
+[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+public partial class ODataControllerConfigurator{
 
-        /// <summary>
-        /// Setup the controller.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null, string tableName = null)
-        {
-            this.PrepareODataController<EndpointEntity, System.Int32>(builder, a => a.EndpointId, actionBuilder, tableName);
-        }
+	/// <summary>
+    /// Execute configurator to setup OData controllers
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+	public void Run(ODataModelBuilder builder){
+	
+		this.SetupTransactionRegistryController(builder);
+			this.SetupTransactionMessageDataController(builder);
+			this.SetupTransactionRegistryDetailsController(builder);
+			this.SetupEndpointController(builder);
+			this.SetupProtocolTypeController(builder);
+			this.SetupEndpointTriggerTypeController(builder);
+		}
 
-        /// <summary>
-        /// Setup the controller.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupProtocolTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ProtocolTypeEntity>> actionBuilder = null, string tableName = null)
-        {
-            this.PrepareODataController<ProtocolTypeEntity, System.Int32>(builder, a => a.ProtocolTypeId, actionBuilder, tableName);
-        }
+			/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupTransactionRegistryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<TransactionRegistryEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
+			}
 
-        /// <summary>
-        /// Setup the controller.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="actionBuilder">The action builder.</param>
-        protected virtual void SetupEndpointTriggerTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointTriggerTypeEntity>> actionBuilder = null, string tableName = null)
-        {
-            this.PrepareODataController<EndpointTriggerTypeEntity, System.Int32>(builder, a => a.EndpointTriggerTypeId, actionBuilder, tableName);
-        }
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupTransactionMessageDataController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionMessageDatumEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<TransactionMessageDatumEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
+			}
 
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupTransactionRegistryDetailsController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<TransactionRegistryViewEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
+			}
 
-        private void PrepareODataController<TEntity, TKey>(
-                ODataModelBuilder builder,
-                Expression<Func<TEntity, TKey>> primaryKeySelector,
-                Action<ODataModelBuilder, EntityTypeConfiguration<TEntity>> actionBuilder = null,
-                string tableName = null) where TEntity : class
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<EndpointEntity, System.Int32>(builder, a => a.EndpointId, actionBuilder, tableName);
+			}
+
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupProtocolTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ProtocolTypeEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<ProtocolTypeEntity, System.Int32>(builder, a => a.ProtocolTypeId, actionBuilder, tableName);
+			}
+
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupEndpointTriggerTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointTriggerTypeEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<EndpointTriggerTypeEntity, System.Int32>(builder, a => a.EndpointTriggerTypeId, actionBuilder, tableName);
+			}
+
+	
+	private void PrepareODataController<TEntity, TKey>(
+            ODataModelBuilder builder,
+            Expression<Func<TEntity, TKey>> primaryKeySelector,
+            Action<ODataModelBuilder, EntityTypeConfiguration<TEntity>> actionBuilder = null,
+            string tableName = null) where TEntity : class
         {
             // separate OData endpoint for Listener API
             this.MapPetaPocoEntity(builder, primaryKeySelector, tableName);
@@ -662,7 +646,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             modelBuilder.EntityType<T>().HasKey(primaryKeySelector);
         }
 
-    }
+	}
 }
 
 

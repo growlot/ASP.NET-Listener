@@ -22,7 +22,6 @@ namespace AMSLLC.Listener.Bootstrapper
     using Ninject.Modules;
     using Ninject.Web.Common;
     using ODataService;
-    using ODataService.DbContext;
     using ODataService.Services;
     using ODataService.Services.FilterTransformer;
     using ODataService.Services.Impl;

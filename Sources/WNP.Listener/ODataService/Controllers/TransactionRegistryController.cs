@@ -18,7 +18,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using ApplicationService;
     using ApplicationService.Commands;
     using ApplicationService.Model;
-    using DbContext;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using Persistence.Listener;

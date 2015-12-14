@@ -15,7 +15,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
     using Core;
-    using DbContext;
     using Persistence.Listener;
     using Serilog;
     using Shared;

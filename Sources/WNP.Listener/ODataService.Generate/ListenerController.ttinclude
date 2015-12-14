@@ -1,7 +1,7 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ assembly name="$(msbuildprojectdirectory)\..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll" #>
 <#@ assembly name="$(msbuildprojectdirectory)\..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll" #>
-<#@ assembly name="$(TargetDir)\AMSLLC.Listener.ODataService.DbContext.dll" #>
+<#@ assembly name="$(TargetDir)\AMSLLC.Listener.ODataService.dll" #>
 <#@ assembly name="$(msbuildprojectdirectory)\..\..\..\3rdParty\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll" #>
 <#@ import namespace="System.Data.Entity" #>
 <#@ assembly name="System.Core" #>
@@ -9,7 +9,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Reflection" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="AMSLLC.Listener.ODataService.DbContext" #>
+<#@ import namespace="AMSLLC.Listener.ODataService" #>
 <#@ import namespace="System.Data.Entity.Infrastructure" #>
 <#@ import namespace="System.Data.Entity.Core.Metadata.Edm" #>
 <#@ output extension=".generated.cs" #>
@@ -27,7 +27,6 @@ using System.Web.Http;
 using System.Web.OData;
 using System.Web.OData.Builder;
 using AMSLLC.Listener.ODataService;
-using AMSLLC.Listener.ODataService.DbContext;
 using AMSLLC.Listener.Persistence.Listener;
 using System.Web.OData.Query;
 using Serilog;
@@ -103,38 +102,39 @@ using Newtonsoft.Json;
 			}
 
 			/// <summary>
-			/// Update entity
-			/// </summary>
-			/// <param name="key">The key.</param>
-			/// <returns>System.Web.Http.IHttpActionResult.</returns>
-			public async Task<IHttpActionResult> Put([FromODataUri] <#= keyType #> key, [FromBody]<#= entityType #> update)
-			{
-				try
-				{
-					Log.Debug("Received for update: {0}", JsonConvert.SerializeObject(update));
-					if (!ModelState.IsValid)
-					{
-						Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
-						return BadRequest(ModelState);
-					}				
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] <#= keyType #> key, Delta<<#= entityType #>> delta)
+        {
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+                if (!ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(ModelState));
+                    return BadRequest(ModelState);
+                }
 
-					if (key != update.<#= keyName #>)
-					{
-						Log.Warning("Expected key: {0}, got: {1}", key, update.<#= keyName #>);
-						return BadRequest();
-					}
-					this._dbContext.Entry(update).State = EntityState.Modified;
+                var record = await this._dbContext.Set<<#= entityType #>>().SingleOrDefaultAsync(s => s.<#= keyName #> == key);
 
-					await this._dbContext.SaveChangesAsync();
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
 
-					return this.Updated(update);
-				}
-				catch (Exception exc)
-				{
-					Log.Error(exc, "Operation Failed");
-					throw;
-				}
-			}
+                delta.Patch(record);
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
 	}
 
 <#

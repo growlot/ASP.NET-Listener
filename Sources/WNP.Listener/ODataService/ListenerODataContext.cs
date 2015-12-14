@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.DbContext
+namespace AMSLLC.Listener.ODataService
 {
     using System;
     using System.Data.Entity;
