@@ -211,6 +211,7 @@
     <Compile Include="ListenerRequestHeaderMap.cs" />
     <Compile Include="HttpMessageHandlers\ListenerMessageHandler.cs" />
     <Compile Include="HttpMessageHandlers\TransactionalODataBatchHandler.cs" />
+    <Compile Include="Model\BatchRequestMessage.cs" />
     <Compile Include="ODataListenerServiceConfigurator.cs" />
     <Compile Include="ODataServiceConfigurator.cs" />
     <Compile Include="HttpMessageHandlers\MiniProfilerMessageHandler.cs" />
@@ -311,9 +312,7 @@
     <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-rc1\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\..\packages\StyleCop.Analyzers.1.0.0-rc1\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

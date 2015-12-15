@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.ODataService
     using System;
     using System.Web.OData.Builder;
     using Controllers;
+    using Model;
     using Persistence.Listener;
 
     public class ODataListenerServiceConfigurator : ODataControllerConfigurator
@@ -30,15 +31,22 @@ namespace AMSLLC.Listener.ODataService
 
                     // unbound actions
                     var openAction = b.Action("Open");
-                    this.ConfigureHeader(openAction, builder);
+                    //this.ConfigureHeader(openAction, builder);
+                    openAction.Parameter<string>("EntityCategory").OptionalParameter = false;
+                    openAction.Parameter<string>("OperationKey").OptionalParameter = false;
+                    openAction.Parameter<string>("Body").OptionalParameter = false;
                     openAction.Returns<string>();
 
                     var openBatchAction = b.Action("Batch");
-                    this.ConfigureHeader(openBatchAction, builder);
+                    openBatchAction.Parameter<string>("BatchNumber").OptionalParameter = false;
+                    openBatchAction.Parameter<string>("Body").OptionalParameter = false;
+                    //this.ConfigureHeader(openBatchAction, builder);
+                    //openBatchAction.Parameter<BatchRequestMessage>("request").OptionalParameter = false;
+                    //openBatchAction.CollectionParameter<BatchRequestMessage>("request").OptionalParameter = false;
                     openBatchAction.Returns<string>();
 
                     var buildBatchAction = b.Action("BuildBatch");
-                    this.ConfigureHeader(buildBatchAction, builder);
+                    //this.ConfigureHeader(buildBatchAction, builder);
                     buildBatchAction.Parameter<string>("batchKey").OptionalParameter = false;
                     buildBatchAction.Returns<string>();
 

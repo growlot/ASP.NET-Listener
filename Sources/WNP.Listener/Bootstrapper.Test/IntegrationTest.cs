@@ -38,7 +38,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     {
         private const string CompanyCode = "PPL";
         private static TestServer _server;
-        
+
 
         [ClassInitialize]
         public static void ClassInit(TestContext context)
@@ -585,13 +585,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
             mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
 
-            var requestMessage = new InstallMeterRequestMessage
+            var requestMessage = new OpenTransactionWrapper<InstallMeterRequestMessage>(new InstallMeterRequestMessage
             {
                 Test = "A1-S2-D3",
                 EntityCategory = "EM",
                 OperationKey = "Install",
                 EntityKey = entityKey
-            };
+            });
             HttpResponseMessage response =
                 await
                     server.CreateRequest("listener/Open")
@@ -599,7 +599,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                             request =>
                                 request.Content =
                                     new ObjectContent(
-                                        typeof(InstallMeterRequestMessage),
+                                        typeof(OpenTransactionWrapper<InstallMeterRequestMessage>),
                                         requestMessage,
                                         new JsonMediaTypeFormatter { SerializerSettings = settings },
                                         mediaType))
@@ -652,7 +652,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
             mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
 
-            var requestMessage = new BatchRequestMessage();
+            var requestMessage = new BatchRequestMessage { BatchNumber = "TB1" };
 
             Dictionary<string, List<string>> operations = new Dictionary<string, List<string>>
             {
@@ -688,23 +688,26 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 }
             };
             var p = priorities ?? new Stack<int?>(Enumerable.Repeat((int?)null, 100));
+            List<BatchTransactionEntry> body = new List<BatchTransactionEntry>();
             for (int i = 0; i < operations.Keys.Count; i++)
             {
-                requestMessage.Body.Add(new BatchTransactionEntry
+                body.Add(new BatchTransactionEntry
                 {
                     EntityCategory = operations.Keys.ElementAt(i),
                     OperationKey = operations[operations.Keys.ElementAt(i)].First(),
-                    EntityKey = entityKeys == null ? Guid.NewGuid().ToString() : entityKeys.ElementAt(requestMessage.Body.Count),
+                    EntityKey = entityKeys == null ? Guid.NewGuid().ToString() : entityKeys.ElementAt(body.Count),
                     Priority = p.Pop()
                 });
-                requestMessage.Body.Add(new BatchTransactionEntry
+                body.Add(new BatchTransactionEntry
                 {
                     EntityCategory = operations.Keys.ElementAt(operations.Keys.Count - i - 1),
                     OperationKey = operations[operations.Keys.ElementAt(operations.Keys.Count - i - 1)].First(),
-                    EntityKey = entityKeys == null ? Guid.NewGuid().ToString() : entityKeys.ElementAt(requestMessage.Body.Count),
+                    EntityKey = entityKeys == null ? Guid.NewGuid().ToString() : entityKeys.ElementAt(body.Count),
                     Priority = p.Pop()
                 });
             }
+
+            requestMessage.Body = JsonConvert.SerializeObject(body);
 
             HttpResponseMessage response =
                 await
@@ -797,8 +800,30 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         #endregion
 
         #region Test models
+
+        private class OpenTransactionWrapper<T>
+            where T : IOpenTransactionData
+        {
+            public string EntityCategory { get; set; }
+            public string OperationKey { get; set; }
+
+            public string Body { get; set; }
+            public OpenTransactionWrapper(T data)
+            {
+                EntityCategory = data.EntityCategory;
+                OperationKey = data.OperationKey;
+                Body = JsonConvert.SerializeObject(data);
+            }
+        }
+
+        private interface IOpenTransactionData
+        {
+            string EntityCategory { get; }
+            string OperationKey { get; }
+        }
+
         private class
-            InstallMeterRequestMessage
+            InstallMeterRequestMessage : IOpenTransactionData
         {
             public string Test { get; set; }
 
@@ -813,7 +838,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
         private class BatchRequestMessage
         {
-            public List<BatchTransactionEntry> Body { get; } = new List<BatchTransactionEntry>();
+            public string Body { get; set; }
+            public string BatchNumber { get; set; }
         }
 
         private class BatchTransactionEntry

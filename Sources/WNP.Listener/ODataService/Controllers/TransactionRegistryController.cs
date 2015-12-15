@@ -19,6 +19,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using ApplicationService.Commands;
     using ApplicationService.Model;
     using Domain.Listener.Transaction;
+    using Model;
     using Newtonsoft.Json;
     using Persistence.Listener;
     using Serilog;
@@ -56,7 +57,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                string data = (string)this.Request.Properties["ListenerRequestBody"];
+                //string data = (string)this.Request.Properties["ListenerRequestBody"];
 
                 var message = new OpenTransactionCommand
                 {
@@ -64,7 +65,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     OperationKey = parameters["OperationKey"]?.ToString(),
                     EntityName = parameters["EntityCategory"]?.ToString(),
                     SourceApplicationKey = this.ApplicationKey,
-                    Data = data,
+                    Data = parameters["Body"]?.ToString(),
                     User = this.User?.Identity.Name
                 };
 
@@ -88,30 +89,24 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                string data = (string)this.Request.Properties["ListenerRequestBody"];
-
-                var message = new OpenBatchTransactionCommand()
+                var message = new OpenBatchTransactionCommand
                 {
                     CompanyCode = this.CompanyCode,
                     SourceApplicationKey = this.ApplicationKey,
                     User = this.User?.Identity.Name,
+                    BatchNumber = parameters["BatchNumber"]?.ToString(),
                 };
 
-                var body = JsonConvert.DeserializeObject<ExpandoObject>(data) as IDictionary<string, object>;
-                if (body.ContainsKey("BatchNumber"))
+                if (parameters.ContainsKey("Body"))
                 {
-                    message.BatchNumber = body["BatchNumber"]?.ToString();
-                }
-
-                if (body.ContainsKey("Body"))
-                {
-                    var bodyArray = body["Body"] as List<object>;
-                    if (bodyArray == null)
+                    if (parameters["Body"] == null)
                     {
                         throw new InvalidOperationException("Batch body not found");
                     }
 
-                    foreach (var jToken in bodyArray.Cast<IDictionary<string, object>>())
+                    var body = JsonConvert.DeserializeObject<List<ExpandoObject>>(parameters["Body"]?.ToString());
+
+                    foreach (var jToken in body.Cast<IDictionary<string, object>>())
                     {
                         int p;
                         message.Batch.Add(

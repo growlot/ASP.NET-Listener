@@ -24,36 +24,36 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            var content = await request.Content.ReadAsStringAsync();
-            if (IsJson(content) && request.Method.Method.ToUpper() != "PATCH")
-            {
-                var contentAsExpando =
-                    JsonConvert.DeserializeObject<ExpandoObject>(content) as IDictionary<string, object>;
-                if (contentAsExpando != null)
-                {
-                    Dictionary<string, object> header = new Dictionary<string, object>();
-                    Dictionary<string, object> body = new Dictionary<string, object>();
-                    foreach (var o in contentAsExpando)
-                    {
-                        if (ListenerRequestHeaderMap.Instance.ContainsKey(o.Key))
-                        {
-                            header.Add(o.Key, o.Value);
-                        }
+            //var content = await request.Content.ReadAsStringAsync();
+            //if (IsJson(content) && request.Method.Method.ToUpper() != "PATCH")
+            //{
+            //    var contentAsExpando =
+            //        JsonConvert.DeserializeObject<ExpandoObject>(content) as IDictionary<string, object>;
+            //    if (contentAsExpando != null)
+            //    {
+            //        Dictionary<string, object> header = new Dictionary<string, object>();
+            //        Dictionary<string, object> body = new Dictionary<string, object>();
+            //        foreach (var o in contentAsExpando)
+            //        {
+            //            if (ListenerRequestHeaderMap.Instance.ContainsKey(o.Key))
+            //            {
+            //                header.Add(o.Key, o.Value);
+            //            }
 
-                        body.Add(o.Key, o.Value);
-                    }
+            //            body.Add(o.Key, o.Value);
+            //        }
 
-                    request.Properties["ListenerRequestBody"] = JsonConvert.SerializeObject(body);
+            //        request.Properties["ListenerRequestBody"] = JsonConvert.SerializeObject(body);
 
-                    var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
-                    mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
-                    request.Content = new ObjectContent(
-                        typeof(Dictionary<string, object>),
-                        header,
-                        new JsonMediaTypeFormatter(),
-                        mediaType);
-                }
-            }
+            //        var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
+            //        mediaType.Parameters.Add(new NameValueHeaderValue("odata", "verbose"));
+            //        request.Content = new ObjectContent(
+            //            typeof(Dictionary<string, object>),
+            //            header,
+            //            new JsonMediaTypeFormatter(),
+            //            mediaType);
+            //    }
+            //}
 
             HttpResponseMessage response = null;
             try
