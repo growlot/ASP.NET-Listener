@@ -42,6 +42,18 @@ namespace AMSLLC.Listener.ODataService
         [CLSCompliant(false)]
         public DbSet<EndpointTriggerTypeEntity> EndpointTriggerType { get; set; }
 
+        [CLSCompliant(false)]
+        public DbSet<ValueMapEntity> ValueMap { get; set; }
+
+        [CLSCompliant(false)]
+        public DbSet<ValueMapEntryEntity> ValueMapEntry { get; set; }
+
+        [CLSCompliant(false)]
+        public DbSet<FieldConfigurationEntity> FieldConfiguration { get; set; }
+
+        [CLSCompliant(false)]
+        public DbSet<FieldConfigurationEntryEntity> FieldConfigurationEntry { get; set; }
+
 
 
 
@@ -54,6 +66,10 @@ namespace AMSLLC.Listener.ODataService
             this.MapPetaPocoEntity<EndpointEntity, int>(modelBuilder, a => a.EndpointId);
             this.MapPetaPocoEntity<ProtocolTypeEntity, int>(modelBuilder, a => a.ProtocolTypeId);
             this.MapPetaPocoEntity<EndpointTriggerTypeEntity, int>(modelBuilder, a => a.EndpointTriggerTypeId);
+            this.MapPetaPocoEntity<ValueMapEntity, int>(modelBuilder, a => a.ValueMapId);
+            this.MapPetaPocoEntity<ValueMapEntryEntity, int>(modelBuilder, a => a.ValueMapEntryId);
+            this.MapPetaPocoEntity<FieldConfigurationEntity, int>(modelBuilder, a => a.FieldConfigurationId);
+            this.MapPetaPocoEntity<FieldConfigurationEntryEntity, int>(modelBuilder, a => a.FieldConfigurationEntryId);
 
             base.OnModelCreating(modelBuilder);
         }
