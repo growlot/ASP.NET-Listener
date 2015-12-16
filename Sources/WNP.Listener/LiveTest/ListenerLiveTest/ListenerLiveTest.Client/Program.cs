@@ -169,10 +169,10 @@ namespace ListenerLiveTest.Client
                         List<object> data = new List<object>();
                         for (int i = 0; i < totalRequests; i++)
                         {
-                            data.Add(new OpenTransactionRequestMessage("EM", "Install")
+                            data.Add(new OpenTransactionRequestWrapper<OpenTransactionRequestMessage>(new OpenTransactionRequestMessage("EM", "Install")
                             {
                                 EntityKey = Guid.NewGuid().ToString("D")
-                            });
+                            }));
                         }
 
                         await manager.Run(new Uri($"{AppConfig.ListenerUrl}/Open"), data.ToArray());

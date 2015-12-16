@@ -65,7 +65,6 @@
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
     <Compile Include="Communication\CommunicationManager.cs" />
-    <Compile Include="Message\BaseRequestMessage.cs" />
     <Compile Include="Message\InstallMeterRequestMessage.cs" />
     <Compile Include="Message\OpenTransactionRequestMessage.cs" />
     <Compile Include="Program.cs" />

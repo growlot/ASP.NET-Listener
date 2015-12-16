@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ListenerLiveTest.Client.Message
 {
-    public class OpenTransactionRequestMessage : BaseRequestMessage
+    using AMSLLC.Listener.Client.Message;
+
+    public class OpenTransactionRequestMessage : BaseListenerRequestMessage
     {
         public OpenTransactionRequestMessage(string category, string opearation) : base(category, opearation)
         {
