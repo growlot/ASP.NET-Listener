@@ -113,6 +113,7 @@
     <Compile Include="Message\DeviceTestResultRequestMessage.cs" />
     <Compile Include="Message\DeviceUpdateMessage.cs" />
     <Compile Include="Message\DeviceUpdateRequestMessage.cs" />
+    <Compile Include="Message\OpenTransactionRequestWrapper.cs" />
     <Compile Include="Message\ProcessingFailedRequestMessage.cs" />
     <Compile Include="Message\ChangeDeviceStatusMessage.cs" />
     <Compile Include="Message\TransactionFilter.cs" />

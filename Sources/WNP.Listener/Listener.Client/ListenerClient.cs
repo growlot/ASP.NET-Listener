@@ -85,12 +85,13 @@ namespace AMSLLC.Listener.Client
         {
             this.Execute(
                 new Uri("listener/Open", UriKind.Relative),
-                new DeviceTestResultRequestMessage(request.EquipmentType)
-                {
-                    EntityKey = request.EquipmentNumber,
-                    TestDate = request.TestDate,
-                    Owner = request.CompanyId
-                });
+                new OpenTransactionRequestWrapper<DeviceTestResultRequestMessage>(
+                    new DeviceTestResultRequestMessage(request.EquipmentType)
+                    {
+                        EntityKey = request.EquipmentNumber,
+                        TestDate = request.TestDate,
+                        Owner = request.CompanyId
+                    }));
         }
 
         /// <summary>
@@ -102,11 +103,11 @@ namespace AMSLLC.Listener.Client
         {
             this.Execute(
                 new Uri("listener/Open", UriKind.Relative),
-                new DeviceUpdateRequestMessage(request.EquipmentType)
+                new OpenTransactionRequestWrapper<DeviceUpdateRequestMessage>(new DeviceUpdateRequestMessage(request.EquipmentType)
                 {
                     EntityKey = request.EquipmentNumber,
                     Owner = request.CompanyId
-                });
+                }));
         }
 
         /// <summary>
@@ -129,12 +130,12 @@ namespace AMSLLC.Listener.Client
         {
             this.Execute(
                 new Uri("listener/Open", UriKind.Relative),
-                new ChangeDeviceStatusRequestMessage(request.EquipmentType)
+                new OpenTransactionRequestWrapper<ChangeDeviceStatusRequestMessage>(new ChangeDeviceStatusRequestMessage(request.EquipmentType)
                 {
                     EntityKey = request.EquipmentNumber,
                     Owner = request.CompanyId,
                     CreatedDate = request.CreatedDate
-                });
+                }));
         }
 
         /// <summary>
