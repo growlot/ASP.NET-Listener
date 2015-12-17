@@ -84,6 +84,7 @@
     </Compile>
     <Compile Include="Models\IECWrapper.cs" />
     <Compile Include="Models\ProtocolTypeEntity.cs" />
+    <Compile Include="Models\ValueMapEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionDataRepository.cs" />
     <Compile Include="TransactionRepository.cs" />
