@@ -38,7 +38,7 @@ namespace AMSLLC.Listener.ODataService
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
             config.Filters.Add(new CommonExceptionFilterAttribute());
 
-            // config.MessageHandlers.Add(new MiniProfilerMessageHandler());
+            config.MessageHandlers.Add(new MiniProfilerMessageHandler());
             var conventions = ODataRoutingConventions.CreateDefault();
             conventions.Insert(0, new WNPGenericRoutingConvention(this.metadataService));
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
