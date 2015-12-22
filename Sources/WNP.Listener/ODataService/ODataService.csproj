@@ -204,6 +204,7 @@
     <Compile Include="Controllers\Base\WNPController.cs" />
     <Compile Include="Controllers\Base\WNPEntityController.cs" />
     <Compile Include="Controllers\ReadingController.cs" />
+    <Compile Include="Controllers\ValueMapController.cs" />
     <Compile Include="Controllers\WorkstationController.cs" />
     <Compile Include="HttpMessageHandlers\RequestScopeHandler.cs" />
     <Compile Include="KeyValuePathSegmentExtensions.cs" />
