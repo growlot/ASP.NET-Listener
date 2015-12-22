@@ -1,4 +1,8 @@
-﻿namespace AMSLLC.Listener.Client.Message
+﻿// <copyright file="DeviceUpdateRequestMessage.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.Client.Message
 {
     using System;
 
@@ -10,7 +14,9 @@
         }
 
         public string EntityKey { get; set; }
+
         public string Owner { get; set; }
+
         public DateTime CreatedDate { get; set; }
     }
 }

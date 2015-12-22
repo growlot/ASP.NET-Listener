@@ -1,7 +1,10 @@
-﻿namespace AMSLLC.Listener.Client.Test
+﻿// <copyright file="ListenerClientFlowTest.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.Client.Test
 {
     using System;
-    using System.Collections.Generic;
     using System.Net;
     using Exception;
     using Message;
@@ -11,7 +14,7 @@
     [TestClass]
     public class ListenerClientFlowTest
     {
-        const string basicResponse = "{\"value\":\"TestKey\"}";
+        private const string basicResponse = "{\"value\":\"TestKey\"}";
 
         [TestMethod]
         public void TestListenerClientSuccess()
@@ -50,7 +53,7 @@
                 .ReturnsAsync(basicResponse);
             var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
 
-            mq.Setup(s => s.ProcessTask(It.IsAny<string>()))
+            mq.Setup(s => s.ProcessTransaction(It.IsAny<string>()))
                 .Throws(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
 
             try
@@ -62,7 +65,7 @@
                 //this is expected
             }
 
-            mq.Verify(f => f.OpenTask(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
+            mq.Verify(f => f.OpenTransaction(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
             mq.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Never);
             mq.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
@@ -88,7 +91,7 @@
                 //This is expected
             }
 
-            mq.Verify(f => f.OpenTask(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
+            mq.Verify(f => f.OpenTransaction(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
             mq.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Once);
             mq.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }

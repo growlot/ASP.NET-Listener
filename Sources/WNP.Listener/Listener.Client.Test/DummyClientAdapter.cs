@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// <copyright file="DummyClientAdapter.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Threading.Tasks;
 
 namespace AMSLLC.Listener.Client.Test
@@ -13,6 +14,7 @@ namespace AMSLLC.Listener.Client.Test
     public class DummyClientAdapter : IHttpClientAdapter
     {
         private HttpClient tmpClient = new HttpClient();
+
         public void Dispose()
         {
             //throw new NotImplementedException();

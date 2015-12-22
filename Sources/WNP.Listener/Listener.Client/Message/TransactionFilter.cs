@@ -11,9 +11,13 @@ namespace AMSLLC.Listener.Client.Message
     public class TransactionFilter
     {
         public string EntityCategory { get; set; }
+
         public string EntityKey { get; set; }
+
         public string BatchNumber { get; set; }
+
         public List<TransactionStatusType> StatusTypes { get; } = new List<TransactionStatusType>();
+
         public DateTime? TransactionDate { get; set; }
     }
 }

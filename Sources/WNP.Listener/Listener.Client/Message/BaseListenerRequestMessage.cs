@@ -1,10 +1,11 @@
-﻿namespace AMSLLC.Listener.Client.Message
+﻿// <copyright file="BaseListenerRequestMessage.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.Client.Message
 {
     public abstract class BaseListenerRequestMessage
     {
-        public string EntityCategory { get; }
-        public string OperationKey { get; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseListenerRequestMessage"/> class.
         /// </summary>
@@ -17,5 +18,9 @@
             this.EntityCategory = entityCategory;
             this.OperationKey = operationKey;
         }
+
+        public string EntityCategory { get; }
+
+        public string OperationKey { get; }
     }
 }
