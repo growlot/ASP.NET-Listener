@@ -37,6 +37,7 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using Newtonsoft.Json;
+using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	public abstract partial class BaseListenerODataController: ODataController{
@@ -213,6 +214,20 @@ using Newtonsoft.Json;
 				}
 			}
 			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] <#= keyType #> key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<<#= entityType #>>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<<#= entityType #>>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
 		}
 
 		partial void UpdateNested(<#= entityType #> entity, <#= entityType #> newData);

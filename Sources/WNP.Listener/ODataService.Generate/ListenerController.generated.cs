@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using Newtonsoft.Json;
+using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	public abstract partial class BaseListenerODataController: ODataController{
@@ -189,6 +190,20 @@ using Newtonsoft.Json;
 				}
 			}
 			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<TransactionRegistryEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<TransactionRegistryEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
 		}
 
 		partial void UpdateNested(TransactionRegistryEntity entity, TransactionRegistryEntity newData);
@@ -366,6 +381,20 @@ using Newtonsoft.Json;
 			return this.Updated(update);
 		}
 
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<TransactionMessageDatumEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<TransactionMessageDatumEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
 		partial void UpdateNested(TransactionMessageDatumEntity entity, TransactionMessageDatumEntity newData);
 
 		private bool RecordExists(System.Guid key)
@@ -539,6 +568,20 @@ using Newtonsoft.Json;
 				}
 			}
 			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<TransactionRegistryViewEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<TransactionRegistryViewEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
 		}
 
 		partial void UpdateNested(TransactionRegistryViewEntity entity, TransactionRegistryViewEntity newData);
@@ -716,6 +759,20 @@ using Newtonsoft.Json;
 			return this.Updated(update);
 		}
 
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<EndpointEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<EndpointEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
 		partial void UpdateNested(EndpointEntity entity, EndpointEntity newData);
 
 		private bool RecordExists(System.Int32 key)
@@ -889,6 +946,20 @@ using Newtonsoft.Json;
 				}
 			}
 			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<ProtocolTypeEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<ProtocolTypeEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
 		}
 
 		partial void UpdateNested(ProtocolTypeEntity entity, ProtocolTypeEntity newData);
@@ -1066,6 +1137,20 @@ using Newtonsoft.Json;
 			return this.Updated(update);
 		}
 
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<EndpointTriggerTypeEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<EndpointTriggerTypeEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
 		partial void UpdateNested(EndpointTriggerTypeEntity entity, EndpointTriggerTypeEntity newData);
 
 		private bool RecordExists(System.Int32 key)
@@ -1239,6 +1324,20 @@ using Newtonsoft.Json;
 				}
 			}
 			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<ValueMapEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<ValueMapEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
 		}
 
 		partial void UpdateNested(ValueMapEntity entity, ValueMapEntity newData);
@@ -1416,6 +1515,20 @@ using Newtonsoft.Json;
 			return this.Updated(update);
 		}
 
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<ValueMapEntryEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<ValueMapEntryEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
 		partial void UpdateNested(ValueMapEntryEntity entity, ValueMapEntryEntity newData);
 
 		private bool RecordExists(System.Int32 key)
@@ -1591,6 +1704,20 @@ using Newtonsoft.Json;
 			return this.Updated(update);
 		}
 
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<FieldConfigurationEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<FieldConfigurationEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
 		partial void UpdateNested(FieldConfigurationEntity entity, FieldConfigurationEntity newData);
 
 		private bool RecordExists(System.Int32 key)
@@ -1764,6 +1891,20 @@ using Newtonsoft.Json;
 				}
 			}
 			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<FieldConfigurationEntryEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<FieldConfigurationEntryEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
 		}
 
 		partial void UpdateNested(FieldConfigurationEntryEntity entity, FieldConfigurationEntryEntity newData);
