@@ -77,6 +77,7 @@
     <Compile Include="ListenerPersistenceAdapter.cs" />
     <Compile Include="Models\EndpointEntity.cs" />
     <Compile Include="Models\EndpointTriggerTypeEntity.cs" />
+    <Compile Include="Models\FieldConfigurationEntity.cs" />
     <Compile Include="Models\Generated\Database.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
