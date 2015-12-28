@@ -5,7 +5,6 @@
 namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// Interface for OData query handler that returns single object as a result.
@@ -45,6 +44,6 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
         /// Fetches the fully formatted resulting instance of the requested entity.
         /// </summary>
         /// <returns>Instance of the entity class, defined in OData model assembly.</returns>
-        object FetchSingle();
+        object Fetch();
     }
 }

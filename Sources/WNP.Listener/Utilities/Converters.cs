@@ -15,6 +15,16 @@ namespace AMSLLC.Listener.Utilities
     /// </summary>
     public static class Converters
     {
+        private static readonly Dictionary<string, Type> StringToType = new Dictionary<string, Type>()
+        {
+            { "DateTimeOffset", typeof(DateTimeOffset) },
+            { "string", typeof(string) },
+            { "decimal", typeof(decimal) },
+            { "int", typeof(int) },
+            { "char", typeof(char) },
+            { "float", typeof(float) }
+        };
+
         private static readonly Dictionary<Type, Func<object, object>> Conversions = new Dictionary<Type, Func<object, object>>
         {
             { typeof(decimal), v => System.Convert.ToDecimal(v, CultureInfo.InvariantCulture) },
@@ -156,6 +166,21 @@ namespace AMSLLC.Listener.Utilities
                         StringUtilities.Invariant($"convert-value-{targetType}"));
                     return converter.Convert(value);
             }
+        }
+
+        /// <summary>
+        /// Converts string type name to CLR Type
+        /// </summary>
+        /// <param name="typeName">String type name</param>
+        /// <returns>CLR Type</returns>
+        public static Type ConvertStringToType(string typeName)
+        {
+            if (StringToType.ContainsKey(typeName))
+            {
+                return StringToType[typeName];
+            }
+
+            return null;
         }
     }
 }

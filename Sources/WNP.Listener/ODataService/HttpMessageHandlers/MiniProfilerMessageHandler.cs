@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
+    using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading;
@@ -27,7 +28,7 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
                 var responseMessage = await response.Content.ReadAsStringAsync();
                 if (IsJson(responseMessage))
                 {
-                    var jsSerializer = new JavaScriptSerializer();
+                    var jsSerializer = new JavaScriptSerializer { MaxJsonLength = int.MaxValue };
                     var obj = jsSerializer.DeserializeObject(responseMessage);
 
                     var dic = (Dictionary<string, object>)obj;

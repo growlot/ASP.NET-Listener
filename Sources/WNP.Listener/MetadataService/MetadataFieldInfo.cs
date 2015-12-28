@@ -4,6 +4,8 @@
 
 namespace AMSLLC.Listener.MetadataService
 {
+    using System;
+
     /// <summary>
     /// Metadata information about database field.
     /// </summary>
@@ -16,6 +18,14 @@ namespace AMSLLC.Listener.MetadataService
         /// The type of the data.
         /// </value>
         public string DataType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the clr data type of the field.
+        /// </summary>
+        /// <value>
+        /// The CLR type of the field.
+        /// </value>
+        public Type ClrDataType { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this field is a part of primary key.

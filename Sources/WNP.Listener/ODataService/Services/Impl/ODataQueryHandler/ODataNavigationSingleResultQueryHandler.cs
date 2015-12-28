@@ -1,4 +1,4 @@
-﻿// <copyright file="ODataSingleResultQueryHandler.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="ODataNavigationSingleResultQueryHandler.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
@@ -8,38 +8,40 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
     using System.Collections.Generic;
     using System.Linq;
 
-    using AMSLLC.Listener.Domain;
     using AMSLLC.Listener.MetadataService;
     using AMSLLC.Listener.ODataService.Controllers.Base;
     using AMSLLC.Listener.Persistence.WNP;
+    using AMSLLC.Listener.Repository.WNP;
 
     using Newtonsoft.Json;
 
     /// <summary>
-    /// IODataSingleResultQueryHandler default implementation
+    /// IODataNavigationSingleResultQueryHandler default implementation
     /// </summary>
-    public class ODataSingleResultQueryHandler : IODataSingleResultQueryHandler
+    public class ODataNavigationSingleResultQueryHandler : IODataNavigationSingleResultQueryHandler
     {
         private readonly IMetadataProvider metadataProvider;
 
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IWNPUnitOfWork unitOfWork;
 
-        private Type edmEntityClrType;
+        private Type parentEdmEntityClrType;
 
-        private KeyValuePair<string, object>[] key;
+        private Type childEdmEntityClrType;
+
+        private List<KeyValuePair<string, object>> key;
 
         private DbColumnList selectedFields;
 
-        private MetadataEntityModel mainModel;
+        private MetadataEntityModel childModel;
 
         private MetadataEntityModel[] relatedEntityModels;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ODataSingleResultQueryHandler"/> class.
+        /// Initializes a new instance of the <see cref="ODataNavigationSingleResultQueryHandler"/> class.
         /// </summary>
-        /// <param name="metadataProvider">The MetadataProvider</param>
-        /// <param name="unitOfWork">Current UnitOfWork</param>
-        public ODataSingleResultQueryHandler(IMetadataProvider metadataProvider, IUnitOfWork unitOfWork)
+        /// <param name="metadataProvider">The metadata provider</param>
+        /// <param name="unitOfWork">The unit of work</param>
+        public ODataNavigationSingleResultQueryHandler(IMetadataProvider metadataProvider, IWNPUnitOfWork unitOfWork)
         {
             this.metadataProvider = metadataProvider;
             this.unitOfWork = unitOfWork;
@@ -48,12 +50,15 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
         /// <summary>
         /// Defines on what type this query will be built upon.
         /// </summary>
-        /// <param name="clrType">The CLR type</param>
-        /// <returns>Current instance of the IODataSingleResultQueryHandler</returns>
-        public IODataSingleResultQueryHandler OnType(Type clrType)
+        /// <param name="parentClrType">Parent CLR type</param>
+        /// <param name="childClrType">Child CLR type</param>
+        /// <returns>Current instance of the IODataNavigationSingleResultQueryHandler</returns>
+        public IODataNavigationSingleResultQueryHandler OnTypes(Type parentClrType, Type childClrType)
         {
-            this.edmEntityClrType = clrType;
-            this.mainModel = this.metadataProvider.GetModelMapping(this.edmEntityClrType);
+            this.parentEdmEntityClrType = parentClrType;
+            this.childEdmEntityClrType = childClrType;
+
+            this.childModel = this.metadataProvider.GetModelMapping(this.childEdmEntityClrType);
 
             return this;
         }
@@ -61,39 +66,23 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
         /// <summary>
         /// Sets the "raw", json-formatted key of entity to be retrieved.
         /// </summary>
-        /// <param name="rawKey">The json-formatted key</param>
-        /// <returns>Current instance of the IODataSingleResultQueryHandler</returns>
-        public IODataSingleResultQueryHandler WithKey(string rawKey)
+        /// <param name="rawParentKey">The json-formatted parent key</param>
+        /// <param name="rawChildKey">The json-formatted child key</param>
+        /// <returns>Current instance of the IODataNavigationSingleResultQueryHandler</returns>
+        public IODataNavigationSingleResultQueryHandler WithKeys(string rawParentKey, string rawChildKey)
         {
-            if (this.mainModel == null)
+            if (this.childModel == null)
             {
                 // this is a shortcut to avoid creating a separate builder hierarchy for
                 // OnType call branch
-                throw new InvalidOperationException("WithKey method should be called after OnType");
+                throw new InvalidOperationException("WithKeys method should be called after OnTypes");
             }
 
-            var entityConfig = this.mainModel.EntityConfiguration;
+            var parent = Helper.GetKey(rawParentKey, this.childModel, true).ToList();
+            var child = Helper.GetKey(rawChildKey, this.childModel, false).ToList();
 
-            var hasCompositeKey = entityConfig.Key?.Count() > 1;
-            var jsonKey = rawKey;
-            if (jsonKey == null)
-            {
-                throw new ArgumentException("Invalid key specified");
-            }
-
-            var key = new Dictionary<string, object>();
-            if (hasCompositeKey)
-            {
-                key = jsonKey.ToCompositeKeyDictionary();
-            }
-            else
-            {
-                key.Add(
-                    this.mainModel.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
-                    JsonConvert.DeserializeObject(jsonKey));
-            }
-
-            this.key = key.ToArray();
+            this.key = new List<KeyValuePair<string, object>>(parent);
+            this.key.AddRange(child);
 
             return this;
         }
@@ -103,8 +92,8 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
         /// Currently, only main entity fields are supported due to the limitation of OData implementation in WebAPI.
         /// </summary>
         /// <param name="fields">The list of requested fields</param>
-        /// <returns>Current instance of the IODataSingleResultQueryHandler</returns>
-        public IODataSingleResultQueryHandler SelectFields(string[] fields)
+        /// <returns>Current instance of the IODataNavigationSingleResultQueryHandler</returns>
+        public IODataNavigationSingleResultQueryHandler SelectFields(string[] fields)
         {
             if (this.relatedEntityModels == null)
             {
@@ -113,7 +102,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
                 throw new InvalidOperationException("SelectFields method should be called after Expand");
             }
 
-            this.selectedFields = new DbColumnList(fields, this.mainModel, this.relatedEntityModels);
+            this.selectedFields = new DbColumnList(fields, this.childModel, this.relatedEntityModels);
 
             return this;
         }
@@ -122,8 +111,8 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
         /// Defines what fields should be expanded on the entity.
         /// </summary>
         /// <param name="expands">The list of clr type names of the fields to be expanded.</param>
-        /// <returns>Current instance of the IODataSingleResultQueryHandler</returns>
-        public IODataSingleResultQueryHandler Expand(string[] expands)
+        /// <returns>Current instance of the IODataNavigationSingleResultQueryHandler</returns>
+        public IODataNavigationSingleResultQueryHandler Expand(string[] expands)
         {
             this.relatedEntityModels =
                 expands?.Select(clrEntityType => this.metadataProvider.GetModelMapping(clrEntityType))
@@ -143,16 +132,16 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
 
             // Generate SQL
             var sql =
-                Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From($"{this.mainModel.TableName}");
+                Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From($"{this.childModel.TableName}");
 
             // Add necessary joins
-            Helper.PerformJoins(ref sql, this.mainModel, this.relatedEntityModels);
+            Helper.PerformJoins(ref sql, this.childModel, this.relatedEntityModels);
 
             // Add key selector
             sql = sql.Where(
                     this.key.Select(
                         (kvp, ind) =>
-                        $"{this.mainModel.TableName}.{this.mainModel.ModelToColumnMappings[kvp.Key]}=@{ind}")
+                        $"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind}")
                         .Aggregate((s, s1) => $"{s} AND {s1}"),
                     this.key.Select(kvp => kvp.Value).ToArray());
 
@@ -163,35 +152,34 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
 
             // Check obvious errors
             if (this.relatedEntityModels.Length == 0
-                && this.mainModel.EntityConfiguration.VirtualRelations.Count == 0
+                && this.childModel.EntityConfiguration.VirtualRelations.Count == 0
                 && dbResults.Length > 1)
             {
                 throw new InvalidNumberOfRecordsException("Request returned more than 1 record.");
             }
-
-            if (dbResults.Length == 0)
+            else if (dbResults.Length == 0)
             {
                 throw new EntityNotFoundException();
             }
 
             return
-               new DynamicEntityConstructor(
-                   this.metadataProvider,
-                   this.mainModel,
-                   this.selectedFields,
-                   this.relatedEntityModels,
-                   this.edmEntityClrType,
-                   dbResults).GetEntity();
+                new DynamicEntityConstructor(
+                    this.metadataProvider,
+                    this.childModel,
+                    this.selectedFields,
+                    this.relatedEntityModels,
+                    this.childEdmEntityClrType,
+                    dbResults).GetEntity();
         }
 
         private void CheckMandatoryFields()
         {
-            if (this.edmEntityClrType == null || this.mainModel == null)
+            if (this.parentEdmEntityClrType == null || this.childModel == null)
             {
                 throw new InvalidOperationException("Resulting Type is not set");
             }
 
-            if (this.key == null || this.key.Length == 0)
+            if (this.key == null || this.key.Count == 0)
             {
                 throw new InvalidOperationException("Required entity key is not set");
             }

@@ -14,8 +14,6 @@ namespace AMSLLC.Listener.MetadataService
     /// </summary>
     public class EntityConfiguration
     {
-        private IEnumerable<string> parentKey = null;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityConfiguration"/> class.
         /// </summary>
@@ -28,8 +26,31 @@ namespace AMSLLC.Listener.MetadataService
         /// <summary>Gets table name</summary>
         public string TableName { get; }
 
+        /// <summary>
+        /// Gets or sets the part of the entity key that
+        /// should be taken from parent entity if entity is contained
+        /// </summary>
+        public IEnumerable<string> ParentKey { get; set; } = null;
+
         /// <summary>Gets key</summary>
         public IEnumerable<string> Key { get; private set; } = null;
+
+        /// <summary>
+        /// Gets full (parent + child) key
+        /// </summary>
+        public IEnumerable<string> FullKey
+        {
+            get
+            {
+                var fullKey = this.ParentKey.Union(this.Key);
+                if (this.IsOwnerSpecific)
+                {
+                    fullKey = fullKey.Union(new[] { "OWNER" });
+                }
+
+                return fullKey;
+            }
+        }
 
         /// <summary>Gets a value indicating whether the entity is owner specific</summary>
         public bool IsOwnerSpecific { get; private set; } = false;
@@ -79,7 +100,7 @@ namespace AMSLLC.Listener.MetadataService
         public EntityConfiguration Contained(params string[] parentKeyFields)
         {
             this.IsContained = true;
-            this.parentKey = parentKeyFields;
+            this.ParentKey = parentKeyFields;
             this.UpdateKeys();
 
             return this;
@@ -225,10 +246,10 @@ namespace AMSLLC.Listener.MetadataService
         /// </summary>
         private void UpdateKeys()
         {
-            if (this.parentKey != null && this.Key != null)
+            if (this.ParentKey != null && this.Key != null)
             {
                 var tempList = this.Key.ToList();
-                tempList.RemoveAll(item => this.parentKey.Contains(item, StringComparer.OrdinalIgnoreCase));
+                tempList.RemoveAll(item => this.ParentKey.Contains(item, StringComparer.OrdinalIgnoreCase));
                 this.Key = tempList;
             }
         }

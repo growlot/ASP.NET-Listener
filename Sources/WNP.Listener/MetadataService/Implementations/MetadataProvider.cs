@@ -147,12 +147,13 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     containmentAttribute = "[Contained]";
                 }
 
+                var fieldEnding = targetEntity.ClassName.EndsWith("s", StringComparison.InvariantCultureIgnoreCase) ? string.Empty : "s";
                 var property = new CodeSnippetTypeMember
                 {
                     Text =
                         relation.RelationType == RelationType.OneToMany
                             ? StringUtilities.Invariant(
-                                $"{containmentAttribute} public List<{targetEntity.ClassName}> {targetEntity.ClassName}s {{get; set;}}")
+                                $"{containmentAttribute} public List<{targetEntity.ClassName}> {targetEntity.ClassName}{fieldEnding} {{get; set;}}")
                             : StringUtilities.Invariant(
                                 $"public {targetEntity.ClassName} {targetEntity.ClassName} {{get; set;}}")
                 };
@@ -208,6 +209,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                     var fieldInfo = new MetadataFieldInfo()
                     {
                         DataType = dataType,
+                        ClrDataType = Converters.ConvertStringToType(dataType),
                         IsPrimaryKey = isPrimary
                     };
 
@@ -240,15 +242,6 @@ namespace AMSLLC.Listener.MetadataService.Implementations
                 oDataModelMappings.Add(
                     StringUtilities.Invariant($"{this.ODataModelNamespace}.{modelClassName}"),
                     oDataModelMapping);
-
-/*
-                foreach (var relation in entityConfiguration.VirtualRelations)
-                {
-                    oDataModelMappings.Add(
-                        StringUtilities.Invariant($"{this.ODataModelNamespace}.{relation.VirtualEntityName}"),
-                        new MetadataEntityModel(null, relation.VirtualEntityName, null, null, null, null, null));
-                }
-*/
             }
         }
 
