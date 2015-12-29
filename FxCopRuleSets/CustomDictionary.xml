@@ -18,6 +18,7 @@
       <Word>ninject</Word> <!-- DI framework name -->
       <Word>edm</Word> <!-- Entity Data Model (used in OData) -->
       <Word>kh</Word> <!-- The the number of Watt-Hours per revolution on meter. -->
+      <Word>composable</Word> 
     </Recognized>
     <Compound>
 		  <Term CompoundAlternate="LabTrack">labtrack</Term>

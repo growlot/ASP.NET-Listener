@@ -3915,6 +3915,9 @@ namespace <#= fullNamespace #>
         /// <param name="keys">dictionary with the names and values of keys</param>
         public static <#= returnTypeName #> ByKey(this global::Microsoft.OData.Client.DataServiceQuery<<#= entityTypeName #>> source, global::System.Collections.Generic.Dictionary<string, object> keys)
         {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
             return new <#= returnTypeName #>(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
         }
         /// <summary>
@@ -3932,6 +3935,10 @@ namespace <#= fullNamespace #>
         public static <#= returnTypeName #> ByKey(this global::Microsoft.OData.Client.DataServiceQuery<<#= entityTypeName #>> source,
             <#= keyParameters #>)
         {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
             global::System.Collections.Generic.Dictionary<string, object> keys = new global::System.Collections.Generic.Dictionary<string, object>
             {
                 <#= keyDictionaryItems #>
@@ -3972,6 +3979,10 @@ namespace <#= fullNamespace #>
 #>
         public static <#= isReturnEntity ? returnTypeName + this.singleSuffix : string.Format(this.DataServiceQuerySingleStructureTemplate, returnTypeName) #> <#= functionName #>(this <#= boundTypeName #> source<#= string.IsNullOrEmpty(parameters) ? string.Empty : ", " + parameters #><#= useEntityReference ? ", bool useEntityReference = false" : string.Empty #>)
         {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
             if (!source.IsComposable)
             {
                 throw new global::System.NotSupportedException("The previous function is not composable.");
@@ -3998,6 +4009,10 @@ namespace <#= fullNamespace #>
 #>
         public static global::Microsoft.OData.Client.DataServiceQuery<<#= returnTypeName #>> <#= functionName #>(this <#= boundTypeName #> source<#= string.IsNullOrEmpty(parameters) ? string.Empty : ", " + parameters #><#= useEntityReference ? ", bool useEntityReference = true" : string.Empty #>)
         {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
             if (!source.IsComposable)
             {
                 throw new global::System.NotSupportedException("The previous function is not composable.");
@@ -4024,6 +4039,10 @@ namespace <#= fullNamespace #>
 #>
         public static <#= returnTypeName #> <#= actionName #>(this <#= boundSourceType #> source<#= string.IsNullOrEmpty(parameters) ? string.Empty : ", " + parameters #>)
         {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
             if (!source.IsComposable)
             {
                 throw new global::System.NotSupportedException("The previous function is not composable.");

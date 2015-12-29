@@ -19,8 +19,16 @@ namespace AMSLLC.Listener.Client.Message
             this.OperationKey = operationKey;
         }
 
+        /// <summary>
+        /// Gets the entity category.
+        /// </summary>
+        /// <value>The entity category.</value>
         public string EntityCategory { get; }
 
+        /// <summary>
+        /// Gets the operation key.
+        /// </summary>
+        /// <value>The operation key.</value>
         public string OperationKey { get; }
     }
 }

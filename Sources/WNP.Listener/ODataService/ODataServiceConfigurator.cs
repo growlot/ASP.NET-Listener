@@ -66,13 +66,10 @@ namespace AMSLLC.Listener.ODataService
             new ODataListenerServiceConfigurator().Run(builder);
 
             // Create a message handler chain with an end-point.
-            DelegatingHandler[] handlers = new DelegatingHandler[] { new ListenerMessageHandler() };
-            var routeHandlers = HttpClientFactory.CreatePipeline(new HttpControllerDispatcher(config), handlers);
             config.MapODataServiceRoute(
                 routeName: "listener",
                 routePrefix: "listener",
-                model: builder.GetEdmModel(),
-                defaultHandler: routeHandlers);
+                model: builder.GetEdmModel());
         }
     }
 }

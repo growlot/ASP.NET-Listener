@@ -53,13 +53,13 @@ namespace ListenerLiveTest.Client
                             UseExplicit();
                             break;
                         case "-TEST":
-                            UseClient(20);
-                            UseManager(parallelCount, 20);
-                            UseClientForBatch();
                             var f = new TransactionFilter();
                             f.StatusTypes.Add(TransactionStatusType.Failed);
                             QueryData(f);
+                            UseClient(20);
+                            UseManager(parallelCount, 20);                          
                             UseExplicit();
+                            UseClientForBatch();
                             break;
                     }
 
@@ -68,6 +68,8 @@ namespace ListenerLiveTest.Client
             catch (Exception exc)
             {
                 Log.Logger.Error("Closing due to an error: {0}", exc.Message);
+                Console.WriteLine("Press ENTER to exit...");
+                Console.ReadLine();
             }
             finally
             {
@@ -166,16 +168,18 @@ namespace ListenerLiveTest.Client
                 {
                     try
                     {
-                        List<object> data = new List<object>();
+                        List<BaseListenerRequestMessage> data = new List<BaseListenerRequestMessage>();
                         for (int i = 0; i < totalRequests; i++)
                         {
-                            data.Add(new OpenTransactionRequestWrapper<OpenTransactionRequestMessage>(new OpenTransactionRequestMessage("EM", "Install")
+                            data.Add(new DeviceUpdateRequestMessage("EM")
                             {
-                                EntityKey = Guid.NewGuid().ToString("D")
-                            }));
+                                EntityKey = Guid.NewGuid().ToString("D"),
+                                Owner = "Live Test User",
+                                CreatedDate = DateTime.UtcNow
+                            });
                         }
 
-                        await manager.Run(new Uri($"{AppConfig.ListenerUrl}/Open"), data.ToArray());
+                        await manager.Run(new Uri($"{AppConfig.ListenerUrl}"), data.ToArray());
                         Log.Logger.Information("Manager completed");
                     }
                     catch (Exception exc)

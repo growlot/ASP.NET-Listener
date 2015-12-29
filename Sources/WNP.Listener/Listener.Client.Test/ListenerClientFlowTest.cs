@@ -14,7 +14,7 @@ namespace AMSLLC.Listener.Client.Test
     [TestClass]
     public class ListenerClientFlowTest
     {
-        private const string basicResponse = "{\"value\":\"TestKey\"}";
+        /*private const string basicResponse = "{\"value\":\"TestKey\"}";
 
         [TestMethod]
         public void TestListenerClientSuccess()
@@ -95,5 +95,6 @@ namespace AMSLLC.Listener.Client.Test
             mq.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Once);
             mq.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
+        */
     }
 }

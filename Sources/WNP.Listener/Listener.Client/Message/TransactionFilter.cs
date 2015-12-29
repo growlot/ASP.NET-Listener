@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Client.Message
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using Shared;
 
     public class TransactionFilter
@@ -16,7 +17,7 @@ namespace AMSLLC.Listener.Client.Message
 
         public string BatchNumber { get; set; }
 
-        public List<TransactionStatusType> StatusTypes { get; } = new List<TransactionStatusType>();
+        public ICollection<TransactionStatusType> StatusTypes { get; } = new Collection<TransactionStatusType>();
 
         public DateTime? TransactionDate { get; set; }
     }

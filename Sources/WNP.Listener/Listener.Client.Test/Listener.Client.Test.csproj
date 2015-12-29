@@ -55,8 +55,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ClientProxyTest.cs" />
-    <Compile Include="DummyClientAdapter.cs" />
     <Compile Include="ListenerClientFlowTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

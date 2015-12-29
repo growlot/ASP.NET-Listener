@@ -211,7 +211,6 @@
     <Compile Include="KeyValuePathSegmentExtensions.cs" />
     <Compile Include="ListenerODataContext.cs" />
     <Compile Include="ListenerRequestHeaderMap.cs" />
-    <Compile Include="HttpMessageHandlers\ListenerMessageHandler.cs" />
     <Compile Include="HttpMessageHandlers\TransactionalODataBatchHandler.cs" />
     <Compile Include="Model\BatchRequestMessage.cs" />
     <Compile Include="ODataListenerServiceConfigurator.cs" />

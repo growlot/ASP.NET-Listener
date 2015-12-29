@@ -10,6 +10,8 @@ namespace ListenerLiveTest.Client.Communication
     using System.Dynamic;
     using System.Net.Http;
     using System.Threading;
+    using AMSLLC.Listener.Client;
+    using AMSLLC.Listener.Client.Message;
     using Newtonsoft.Json;
     using Serilog;
 
@@ -22,14 +24,14 @@ namespace ListenerLiveTest.Client.Communication
             ParallelRequests = parallelRequests;
         }
 
-        public async Task Run(Uri uri, object[] data)
+        public async Task Run(Uri uri, BaseListenerRequestMessage[] data)
         {
             int counter = 0;
             int processingCounter = 0;
             List<Task> tasks = new List<Task>();
             foreach (var o in data)
             {
-                var t1 = Task.Run(() => Interlocked.Increment(ref counter)).ContinueWith(t => PrepareRequest(uri, o)).Unwrap();
+                var t1 = Task.Run(() => Interlocked.Increment(ref counter)).ContinueWith(t => OpenTransaction(uri, o)).Unwrap();
 
 
 
@@ -56,6 +58,39 @@ namespace ListenerLiveTest.Client.Communication
             var tm = new Timer(new TimerCallback(o => Log.Logger.Information("Parallel count: Open: {0}, Process: {1}", counter, processingCounter)), null, 0, 100);
             await Task.WhenAll(tasks);
             tm.Dispose();
+        }
+
+        /// <summary>
+        /// Opens the transaction.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>Task&lt;System.String&gt;.</returns>
+        private Task<string> OpenTransaction(Uri uri, BaseListenerRequestMessage request)
+        {
+            var d = request;
+            ListenerClient client = new ListenerClient(uri);
+
+
+
+            var response = client.OpenTransactionAsync(request);
+            return response.ContinueWith(t =>
+            {
+                client.Dispose();
+                if (t.IsFaulted)
+                {
+                    t.Exception?.Handle(x =>
+                    {
+                        Log.Logger.Error("An error has occured while failing transaction {0}", JsonConvert.SerializeObject(t.Exception));
+                        return true;
+                    });
+                }
+                else
+                {
+                    Log.Information("Opened transaction at {0}", uri);
+                }
+
+                return t.Result;
+            });
         }
 
         private Task<string> PrepareRequest(Uri uri, object data)

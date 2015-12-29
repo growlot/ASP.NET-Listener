@@ -11,9 +11,20 @@ namespace AMSLLC.Listener.Client
 
     public static class ClientUtilities
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second, Func<Expression, Expression, Expression> merge)
         {
-            // zip parameters (map from parameters of second to parameters of first)
+            if (first == null)
+            {
+                throw new ArgumentNullException(nameof(first));
+            }
+
+            if (merge == null)
+            {
+                throw new ArgumentNullException(nameof(merge));
+            }
+
+            // map from parameters of second to parameters of firs)
             var map = first.Parameters
                 .Select((f, i) => new { f, s = second.Parameters[i] })
                 .ToDictionary(p => p.s, p => p.f);

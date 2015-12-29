@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Client.Exception
     using System;
     using System.Runtime.Serialization;
 
+    [Serializable]
     public class FailedToProcessTransactionException : Exception
     {
         public FailedToProcessTransactionException()

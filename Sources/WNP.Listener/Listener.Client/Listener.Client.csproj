@@ -93,15 +93,12 @@
     <Compile Include="Exception\FailedToProcessTransactionException.cs" />
     <Compile Include="Exception\FailedToSucceedTransactionException.cs" />
     <Compile Include="Exception\ListenerRequestFailedException.cs" />
-    <Compile Include="HttpClientAdapter.cs" />
-    <Compile Include="IHttpClientAdapter.cs" />
-    <Compile Include="IListenerProxy.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ListenerODataClient.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ListenerODataClient.tt</DependentUpon>
     </Compile>
-    <Compile Include="ListenerProxy.cs" />
     <Compile Include="ListenerClient.cs" />
     <Compile Include="ListenerRequestHeaderDictionary.cs" />
     <Compile Include="Message\BaseListenerRequestMessage.cs" />
@@ -111,7 +108,6 @@
     <Compile Include="Message\DeviceTestResultRequestMessage.cs" />
     <Compile Include="Message\DeviceUpdateMessage.cs" />
     <Compile Include="Message\DeviceUpdateRequestMessage.cs" />
-    <Compile Include="Message\OpenTransactionRequestWrapper.cs" />
     <Compile Include="Message\ProcessingFailedRequestMessage.cs" />
     <Compile Include="Message\ChangeDeviceStatusMessage.cs" />
     <Compile Include="Message\TransactionFilter.cs" />

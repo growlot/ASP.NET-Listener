@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Communication.Jms
 {
     using System;
+    using System.CodeDom;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -58,6 +59,7 @@ namespace AMSLLC.Listener.Communication.Jms
                 });
             }
 
+            Log.Information(StringUtilities.Invariant($"JMS: Message type: {returnValue}"));
             return returnValue;
         }
 
@@ -110,52 +112,80 @@ namespace AMSLLC.Listener.Communication.Jms
 
             Log.Information("JMS: Sending message to {0}:{1}", configuration.Host, configuration.Port);
 
-            // create properties dictionary
-            IDictionary<string, object> paramMap = new Dictionary<string, object>();
+            try
+            {
+                // create properties dictionary
+                IDictionary<string, object> paramMap = new Dictionary<string, object>();
 
-            // add necessary properties
-            paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(configuration.Host, configuration.Port);
-            paramMap[Constants.Context.SECURITY_PRINCIPAL] = configuration.UserName;
-            paramMap[Constants.Context.SECURITY_CREDENTIALS] = configuration.Password;
+                // add necessary properties
+                paramMap[Constants.Context.PROVIDER_URL] = "t3://{0}:{1}".FormatWith(
+                    configuration.Host,
+                    configuration.Port);
+                paramMap[Constants.Context.SECURITY_PRINCIPAL] = configuration.UserName;
+                paramMap[Constants.Context.SECURITY_CREDENTIALS] = configuration.Password;
 
-            // get the initial context
-            IContext context = ContextFactory.CreateContext(paramMap);
+                Log.Debug("JMS: ParamMap built");
 
-            // lookup the connection factory
-            IConnectionFactory cf = context.LookupConnectionFactory(cfName);
+                // get the initial context
+                IContext context = ContextFactory.CreateContext(paramMap);
 
-            // lookup the queue
-            IQueue queue = (IQueue)context.LookupDestination(configuration.QueueName);
+                Log.Debug("JMS: Context Created");
 
-            // create a connection
-            IConnection connection = cf.CreateConnection();
+                // lookup the connection factory
+                IConnectionFactory cf = context.LookupConnectionFactory(cfName);
 
-            // start the connection
-            connection.Start();
+                // lookup the queue
+                IQueue queue = (IQueue)context.LookupDestination(configuration.QueueName);
 
-            // create a session
-            ISession session = connection.CreateSession(Constants.SessionMode.AUTO_ACKNOWLEDGE);
+                // create a connection
+                IConnection connection = cf.CreateConnection();
 
-            // create a message producer
-            IMessageProducer producer = session.CreateProducer(queue);
+                Log.Debug("JMS: Connection created");
 
-            producer.DeliveryMode = Constants.DeliveryMode.PERSISTENT;
+                // start the connection
+                connection.Start();
 
-            // create a text message
-            ITextMessage textMessage = CreateMessage(session, request, jmsAdapterConfiguration);
+                Log.Debug("JMS: Connection started");
 
-            // send the message
-            producer.Send(textMessage);
+                // create a session
+                ISession session = connection.CreateSession(Constants.SessionMode.AUTO_ACKNOWLEDGE);
 
-            // CLEAN UP
-            connection.Close();
+                Log.Debug("JMS: Session started");
 
-            context.CloseAll();
-            Log.Information("JMS: Message sent");
+                // create a message producer
+                IMessageProducer producer = session.CreateProducer(queue);
+
+                Log.Debug("JMS: Producer created");
+
+                producer.DeliveryMode = Constants.DeliveryMode.PERSISTENT;
+
+                // create a text message
+                ITextMessage textMessage = CreateMessage(session, request, jmsAdapterConfiguration);
+
+                Log.Debug("JMS: Connection created");
+
+                // send the message
+                producer.Send(textMessage);
+
+                Log.Information("JMS: Message sent");
+
+                // CLEAN UP
+                connection.Close();
+
+                context.CloseAll();
+
+                Log.Debug("JMS: Cleaned");
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Exception occured while sending message");
+                throw;
+            }
         }
 
         private static ITextMessage CreateMessage(ISession session, TransactionDataReady data, ProtocolConfiguration configuration)
         {
+            Log.Information("JMS: Creating message");
             var returnValue = session.CreateTextMessage(JsonConvert.SerializeObject(data.RecordKey));
             returnValue.JMSType = CreateMessageType(data.Data, configuration.MessageTypeTemplate);
             return returnValue;

@@ -11,7 +11,6 @@ namespace AMSLLC.Listener.Client
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AMSLLC.Listener;
-    using AMSLLC.Listener.Persistence.Listener;
     using Exception;
     using Message;
     using Newtonsoft.Json;
@@ -25,35 +24,14 @@ namespace AMSLLC.Listener.Client
     {
         private readonly Uri baseUri = null;
         private Container container = null;
-        private IListenerProxy proxy = null;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListenerClient" /> class.
+        /// Initializes a new instance of the <see cref="ListenerClient"/> class.
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
+        /// <param name="proxy">The proxy.</param>
         public ListenerClient(string baseUri)
-            : this(baseUri, new ListenerProxy(new ListenerRequestHeaderDictionary()))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ListenerClient"/> class.
-        /// </summary>
-        /// <param name="baseUri">The base URI.</param>
-        /// <param name="proxy">The proxy.</param>
-        public ListenerClient(
-            string baseUri,
-            IListenerProxy proxy)
-            : this(new Uri(baseUri), proxy)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ListenerClient"/> class.
-        /// </summary>
-        /// <param name="baseUri">The base URI.</param>
-        public ListenerClient(Uri baseUri)
-            : this(baseUri, new ListenerProxy(new ListenerRequestHeaderDictionary()))
+            : this(new Uri(baseUri))
         {
         }
 
@@ -61,14 +39,12 @@ namespace AMSLLC.Listener.Client
         /// Initializes a new instance of the <see cref="ListenerClient" /> class.
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
-        /// <param name="proxy">The proxy.</param>
         public ListenerClient(
-            Uri baseUri,
-            IListenerProxy proxy)
+            Uri baseUri)
         {
             this.baseUri = baseUri;
-            this.proxy = proxy;
             this.container = new Container(this.baseUri);
+            this.container.BuildingRequest += this.BuildingRequest;
         }
 
         /// <summary>
@@ -86,8 +62,7 @@ namespace AMSLLC.Listener.Client
         public void Dispose()
         {
             this.Dispose(true);
-
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -97,6 +72,11 @@ namespace AMSLLC.Listener.Client
         public void ProcessDeviceTestResult(
             DeviceTestResultMessage request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var requestMessage = new DeviceTestResultRequestMessage(request.EquipmentType)
             {
                 EntityKey = request.EquipmentNumber,
@@ -104,9 +84,7 @@ namespace AMSLLC.Listener.Client
                 Owner = request.CompanyId
             };
 
-            this.Execute(
-                new Uri("listener/Open", UriKind.Relative),
-                new OpenTransactionRequestWrapper<DeviceTestResultRequestMessage>(requestMessage));
+            this.Execute(() => this.OpenTransaction(requestMessage));
         }
 
         /// <summary>
@@ -116,15 +94,18 @@ namespace AMSLLC.Listener.Client
         public void ProcessDeviceUpdate(
             DeviceUpdateMessage request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var requestMessage = new DeviceUpdateRequestMessage(request.EquipmentType)
             {
                 EntityKey = request.EquipmentNumber,
                 Owner = request.CompanyId
             };
 
-            this.Execute(
-                new Uri("listener/Open", UriKind.Relative),
-                new OpenTransactionRequestWrapper<DeviceUpdateRequestMessage>(requestMessage));
+            this.Execute(() => this.OpenTransaction(requestMessage));
         }
 
         /// <summary>
@@ -134,7 +115,11 @@ namespace AMSLLC.Listener.Client
         public void ProcessBatch(
             BatchAcceptedMessage request)
         {
-            this.Execute(new Uri("listener/BuildBatch", UriKind.Relative), request.BatchNumber);
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+            this.Execute(() => this.OpenBatch(request.BatchNumber));
         }
 
         /// <summary>
@@ -144,6 +129,12 @@ namespace AMSLLC.Listener.Client
         public void PublishTracking(
             ChangeDeviceStatusMessage request)
         {
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var requestMessage = new ChangeDeviceStatusRequestMessage(request.EquipmentType)
             {
                 EntityKey = request.EquipmentNumber,
@@ -151,9 +142,7 @@ namespace AMSLLC.Listener.Client
                 CreatedDate = request.CreatedDate
             };
 
-            this.Execute(
-                new Uri("listener/Open", UriKind.Relative),
-                new OpenTransactionRequestWrapper<ChangeDeviceStatusRequestMessage>(requestMessage));
+            this.Execute(() => this.OpenTransaction(requestMessage));
         }
 
         /// <summary>
@@ -165,7 +154,9 @@ namespace AMSLLC.Listener.Client
         public Task<string> OpenTransactionAsync<TRequest>(TRequest request)
             where TRequest : BaseListenerRequestMessage
         {
-            return this.proxy.OpenAsync(new Uri(this.baseUri, new Uri("listener/Open", UriKind.Relative)), request);
+            var result = this.container.Open(request.EntityCategory, request.OperationKey, JsonConvert.SerializeObject(request));
+
+            return result.GetValueAsync();
         }
 
         /// <summary>
@@ -234,12 +225,12 @@ namespace AMSLLC.Listener.Client
         /// Tasks the fail transaction.
         /// </summary>
         /// <param name="transactionKey">The transaction key.</param>
-        /// <param name="excMessage">The exc message.</param>
+        /// <param name="exceptionMessage">The exception message.</param>
         /// <param name="stackTrace">The stack trace.</param>
         /// <returns>Task.</returns>
         public Task FailTransactionAsync(
             string transactionKey,
-            string excMessage,
+            string exceptionMessage,
             string stackTrace)
         {
             var query = this.container.TransactionRegistry.ByKey(
@@ -248,7 +239,7 @@ namespace AMSLLC.Listener.Client
                     {
                         "RecordKey", Guid.Parse(transactionKey)
                     }
-                }).Fail(excMessage, stackTrace);
+                }).Fail(exceptionMessage, stackTrace);
             return query.ExecuteAsync().ContinueWith(
                 t =>
                 {
@@ -259,7 +250,7 @@ namespace AMSLLC.Listener.Client
                             Log.Logger.Error("An error has occured while failing transaction {0}", JsonConvert.SerializeObject(t.Exception));
                             return true;
                         });
-                        throw new FailedToFailTransaction();
+                        throw new FailedToFailTransactionException();
                     }
                 });
         }
@@ -273,10 +264,16 @@ namespace AMSLLC.Listener.Client
             TransactionFilter filter)
         {
             Log.Logger.Information("Querying transaction with filter {0}", JsonConvert.SerializeObject(filter));
+            Expression<Func<TransactionRegistryViewEntity, bool>> filterExpression = null;
+            if (filter != null)
+            {
+                filterExpression = BuildQuery(filter);
+                Log.Information("Applying filter: {0}", filterExpression);
+            }
             var result =
-                (filter == null
+                (filterExpression == null
                     ? this.container.TransactionRegistryDetails
-                    : this.container.TransactionRegistryDetails.Where(this.BuildQuery(filter))).ToList();
+                    : this.container.TransactionRegistryDetails.Where(filterExpression)).ToList();
             return result.Select(
                 s => new TransactionInfoResponseMessage
                 {
@@ -295,16 +292,32 @@ namespace AMSLLC.Listener.Client
         /// <summary>
         /// Opens the transaction.
         /// </summary>
-        /// <param name="relativeUri">The relative URI.</param>
         /// <param name="message">The message.</param>
         /// <returns>The transaction key.</returns>
-        public virtual string OpenTransaction(Uri relativeUri, object message)
+        public virtual string OpenTransaction(BaseListenerRequestMessage message)
         {
-            var task = this.proxy.OpenAsync(new Uri(this.baseUri, relativeUri), message);
-
-            task.Wait();
-            return task.Result;
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+            var result = this.container.Open(message.EntityCategory, message.OperationKey, JsonConvert.SerializeObject(message));
+            return result.GetValue();
         }
+
+        /// <summary>
+        /// Opens the transaction.
+        /// </summary>
+        /// <param name="batchKey">The batch key.</param>
+        /// <returns>The transaction key.</returns>
+        public virtual string OpenBatch(string batchKey)
+        {
+
+            var result = this.container.BuildBatch(batchKey);
+
+            return result.GetValue();
+        }
+
+
 
         /// <summary>
         /// Fails the transaction.
@@ -317,18 +330,18 @@ namespace AMSLLC.Listener.Client
                     string errorMessage,
                     string errorDetails)
         {
-            var t =
-                this.proxy.OpenAsync(
-                    new Uri(
-                        this.baseUri,
-                        new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Fail()", UriKind.Relative)),
-                    JsonConvert.SerializeObject(
-                        new ProcessingFailedRequestMessage
-                        {
-                            Message = errorMessage,
-                            Details = errorDetails
-                        }));
-            t.Wait();
+            var query = this.container.TransactionRegistry.ByKey(
+                new Dictionary<string, object>
+                {
+                    {
+                        "RecordKey", Guid.Parse(transactionKey)
+                    }
+                }).Fail(errorMessage, errorDetails);
+            var response = query.Execute();
+            if (response.StatusCode == 500 || response.Error != null)
+            {
+                throw new FailedToFailTransactionException(response.Error?.Message, response.Error);
+            }
         }
 
         /// <summary>
@@ -337,14 +350,19 @@ namespace AMSLLC.Listener.Client
         /// <param name="transactionKey">The transaction key.</param>
         public virtual void ProcessTransaction(string transactionKey)
         {
-            var openedTask =
-                this.proxy.OpenAsync(
-                    new Uri(
-                        this.baseUri,
-                        new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Process()", UriKind.Relative)),
-                    null);
+            var query = this.container.TransactionRegistry.ByKey(
+               new Dictionary<string, object>
+               {
+                    {
+                        "RecordKey", Guid.Parse(transactionKey)
+                    }
+               }).Process();
 
-            openedTask.Wait();
+            var response = query.Execute();
+            if (response.StatusCode == 500 || response.Error != null)
+            {
+                throw new FailedToProcessTransactionException(response.Error?.Message, response.Error);
+            }
         }
 
         /// <summary>
@@ -353,14 +371,19 @@ namespace AMSLLC.Listener.Client
         /// <param name="transactionKey">The transaction key.</param>
         public virtual void SucceedTransaction(string transactionKey)
         {
-            var succeedTask =
-                this.proxy.OpenAsync(
-                    new Uri(
-                        this.baseUri,
-                        new Uri($"listener/TransactionRegistry({transactionKey})/AMSLLC.Listener.Succeed()", UriKind.Relative)),
-                    null);
+            var query = this.container.TransactionRegistry.ByKey(
+               new Dictionary<string, object>
+               {
+                    {
+                        "RecordKey", Guid.Parse(transactionKey)
+                    }
+               }).Succeed();
 
-            succeedTask.Wait();
+            var response = query.Execute();
+            if (response.StatusCode == 500 || response.Error != null)
+            {
+                throw new FailedToSucceedTransactionException(response.Error?.Message, response.Error);
+            }
         }
 
         /// <summary>
@@ -373,11 +396,11 @@ namespace AMSLLC.Listener.Client
         {
             if (disposing)
             {
-                this.proxy.Dispose();
+
             }
         }
 
-        private Expression<Func<TransactionRegistryViewEntity, bool>> BuildQuery(
+        private static Expression<Func<TransactionRegistryViewEntity, bool>> BuildQuery(
             TransactionFilter filter)
         {
             Expression<Func<TransactionRegistryViewEntity, bool>> baseExpression = (o) => true;
@@ -409,7 +432,7 @@ namespace AMSLLC.Listener.Client
                         Expression.AndAlso);
                 }
 
-                var str = filter.StatusTypes.Select(s => (int)s);
+                var str = filter.StatusTypes.Cast<int>().ToArray();
                 if (str.Any())
                 {
                     Expression<Func<TransactionRegistryViewEntity, bool>> inner = (o) => false;
@@ -425,13 +448,13 @@ namespace AMSLLC.Listener.Client
             return baseExpression;
         }
 
-        private void Execute(Uri relativeUri,  object message)
+        private void Execute(Func<string> opener)
         {
             string transactionKey;
             string response;
             try
             {
-                response = this.OpenTransaction(relativeUri, message);
+                response = opener();
 
                 Log.Logger.Information("Opened transaction {0}", response);
             }
@@ -480,6 +503,15 @@ namespace AMSLLC.Listener.Client
             {
                 Log.Logger.Error(exc, "Failed to succeed transaction");
                 throw new FailedToSucceedTransactionException(exc.Message, exc);
+            }
+        }
+
+        private void BuildingRequest(object sender, Microsoft.OData.Client.BuildingRequestEventArgs e)
+        {
+            var headers = new ListenerRequestHeaderDictionary();
+            foreach (KeyValuePair<string, string> keyValuePair in headers)
+            {
+                e.Headers.Add(keyValuePair.Key, keyValuePair.Value);
             }
         }
     }

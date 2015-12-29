@@ -13,10 +13,22 @@ namespace AMSLLC.Listener.Client.Message
         {
         }
 
+        /// <summary>
+        /// Gets or sets the entity key.
+        /// </summary>
+        /// <value>The entity key.</value>
         public string EntityKey { get; set; }
 
+        /// <summary>
+        /// Gets or sets the owner.
+        /// </summary>
+        /// <value>The owner.</value>
         public string Owner { get; set; }
 
+        /// <summary>
+        /// Gets or sets the created date.
+        /// </summary>
+        /// <value>The created date.</value>
         public DateTime CreatedDate { get; set; }
     }
 }
