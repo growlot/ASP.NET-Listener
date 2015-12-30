@@ -54,7 +54,7 @@ namespace ListenerLiveTest.Client
                             break;
                         case "-TEST":
                             var f = new TransactionFilter();
-                            f.StatusTypes.Add(TransactionStatusType.Failed);
+                            f.StatusTypes.Add(TransactionStatusType.Pending);
                             QueryData(f);
                             UseClient(20);
                             UseManager(parallelCount, 20);                          

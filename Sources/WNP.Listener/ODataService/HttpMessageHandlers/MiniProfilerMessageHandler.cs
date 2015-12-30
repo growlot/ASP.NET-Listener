@@ -2,6 +2,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
+using System.Text;
+
 namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
     using System;
@@ -32,9 +34,9 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
                     var obj = jsSerializer.DeserializeObject(responseMessage);
 
                     var dic = (Dictionary<string, object>)obj;
-                    dic.Add("profile", jsSerializer.DeserializeObject(MiniProfiler.ToJson()));
+                    dic.Add("@profile", jsSerializer.DeserializeObject(MiniProfiler.ToJson()));
 
-                    response.Content = new StringContent(jsSerializer.Serialize(dic));
+                    response.Content = new StringContent(jsSerializer.Serialize(dic), Encoding.UTF8, "application/json");
                 }
             }
 
