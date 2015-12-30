@@ -61,7 +61,7 @@ namespace AMSLLC.Listener.ODataService
                 routingConventions: conventions,
                 defaultHandler: routeHandlersWnp);
 
-            var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener" };
+            var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener", ContainerName = "ListenerContainer" };
 
             new ODataListenerServiceConfigurator().Run(builder);
 
