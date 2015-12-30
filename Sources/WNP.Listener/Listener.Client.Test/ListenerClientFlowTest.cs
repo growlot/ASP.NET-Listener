@@ -14,18 +14,18 @@ namespace AMSLLC.Listener.Client.Test
     [TestClass]
     public class ListenerClientFlowTest
     {
-        /*private const string basicResponse = "{\"value\":\"TestKey\"}";
+        private const string basicResponse = "{\"value\":\"TestKey\"}";
 
         [TestMethod]
         public void TestListenerClientSuccess()
         {
-            var proxyMock = new Mock<IListenerProxy>();
-            proxyMock.Setup(
-                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>()))
-                .ReturnsAsync(basicResponse);
-            var lc = new ListenerClient("http://localhost", proxyMock.Object);
+            var lc = new Mock<ListenerClient>("http://localhost") ;
+            lc.Setup(
+                s => s.OpenTransaction(It.IsAny<BaseListenerRequestMessage>()))
+                .Returns(basicResponse);
+            //var lc = new ListenerClient("http://localhost", proxyMock.Object);
 
-            lc.ProcessDeviceUpdate(new DeviceUpdateMessage());
+            lc.Object.ProcessDeviceUpdate(new DeviceUpdateMessage());
 
             Assert.IsTrue(true, "Should have reached this point without exceptions");
         }
@@ -34,12 +34,12 @@ namespace AMSLLC.Listener.Client.Test
         [ExpectedException(typeof(FailedToOpenTransactionException), "Should have failed with FailedToOpenTransactionException")]
         public void TestListenerClientHttpResponseErrorFailed()
         {
-            var proxyMock = new Mock<IListenerProxy>();
-            proxyMock.Setup(
-                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>())).ThrowsAsync(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
-            var lc = new ListenerClient("http://localhost", proxyMock.Object);
+            var lc = new Mock<ListenerClient>("http://localhost");
+            lc.Setup(
+                s => s.OpenTransaction(It.IsAny<BaseListenerRequestMessage>())).Throws(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
+            //var lc = new ListenerClient("http://localhost", proxyMock.Object);
 
-            lc.ProcessDeviceUpdate(new DeviceUpdateMessage());
+            lc.Object.ProcessDeviceUpdate(new DeviceUpdateMessage());
 
             Assert.Fail("Shouldn't have reached this");
         }
@@ -47,54 +47,54 @@ namespace AMSLLC.Listener.Client.Test
         [TestMethod]
         public void TestListenerClientProcessingFailed()
         {
-            var proxyMock = new Mock<IListenerProxy>();
-            proxyMock.Setup(
-                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>()))
-                .ReturnsAsync(basicResponse);
-            var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
+            var lc = new Mock<ListenerClient>("http://localhost");
+            lc.Setup(
+                s => s.OpenTransaction(It.IsAny<BaseListenerRequestMessage>()))
+                .Returns(basicResponse);
+            //var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
 
-            mq.Setup(s => s.ProcessTransaction(It.IsAny<string>()))
+            lc.Setup(s => s.ProcessTransaction(It.IsAny<string>()))
                 .Throws(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
 
             try
             {
-                mq.Object.ProcessDeviceUpdate(new DeviceUpdateMessage());
+                lc.Object.ProcessDeviceUpdate(new DeviceUpdateMessage());
             }
             catch (FailedToProcessTransactionException)
             {
                 //this is expected
             }
 
-            mq.Verify(f => f.OpenTransaction(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
-            mq.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Never);
-            mq.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            lc.Verify(f => f.OpenTransaction(It.IsAny<BaseListenerRequestMessage>()), Times.Once);
+            lc.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Never);
+            lc.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [TestMethod]
         public void TestListenerClientSucceedingFailed()
         {
-            var proxyMock = new Mock<IListenerProxy>();
-            proxyMock.Setup(
-                s => s.OpenAsync(It.IsAny<Uri>(), It.IsAny<object>()))
-                .ReturnsAsync(basicResponse);
-            var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
+            var lc = new Mock<ListenerClient>("http://localhost");
+            lc.Setup(
+                s => s.OpenTransaction(It.IsAny<BaseListenerRequestMessage>()))
+                .Returns(basicResponse);
+            // var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
 
-            mq.Setup(s => s.SucceedTransaction(It.IsAny<string>()))
+            lc.Setup(s => s.SucceedTransaction(It.IsAny<string>()))
                 .Throws(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
 
             try
             {
-                mq.Object.ProcessDeviceUpdate(new DeviceUpdateMessage());
+                lc.Object.ProcessDeviceUpdate(new DeviceUpdateMessage());
             }
             catch (FailedToSucceedTransactionException)
             {
                 //This is expected
             }
 
-            mq.Verify(f => f.OpenTransaction(It.IsAny<Uri>(), It.IsAny<object>()), Times.Once);
-            mq.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Once);
-            mq.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            lc.Verify(f => f.OpenTransaction(It.IsAny<BaseListenerRequestMessage>()), Times.Once);
+            lc.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Once);
+            lc.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
-        */
+
     }
 }

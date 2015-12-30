@@ -150,7 +150,7 @@ namespace AMSLLC.Listener.Client
         /// <typeparam name="TRequest">The type of the request.</typeparam>
         /// <param name="request">The request.</param>
         /// <returns>The unique transaction key.</returns>
-        public Task<string> OpenTransactionAsync<TRequest>(
+        public virtual Task<string> OpenTransactionAsync<TRequest>(
             TRequest request) where TRequest : BaseListenerRequestMessage
         {
             DataServiceActionQuerySingle<string> result = this.container.Open(
@@ -168,7 +168,7 @@ namespace AMSLLC.Listener.Client
         /// <returns>
         ///     Task.
         /// </returns>
-        public Task ProcessTransactionAsync(
+        public virtual Task ProcessTransactionAsync(
             string transactionKey)
         {
             DataServiceActionQuery query = this.container.TransactionRegistry.ByKey(
