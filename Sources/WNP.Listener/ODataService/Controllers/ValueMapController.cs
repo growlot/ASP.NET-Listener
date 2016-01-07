@@ -18,9 +18,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 entity.ValueMapEntries.Where(
                     s => newData.ValueMapEntries.All(ss => ss.ValueMapEntryId != s.ValueMapEntryId)).ToList();
 
-            var toUpdate =
-                entity.ValueMapEntries.Where(
-                    s => newData.ValueMapEntries.Any(ss => ss.ValueMapEntryId == s.ValueMapEntryId)).ToList();
+            //var toUpdate =
+            //    entity.ValueMapEntries.Where(
+            //        s => newData.ValueMapEntries.Any(ss => ss.ValueMapEntryId == s.ValueMapEntryId)).ToList();
 
             foreach (ValueMapEntryEntity valueMapEntryEntity in toDelete)
             {

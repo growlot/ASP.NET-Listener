@@ -33,6 +33,12 @@ namespace AMSLLC.Listener.DatabaseMigrations
                 .ToTable("ValueMap").PrimaryColumn("ValueMapId").OnDeleteOrUpdate(System.Data.Rule.Cascade);
 
             this.Alter.Table("ValueMapEntry").AlterColumn("RecordKey").AsString(100).Nullable();
+
+            this.Execute.Sql("ALTER TABLE OperationEndpoint DROP CONSTRAINT  FK_OperEndp_EntCatOper");
+
+            this.Create.ForeignKey("FK_OperEndp_EntCatOper")
+                .FromTable("OperationEndpoint").ForeignColumn("EntityCategoryOperationId")
+                .ToTable("EntityCategoryOperation").PrimaryColumn("EntityCategoryOperationId").OnDeleteOrUpdate(System.Data.Rule.Cascade);
         }
 
         /// <summary>
@@ -53,6 +59,12 @@ namespace AMSLLC.Listener.DatabaseMigrations
                .ToTable("ValueMap").PrimaryColumn("ValueMapId");
 
             this.Alter.Table("ValueMapEntry").AlterColumn("RecordKey").AsString(100).NotNullable();
+
+            this.Execute.Sql("ALTER TABLE OperationEndpoint DROP CONSTRAINT  FK_OperEndp_EntCatOper");
+
+            this.Create.ForeignKey("FK_OperEndp_EntCatOper")
+                .FromTable("OperationEndpoint").ForeignColumn("EntityCategoryOperationId")
+                .ToTable("EntityCategoryOperation").PrimaryColumn("EntityCategoryOperationId");
         }
     }
 }

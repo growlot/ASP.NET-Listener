@@ -2,6 +2,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
+using Serilog;
+
 namespace AMSLLC.Listener.ODataService
 {
     using System;
@@ -13,14 +15,14 @@ namespace AMSLLC.Listener.ODataService
     public class ListenerODataContext : DbContext
     {
         public ListenerODataContext()
-            : base("name=ListenerContext")
+            : this("name=ListenerContext")
         {
-            Database.SetInitializer<ListenerODataContext>(null);
         }
 
         public ListenerODataContext(string connectionString)
             : base(connectionString)
         {
+            this.Database.Log = (s) => Log.Debug(s);
             Database.SetInitializer<ListenerODataContext>(null);
         }
 
@@ -54,7 +56,20 @@ namespace AMSLLC.Listener.ODataService
         [CLSCompliant(false)]
         public DbSet<FieldConfigurationEntryEntity> FieldConfigurationEntry { get; set; }
 
+        [CLSCompliant(false)]
+        public DbSet<EntityCategoryOperationEntity> EntityCategoryOperation { get; set; }
 
+        [CLSCompliant(false)]
+        public DbSet<EnabledOperationEntity> EnabledOperation { get; set; }
+
+        [CLSCompliant(false)]
+        public DbSet<EntityCategoryEntity> EntityCategory { get; set; }
+
+        [CLSCompliant(false)]
+        public DbSet<OperationEntity> Operation { get; set; }
+
+        [CLSCompliant(false)]
+        public DbSet<OperationEndpointEntity> OperationEndpoint { get; set; }
 
 
         /// <inheritdoc/>
@@ -70,7 +85,11 @@ namespace AMSLLC.Listener.ODataService
             this.MapPetaPocoEntity<ValueMapEntryEntity, int>(modelBuilder, a => a.ValueMapEntryId);
             this.MapPetaPocoEntity<FieldConfigurationEntity, int>(modelBuilder, a => a.FieldConfigurationId);
             this.MapPetaPocoEntity<FieldConfigurationEntryEntity, int>(modelBuilder, a => a.FieldConfigurationEntryId);
-
+            this.MapPetaPocoEntity<EntityCategoryOperationEntity, int>(modelBuilder, a => a.EntityCategoryOperationId);
+            this.MapPetaPocoEntity<EntityCategoryEntity, int>(modelBuilder, a => a.EntityCategoryId);
+            this.MapPetaPocoEntity<EnabledOperationEntity, int>(modelBuilder, a => a.EnabledOperationId);
+            this.MapPetaPocoEntity<OperationEntity, int>(modelBuilder, a => a.OperationId);
+            this.MapPetaPocoEntity<OperationEndpointEntity, int>(modelBuilder, a => a.OperationEndpointId);
             base.OnModelCreating(modelBuilder);
         }
 

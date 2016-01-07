@@ -68,6 +68,22 @@ namespace AMSLLC.Listener.ODataService
                 }, tableName);
         }
 
+        protected override void SetupEntityCategoryOperationController(
+            ODataModelBuilder builder,
+            Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryOperationEntity>> actionBuilder = null,
+            string tableName = null)
+        {
+            base.SetupEntityCategoryOperationController(
+                builder,
+                (modelBuilder,
+                    configuration) =>
+                {
+                    configuration.ContainsRequired(entity => entity.EnabledOperation);
+                    configuration.ContainsRequired(entity => entity.EntityCategory);
+                    configuration.ContainsMany(entity => entity.OperationEndpoints);
+                }, tableName);
+        }
+
         protected override void SetupTransactionRegistryDetailsController(
             ODataModelBuilder builder,
             Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null, string tableName = null)

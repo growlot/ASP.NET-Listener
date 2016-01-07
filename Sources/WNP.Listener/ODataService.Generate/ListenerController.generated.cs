@@ -81,6 +81,8 @@ using System.Net;
 				}
 			}
 
+			
+
 		/// <summary>
         /// Update entity
         /// </summary>
@@ -269,6 +271,8 @@ using System.Net;
 					throw;
 				}
 			}
+
+			
 
 		/// <summary>
         /// Update entity
@@ -459,6 +463,8 @@ using System.Net;
 				}
 			}
 
+			
+
 		/// <summary>
         /// Update entity
         /// </summary>
@@ -647,6 +653,8 @@ using System.Net;
 					throw;
 				}
 			}
+
+			
 
 		/// <summary>
         /// Update entity
@@ -837,6 +845,8 @@ using System.Net;
 				}
 			}
 
+			
+
 		/// <summary>
         /// Update entity
         /// </summary>
@@ -1025,6 +1035,8 @@ using System.Net;
 					throw;
 				}
 			}
+
+			
 
 		/// <summary>
         /// Update entity
@@ -1215,6 +1227,8 @@ using System.Net;
 				}
 			}
 
+			
+
 		/// <summary>
         /// Update entity
         /// </summary>
@@ -1403,6 +1417,8 @@ using System.Net;
 					throw;
 				}
 			}
+
+			
 
 		/// <summary>
         /// Update entity
@@ -1593,6 +1609,8 @@ using System.Net;
 				}
 			}
 
+			
+
 		/// <summary>
         /// Update entity
         /// </summary>
@@ -1782,6 +1800,8 @@ using System.Net;
 				}
 			}
 
+			
+
 		/// <summary>
         /// Update entity
         /// </summary>
@@ -1921,6 +1941,942 @@ using System.Net;
         }
 	}
 
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class EntityCategoryOperationController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="EntityCategoryOperationController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public EntityCategoryOperationController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
+
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<EntityCategoryOperationEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<EntityCategoryOperationEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+		
+
+		/// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<EntityCategoryOperationEntity> delta)
+        {
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                var record = await this._dbContext.Set<EntityCategoryOperationEntity>().SingleOrDefaultAsync(s => s.EntityCategoryOperationId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+
+				this.Validate(record);
+
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Merge entity validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+		/// <summary>
+        /// Insert entity
+        /// </summary>
+        /// <param name="entity">The entity to insert</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Post(EntityCategoryOperationEntity entity)
+		{
+			try
+            {
+				Log.Debug("Received for INSERT: {0}", JsonConvert.SerializeObject(entity));
+				if (!this.ModelState.IsValid)
+				{
+					Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+					return this.BadRequest(this.ModelState);
+				}
+				this._dbContext.Set<EntityCategoryOperationEntity>().Add(entity);
+				await this._dbContext.SaveChangesAsync();
+				return Created(entity);
+			}
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+		}
+
+		/// <summary>
+        /// Replace entity
+        /// </summary>
+        /// <param name="update">The entity to replace</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, EntityCategoryOperationEntity update)
+		{
+			Log.Debug("Received for REPLACE: {0}", JsonConvert.SerializeObject(update));
+			if (!this.ModelState.IsValid)
+			{
+				Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+				return this.BadRequest(this.ModelState);
+			}
+			if (key != update.EntityCategoryOperationId)
+			{
+				Log.Warning("Attempting to replace different entity than targeted by key. Expected {0}, got {1}", key, update.EntityCategoryOperationId);
+				return this.BadRequest();
+			}
+
+			var entity = await this._dbContext.Set< EntityCategoryOperationEntity>().SingleOrDefaultAsync(s=>s.EntityCategoryOperationId == key);
+			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
+			this.UpdateNested(entity, update);
+
+			try
+			{
+				await this._dbContext.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!this.RecordExists(key))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<EntityCategoryOperationEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<EntityCategoryOperationEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
+		partial void UpdateNested(EntityCategoryOperationEntity entity, EntityCategoryOperationEntity newData);
+
+		private bool RecordExists(System.Int32 key)
+        {
+            return this._dbContext.Set<EntityCategoryOperationEntity>().Any(p => p.EntityCategoryOperationId == key);
+        } 
+
+        protected override void Dispose(bool disposing)
+        {
+            this._dbContext.Dispose();
+            base.Dispose(disposing);
+        }
+	}
+
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class EnabledOperationController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="EnabledOperationController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public EnabledOperationController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
+
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<EnabledOperationEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<EnabledOperationEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Int32 key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<EnabledOperationEntity>().SingleOrDefault(s => s.EnabledOperationId == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			
+
+		/// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<EnabledOperationEntity> delta)
+        {
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                var record = await this._dbContext.Set<EnabledOperationEntity>().SingleOrDefaultAsync(s => s.EnabledOperationId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+
+				this.Validate(record);
+
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Merge entity validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+		/// <summary>
+        /// Insert entity
+        /// </summary>
+        /// <param name="entity">The entity to insert</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Post(EnabledOperationEntity entity)
+		{
+			try
+            {
+				Log.Debug("Received for INSERT: {0}", JsonConvert.SerializeObject(entity));
+				if (!this.ModelState.IsValid)
+				{
+					Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+					return this.BadRequest(this.ModelState);
+				}
+				this._dbContext.Set<EnabledOperationEntity>().Add(entity);
+				await this._dbContext.SaveChangesAsync();
+				return Created(entity);
+			}
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+		}
+
+		/// <summary>
+        /// Replace entity
+        /// </summary>
+        /// <param name="update">The entity to replace</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, EnabledOperationEntity update)
+		{
+			Log.Debug("Received for REPLACE: {0}", JsonConvert.SerializeObject(update));
+			if (!this.ModelState.IsValid)
+			{
+				Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+				return this.BadRequest(this.ModelState);
+			}
+			if (key != update.EnabledOperationId)
+			{
+				Log.Warning("Attempting to replace different entity than targeted by key. Expected {0}, got {1}", key, update.EnabledOperationId);
+				return this.BadRequest();
+			}
+
+			var entity = await this._dbContext.Set< EnabledOperationEntity>().SingleOrDefaultAsync(s=>s.EnabledOperationId == key);
+			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
+			this.UpdateNested(entity, update);
+
+			try
+			{
+				await this._dbContext.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!this.RecordExists(key))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<EnabledOperationEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<EnabledOperationEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
+		partial void UpdateNested(EnabledOperationEntity entity, EnabledOperationEntity newData);
+
+		private bool RecordExists(System.Int32 key)
+        {
+            return this._dbContext.Set<EnabledOperationEntity>().Any(p => p.EnabledOperationId == key);
+        } 
+
+        protected override void Dispose(bool disposing)
+        {
+            this._dbContext.Dispose();
+            base.Dispose(disposing);
+        }
+	}
+
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class EntityCategoryController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="EntityCategoryController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public EntityCategoryController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
+
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<EntityCategoryEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<EntityCategoryEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Int32 key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<EntityCategoryEntity>().SingleOrDefault(s => s.EntityCategoryId == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			
+
+		/// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<EntityCategoryEntity> delta)
+        {
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                var record = await this._dbContext.Set<EntityCategoryEntity>().SingleOrDefaultAsync(s => s.EntityCategoryId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+
+				this.Validate(record);
+
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Merge entity validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+		/// <summary>
+        /// Insert entity
+        /// </summary>
+        /// <param name="entity">The entity to insert</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Post(EntityCategoryEntity entity)
+		{
+			try
+            {
+				Log.Debug("Received for INSERT: {0}", JsonConvert.SerializeObject(entity));
+				if (!this.ModelState.IsValid)
+				{
+					Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+					return this.BadRequest(this.ModelState);
+				}
+				this._dbContext.Set<EntityCategoryEntity>().Add(entity);
+				await this._dbContext.SaveChangesAsync();
+				return Created(entity);
+			}
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+		}
+
+		/// <summary>
+        /// Replace entity
+        /// </summary>
+        /// <param name="update">The entity to replace</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, EntityCategoryEntity update)
+		{
+			Log.Debug("Received for REPLACE: {0}", JsonConvert.SerializeObject(update));
+			if (!this.ModelState.IsValid)
+			{
+				Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+				return this.BadRequest(this.ModelState);
+			}
+			if (key != update.EntityCategoryId)
+			{
+				Log.Warning("Attempting to replace different entity than targeted by key. Expected {0}, got {1}", key, update.EntityCategoryId);
+				return this.BadRequest();
+			}
+
+			var entity = await this._dbContext.Set< EntityCategoryEntity>().SingleOrDefaultAsync(s=>s.EntityCategoryId == key);
+			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
+			this.UpdateNested(entity, update);
+
+			try
+			{
+				await this._dbContext.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!this.RecordExists(key))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<EntityCategoryEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<EntityCategoryEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
+		partial void UpdateNested(EntityCategoryEntity entity, EntityCategoryEntity newData);
+
+		private bool RecordExists(System.Int32 key)
+        {
+            return this._dbContext.Set<EntityCategoryEntity>().Any(p => p.EntityCategoryId == key);
+        } 
+
+        protected override void Dispose(bool disposing)
+        {
+            this._dbContext.Dispose();
+            base.Dispose(disposing);
+        }
+	}
+
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class OperationController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="OperationController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public OperationController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
+
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<OperationEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<OperationEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Int32 key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<OperationEntity>().SingleOrDefault(s => s.OperationId == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			
+
+		/// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<OperationEntity> delta)
+        {
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                var record = await this._dbContext.Set<OperationEntity>().SingleOrDefaultAsync(s => s.OperationId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+
+				this.Validate(record);
+
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Merge entity validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+		/// <summary>
+        /// Insert entity
+        /// </summary>
+        /// <param name="entity">The entity to insert</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Post(OperationEntity entity)
+		{
+			try
+            {
+				Log.Debug("Received for INSERT: {0}", JsonConvert.SerializeObject(entity));
+				if (!this.ModelState.IsValid)
+				{
+					Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+					return this.BadRequest(this.ModelState);
+				}
+				this._dbContext.Set<OperationEntity>().Add(entity);
+				await this._dbContext.SaveChangesAsync();
+				return Created(entity);
+			}
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+		}
+
+		/// <summary>
+        /// Replace entity
+        /// </summary>
+        /// <param name="update">The entity to replace</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, OperationEntity update)
+		{
+			Log.Debug("Received for REPLACE: {0}", JsonConvert.SerializeObject(update));
+			if (!this.ModelState.IsValid)
+			{
+				Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+				return this.BadRequest(this.ModelState);
+			}
+			if (key != update.OperationId)
+			{
+				Log.Warning("Attempting to replace different entity than targeted by key. Expected {0}, got {1}", key, update.OperationId);
+				return this.BadRequest();
+			}
+
+			var entity = await this._dbContext.Set< OperationEntity>().SingleOrDefaultAsync(s=>s.OperationId == key);
+			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
+			this.UpdateNested(entity, update);
+
+			try
+			{
+				await this._dbContext.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!this.RecordExists(key))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<OperationEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<OperationEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
+		partial void UpdateNested(OperationEntity entity, OperationEntity newData);
+
+		private bool RecordExists(System.Int32 key)
+        {
+            return this._dbContext.Set<OperationEntity>().Any(p => p.OperationId == key);
+        } 
+
+        protected override void Dispose(bool disposing)
+        {
+            this._dbContext.Dispose();
+            base.Dispose(disposing);
+        }
+	}
+
+	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
+	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
+	public partial class OperationEndpointController : BaseListenerODataController{
+			private readonly ListenerODataContext _dbContext;
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="OperationEndpointController" /> class.
+			/// </summary>
+			/// <param name="dbctx">The db context.</param>
+			public OperationEndpointController(ListenerODataContext dbctx)
+			{
+				this._dbContext = dbctx;
+			}
+
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			public IQueryable<OperationEndpointEntity> Get()
+			{
+				try
+				{
+					return this._dbContext.Set<OperationEndpointEntity>().AsQueryable();
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			/// <summary>
+			/// Get the single entity or null using primary key
+			/// </summary>
+			/// <param name="key">The key.</param>
+			/// <returns>System.Web.Http.IHttpActionResult.</returns>
+			public IHttpActionResult Get([FromODataUri] System.Int32 key)
+			{
+				try
+				{
+					var result = this._dbContext.Set<OperationEndpointEntity>().SingleOrDefault(s => s.OperationEndpointId == key);
+					return this.Ok(result);
+				}
+				catch (Exception exc)
+				{
+					Log.Error(exc, "Operation Failed");
+					throw;
+				}
+			}
+
+			
+
+		/// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Int32 key, Delta<OperationEndpointEntity> delta)
+        {
+            try
+            {
+                Log.Debug("Received for PATCh: {0}", JsonConvert.SerializeObject(delta));
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                var record = await this._dbContext.Set<OperationEndpointEntity>().SingleOrDefaultAsync(s => s.OperationEndpointId == key);
+
+                if (record == null)
+                {
+                    Log.Warning("Record not found for key: {0}", key);
+                    return this.BadRequest();
+                }
+
+                delta.Patch(record);
+
+				this.Validate(record);
+
+				if (!this.ModelState.IsValid)
+                {
+                    Log.Warning("Merge entity validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+                    return this.BadRequest(this.ModelState);
+                }
+
+                await this._dbContext.SaveChangesAsync();
+                return this.Updated(record);
+            }
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+        }
+
+		/// <summary>
+        /// Insert entity
+        /// </summary>
+        /// <param name="entity">The entity to insert</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Post(OperationEndpointEntity entity)
+		{
+			try
+            {
+				Log.Debug("Received for INSERT: {0}", JsonConvert.SerializeObject(entity));
+				if (!this.ModelState.IsValid)
+				{
+					Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+					return this.BadRequest(this.ModelState);
+				}
+				this._dbContext.Set<OperationEndpointEntity>().Add(entity);
+				await this._dbContext.SaveChangesAsync();
+				return Created(entity);
+			}
+            catch (Exception exc)
+            {
+                Log.Error(exc, "Operation Failed");
+                throw;
+            }
+		}
+
+		/// <summary>
+        /// Replace entity
+        /// </summary>
+        /// <param name="update">The entity to replace</param>
+        /// <returns>System.Web.Http.IHttpActionResult.</returns>
+		public async Task<IHttpActionResult> Put([FromODataUri] System.Int32 key, OperationEndpointEntity update)
+		{
+			Log.Debug("Received for REPLACE: {0}", JsonConvert.SerializeObject(update));
+			if (!this.ModelState.IsValid)
+			{
+				Log.Warning("Request validation failed: {0}", JsonConvert.SerializeObject(this.ModelState));
+				return this.BadRequest(this.ModelState);
+			}
+			if (key != update.OperationEndpointId)
+			{
+				Log.Warning("Attempting to replace different entity than targeted by key. Expected {0}, got {1}", key, update.OperationEndpointId);
+				return this.BadRequest();
+			}
+
+			var entity = await this._dbContext.Set< OperationEndpointEntity>().SingleOrDefaultAsync(s=>s.OperationEndpointId == key);
+			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
+			this.UpdateNested(entity, update);
+
+			try
+			{
+				await this._dbContext.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!this.RecordExists(key))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return this.Updated(update);
+		}
+
+		public async Task<IHttpActionResult> Delete([FromODataUri] System.Int32 key)
+		{
+			Log.Debug("Received for DELETE: {0}", key);
+			var record = await this._dbContext.Set<OperationEndpointEntity>().FindAsync(key);
+			if (record == null)
+			{
+				Log.Warning("Record not found for key: {0}", key);
+				return NotFound();
+			}
+			this._dbContext.Set<OperationEndpointEntity>().Remove(record);
+			await this._dbContext.SaveChangesAsync();
+			return StatusCode(HttpStatusCode.NoContent);
+		}
+
+		partial void UpdateNested(OperationEndpointEntity entity, OperationEndpointEntity newData);
+
+		private bool RecordExists(System.Int32 key)
+        {
+            return this._dbContext.Set<OperationEndpointEntity>().Any(p => p.OperationEndpointId == key);
+        } 
+
+        protected override void Dispose(bool disposing)
+        {
+            this._dbContext.Dispose();
+            base.Dispose(disposing);
+        }
+	}
+
 [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 public partial class ODataControllerConfigurator{
 
@@ -1940,6 +2896,11 @@ public partial class ODataControllerConfigurator{
 			this.SetupValueMapEntryController(builder);
 			this.SetupFieldConfigurationController(builder);
 			this.SetupFieldConfigurationEntryController(builder);
+			this.SetupEntityCategoryOperationController(builder);
+			this.SetupEnabledOperationController(builder);
+			this.SetupEntityCategoryController(builder);
+			this.SetupOperationController(builder);
+			this.SetupOperationEndpointController(builder);
 		}
 
 			/// <summary>
@@ -2030,6 +2991,51 @@ public partial class ODataControllerConfigurator{
 			/// <param name="actionBuilder">The action builder.</param>
 			protected virtual void SetupFieldConfigurationEntryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<FieldConfigurationEntryEntity>> actionBuilder = null, string tableName = null){
 				this.PrepareODataController<FieldConfigurationEntryEntity, System.Int32>(builder, a => a.FieldConfigurationEntryId, actionBuilder, tableName);
+			}
+
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupEntityCategoryOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryOperationEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<EntityCategoryOperationEntity, System.Int32>(builder, a => a.EntityCategoryOperationId, actionBuilder, tableName);
+			}
+
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupEnabledOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EnabledOperationEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<EnabledOperationEntity, System.Int32>(builder, a => a.EnabledOperationId, actionBuilder, tableName);
+			}
+
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupEntityCategoryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<EntityCategoryEntity, System.Int32>(builder, a => a.EntityCategoryId, actionBuilder, tableName);
+			}
+
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<OperationEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<OperationEntity, System.Int32>(builder, a => a.OperationId, actionBuilder, tableName);
+			}
+
+				/// <summary>
+			/// Setup the controller.
+			/// </summary>
+			/// <param name="builder">The builder.</param>
+			/// <param name="actionBuilder">The action builder.</param>
+			protected virtual void SetupOperationEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<OperationEndpointEntity>> actionBuilder = null, string tableName = null){
+				this.PrepareODataController<OperationEndpointEntity, System.Int32>(builder, a => a.OperationEndpointId, actionBuilder, tableName);
 			}
 
 	
