@@ -199,16 +199,7 @@ namespace AMSLLC.Listener.ODataService
         {
             var tableNameAttribute = typeof(T).GetCustomAttribute<Persistence.Poco.TableNameAttribute>();
 
-            // var primaryKeyAttribute = typeof(T).GetCustomAttribute<Persistence.Poco.PrimaryKeyAttribute>();
-            // var keyPropertyName = GetPropertyName(primaryKeySelector);
-            // if (string.Compare(primaryKeyAttribute.Value, keyPropertyName, StringComparison.InvariantCulture) != 0)
-            // {
-            //    throw new InvalidOperationException(
-            //        $"Specified {keyPropertyName} as primary key, {primaryKeyAttribute.Value} expected");
-            // }
             return modelBuilder.Entity<T>().HasKey(primaryKeySelector).ToTable(tableNameAttribute.Value);
-
-            // tps.HasIdLink((ctxt) => ctxt.Url.CreateODataLink(new EntitySetPathSegment("Products"), new KeyValuePathSegment("id")), false);
         }
 
         // private string GetPropertyName<T, TValue>(Expression<Func<T, TValue>> c)
