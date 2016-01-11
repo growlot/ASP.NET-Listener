@@ -75,6 +75,7 @@ namespace AMSLLC.Listener.Persistence.Listener
                         {
                             await this.UpdateHashCode(hashCode);
                         }
+
                         tr.Commit();
                     }
                 }

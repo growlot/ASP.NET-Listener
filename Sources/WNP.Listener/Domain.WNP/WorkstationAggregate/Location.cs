@@ -4,8 +4,6 @@
 
 namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
 {
-    using System;
-
     /// <summary>
     /// Specifies location that can be used to hold equipment
     /// </summary>

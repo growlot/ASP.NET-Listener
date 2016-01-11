@@ -6,7 +6,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System;
     using System.Collections.Generic;
-    using Communication;
     using Shared;
 
     /// <summary>

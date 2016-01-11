@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="EndpointTriggerTypeEntity.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.Persistence.Listener
 {
@@ -15,7 +13,6 @@ namespace AMSLLC.Listener.Persistence.Listener
         {
             [Key()]
             public int EndpointTriggerTypeId { get; set; }
-
         }
     }
 }

@@ -30,7 +30,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Repository;
     using Repository.WNP;
     using Repository.WNP.Model;
-    using Serilog;
     using Shared;
 
     [TestClass]
@@ -50,13 +49,11 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         [ClassCleanup]
         public static void ClassCleanup()
         {
-
         }
 
         [TestInitialize()]
         public void Initialize()
         {
-
         }
 
         [TestCleanup()]
@@ -144,7 +141,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             Assert.AreEqual(TransactionStatusType.Skipped, (TransactionStatusType)transactionStatusId2);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
-
         }
 
         [TestMethod]
@@ -172,7 +168,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             Assert.AreEqual(TransactionStatusType.Failed, (TransactionStatusType)transactionStatusId1);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
-
         }
 
         [TestMethod]
@@ -246,7 +241,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             var childStatuses = await GetChildTransactionStatus(_server, nextKey);
             Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Success));
-
         }
 
         [TestMethod]
@@ -491,7 +485,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                             }
                         }
                     }
-
                 });
             di.Rebind<IWnpBatchRepository>(batchRepository.Object);
             di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
@@ -504,7 +497,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 Times.Exactly(1));
 
             di.Kernel.Release(transactionRecordKeyBuilder.Object);
-
         }
 
         [TestMethod]
@@ -805,20 +797,23 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             where T : IOpenTransactionData
         {
             public string EntityCategory { get; set; }
+
             public string OperationKey { get; set; }
 
             public string Body { get; set; }
+
             public OpenTransactionWrapper(T data)
             {
-                EntityCategory = data.EntityCategory;
-                OperationKey = data.OperationKey;
-                Body = JsonConvert.SerializeObject(data);
+                this.EntityCategory = data.EntityCategory;
+                this.OperationKey = data.OperationKey;
+                this.Body = JsonConvert.SerializeObject(data);
             }
         }
 
         private interface IOpenTransactionData
         {
             string EntityCategory { get; }
+
             string OperationKey { get; }
         }
 
@@ -839,6 +834,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         private class BatchRequestMessage
         {
             public string Body { get; set; }
+
             public string BatchNumber { get; set; }
         }
 
@@ -851,6 +847,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             public string EntityKey { get; set; }
 
             public object OperationKey { get; set; }
+
             public int? Priority { get; set; }
         }
 

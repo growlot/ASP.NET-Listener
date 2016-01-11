@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="ProtocolTypeEntity.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.Persistence.Listener
 {
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     [MetadataType(typeof(ProtocolTypeMetadata))]
     public partial class ProtocolTypeEntity
@@ -16,7 +13,6 @@ namespace AMSLLC.Listener.Persistence.Listener
         {
             [Key()]
             public int ProtocolTypeId { get; set; }
-
         }
     }
 }

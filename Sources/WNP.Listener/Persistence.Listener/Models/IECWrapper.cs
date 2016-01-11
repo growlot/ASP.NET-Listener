@@ -12,6 +12,7 @@ namespace AMSLLC.Listener.Persistence.Listener.Models
     public class IECWrapper
     {
         public int EntityCategoryOperationId { get; private set; }
+
         public IntegrationEndpointConfigurationMemento IntegrationEndpointConfigurationMemento { get; private set; }
 
         public IECWrapper(IntegrationEndpointConfigurationMemento integrationEndpointConfigurationMemento, int entityCategoryOperationId)

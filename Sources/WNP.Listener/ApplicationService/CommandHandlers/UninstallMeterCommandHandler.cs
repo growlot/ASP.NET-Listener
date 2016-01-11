@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------
 namespace AMSLLC.Listener.ApplicationService.CommandHandlers
 {
-    using System;
     using System.Threading.Tasks;
     using Commands;
     using Domain;

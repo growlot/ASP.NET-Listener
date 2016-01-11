@@ -11,7 +11,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System.Collections.ObjectModel;
     using System.Globalization;
     using System.Linq;
-    using Communication;
     using Exception;
     using Shared;
 

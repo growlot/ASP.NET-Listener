@@ -15,7 +15,6 @@ namespace AMSLLC.Listener.ODataService
     using System.Web.OData.Routing.Conventions;
     using Controllers.Base;
     using MetadataService;
-    using Microsoft.OData.Edm;
 
     /// <summary>
     /// Custom OData routing convention for WNP.

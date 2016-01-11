@@ -12,7 +12,6 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     using System.Linq;
     using System.Threading.Tasks;
     using Commands;
-    using Communication;
     using Domain;
     using Domain.Listener.Transaction;
     using Model;

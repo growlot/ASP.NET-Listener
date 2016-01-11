@@ -1,18 +1,18 @@
-﻿// <copyright file="EventRegisterTests.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="InMemoryBusTests.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
 namespace AMSLLC.Listener.Bus.Test
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Domain;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
     /// Tests entity base class
     /// </summary>
     [TestClass]
-    public class EventRegisterTests
+    public class InMemoryBusTests
     {
         private IDomainEventBus domainEventBus = new InMemoryBus();
 
@@ -32,7 +32,8 @@ namespace AMSLLC.Listener.Bus.Test
         /// <summary>
         /// Exception is thrown when event data is not provided.
         /// </summary>
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void ExceptionThrownWhenEventDataNotProvided()
         {
             TestEvent eventData = null;

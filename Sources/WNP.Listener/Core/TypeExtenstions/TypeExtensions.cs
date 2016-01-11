@@ -5,7 +5,6 @@
 namespace System
 {
     using Collections.Generic;
-    using Diagnostics.CodeAnalysis;
     using Diagnostics.Contracts;
     using Linq;
     using Reflection;

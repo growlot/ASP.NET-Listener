@@ -28,7 +28,6 @@ namespace AMSLLC.Listener.Bootstrapper
     using ODataService.Services.Impl.FilterTransformer;
     using Persistence.Listener;
     using Persistence.WNP;
-    using Persistence.WNP.DomainEventHandlers;
     using Persistence.WNPAsync;
     using Repository;
     using Repository.WNP;

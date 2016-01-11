@@ -6,10 +6,7 @@
 
 namespace AMSLLC.Listener.ODataService
 {
-    using System;
-    using System.Linq.Expressions;
     using System.Net.Http;
-    using System.Reflection;
     using System.Web.Http;
     using System.Web.Http.Dispatcher;
     using System.Web.OData.Builder;
@@ -18,9 +15,7 @@ namespace AMSLLC.Listener.ODataService
     using System.Web.OData.Routing.Conventions;
     using HttpMessageHandlers;
     using MetadataService;
-    using Persistence.Listener;
     using Services;
-    using Shared;
 
     public class ODataServiceConfigurator
     {

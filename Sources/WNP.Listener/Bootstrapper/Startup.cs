@@ -4,7 +4,6 @@
 
 namespace AMSLLC.Listener.Bootstrapper
 {
-    using System.Web.Cors;
     using System.Web.Http;
 
     using AMSLLC.Listener.Bootstrapper.Owin;

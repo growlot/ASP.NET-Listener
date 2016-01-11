@@ -1,9 +1,11 @@
-﻿namespace AMSLLC.Listener.Persistence.Listener
+﻿// <copyright file="ListenerDbContext.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.Persistence.Listener
 {
-    using System.Data;
     using System.Data.Common;
     using Poco;
-    using Serilog;
 
     public class ListenerDbContext : PocoDbContext
     {

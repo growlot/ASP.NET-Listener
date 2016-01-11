@@ -6,7 +6,6 @@ namespace AMSLLC.Listener.Domain.Listener.Exception
 {
     using System;
     using System.Globalization;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Exception indicating that system was unable to succeed transaction

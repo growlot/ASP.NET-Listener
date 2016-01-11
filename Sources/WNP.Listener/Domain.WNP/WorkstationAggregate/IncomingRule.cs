@@ -4,8 +4,6 @@
 
 namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
 {
-    using System;
-
     /// <summary>
     /// Incoming rule defines what state should equipment be in, in order for it to be loaded in this workstation.
     /// </summary>

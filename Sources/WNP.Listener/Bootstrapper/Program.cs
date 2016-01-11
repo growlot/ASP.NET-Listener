@@ -6,8 +6,6 @@ namespace AMSLLC.Listener.Bootstrapper
 {
     using System;
     using System.Configuration;
-    using System.Diagnostics;
-    using System.IO;
 
     using Serilog;
     using Topshelf;

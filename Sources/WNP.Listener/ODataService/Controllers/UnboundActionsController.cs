@@ -4,9 +4,6 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
-    using System.Net;
-    using System.Threading.Tasks;
-    using System.Web.Http;
     using ApplicationService;
     using Base;
     using MetadataService;

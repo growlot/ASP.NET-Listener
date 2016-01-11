@@ -73,6 +73,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoCommon.cs">
+      <Link>Properties\AssemblyInfoCommon.cs</Link>
+    </Compile>
     <Compile Include="ListenerDbContext.cs" />
     <Compile Include="ListenerPersistenceAdapter.cs" />
     <Compile Include="Models\EnabledOperationEntity.cs" />
@@ -94,6 +97,9 @@
     <Compile Include="TransactionRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AdditionalFiles Include="..\..\..\FxCopRuleSets\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
     <None Include="App.config" />
     <None Include="Models\Generated\AsyncPoco.Core.ttinclude" />
     <None Include="Models\Generated\AsyncPoco.Generator.ttinclude" />

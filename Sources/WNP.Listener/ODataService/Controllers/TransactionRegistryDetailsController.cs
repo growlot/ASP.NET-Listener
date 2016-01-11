@@ -5,23 +5,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System.Web.Http;
     using System.Web.OData;
-    using System.Web.OData.Query;
-    using System.Web.OData.Routing;
     using Core;
-    using Persistence.Listener;
     using Serilog;
-    using Shared;
 
     public partial class TransactionRegistryDetailsController
     {
-
         private readonly IDateTimeProvider _dateTimeProvider;
 
         /// <summary>
@@ -36,14 +29,16 @@ namespace AMSLLC.Listener.ODataService.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult CountByStatus([FromODataUri]IEnumerable<int> statusTypes)//[FromODataUri]IEnumerable<int> statusTypes, [FromODataUri] string sinceDate
+        public IHttpActionResult CountByStatus([FromODataUri]IEnumerable<int> statusTypes) // [FromODataUri]IEnumerable<int> statusTypes, [FromODataUri] string sinceDate
         {
             try
             {
                 var sinceDate = this._dateTimeProvider.Now().AddDays(-30);
-                //var dt = DateTime.Parse(sinceDate);
+
+                // var dt = DateTime.Parse(sinceDate);
                 var result = this._dbContext.TransactionRegistryDetails.Count(s => statusTypes.Contains(s.TransactionStatusId) && (s.CreatedDateTime >= sinceDate || s.UpdatedDateTime >= sinceDate) && s.CompanyCode == this.CompanyCode && s.ApplicationKey == this.ApplicationKey);
-                //var result = this._dbContext.TransactionRegistryDetails.Count();
+
+                // var result = this._dbContext.TransactionRegistryDetails.Count();
                 return this.Ok(result);
             }
             catch (Exception exc)

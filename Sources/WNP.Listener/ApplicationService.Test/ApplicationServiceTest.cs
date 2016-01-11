@@ -29,7 +29,6 @@ namespace AMSLLC.Listener.ApplicationService.Test
     [TestClass]
     public class ApplicationServiceTest
     {
-
         #region Setup
 
         [ClassInitialize]
@@ -1012,7 +1011,6 @@ namespace AMSLLC.Listener.ApplicationService.Test
         [TestMethod]
         public async Task ForceRetryBatch()
         {
-
             var recordKey = Guid.NewGuid().ToString("D");
 
             var busImpl = new InMemoryBus();

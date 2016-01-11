@@ -7,7 +7,6 @@ namespace AMSLLC.Listener.ODataService
     using System;
     using System.Web.OData.Builder;
     using Controllers;
-    using Model;
     using Persistence.Listener;
 
     public class ODataListenerServiceConfigurator : ODataControllerConfigurator

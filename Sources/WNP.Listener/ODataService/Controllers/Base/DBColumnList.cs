@@ -7,7 +7,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Web.OData.Query;
 
     using AMSLLC.Listener.MetadataService;
 

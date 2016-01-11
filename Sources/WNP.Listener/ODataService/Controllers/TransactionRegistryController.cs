@@ -1,7 +1,7 @@
 ﻿// //-----------------------------------------------------------------------
-// // <copyright file="ListenerController.cs" company="Advanced Metering Services LLC">
-// //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
-// // </copyright>
+// <copyright file="TransactionRegistryController.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 // //-----------------------------------------------------------------------
 
 namespace AMSLLC.Listener.ODataService.Controllers
@@ -13,15 +13,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.OData;
-    using System.Web.OData.Query;
     using System.Web.OData.Routing;
     using ApplicationService;
     using ApplicationService.Commands;
     using ApplicationService.Model;
     using Domain.Listener.Transaction;
-    using Model;
     using Newtonsoft.Json;
-    using Persistence.Listener;
     using Serilog;
 
     /// <summary>
@@ -29,9 +26,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
     /// </summary>
     public partial class TransactionRegistryController
     {
-
-        private readonly ITransactionService _transactionService;
-        private readonly IWnpIntegrationService _wnpIntegrationService;
+        private readonly ITransactionService transactionService;
+        private readonly IWnpIntegrationService wnpIntegrationService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRegistryController" /> class.
@@ -42,8 +38,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         public TransactionRegistryController(ListenerODataContext dbctx, ITransactionService transactionService, IWnpIntegrationService wnpService)
         {
             this._dbContext = dbctx;
-            this._transactionService = transactionService;
-            this._wnpIntegrationService = wnpService;
+            this.transactionService = transactionService;
+            this.wnpIntegrationService = wnpService;
         }
 
         /// <summary>
@@ -57,8 +53,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                //string data = (string)this.Request.Properties["ListenerRequestBody"];
-
+                // string data = (string)this.Request.Properties["ListenerRequestBody"];
                 var message = new OpenTransactionCommand
                 {
                     CompanyCode = this.CompanyCode,
@@ -69,7 +64,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     User = this.User?.Identity.Name
                 };
 
-                return this.Ok(await this._transactionService.Open(message));
+                return this.Ok(await this.transactionService.Open(message));
             }
             catch (Exception exc)
             {
@@ -120,7 +115,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     }
                 }
 
-                return this.Ok(await this._transactionService.Open(message));
+                return this.Ok(await this.transactionService.Open(message));
             }
             catch (Exception exc)
             {
@@ -140,8 +135,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                var openBatchTransactionCommand = await this._wnpIntegrationService.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
-                return this.Ok(await this._transactionService.Open(openBatchTransactionCommand));//await Task.WhenAll(records.Select(r => this._transactionService.Open(r)))
+                var openBatchTransactionCommand = await this.wnpIntegrationService.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
+                return this.Ok(await this.transactionService.Open(openBatchTransactionCommand)); // await Task.WhenAll(records.Select(r => this._transactionService.Open(r)))
             }
             catch (Exception exc)
             {
@@ -160,7 +155,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                await this._transactionService.Process(new ProcessTransactionCommand { RecordKey = key });
+                await this.transactionService.Process(new ProcessTransactionCommand { RecordKey = key });
                 return this.Ok();
             }
             catch (Exception exc)
@@ -180,7 +175,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                await this._transactionService.Process(new ProcessTransactionCommand { RecordKey = key, RetryPolicy = RetryPolicyType.Retry });
+                await this.transactionService.Process(new ProcessTransactionCommand { RecordKey = key, RetryPolicy = RetryPolicyType.Retry });
                 return this.Ok();
             }
             catch (Exception exc)
@@ -200,7 +195,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                await this._transactionService.Process(new ProcessTransactionCommand { RecordKey = key, RetryPolicy = RetryPolicyType.Force });
+                await this.transactionService.Process(new ProcessTransactionCommand { RecordKey = key, RetryPolicy = RetryPolicyType.Force });
                 return this.Ok();
             }
             catch (Exception exc)
@@ -220,7 +215,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         {
             try
             {
-                await this._transactionService.Success(new SucceedTransactionCommand() { RecordKey = key });
+                await this.transactionService.Success(new SucceedTransactionCommand() { RecordKey = key });
                 return this.Ok();
             }
             catch (Exception exc)
@@ -242,7 +237,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             try
             {
                 await
-                    this._transactionService.Failed(new FailTransactionCommand()
+                    this.transactionService.Failed(new FailTransactionCommand()
                     {
                         RecordKey = key,
                         Details = parameters.ContainsKey("Details") ? parameters["Details"].ToString() : null,

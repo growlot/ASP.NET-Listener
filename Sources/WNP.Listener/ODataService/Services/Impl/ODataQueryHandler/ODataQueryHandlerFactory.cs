@@ -6,11 +6,6 @@ using AMSLLC.Listener.ODataService.Services.FilterTransformer;
 
 namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-
-    using AMSLLC.Listener.Domain;
     using AMSLLC.Listener.MetadataService;
     using AMSLLC.Listener.Repository.WNP;
 

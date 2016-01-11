@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.ODataService.Model
     public class BatchRequestMessage
     {
         public string BatchNumber { get; set; }
+
         public List<object> Body { get; set; } = new List<object>();
     }
 }
