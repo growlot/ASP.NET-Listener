@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Collections.Generic;
     using System.Linq;
 
-    using AMSLLC.Listener.MetadataService;
+    using MetadataService;
 
     /// <summary>
     /// Helper class for generating list of columns to be SELECTed with random aliases.
@@ -79,11 +79,21 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         public MetadataEntityModel GetEntityModelByDbQueryName(string dbQueryColumnName)
             => this.queryColToEntityModel[dbQueryColumnName];
 
+        /// <summary>
+        /// Gets the alias of the column by model column name.
+        /// </summary>
+        /// <param name="modelColumnName">Name of the model column.</param>
+        /// <returns>The column alias used in database query.</returns>
         public string GetDbQueryNameByModelColumnName(string modelColumnName)
-            => this.queryColToModelMapping.FirstOrDefault(pair => pair.Value == modelColumnName).Key;
+                    => this.queryColToModelMapping.FirstOrDefault(pair => pair.Value == modelColumnName).Key;
 
+        /// <summary>
+        /// Gets the name of the column by column alias.
+        /// </summary>
+        /// <param name="dbQueryName">Name of the database query.</param>
+        /// <returns>The column name.</returns>
         public string GetActualDbNameByDbQueryName(string dbQueryName)
-            => this.queryColToActualDbNameMapping.FirstOrDefault(pair => pair.Key == dbQueryName).Value;
+                    => this.queryColToActualDbNameMapping.FirstOrDefault(pair => pair.Key == dbQueryName).Value;
 
         private void Init()
         {

@@ -2,18 +2,16 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
-    using AMSLLC.Listener.Domain;
-    using AMSLLC.Listener.MetadataService;
-    using AMSLLC.Listener.ODataService.Controllers.Base;
-    using AMSLLC.Listener.Persistence.WNP;
-
+    using Controllers.Base;
+    using Domain;
+    using MetadataService;
     using Newtonsoft.Json;
+    using Persistence.WNP;
 
     /// <summary>
     /// IODataSingleResultQueryHandler default implementation

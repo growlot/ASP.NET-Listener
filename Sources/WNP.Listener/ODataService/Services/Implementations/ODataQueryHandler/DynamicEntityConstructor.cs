@@ -2,17 +2,16 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
-
-    using AMSLLC.Listener.MetadataService;
-    using AMSLLC.Listener.ODataService.Controllers.Base;
     using AMSLLC.Listener.Utilities;
+    using Controllers.Base;
+    using MetadataService;
 
     internal class DynamicEntityConstructor
     {
@@ -51,18 +50,18 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
             // what if key not selected by user?
 
             // Fill
-            this.FillResult(this.mainModel, this.dbResults, result);
+            this.FillResult(this.mainModel, result);
 
             // Fill internal relations
-            this.FillInternalRelations(this.dbResults, result);
+            this.FillInternalRelations(result);
 
             // Fill all expanded fields
-            this.relatedEntityModels.Map(model => this.FillResult(model, this.dbResults, result));
+            this.relatedEntityModels.Map(model => this.FillResult(model, result));
 
             return result;
         }
 
-        private void FillInternalRelations(IEnumerable<IDictionary<string, object>> dbResults, object instance)
+        private void FillInternalRelations(object instance)
         {
             var model = this.mainModel;
 
@@ -70,7 +69,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
             foreach (var relation in internalRelations)
             {
                 var resultedRecords =
-                    dbResults.Distinct(
+                    this.dbResults.Distinct(
                         new ModelKeyEqualityComparer(relation.Discriminator, model, this.selectedFields))
                         .ToArray();
 
@@ -120,10 +119,10 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
             }
         }
 
-        private void FillResult(MetadataEntityModel model, IEnumerable<IDictionary<string, object>> dbResults, object instance)
+        private void FillResult(MetadataEntityModel model, object instance)
         {
             var resultedRecords =
-                dbResults.Distinct(
+                this.dbResults.Distinct(
                     new ModelKeyEqualityComparer(model, this.selectedFields)).ToArray();
 
             var dbColumnList = this.selectedFields.GetQueryColumnListForModel(model);

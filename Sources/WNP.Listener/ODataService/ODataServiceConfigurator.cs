@@ -17,23 +17,35 @@ namespace AMSLLC.Listener.ODataService
     using MetadataService;
     using Services;
 
+    /// <summary>
+    /// Configures OData service
+    /// </summary>
     public class ODataServiceConfigurator
     {
         private readonly IEdmModelGenerator modelGenerator;
         private readonly IMetadataProvider metadataService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ODataServiceConfigurator"/> class.
+        /// </summary>
+        /// <param name="modelGenerator">The model generator.</param>
+        /// <param name="metadataService">The metadata service.</param>
         public ODataServiceConfigurator(IEdmModelGenerator modelGenerator, IMetadataProvider metadataService)
         {
             this.modelGenerator = modelGenerator;
             this.metadataService = metadataService;
         }
 
+        /// <summary>
+        /// Configures OData service.
+        /// </summary>
+        /// <param name="config">The HTTP configuration.</param>
         public void Configure(HttpConfiguration config)
         {
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
             config.Filters.Add(new CommonExceptionFilterAttribute());
 
-            config.MessageHandlers.Add(new MiniProfilerMessageHandler());
+            // config.MessageHandlers.Add(new MiniProfilerMessageHandler());
             var conventions = ODataRoutingConventions.CreateDefault();
             conventions.Insert(0, new WNPGenericRoutingConvention(this.metadataService));
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;

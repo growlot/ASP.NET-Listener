@@ -1,20 +1,23 @@
-﻿// <copyright file="FilterTransformerImpl.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="FilterTransformer.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransformer
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Web.OData.Query;
-    using AMSLLC.Listener.MetadataService;
-    using AMSLLC.Listener.ODataService.Services.FilterTransformer;
+    using MetadataService;
     using Microsoft.OData.Core.UriParser.Semantic;
     using Microsoft.OData.Core.UriParser.TreeNodeKinds;
     using Microsoft.OData.Edm;
+    using Services.FilterTransformer;
 
-    public class FilterTransformerImpl : IFilterTransformer
+    /// <summary>
+    /// Implements <see cref="IFilterTransformer"/> interface.
+    /// </summary>
+    public class FilterTransformer : IFilterTransformer
     {
         private static readonly WhereClause EmptyWhereClause = new WhereClause
         {
@@ -30,10 +33,15 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
 
         private FilterQueryOption filterQueryOption;
 
-        public FilterTransformerImpl(IMetadataProvider metadataService, IODataFunctionToSqlConvertor ioDataToSql)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilterTransformer"/> class.
+        /// </summary>
+        /// <param name="metadataService">The metadata service.</param>
+        /// <param name="oDataToSql">The OData to SQL converter.</param>
+        public FilterTransformer(IMetadataProvider metadataService, IODataFunctionToSqlConvertor oDataToSql)
         {
             this.metadataService = metadataService;
-            this.oDataToSql = ioDataToSql;
+            this.oDataToSql = oDataToSql;
         }
 
         /// <inheritdoc/>
@@ -53,13 +61,13 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
             };
         }
 
-        protected string BindFilter(FilterQueryOption filterQuery) =>
-            this.BindFilterClause(filterQuery.FilterClause);
+        private string BindFilter(FilterQueryOption filterQuery) =>
+                    this.BindFilterClause(filterQuery.FilterClause);
 
-        protected string BindFilterClause(FilterClause filterClause) =>
+        private string BindFilterClause(FilterClause filterClause) =>
             this.Bind(filterClause.Expression);
 
-        protected string Bind(QueryNode node)
+        private string Bind(QueryNode node)
         {
             var collectionNode = node as CollectionNode;
             var singleValueNode = node as SingleValueNode;

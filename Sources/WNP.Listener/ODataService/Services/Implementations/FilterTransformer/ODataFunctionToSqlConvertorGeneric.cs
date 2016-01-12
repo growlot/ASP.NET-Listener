@@ -1,17 +1,21 @@
-﻿// <copyright file="ODataFunctionToSqlConvertorGenericImpl.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="ODataFunctionToSqlConvertorGeneric.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransformer
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using AMSLLC.Listener.ODataService.Services.FilterTransformer;
     using Microsoft.OData.Core.UriParser.Semantic;
+    using Services.FilterTransformer;
 
-    public abstract class ODataFunctionToSqlConvertorGenericImpl : IODataFunctionToSqlConvertor, ISupportedODataFunctionToSql
+    /// <summary>
+    /// Implements convertion from OData functions to SQL for all database implementations.
+    /// Specific database implementation derives from this class and overrides specific functions if needed.
+    /// </summary>
+    public abstract class ODataFunctionToSqlConvertorGeneric : IODataFunctionToSqlConvertor, ISupportedODataFunctionToSql
     {
         /// <inheritdoc/>
         public bool IsSupported(string functionName) =>

@@ -4,11 +4,10 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
-    using AMSLLC.Listener.ODataService.Services;
-
     using ApplicationService;
     using MetadataService;
     using Repository.WNP;
+    using Services;
     using Services.FilterTransformer;
 
     /// <summary>

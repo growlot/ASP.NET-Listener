@@ -2,24 +2,20 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Diagnostics;
     using System.Linq;
     using System.Web.OData.Query;
-
-    using AMSLLC.Listener.Core;
-    using AMSLLC.Listener.MetadataService;
-    using AMSLLC.Listener.ODataService.Controllers.Base;
-    using AMSLLC.Listener.ODataService.Services.FilterTransformer;
-    using AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer;
-    using AMSLLC.Listener.Persistence.WNP;
-    using AMSLLC.Listener.Repository.WNP;
-    using Newtonsoft.Json;
+    using Controllers.Base;
+    using Core;
+    using FilterTransformer;
+    using MetadataService;
+    using Persistence.WNP;
+    using Repository.WNP;
+    using Services.FilterTransformer;
 
     /// <summary>
     /// Query handler for multiple results navigation property query

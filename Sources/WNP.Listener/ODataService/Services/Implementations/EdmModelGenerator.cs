@@ -1,33 +1,33 @@
-﻿// <copyright file="EdmModelGeneratorImpl.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="EdmModelGenerator.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl
+namespace AMSLLC.Listener.ODataService.Services.Implementations
 {
     using System;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Web.OData.Builder;
-    using AMSLLC.Listener.MetadataService.Attributes;
     using MetadataService;
+    using MetadataService.Attributes;
     using Microsoft.OData.Edm;
     using Ninject.Infrastructure.Language;
 
     /// <summary>
     /// Implements <see cref="IEdmModelGenerator"/>
     /// </summary>
-    public class EdmModelGeneratorImpl : IEdmModelGenerator
+    public class EdmModelGenerator : IEdmModelGenerator
     {
         private static IEdmModel model;
 
         private readonly IMetadataProvider metadataService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdmModelGeneratorImpl"/> class.
+        /// Initializes a new instance of the <see cref="EdmModelGenerator"/> class.
         /// </summary>
         /// <param name="metadataService">The metadata service.</param>
-        public EdmModelGeneratorImpl(IMetadataProvider metadataService)
+        public EdmModelGenerator(IMetadataProvider metadataService)
         {
             this.metadataService = metadataService;
         }
@@ -155,7 +155,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl
             {
                 var actionMethodsList =
                     type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                        .Where(info => info.CustomAttributes.Any(data => data.AttributeType == typeof (UnboundActionAttribute)));
+                        .Where(info => info.CustomAttributes.Any(data => data.AttributeType == typeof(UnboundActionAttribute)));
 
                 actionMethodsList.Map(info =>
                 {

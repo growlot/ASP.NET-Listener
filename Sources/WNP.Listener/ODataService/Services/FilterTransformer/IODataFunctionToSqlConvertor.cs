@@ -8,10 +8,25 @@ namespace AMSLLC.Listener.ODataService.Services.FilterTransformer
     using System.Collections.Generic;
     using Microsoft.OData.Core.UriParser.Semantic;
 
+    /// <summary>
+    /// Interface defining OData function convertion to SQL function.
+    /// </summary>
     public interface IODataFunctionToSqlConvertor
     {
+        /// <summary>
+        /// Determines whether the specified function name is supported.
+        /// </summary>
+        /// <param name="functionName">Name of the function.</param>
+        /// <returns><c>true</c> if OData function can be converted to SQL function; <c>false</c> otherwise.</returns>
         bool IsSupported(string functionName);
 
+        /// <summary>
+        /// Converts the specified function name.
+        /// </summary>
+        /// <param name="functionName">Name of the function.</param>
+        /// <param name="genericBinder">The generic binder.</param>
+        /// <param name="arguments">The arguments.</param>
+        /// <returns>SQL function string.</returns>
         string Convert(string functionName, Func<QueryNode, string> genericBinder, List<QueryNode> arguments);
     }
 }

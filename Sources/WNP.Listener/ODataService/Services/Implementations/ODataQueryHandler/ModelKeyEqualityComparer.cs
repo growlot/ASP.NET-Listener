@@ -2,13 +2,12 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
 {
     using System.Collections.Generic;
     using System.Linq;
-
-    using AMSLLC.Listener.MetadataService;
-    using AMSLLC.Listener.ODataService.Controllers.Base;
+    using Controllers.Base;
+    using MetadataService;
 
     internal class ModelKeyEqualityComparer : IEqualityComparer<IDictionary<string, object>>
     {
@@ -47,8 +46,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
                             }
 
                             return keyValueX?.Equals(keyValueY) ?? false;
-                        }
-                    );
+                        });
         }
 
         public int GetHashCode(IDictionary<string, object> obj)

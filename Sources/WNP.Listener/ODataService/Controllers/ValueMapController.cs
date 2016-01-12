@@ -8,7 +8,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Linq;
     using Persistence.Listener;
 
-    partial class ValueMapController
+    public partial class ValueMapController
     {
         partial void UpdateNested(
             ValueMapEntity entity,
@@ -17,10 +17,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var toDelete =
                 entity.ValueMapEntries.Where(
                     s => newData.ValueMapEntries.All(ss => ss.ValueMapEntryId != s.ValueMapEntryId)).ToList();
-
-            //var toUpdate =
-            //    entity.ValueMapEntries.Where(
-            //        s => newData.ValueMapEntries.Any(ss => ss.ValueMapEntryId == s.ValueMapEntryId)).ToList();
 
             foreach (ValueMapEntryEntity valueMapEntryEntity in toDelete)
             {
@@ -36,7 +32,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 {
                     this._dbContext.Entry(valueMapEntryEntity).CurrentValues.SetValues(newValues);
                 }
-
             }
 
             foreach (ValueMapEntryEntity valueMapEntryEntity in newData.ValueMapEntries)

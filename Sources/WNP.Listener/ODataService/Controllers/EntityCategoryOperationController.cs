@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.OData;
-using AMSLLC.Listener.Persistence.Listener;
-using Serilog;
+﻿// <copyright file="EntityCategoryOperationController.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
-    partial class EntityCategoryOperationController
+    using System;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Web.Http;
+    using System.Web.OData;
+    using Persistence.Listener;
+    using Serilog;
+
+    public partial class EntityCategoryOperationController
     {
         /// <summary>
         /// Get the single entity or null using primary key
@@ -47,10 +48,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 entity.OperationEndpoints.Where(
                     s => newData.OperationEndpoints.All(ss => ss.OperationEndpointId != s.OperationEndpointId)).ToList();
 
-            //var toUpdate =
-            //    entity.OperationEndpoints.Where(
-            //        s => newData.OperationEndpoints.Any(ss => ss.OperationEndpointId == s.OperationEndpointId)).ToList();
-
             foreach (OperationEndpointEntity e in toDelete)
             {
                 this._dbContext.Entry(e).State = EntityState.Deleted;
@@ -65,7 +62,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 {
                     this._dbContext.Entry(e).CurrentValues.SetValues(newValues);
                 }
-
             }
 
             foreach (OperationEndpointEntity e in newData.OperationEndpoints)

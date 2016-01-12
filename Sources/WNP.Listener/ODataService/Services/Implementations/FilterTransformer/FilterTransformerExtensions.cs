@@ -2,11 +2,11 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransformer
 {
     using System;
 
-    using AMSLLC.Listener.ODataService.Services.FilterTransformer;
+    using Services.FilterTransformer;
 
     internal static class FilterTransformerExtensions
     {

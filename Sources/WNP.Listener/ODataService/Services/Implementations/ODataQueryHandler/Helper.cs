@@ -2,17 +2,15 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-
-    using AMSLLC.Listener.MetadataService;
-    using AMSLLC.Listener.Persistence.WNP;
-
+    using MetadataService;
     using Newtonsoft.Json;
+    using Persistence.WNP;
 
     internal static class Helper
     {
@@ -85,6 +83,5 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
 
             return JsonConvert.DeserializeObject(jsonKey, fieldInfo.Value.ClrDataType);
         }
-
     }
 }

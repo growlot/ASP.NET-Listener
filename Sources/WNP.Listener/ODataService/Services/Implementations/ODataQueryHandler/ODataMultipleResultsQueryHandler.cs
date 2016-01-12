@@ -2,22 +2,20 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Web.OData.Query;
-
-    using AMSLLC.Listener.Core;
-    using AMSLLC.Listener.MetadataService;
-    using AMSLLC.Listener.ODataService.Controllers.Base;
-    using AMSLLC.Listener.ODataService.Services.FilterTransformer;
-    using AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer;
-    using AMSLLC.Listener.Persistence.WNP;
-    using AMSLLC.Listener.Repository.WNP;
+    using Controllers.Base;
+    using Core;
+    using FilterTransformer;
+    using MetadataService;
+    using Persistence.WNP;
+    using Repository.WNP;
+    using Services.FilterTransformer;
 
     /// <summary>
     /// Query handler for multiple results query
@@ -32,8 +30,6 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
         private Type edmEntityClrType;
 
         private MetadataEntityModel mainModel;
-
-        private KeyValuePair<string, object>[] key;
 
         private MetadataEntityModel[] relatedEntityModels;
 
@@ -101,7 +97,7 @@ namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
         {
             if (filterQueryOption != null)
             {
-                this.sqlFilter = this.filterTransformer.TransformFilterQueryOption(filterQueryOption, this.key.Count());
+                this.sqlFilter = this.filterTransformer.TransformFilterQueryOption(filterQueryOption);
 
                 // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
                 this.sqlFilter.ConvertUtcParamsToLocalTime();

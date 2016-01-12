@@ -2,11 +2,10 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Web.OData.Query;
 
     /// <summary>

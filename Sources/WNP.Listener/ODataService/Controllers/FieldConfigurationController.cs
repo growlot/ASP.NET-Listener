@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="FieldConfigurationController.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System.Data.Entity;
+    using System.Linq;
     using Persistence.Listener;
 
-    partial class FieldConfigurationController
+    public partial class FieldConfigurationController
     {
         partial void UpdateNested(
             FieldConfigurationEntity entity,
@@ -37,7 +36,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 {
                     this._dbContext.Entry(entry).CurrentValues.SetValues(newValues);
                 }
-
             }
 
             foreach (FieldConfigurationEntryEntity entry in newData.FieldConfigurationEntries)

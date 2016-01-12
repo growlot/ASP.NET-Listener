@@ -1,17 +1,17 @@
-﻿// <copyright file="ODataFunctionToSqlConvertorSqlServerImpl.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="ODataFunctionToSqlConvertorSqlServer.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Impl.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransformer
 {
     using System;
     using System.Collections.Generic;
     using Microsoft.OData.Core.UriParser.Semantic;
 
     /// <summary>
-    /// Extends <see cref="ODataFunctionToSqlConvertorGenericImpl"/> with specific implementation for MS SQL server
+    /// Extends <see cref="ODataFunctionToSqlConvertorGeneric"/> with specific implementation for MS SQL server
     /// </summary>
-    public class ODataFunctionToSqlConvertorSqlServerImpl : ODataFunctionToSqlConvertorGenericImpl
+    public class ODataFunctionToSqlConvertorSqlServer : ODataFunctionToSqlConvertorGeneric
     {
         /// <inheritdoc/>
         public override string IndexOf(Func<QueryNode, string> genericBinder, List<QueryNode> arguments) =>

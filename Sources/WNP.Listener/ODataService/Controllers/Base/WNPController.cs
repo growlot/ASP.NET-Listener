@@ -221,7 +221,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// </summary>
         /// <param name="dataType">Type of the data.</param>
         /// <param name="result">The result.</param>
-        /// <returns></returns>
+        /// <returns>The result of the action.</returns>
         protected IHttpActionResult CreateSimpleOkResponse(Type dataType, object result)
                     => (IHttpActionResult)this.GetSimpleOkMethod(dataType).Invoke(this, new[] { result });
 

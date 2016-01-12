@@ -9,16 +9,25 @@ namespace AMSLLC.Listener.ODataService
     using Controllers;
     using Persistence.Listener;
 
+    /// <summary>
+    /// Configures Listener OData service.
+    /// </summary>
     public class ODataListenerServiceConfigurator : ODataControllerConfigurator
     {
+        /// <summary>
+        /// Setup the controller.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="actionBuilder">The action builder.</param>
+        /// <param name="tableName">The table name.</param>
         protected override void SetupTransactionRegistryController(
             ODataModelBuilder builder,
-            Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null, string tableName = null)
+            Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null,
+            string tableName = null)
         {
             base.SetupTransactionRegistryController(
                 builder,
-                (b,
-                    configuration) =>
+                (b, configuration) =>
                 {
                     // bound actions
                     configuration.Action("Process");
@@ -30,7 +39,6 @@ namespace AMSLLC.Listener.ODataService
 
                     // unbound actions
                     var openAction = b.Action("Open");
-                    //this.ConfigureHeader(openAction, builder);
                     openAction.Parameter<string>("EntityCategory").OptionalParameter = false;
                     openAction.Parameter<string>("OperationKey").OptionalParameter = false;
                     openAction.Parameter<string>("Body").OptionalParameter = false;
@@ -39,34 +47,46 @@ namespace AMSLLC.Listener.ODataService
                     var openBatchAction = b.Action("Batch");
                     openBatchAction.Parameter<string>("BatchNumber").OptionalParameter = false;
                     openBatchAction.Parameter<string>("Body").OptionalParameter = false;
-                    //this.ConfigureHeader(openBatchAction, builder);
-                    //openBatchAction.Parameter<BatchRequestMessage>("request").OptionalParameter = false;
-                    //openBatchAction.CollectionParameter<BatchRequestMessage>("request").OptionalParameter = false;
+                    //// openBatchAction.Parameter<BatchRequestMessage>("request").OptionalParameter = false;
+                    //// openBatchAction.CollectionParameter<BatchRequestMessage>("request").OptionalParameter = false;
                     openBatchAction.Returns<string>();
 
                     var buildBatchAction = b.Action("BuildBatch");
-                    //this.ConfigureHeader(buildBatchAction, builder);
                     buildBatchAction.Parameter<string>("batchKey").OptionalParameter = false;
                     buildBatchAction.Returns<string>();
 
                     configuration.Ignore(p => p.TransactionId);
-                }, tableName);
+                },
+                tableName);
         }
 
+        /// <summary>
+        /// Setup the controller.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="actionBuilder">The action builder.</param>
+        /// <param name="tableName">The table name.</param>
         protected override void SetupEndpointController(
             ODataModelBuilder builder,
-            Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null, string tableName = null)
+            Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null,
+            string tableName = null)
         {
             base.SetupEndpointController(
                 builder,
-                (modelBuilder,
-                    configuration) =>
+                (modelBuilder, configuration) =>
                 {
                     configuration.ContainsRequired(entity => entity.ProtocolType);
                     configuration.ContainsRequired(entity => entity.EndpointTriggerType);
-                }, tableName);
+                },
+                tableName);
         }
 
+        /// <summary>
+        /// Setup the controller.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="actionBuilder">The action builder.</param>
+        /// <param name="tableName">The table name.</param>
         protected override void SetupEntityCategoryOperationController(
             ODataModelBuilder builder,
             Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryOperationEntity>> actionBuilder = null,
@@ -74,41 +94,35 @@ namespace AMSLLC.Listener.ODataService
         {
             base.SetupEntityCategoryOperationController(
                 builder,
-                (modelBuilder,
-                    configuration) =>
+                (modelBuilder, configuration) =>
                 {
                     configuration.ContainsRequired(entity => entity.EnabledOperation);
                     configuration.ContainsRequired(entity => entity.EntityCategory);
                     configuration.ContainsMany(entity => entity.OperationEndpoints);
-                }, tableName);
+                },
+                tableName);
         }
 
+        /// <summary>
+        /// Setup the controller.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="actionBuilder">The action builder.</param>
+        /// <param name="tableName">The table name.</param>
         protected override void SetupTransactionRegistryDetailsController(
             ODataModelBuilder builder,
-            Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null, string tableName = null)
+            Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null,
+            string tableName = null)
         {
             base.SetupTransactionRegistryDetailsController(
                 builder,
-                (modelBuilder,
-                    configuration) =>
+                (modelBuilder, configuration) =>
                 {
                     var cntFunc = configuration.Collection.Function("CountByStatus");
                     cntFunc.CollectionParameter<int>("statusTypes");
                     cntFunc.Returns<int>();
-                }, "TransactionRegistryDetails");
-        }
-
-        private void ConfigureHeader(
-            ActionConfiguration action,
-            ODataModelBuilder model)
-        {
-            foreach (var parameterDefinition in ListenerRequestHeaderMap.Instance)
-            {
-                var parameter = action.AddParameter(
-                    parameterDefinition.Key,
-                    model.GetTypeConfigurationOrNull(parameterDefinition.Value));
-                parameter.OptionalParameter = true;
-            }
+                },
+                "TransactionRegistryDetails");
         }
     }
 }

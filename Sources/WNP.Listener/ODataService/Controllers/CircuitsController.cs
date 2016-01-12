@@ -11,9 +11,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.OData;
-
-    using AMSLLC.Listener.ODataService.Services;
-
     using ApplicationService;
     using ApplicationService.Commands;
     using Base;
@@ -22,6 +19,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
+    using Services;
     using Services.FilterTransformer;
     using Utilities;
 

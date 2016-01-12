@@ -5,7 +5,6 @@
 namespace AMSLLC.Listener.ODataService.Controllers.Base
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -19,10 +18,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Web.OData.Formatter;
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
-
-    using AMSLLC.Listener.ODataService.Services;
-    using AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler;
-
     using ApplicationService;
     using MetadataService;
     using Microsoft.OData.Core.UriParser.Semantic;
@@ -31,7 +26,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Persistence.WNP;
     using Repository.WNP;
     using Serilog;
+    using Services;
     using Services.FilterTransformer;
+    using Services.Implementations.ODataQueryHandler;
     using Utilities;
 
     /// <summary>

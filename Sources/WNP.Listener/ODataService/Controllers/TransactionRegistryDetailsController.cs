@@ -1,13 +1,11 @@
 ﻿// <copyright file="TransactionRegistryDetailsController.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace AMSLLC.Listener.ODataService.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Http;
     using System.Web.OData;
     using Core;
@@ -15,7 +13,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
     public partial class TransactionRegistryDetailsController
     {
-        private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IDateTimeProvider dateTimeProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRegistryDetailsController" /> class.
@@ -25,15 +23,20 @@ namespace AMSLLC.Listener.ODataService.Controllers
         public TransactionRegistryDetailsController(ListenerODataContext dbctx, IDateTimeProvider dateTimeProvider)
         {
             this._dbContext = dbctx;
-            this._dateTimeProvider = dateTimeProvider;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
+        /// <summary>
+        /// Counts the number of transactions by status.
+        /// </summary>
+        /// <param name="statusTypes">The status types to include in the count.</param>
+        /// <returns>The number of transactions with specified statuses.</returns>
         [HttpGet]
-        public IHttpActionResult CountByStatus([FromODataUri]IEnumerable<int> statusTypes) // [FromODataUri]IEnumerable<int> statusTypes, [FromODataUri] string sinceDate
+        public IHttpActionResult CountByStatus([FromODataUri]IEnumerable<int> statusTypes)
         {
             try
             {
-                var sinceDate = this._dateTimeProvider.Now().AddDays(-30);
+                var sinceDate = this.dateTimeProvider.Now().AddDays(-30);
 
                 // var dt = DateTime.Parse(sinceDate);
                 var result = this._dbContext.TransactionRegistryDetails.Count(s => statusTypes.Contains(s.TransactionStatusId) && (s.CreatedDateTime >= sinceDate || s.UpdatedDateTime >= sinceDate) && s.CompanyCode == this.CompanyCode && s.ApplicationKey == this.ApplicationKey);

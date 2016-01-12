@@ -25,9 +25,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Debug\AMSLLC.Listener.ODataService.XML</DocumentationFile>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,9 +38,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Release\AMSLLC.Listener.ODataService.XML</DocumentationFile>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
@@ -61,7 +61,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\..\..\FxCopRuleSets\AllRulesErrors.ruleset</CodeAnalysisRuleSet>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -211,33 +212,31 @@
     <Compile Include="HttpMessageHandlers\RequestScopeHandler.cs" />
     <Compile Include="KeyValuePathSegmentExtensions.cs" />
     <Compile Include="ListenerODataContext.cs" />
-    <Compile Include="ListenerRequestHeaderMap.cs" />
     <Compile Include="HttpMessageHandlers\TransactionalODataBatchHandler.cs" />
-    <Compile Include="Model\BatchRequestMessage.cs" />
     <Compile Include="ODataListenerServiceConfigurator.cs" />
     <Compile Include="ODataServiceConfigurator.cs" />
     <Compile Include="HttpMessageHandlers\MiniProfilerMessageHandler.cs" />
-    <Compile Include="Services\Impl\FilterTransformer\FilterTransformerExtensions.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\DynamicEntityConstructor.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\EntityNotFoundException.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\Helper.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\IODataMultipleResultsQueryHandler.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\IODataNavigationMultipleResultsQueryHandler.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\IODataNavigationSingleResultQueryHandler.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\ModelKeyEqualityComparer.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\InvalidNumberOfRecordsException.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\IODataSingleResultQueryHandler.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\ODataMultipleResultsQueryHandler.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\ODataNavigationMultipleResultsQueryHandler.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\ODataNavigationSingleResultQueryHandler.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\ODataSingleResultQueryHandler.cs" />
-    <Compile Include="Services\Impl\ODataQueryHandler\ODataQueryHandlerFactory.cs" />
+    <Compile Include="Services\Implementations\FilterTransformer\FilterTransformerExtensions.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\DynamicEntityConstructor.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\EntityNotFoundException.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\Helper.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\IODataMultipleResultsQueryHandler.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\IODataNavigationMultipleResultsQueryHandler.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\IODataNavigationSingleResultQueryHandler.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\ModelKeyEqualityComparer.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\InvalidNumberOfRecordsException.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\IODataSingleResultQueryHandler.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\ODataMultipleResultsQueryHandler.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\ODataNavigationMultipleResultsQueryHandler.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\ODataNavigationSingleResultQueryHandler.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\ODataSingleResultQueryHandler.cs" />
+    <Compile Include="Services\Implementations\ODataQueryHandler\ODataQueryHandlerFactory.cs" />
     <Compile Include="Services\IEdmModelGenerator.cs" />
     <Compile Include="Services\FilterTransformer\IFilterTransformer.cs" />
-    <Compile Include="Services\Impl\EdmModelGeneratorImpl.cs" />
-    <Compile Include="Services\Impl\FilterTransformer\FilterTransformerImpl.cs" />
-    <Compile Include="Services\Impl\FilterTransformer\ODataFunctionToSqlConvertorGenericImpl.cs" />
-    <Compile Include="Services\Impl\FilterTransformer\ODataFunctionToSqlConvertorSqlServerImpl.cs" />
+    <Compile Include="Services\Implementations\EdmModelGenerator.cs" />
+    <Compile Include="Services\Implementations\FilterTransformer\FilterTransformer.cs" />
+    <Compile Include="Services\Implementations\FilterTransformer\ODataFunctionToSqlConvertorGeneric.cs" />
+    <Compile Include="Services\Implementations\FilterTransformer\ODataFunctionToSqlConvertorSqlServer.cs" />
     <Compile Include="Services\FilterTransformer\IODataFunctionToSqlConvertor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FilterTransformer\ISupportedODataFunctionToSql.cs" />

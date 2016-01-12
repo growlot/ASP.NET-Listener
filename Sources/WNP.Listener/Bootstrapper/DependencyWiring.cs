@@ -5,9 +5,6 @@
 namespace AMSLLC.Listener.Bootstrapper
 {
     using System;
-
-    using AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler;
-
     using ApplicationService;
     using ApplicationService.BatchBuilder;
     using ApplicationService.Implementations;
@@ -24,8 +21,9 @@ namespace AMSLLC.Listener.Bootstrapper
     using ODataService;
     using ODataService.Services;
     using ODataService.Services.FilterTransformer;
-    using ODataService.Services.Impl;
-    using ODataService.Services.Impl.FilterTransformer;
+    using ODataService.Services.Implementations;
+    using ODataService.Services.Implementations.FilterTransformer;
+    using ODataService.Services.Implementations.ODataQueryHandler;
     using Persistence.Listener;
     using Persistence.WNP;
     using Persistence.WNPAsync;
@@ -133,9 +131,9 @@ namespace AMSLLC.Listener.Bootstrapper
             // -------------------------
             this.Kernel.Bind<ListenerODataContext>().ToSelf().InRequestScope();
             this.Kernel.Bind<ODataServiceConfigurator>().ToSelf().InSingletonScope();
-            this.Kernel.Bind<IEdmModelGenerator>().To<EdmModelGeneratorImpl>();
-            this.Kernel.Bind<IFilterTransformer>().To<FilterTransformerImpl>();
-            this.Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServerImpl>();
+            this.Kernel.Bind<IEdmModelGenerator>().To<EdmModelGenerator>();
+            this.Kernel.Bind<IFilterTransformer>().To<FilterTransformer>();
+            this.Kernel.Bind<IODataFunctionToSqlConvertor>().To<ODataFunctionToSqlConvertorSqlServer>();
             this.Kernel.Bind<ApplicationServiceConfigurator>().ToSelf().InSingletonScope();
             this.Kernel.Bind<IODataQueryHandlerFactory>().To<ODataQueryHandlerFactory>().InRequestScope();
 

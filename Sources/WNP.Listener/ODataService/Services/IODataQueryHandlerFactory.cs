@@ -4,7 +4,7 @@
 
 namespace AMSLLC.Listener.ODataService.Services
 {
-    using AMSLLC.Listener.ODataService.Services.Impl.ODataQueryHandler;
+    using Implementations.ODataQueryHandler;
 
     /// <summary>
     /// OData query handler factory interface.

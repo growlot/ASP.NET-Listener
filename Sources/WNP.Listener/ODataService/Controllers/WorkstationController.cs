@@ -7,9 +7,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
-
-    using AMSLLC.Listener.ODataService.Services;
-
     using ApplicationService;
     using ApplicationService.Commands;
     using Base;
@@ -17,6 +14,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using MetadataService.Attributes;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
+    using Services;
     using Services.FilterTransformer;
 
     /// <summary>

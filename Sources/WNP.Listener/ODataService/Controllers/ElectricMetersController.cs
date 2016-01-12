@@ -10,9 +10,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
-
-    using AMSLLC.Listener.ODataService.Services;
-
     using ApplicationService;
     using ApplicationService.Commands;
     using Base;
@@ -21,6 +18,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
+    using Services;
     using Services.FilterTransformer;
     using Utilities;
 
@@ -37,6 +35,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="unitOfWork">The unit of work.</param>
         /// <param name="filterTransformer">The filter transformer.</param>
         /// <param name="actionConfigurator">The action configurator.</param>
+        /// <param name="commandBus">The command bus.</param>
         /// <param name="queryHandlerFactory">The query handler factory.</param>
         public ElectricMetersController(
             IMetadataProvider metadataService,
@@ -122,8 +121,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// POST data:
         /// {mystr: "user"}
         /// </summary>
-        /// <param name="mystr"></param>
-        /// <returns></returns>
+        /// <param name="mystr">Test string</param>
+        /// <returns>Modified test string.</returns>
         [BoundAction]
         [CollectionWideAction]
         public string ColTest(string mystr)

@@ -2,18 +2,19 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-using System.Text;
-
 namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
-    using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
     using StackExchange.Profiling;
 
+    /// <summary>
+    /// MiniProfiler delegating handler.
+    /// </summary>
     public class MiniProfilerMessageHandler : DelegatingHandler
     {
         /// <inheritdoc/>
