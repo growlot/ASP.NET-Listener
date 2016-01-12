@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 {
     using System;
     using System.Collections.Generic;
@@ -12,6 +12,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
     using MetadataService;
     using Newtonsoft.Json;
     using Persistence.WNP;
+    using Services.Query;
+    using Utilities;
 
     /// <summary>
     /// IODataSingleResultQueryHandler default implementation
@@ -61,6 +63,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         /// </summary>
         /// <param name="rawKey">The json-formatted key</param>
         /// <returns>Current instance of the IODataSingleResultQueryHandler</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithKey", Justification = "It's a method name.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "OnType", Justification = "It's a method name.")]
         public IODataSingleResultQueryHandler WithKey(string rawKey)
         {
             if (this.mainModel == null)
@@ -79,19 +83,19 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
                 throw new ArgumentException("Invalid key specified");
             }
 
-            var key = new Dictionary<string, object>();
+            var keyAsDictionary = new Dictionary<string, object>();
             if (hasCompositeKey)
             {
-                key = jsonKey.ToCompositeKeyDictionary();
+                keyAsDictionary = jsonKey.ToCompositeKeyDictionary();
             }
             else
             {
-                key.Add(
+                keyAsDictionary.Add(
                     this.mainModel.ColumnToModelMappings[entityConfig.Key.ToArray()[0].ToUpperInvariant()],
                     JsonConvert.DeserializeObject(jsonKey));
             }
 
-            this.key = key.ToArray();
+            this.key = keyAsDictionary.ToArray();
 
             return this;
         }
@@ -102,6 +106,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         /// </summary>
         /// <param name="fields">The list of requested fields</param>
         /// <returns>Current instance of the IODataSingleResultQueryHandler</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "SelectFields", Justification = "It's a method name.")]
         public IODataSingleResultQueryHandler SelectFields(string[] fields)
         {
             if (this.relatedEntityModels == null)
@@ -141,7 +146,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
 
             // Generate SQL
             var sql =
-                Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From($"{this.mainModel.TableName}");
+                Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.mainModel.TableName);
 
             // Add necessary joins
             Helper.PerformJoins(ref sql, this.mainModel, this.relatedEntityModels);
@@ -150,8 +155,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
             sql = sql.Where(
                     this.key.Select(
                         (kvp, ind) =>
-                        $"{this.mainModel.TableName}.{this.mainModel.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                        .Aggregate((s, s1) => $"{s} AND {s1}"),
+                        StringUtilities.Invariant($"{this.mainModel.TableName}.{this.mainModel.ModelToColumnMappings[kvp.Key]}=@{ind}"))
+                        .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}")),
                     this.key.Select(kvp => kvp.Value).ToArray());
 
             // Fetch the results in one big batch

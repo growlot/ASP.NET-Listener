@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 {
     using System;
     using System.Collections;
@@ -11,11 +11,12 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
     using System.Web.OData.Query;
     using Controllers.Base;
     using Core;
-    using FilterTransformer;
     using MetadataService;
     using Persistence.WNP;
     using Repository.WNP;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
+    using Utilities;
 
     /// <summary>
     /// Query handler for multiple results navigation property query
@@ -27,7 +28,6 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
 
         private readonly IFilterTransformer filterTransformer;
 
-        private Type parentEdmEntityClrType;
         private Type childEdmEntityClrType;
         private DbColumnList selectedFields;
 
@@ -38,7 +38,6 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
 
         private List<KeyValuePair<string, object>> parentKey;
 
-        private MetadataEntityModel parentModel;
         private MetadataEntityModel childModel;
 
         private MetadataEntityModel[] relatedEntityModels;
@@ -64,11 +63,9 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         /// <returns>Current instance of the IODataNavigationMultipleResultsQueryHandler</returns>
         public IODataNavigationMultipleResultsQueryHandler OnTypes(Type parentClrType, Type childClrType)
         {
-            this.parentEdmEntityClrType = parentClrType;
             this.childEdmEntityClrType = childClrType;
 
             this.childModel = this.metadataProvider.GetModelMapping(this.childEdmEntityClrType);
-            this.parentModel = this.metadataProvider.GetModelMapping(this.parentEdmEntityClrType);
 
             return this;
         }
@@ -78,6 +75,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         /// </summary>
         /// <param name="rawParentKey">The json-formatted parent key</param>
         /// <returns>Current instance of the IODataNavigationMultipleResultsQueryHandler</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithKey", Justification = "It's a method name.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "OnTypes", Justification = "It's a method name.")]
         public IODataNavigationMultipleResultsQueryHandler WithKey(string rawParentKey)
         {
             if (this.childModel == null)
@@ -116,7 +115,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
             this.sqlFilter = this.filterTransformer.TransformFilterQueryOption(filterQueryOption, this.parentKey.Count);
 
             // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
-            this.sqlFilter.ConvertUtcParamsToLocalTime();
+            this.sqlFilter.ConvertUtcParametersToLocalTime();
 
             return this;
         }
@@ -167,7 +166,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         public IEnumerable<object> Fetch()
         {
             // Generate SQL
-            var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From($"{this.childModel.TableName}");
+            var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.childModel.TableName);
 
             // Add necessary joins
             Helper.PerformJoins(ref sql, this.childModel, this.relatedEntityModels);
@@ -175,14 +174,14 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
             // Add key selector
             var whereClause =
                 this.parentKey.Select(
-                    (kvp, ind) => $"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                    .Aggregate((s, s1) => $"{s} AND {s1}");
+                    (kvp, ind) => StringUtilities.Invariant($"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind}"))
+                    .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}"));
 
             object[] filterArgs = null;
 
             if (!string.IsNullOrWhiteSpace(this.sqlFilter?.Clause))
             {
-                whereClause += $" AND {this.sqlFilter.Clause}";
+                whereClause += StringUtilities.Invariant($" AND {this.sqlFilter.Clause}");
                 filterArgs = this.sqlFilter.PositionalParameters;
             }
 

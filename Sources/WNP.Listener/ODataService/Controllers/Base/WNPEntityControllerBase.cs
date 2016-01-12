@@ -7,8 +7,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using ApplicationService;
     using MetadataService;
     using Repository.WNP;
-    using Services;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
 
     /// <summary>
     /// Base class for all entity specific WNP controllers

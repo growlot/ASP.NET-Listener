@@ -12,6 +12,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.Listener;
     using Serilog;
 
+    /// <summary>
+    /// Entity category operation controller customization.
+    /// </summary>
     public partial class EntityCategoryOperationController
     {
         /// <summary>

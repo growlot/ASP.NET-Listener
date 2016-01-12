@@ -19,8 +19,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
-    using Services;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
+    using Utilities;
 
     /// <summary>
     /// Controller for Sites.
@@ -83,7 +84,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var siteKey = this.GetRequestKey(1);
             if (siteKey == null)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest($"Invalid key specified."));
+                return Task.FromResult<IHttpActionResult>(this.BadRequest(StringUtilities.Invariant($"Invalid key specified.")));
             }
 
             var existingSite = this.GetEntity<SiteEntity>(siteKey);

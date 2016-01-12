@@ -14,8 +14,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
-    using Services;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
 
     /// <summary>
     /// Controller for meter readings

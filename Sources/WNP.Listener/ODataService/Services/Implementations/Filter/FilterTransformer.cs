@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Implementations.Filter
 {
     using System;
     using System.Collections.Generic;
@@ -12,7 +12,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransforme
     using Microsoft.OData.Core.UriParser.Semantic;
     using Microsoft.OData.Core.UriParser.TreeNodeKinds;
     using Microsoft.OData.Edm;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Utilities;
 
     /// <summary>
     /// Implements <see cref="IFilterTransformer"/> interface.
@@ -38,6 +39,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransforme
         /// </summary>
         /// <param name="metadataService">The metadata service.</param>
         /// <param name="oDataToSql">The OData to SQL converter.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "o", Justification = "FxCop bug.")]
         public FilterTransformer(IMetadataProvider metadataService, IODataFunctionToSqlConvertor oDataToSql)
         {
             this.metadataService = metadataService;
@@ -45,21 +47,33 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransforme
         }
 
         /// <inheritdoc/>
-        public WhereClause TransformFilterQueryOption(FilterQueryOption filterQueryOption, int positionalArgsOffset = 0)
+        public WhereClause TransformFilterQueryOption(FilterQueryOption newFilterQueryOption)
         {
-            this.positionalArgsOffset = positionalArgsOffset;
+            return this.TransformFilterQueryOption(newFilterQueryOption, 0);
+        }
 
-            if ((this.filterQueryOption = filterQueryOption) == null)
+        /// <inheritdoc/>
+        public WhereClause TransformFilterQueryOption(FilterQueryOption newFilterQueryOption, int newPositionalArgsOffset)
+        {
+            this.positionalArgsOffset = newPositionalArgsOffset;
+
+            if ((this.filterQueryOption = newFilterQueryOption) == null)
             {
                 return EmptyWhereClause;
             }
 
             return new WhereClause
             {
-                Clause = $"{this.BindFilter(filterQueryOption)}{Environment.NewLine}",
+                Clause = StringUtilities.Invariant($"{this.BindFilter(newFilterQueryOption)}{Environment.NewLine}"),
                 PositionalParameters = this.positionalParmeters.ToArray()
             };
         }
+
+        private static string BindRangeVariable(NonentityRangeVariable nonentityRangeVariable) =>
+            nonentityRangeVariable.Name;
+
+        private static string BindRangeVariable(EntityRangeVariable entityRangeVariable) =>
+            entityRangeVariable.Name;
 
         private string BindFilter(FilterQueryOption filterQuery) =>
                     this.BindFilterClause(filterQuery.FilterClause);
@@ -69,6 +83,11 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransforme
 
         private string Bind(QueryNode node)
         {
+            if (node == null)
+            {
+                return string.Empty;
+            }
+
             var collectionNode = node as CollectionNode;
             var singleValueNode = node as SingleValueNode;
 
@@ -98,10 +117,10 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransforme
                         return this.BindConvertNode(node as ConvertNode);
 
                     case QueryNodeKind.EntityRangeVariableReference:
-                        return this.BindRangeVariable((node as EntityRangeVariableReferenceNode).RangeVariable);
+                        return BindRangeVariable((node as EntityRangeVariableReferenceNode).RangeVariable);
 
                     case QueryNodeKind.NonentityRangeVariableReference:
-                        return this.BindRangeVariable((node as NonentityRangeVariableReferenceNode).RangeVariable);
+                        return BindRangeVariable((node as NonentityRangeVariableReferenceNode).RangeVariable);
 
                     case QueryNodeKind.SingleValuePropertyAccess:
                         return this.BindPropertyAccessQueryNode(node as SingleValuePropertyAccessNode);
@@ -124,69 +143,67 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransforme
                 }
             }
 
-            throw new NotSupportedException($"Nodes of type {node.Kind} are not supported");
+            throw new NotSupportedException(StringUtilities.Invariant($"Nodes of type {node.Kind} are not supported"));
         }
 
         private string BindCollectionPropertyAccessNode(CollectionPropertyAccessNode collectionPropertyAccessNode)
         {
             var source = this.Bind(collectionPropertyAccessNode.Source);
-            return $"{this.VariableToTable(source)}.{this.PropertyNameToColumn(source, collectionPropertyAccessNode.Property.Name)}";
+            return StringUtilities.Invariant($"{this.VariableToTable(source)}.{this.PropertyNameToColumn(source, collectionPropertyAccessNode.Property.Name)}");
         }
 
         private string BindNavigationPropertyNode(SingleValueNode singleValueNode, IEdmNavigationProperty edmNavigationProperty)
         {
             var source = this.Bind(singleValueNode);
-            return $"{this.VariableToTable(source)}.{this.PropertyNameToColumn(source, edmNavigationProperty.Name)}";
+            return StringUtilities.Invariant($"{this.VariableToTable(source)}.{this.PropertyNameToColumn(source, edmNavigationProperty.Name)}");
         }
 
         private string BindAllNode(AllNode allNode) =>
-            "NOT EXISTS (" +
-            $" FROM {this.Bind(allNode.Source)} {allNode.RangeVariables.First().Name}" +
-            $" WHERE NOT({this.Bind(allNode.Body)})" +
-            ")";
+            StringUtilities.Invariant($@"
+NOT EXISTS (
+    FROM {this.Bind(allNode.Source)} {allNode.RangeVariables.First().Name}
+    WHERE NOT({this.Bind(allNode.Body)})
+)");
 
         private string BindAnyNode(AnyNode anyNode) =>
-            "EXISTS (" +
-                $" FROM {this.Bind(anyNode.Source)} {anyNode.RangeVariables.First().Name}" +
-            (anyNode.Body != null ?
-                $" WHERE {this.Bind(anyNode.Body)}" : string.Empty) +
-            ")";
+            StringUtilities.Invariant($@"
+EXISTS (
+    FROM {this.Bind(anyNode.Source)} {anyNode.RangeVariables.First().Name}
+    {this.AddWhereIfNotNull(anyNode.Body)}
+)");
+
+        private string AddWhereIfNotNull(SingleValueNode node) =>
+            node != null ? StringUtilities.Invariant($"WHERE {this.Bind(node)}") : string.Empty;
 
         private string BindNavigationPropertyNode(SingleEntityNode singleEntityNode, IEdmNavigationProperty edmNavigationProperty)
         {
             var source = this.Bind(singleEntityNode);
-            return $"{this.VariableToTable(source)}.{this.PropertyNameToColumn(source, edmNavigationProperty.Name)}";
+            return StringUtilities.Invariant($"{this.VariableToTable(source)}.{this.PropertyNameToColumn(source, edmNavigationProperty.Name)}");
         }
 
         private string BindSingleValueFunctionCallNode(SingleValueFunctionCallNode singleValueFunctionCallNode)
         {
             var arguments = singleValueFunctionCallNode.Parameters.ToList();
-            var funName = singleValueFunctionCallNode.Name.ToLowerInvariant();
+            var funName = singleValueFunctionCallNode.Name;
 
             if (!this.oDataToSql.IsSupported(funName))
             {
-                throw new NotSupportedException($"{funName} is not supported");
+                throw new NotSupportedException(StringUtilities.Invariant($"{funName} is not supported"));
             }
 
             return this.oDataToSql.Convert(funName, this.Bind, arguments);
         }
 
         private string BindUnaryOperatorNode(UnaryOperatorNode unaryOperatorNode) =>
-            $"{unaryOperatorNode.OperatorKind.ToSqlOperator()}({this.Bind(unaryOperatorNode.Operand)})";
+            StringUtilities.Invariant($"{unaryOperatorNode.OperatorKind.ToSqlOperator()}({this.Bind(unaryOperatorNode.Operand)})");
 
         private string BindPropertyAccessQueryNode(SingleValuePropertyAccessNode singleValuePropertyAccessNode)
         {
             var propertyName = singleValuePropertyAccessNode.Property.Name;
             var source = this.Bind(singleValuePropertyAccessNode.Source);
 
-            return $"{this.VariableToTable(source)}.{this.PropertyNameToColumn(source, propertyName)}";
+            return StringUtilities.Invariant($"{this.VariableToTable(source)}.{this.PropertyNameToColumn(source, propertyName)}");
         }
-
-        private string BindRangeVariable(NonentityRangeVariable nonentityRangeVariable) =>
-            nonentityRangeVariable.Name;
-
-        private string BindRangeVariable(EntityRangeVariable entityRangeVariable) =>
-            entityRangeVariable.Name;
 
         private string BindConvertNode(ConvertNode convertNode) =>
             this.Bind(convertNode.Source);
@@ -195,7 +212,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransforme
         {
             this.positionalParmeters.Add(constantNode.ToKnownClrType());
 
-            return $"@{this.positionalParmeters.Count - 1 + this.positionalArgsOffset}";
+            return StringUtilities.Invariant($"@{this.positionalParmeters.Count - 1 + this.positionalArgsOffset}");
         }
 
         private string BindBinaryOperatorNode(BinaryOperatorNode binaryOperatorNode)
@@ -203,7 +220,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.FilterTransforme
             var left = this.Bind(binaryOperatorNode.Left);
             var right = this.Bind(binaryOperatorNode.Right);
 
-            return $"({left} {binaryOperatorNode.OperatorKind.ToSqlOperator()} {right})";
+            return StringUtilities.Invariant($"({left} {binaryOperatorNode.OperatorKind.ToSqlOperator()} {right})");
         }
 
         private string VariableToTable(string rangeVariable)

@@ -1,12 +1,11 @@
-﻿// <copyright file="KeyValuePathSegmentExtensions.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="StringExtensions.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService
+namespace System
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web.OData.Routing;
+    using Collections.Generic;
+    using Linq;
 
     using Microsoft.OData.Core;
     using Microsoft.OData.Core.UriParser;
@@ -14,22 +13,8 @@ namespace AMSLLC.Listener.ODataService
     /// <summary>
     /// Extensions for KeyValuePathSegment.
     /// </summary>
-    public static class KeyValuePathSegmentExtensions
+    public static class StringExtensions
     {
-        /// <summary>
-        /// Converts KeyValuePathSegment to Dictionary containing final key names/values.
-        /// </summary>
-        /// <param name="keyValuePathSegment">
-        /// The path segment to be processed.
-        /// </param>
-        /// <returns>
-        /// The dictionary, containing final key names/values.
-        /// </returns>
-        public static Dictionary<string, object> ToCompositeKeyDictionary(this KeyValuePathSegment keyValuePathSegment)
-        {
-            return ToCompositeKeyDictionary(keyValuePathSegment.Value);
-        }
-
         /// <summary>
         /// Converts KeyValuePathSegment to Dictionary containing final key names/values.
         /// </summary>
@@ -41,6 +26,11 @@ namespace AMSLLC.Listener.ODataService
         /// </returns>
         public static Dictionary<string, object> ToCompositeKeyDictionary(this string keyRaw)
         {
+            if (keyRaw == null)
+            {
+                throw new ArgumentNullException(nameof(keyRaw), "Can not execute action on null object.");
+            }
+
             var result = new Dictionary<string, object>();
 
             var compoundKeyPairs = keyRaw.Split(',');

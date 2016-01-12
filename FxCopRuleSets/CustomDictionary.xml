@@ -18,11 +18,13 @@
       <Word>ninject</Word> <!-- DI framework name -->
       <Word>edm</Word> <!-- Entity Data Model (used in OData) -->
       <Word>kh</Word> <!-- The the number of Watt-Hours per revolution on meter. -->
-      <Word>composable</Word> 
+      <Word>composable</Word>
+      <Word>odata</Word>
     </Recognized>
     <Compound>
-		  <Term CompoundAlternate="LabTrack">labtrack</Term>
-		</Compound>
+      <Term CompoundAlternate="LabTrack">labtrack</Term>
+      <Term CompoundAlternate="OData">odata</Term>
+    </Compound>
   </Words>
   <Acronyms>
     <CasingExceptions>

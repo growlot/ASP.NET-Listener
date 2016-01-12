@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.ODataService
 {
+    using System;
     using System.Web.Http.Filters;
     using System.Web.OData.Extensions;
     using Microsoft.OData.Core;
@@ -16,6 +17,11 @@ namespace AMSLLC.Listener.ODataService
         /// <inheritdoc/>
         public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
+            if (actionExecutedContext == null)
+            {
+                throw new ArgumentNullException(nameof(actionExecutedContext), "Execution context for the action must be specified.");
+            }
+
             var response = actionExecutedContext.Request.CreateErrorResponse(
                 System.Net.HttpStatusCode.InternalServerError,
                 new ODataError() { ErrorCode = string.Empty, InnerError = new ODataInnerError(actionExecutedContext.Exception), Message = actionExecutedContext.Exception.Message });

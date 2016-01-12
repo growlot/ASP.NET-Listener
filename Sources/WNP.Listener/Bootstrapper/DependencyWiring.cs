@@ -20,10 +20,11 @@ namespace AMSLLC.Listener.Bootstrapper
     using Ninject.Web.Common;
     using ODataService;
     using ODataService.Services;
-    using ODataService.Services.FilterTransformer;
+    using ODataService.Services.Filter;
     using ODataService.Services.Implementations;
-    using ODataService.Services.Implementations.FilterTransformer;
-    using ODataService.Services.Implementations.ODataQueryHandler;
+    using ODataService.Services.Implementations.Filter;
+    using ODataService.Services.Implementations.Query;
+    using ODataService.Services.Query;
     using Persistence.Listener;
     using Persistence.WNP;
     using Persistence.WNPAsync;

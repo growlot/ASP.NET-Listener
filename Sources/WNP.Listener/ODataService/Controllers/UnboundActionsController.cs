@@ -9,7 +9,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using MetadataService;
     using MetadataService.Attributes;
     using Repository.WNP;
-    using Services.FilterTransformer;
+    using Services.Filter;
 
     /// <summary>
     /// Controller for Unbound OData Actions
@@ -38,13 +38,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <summary>
         /// Test for unbound Action.
         /// </summary>
-        /// <param name="mystr">The mystr.</param>
+        /// <param name="testValue">The test string.</param>
         /// <returns>Same string.</returns>
         [UnboundAction]
-        public string Test(
-            string mystr)
+        public static string Test(string testValue)
         {
-            return mystr;
+            return testValue;
         }
     }
 }

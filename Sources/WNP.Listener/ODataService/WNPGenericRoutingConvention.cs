@@ -57,6 +57,16 @@ namespace AMSLLC.Listener.ODataService
         /// <inheritdoc/>
         public string SelectAction(ODataPath odataPath, HttpControllerContext controllerContext, ILookup<string, HttpActionDescriptor> actionMap)
         {
+            if (controllerContext == null)
+            {
+                throw new ArgumentNullException(nameof(controllerContext), "Can not resolve OData action if HTTP controller context is not provided.");
+            }
+
+            if (odataPath == null)
+            {
+                throw new ArgumentNullException(nameof(odataPath), "Can not resolve OData action if OData path is not provided.");
+            }
+
             if (controllerContext.Request.Method == HttpMethod.Post)
             {
                 switch (odataPath.PathTemplate)
@@ -103,18 +113,16 @@ namespace AMSLLC.Listener.ODataService
         /// <inheritdoc/>
         public string SelectController(ODataPath odataPath, HttpRequestMessage request)
         {
-            if (odataPath.PathTemplate == "~" || odataPath.PathTemplate == "~/$metadata" || odataPath.PathTemplate == "~/$batch")
+            if (odataPath == null)
             {
-                return null;
-            }
-
-            if (odataPath.PathTemplate == "~/unboundaction")
-            {
-                return "UnboundActions";
+                throw new ArgumentNullException(nameof(odataPath), "Can not resolve OData controller if OData path is not provided.");
             }
 
             switch (odataPath.PathTemplate)
             {
+                case "~/unboundaction":
+                    return "UnboundActions";
+
                 case "~/entityset":
                 case "~/entityset/key":
                 case "~/entityset/action":

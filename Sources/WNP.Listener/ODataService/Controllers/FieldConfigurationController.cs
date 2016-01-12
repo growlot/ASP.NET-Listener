@@ -8,6 +8,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Linq;
     using Persistence.Listener;
 
+    /// <summary>
+    /// Field configuration controller customization.
+    /// </summary>
     public partial class FieldConfigurationController
     {
         partial void UpdateNested(

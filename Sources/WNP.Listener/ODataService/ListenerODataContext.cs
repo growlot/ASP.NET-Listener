@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.ODataService
 {
     using System;
     using System.Data.Entity;
+    using System.Data.Entity.ModelConfiguration;
     using System.Linq.Expressions;
     using System.Reflection;
     using Persistence.Listener;
@@ -173,25 +174,25 @@ namespace AMSLLC.Listener.ODataService
         /// <inheritdoc/>
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            this.MapPetaPocoEntity<TransactionRegistryEntity, Guid>(modelBuilder, a => a.RecordKey);
-            this.MapPetaPocoEntity<TransactionMessageDatumEntity, Guid>(modelBuilder, a => a.RecordKey);
-            this.MapPetaPocoEntity<TransactionRegistryViewEntity, Guid>(modelBuilder, a => a.RecordKey);
-            this.MapPetaPocoEntity<EndpointEntity, int>(modelBuilder, a => a.EndpointId);
-            this.MapPetaPocoEntity<ProtocolTypeEntity, int>(modelBuilder, a => a.ProtocolTypeId);
-            this.MapPetaPocoEntity<EndpointTriggerTypeEntity, int>(modelBuilder, a => a.EndpointTriggerTypeId);
-            this.MapPetaPocoEntity<ValueMapEntity, int>(modelBuilder, a => a.ValueMapId);
-            this.MapPetaPocoEntity<ValueMapEntryEntity, int>(modelBuilder, a => a.ValueMapEntryId);
-            this.MapPetaPocoEntity<FieldConfigurationEntity, int>(modelBuilder, a => a.FieldConfigurationId);
-            this.MapPetaPocoEntity<FieldConfigurationEntryEntity, int>(modelBuilder, a => a.FieldConfigurationEntryId);
-            this.MapPetaPocoEntity<EntityCategoryOperationEntity, int>(modelBuilder, a => a.EntityCategoryOperationId);
-            this.MapPetaPocoEntity<EntityCategoryEntity, int>(modelBuilder, a => a.EntityCategoryId);
-            this.MapPetaPocoEntity<EnabledOperationEntity, int>(modelBuilder, a => a.EnabledOperationId);
-            this.MapPetaPocoEntity<OperationEntity, int>(modelBuilder, a => a.OperationId);
-            this.MapPetaPocoEntity<OperationEndpointEntity, int>(modelBuilder, a => a.OperationEndpointId);
+            MapPetaPocoEntity<TransactionRegistryEntity, Guid>(modelBuilder, a => a.RecordKey);
+            MapPetaPocoEntity<TransactionMessageDatumEntity, Guid>(modelBuilder, a => a.RecordKey);
+            MapPetaPocoEntity<TransactionRegistryViewEntity, Guid>(modelBuilder, a => a.RecordKey);
+            MapPetaPocoEntity<EndpointEntity, int>(modelBuilder, a => a.EndpointId);
+            MapPetaPocoEntity<ProtocolTypeEntity, int>(modelBuilder, a => a.ProtocolTypeId);
+            MapPetaPocoEntity<EndpointTriggerTypeEntity, int>(modelBuilder, a => a.EndpointTriggerTypeId);
+            MapPetaPocoEntity<ValueMapEntity, int>(modelBuilder, a => a.ValueMapId);
+            MapPetaPocoEntity<ValueMapEntryEntity, int>(modelBuilder, a => a.ValueMapEntryId);
+            MapPetaPocoEntity<FieldConfigurationEntity, int>(modelBuilder, a => a.FieldConfigurationId);
+            MapPetaPocoEntity<FieldConfigurationEntryEntity, int>(modelBuilder, a => a.FieldConfigurationEntryId);
+            MapPetaPocoEntity<EntityCategoryOperationEntity, int>(modelBuilder, a => a.EntityCategoryOperationId);
+            MapPetaPocoEntity<EntityCategoryEntity, int>(modelBuilder, a => a.EntityCategoryId);
+            MapPetaPocoEntity<EnabledOperationEntity, int>(modelBuilder, a => a.EnabledOperationId);
+            MapPetaPocoEntity<OperationEntity, int>(modelBuilder, a => a.OperationId);
+            MapPetaPocoEntity<OperationEndpointEntity, int>(modelBuilder, a => a.OperationEndpointId);
             base.OnModelCreating(modelBuilder);
         }
 
-        private System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<T> MapPetaPocoEntity<T, TKey>(
+        private static EntityTypeConfiguration<T> MapPetaPocoEntity<T, TKey>(
             DbModelBuilder modelBuilder,
             Expression<Func<T, TKey>> primaryKeySelector)
             where T : class
@@ -210,11 +211,11 @@ namespace AMSLLC.Listener.ODataService
             // tps.HasIdLink((ctxt) => ctxt.Url.CreateODataLink(new EntitySetPathSegment("Products"), new KeyValuePathSegment("id")), false);
         }
 
-        private string GetPropertyName<T, TValue>(Expression<Func<T, TValue>> c)
-        {
-            Type paramType = c.Parameters[0].Type; // first parameter of expression
-            var d = paramType.GetMember((c.Body as MemberExpression).Member.Name)[0];
-            return d.Name;
-        }
+        // private string GetPropertyName<T, TValue>(Expression<Func<T, TValue>> c)
+        // {
+        //     Type paramType = c.Parameters[0].Type; // first parameter of expression
+        //     var d = paramType.GetMember((c.Body as MemberExpression).Member.Name)[0];
+        //     return d.Name;
+        // }
     }
 }

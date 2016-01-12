@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Linq;
 
     using MetadataService;
+    using Utilities;
 
     /// <summary>
     /// Helper class for generating list of columns to be SELECTed with random aliases.
@@ -106,7 +107,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     if (dotIndex == -1)
                     {
                         this.queryColumnList.Add(
-                            $"{this.mainModel.TableName}.{this.mainModel.ModelToColumnMappings[field]} AS {this.GenerateRandomColumnName(this.mainModel, field, this.mainModel.ModelToColumnMappings[field])}");
+                            StringUtilities.Invariant($"{this.mainModel.TableName}.{this.mainModel.ModelToColumnMappings[field]} AS {this.GenerateRandomColumnName(this.mainModel, field, this.mainModel.ModelToColumnMappings[field])}"));
                     }
 
                     // this is related entity
@@ -120,7 +121,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                             var fieldName = field.Substring(dotIndex + 1);
                             var dbColumnName = model.ModelToColumnMappings[fieldName];
                             this.queryColumnList.Add(
-                                $"{model.TableName}.{dbColumnName} AS {this.GenerateRandomColumnName(model, fieldName, dbColumnName)}");
+                                StringUtilities.Invariant($"{model.TableName}.{dbColumnName} AS {this.GenerateRandomColumnName(model, fieldName, dbColumnName)}"));
                         }
                     }
                 }
@@ -130,7 +131,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                         model.EntityConfiguration.Key.Map(
                             field =>
                             this.queryColumnList.Add(
-                                $"{model.TableName}.{field} AS {this.GenerateRandomColumnName(model, model.ColumnToModelMappings[field], field)}"));
+                                StringUtilities.Invariant($"{model.TableName}.{field} AS {this.GenerateRandomColumnName(model, model.ColumnToModelMappings[field], field)}")));
                     };
 
                 addKeysActions(this.mainModel);
@@ -141,7 +142,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     relation.ColumnList.Select(s => s.ToUpperInvariant()).Map(
                         field =>
                         this.queryColumnList.Add(
-                            $"{this.mainModel.TableName}.{field} AS {this.GenerateRandomColumnName(this.mainModel, this.mainModel.ColumnToModelMappings[field], field)}"));
+                            StringUtilities.Invariant($"{this.mainModel.TableName}.{field} AS {this.GenerateRandomColumnName(this.mainModel, this.mainModel.ColumnToModelMappings[field], field)}")));
                 }
             }
             else
@@ -152,7 +153,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                             model.ModelToColumnMappings.Values.Map(
                                 field =>
                                 this.queryColumnList.Add(
-                                    $"{model.TableName}.{field} AS {this.GenerateRandomColumnName(model, model.ColumnToModelMappings[field], field)}"));
+                                    StringUtilities.Invariant($"{model.TableName}.{field} AS {this.GenerateRandomColumnName(model, model.ColumnToModelMappings[field], field)}")));
                         };
 
                 addColsActions(this.mainModel);

@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Newtonsoft.Json;
     using Repository.WNP;
     using Serilog;
-    using Services.FilterTransformer;
+    using Services.Filter;
     using Utilities;
 
     /// <summary>
@@ -140,9 +140,20 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// </summary>
         /// <param name="actionsContainerType">Type of the actions container.</param>
         /// <param name="actionName">Name of the action.</param>
+        /// <returns>The result of the action</returns>
+        protected async Task<IHttpActionResult> InvokeAction(Type actionsContainerType, string actionName)
+        {
+            return await this.InvokeAction(actionsContainerType, actionName, null);
+        }
+
+        /// <summary>
+        /// Invokes the OData action.
+        /// </summary>
+        /// <param name="actionsContainerType">Type of the actions container.</param>
+        /// <param name="actionName">Name of the action.</param>
         /// <param name="keySegment">The key segment.</param>
         /// <returns>The result of the action</returns>
-        protected async Task<IHttpActionResult> InvokeAction(Type actionsContainerType, string actionName, KeyValuePathSegment keySegment = null)
+        protected async Task<IHttpActionResult> InvokeAction(Type actionsContainerType, string actionName, KeyValuePathSegment keySegment)
         {
             // each entity has its controller with actions defined there
             var actionsContainer = this;
@@ -159,7 +170,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             // check the number of parameters
             var parametersInfo = methodInfo.GetParameters();
-            if (this.GetRequiredParametersCount(parametersInfo) > jsonParameters.Count)
+            if (GetRequiredParametersCount(parametersInfo) > jsonParameters.Count)
             {
                 return
                     this.BadRequest($"Invalid number of non-optional parameters. Expected: {parametersInfo.Length}. Got: {jsonParameters.Count}.");
@@ -228,6 +239,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <summary>
         /// Constructs the query options.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "TypeDefinition", Justification = "It's EDM entity type name.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "EntityReference", Justification = "It's EDM entity type name.")]
         protected void ConstructQueryOptions()
         {
             var oDataProperties = this.Request.ODataProperties();
@@ -256,25 +269,25 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     switch (oDataProperties.Path.EdmType.TypeKind)
                     {
                         case EdmTypeKind.None:
-                            throw new NotSupportedException("EdmTypeKind.None not yet supported");
+                            throw new NotSupportedException("EDM type with kind None not yet supported");
                         case EdmTypeKind.Primitive:
-                            throw new NotSupportedException("EdmTypeKind.Primitive not yet supported");
+                            throw new NotSupportedException("EDM type with kind Primitive not yet supported");
                         case EdmTypeKind.Entity:
                             modelTypeFullName = ((EdmEntityType)oDataProperties.Path.EdmType).FullName();
                             break;
                         case EdmTypeKind.Complex:
-                            throw new NotSupportedException("EdmTypeKind.Complex not yet supported");
+                            throw new NotSupportedException("EDM type with kind Complex not yet supported");
                         case EdmTypeKind.Collection:
                             modelTypeFullName = ((EdmCollectionType)oDataProperties.Path.EdmType).ElementType.FullName();
                             break;
                         case EdmTypeKind.EntityReference:
-                            throw new NotSupportedException("EdmTypeKind.EntityReference not yet supported");
+                            throw new NotSupportedException("EDM type with kind EntityReference not yet supported");
                         case EdmTypeKind.Enum:
-                            throw new NotSupportedException("EdmTypeKind.Enum not yet supported");
+                            throw new NotSupportedException("EDM type with kind Enum not yet supported");
                         case EdmTypeKind.TypeDefinition:
-                            throw new NotSupportedException("EdmTypeKind.TypeDefinition not yet supported");
+                            throw new NotSupportedException("EDM type with kind TypeDefinition not yet supported");
                         default:
-                            throw new ArgumentOutOfRangeException();
+                            throw new InvalidOperationException(StringUtilities.Invariant($"EDM type with kind  {oDataProperties.Path.EdmType.TypeKind} is not recognized."));
                     }
 
                     edmEntityClrType = this.MetadataService.ODataModelAssembly.GetType(modelTypeFullName);
@@ -285,18 +298,18 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             this.QueryOptions = new ODataQueryOptions(new ODataQueryContext(model, edmEntityClrType, oDataPath), this.Request);
         }
 
-        private MethodInfo GetSimpleOkMethod(Type dataType)
-            => MemoryCache.Default.GetOrAddExisting(
-                $"WNPController.SimpleOkMethod<{dataType.FullName}>",
-                () => this.GetType()
-                    .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                    .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
-                    .MakeGenericMethod(dataType));
-
-        private int GetRequiredParametersCount(ParameterInfo[] parameters) =>
+        private static int GetRequiredParametersCount(ParameterInfo[] parameters) =>
             parameters.Count(
                 info =>
                     !info.IsOptional &&
                     info.CustomAttributes.All(data => data.AttributeType != typeof(BoundEntityKeyAttribute)));
+
+        private MethodInfo GetSimpleOkMethod(Type dataType)
+            => MemoryCache.Default.GetOrAddExisting(
+                StringUtilities.Invariant($"WNPController.SimpleOkMethod<{dataType.FullName}>"),
+                () => this.GetType()
+                    .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                    .First(mInfo => mInfo.Name == "Ok" && mInfo.IsGenericMethod)
+                    .MakeGenericMethod(dataType));
     }
 }

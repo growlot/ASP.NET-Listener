@@ -11,6 +11,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Core;
     using Serilog;
 
+    /// <summary>
+    /// Transaction registry details controller customization.
+    /// </summary>
     public partial class TransactionRegistryDetailsController
     {
         private readonly IDateTimeProvider dateTimeProvider;

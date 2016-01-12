@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
@@ -19,8 +20,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
-    using Services;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
     using Utilities;
 
     /// <summary>
@@ -84,7 +85,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var siteKey = this.GetRequestKey(siteModelMapping, 1);
             if (siteKey == null)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest($"Invalid key specified for the {siteModelMapping.ClassName}."));
+                return Task.FromResult<IHttpActionResult>(this.BadRequest(StringUtilities.Invariant($"Invalid key specified for the {siteModelMapping.ClassName}.")));
             }
 
             var existingSite = this.GetEntity<SiteEntity>(siteKey, siteModelMapping, DBMetadata.Site.Site);
@@ -99,7 +100,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             if (circuitKey == null)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest($"Invalid key specified for the {circuitModelMapping.ClassName}."));
+                return Task.FromResult<IHttpActionResult>(this.BadRequest(StringUtilities.Invariant($"Invalid key specified for the {circuitModelMapping.ClassName}.")));
             }
 
             var circuitKeyList = circuitKey.ToList();
@@ -117,21 +118,21 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 circuit.Site = (int)circuitKeyList.First(item => item.Key == circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site]).Value;
 
                 var primaryKeyFieldName = circuitModelMapping.FieldInfo.First(fi => fi.Value.IsPrimaryKey).Key;
-                if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.MeterPoint.ToUpper()] == primaryKeyFieldName)
+                if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.MeterPoint.ToUpper(CultureInfo.InvariantCulture)] == primaryKeyFieldName)
                 {
                     circuit.MeterPoint = (string)circuitKeyList.First(item => item.Key == primaryKeyFieldName).Value;
                 }
-                else if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.ServicePoint.ToUpper()] == primaryKeyFieldName)
+                else if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.ServicePoint.ToUpper(CultureInfo.InvariantCulture)] == primaryKeyFieldName)
                 {
                     circuit.ServicePoint = (string)circuitKeyList.First(item => item.Key == primaryKeyFieldName).Value;
                 }
-                else if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc.ToUpper()] == primaryKeyFieldName)
+                else if (circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.CircuitDesc.ToUpper(CultureInfo.InvariantCulture)] == primaryKeyFieldName)
                 {
                     circuit.CircuitDesc = (string)circuitKeyList.First(item => item.Key == primaryKeyFieldName).Value;
                 }
                 else
                 {
-                    throw new NotSupportedException($"Field {primaryKeyFieldName} is not supported as primary key.");
+                    throw new NotSupportedException(StringUtilities.Invariant($"Field {primaryKeyFieldName} is not supported as primary key."));
                 }
 
                 return this.CreateCircuit(circuit);
@@ -148,6 +149,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <param name="installServiceOrderStarted">The date when install service order was created.</param>
         /// <param name="installServiceOrderCompleted">The date when install service order was completed.</param>
         /// <returns>The result of action.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "This is OData action and it must support optional parameters.")]
         [BoundAction]
         public async Task<IHttpActionResult> AddEquipment(
                     string equipmentType,

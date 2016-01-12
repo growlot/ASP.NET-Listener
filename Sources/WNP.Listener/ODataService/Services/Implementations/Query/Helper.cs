@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 {
     using System;
     using System.Collections.Generic;
@@ -11,6 +11,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
     using MetadataService;
     using Newtonsoft.Json;
     using Persistence.WNP;
+    using Utilities;
 
     internal static class Helper
     {
@@ -28,13 +29,13 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
 
                 var onClause =
                     relationConfig.MatchOn.Select(
-                        m => $"{entityModel.TableName}.{m.SourceColumn} = {parentTable}.{m.TargetColumn}")
-                        .Aggregate((m1, m2) => $"{m1} AND {m2}");
+                        m => StringUtilities.Invariant($"{entityModel.TableName}.{m.SourceColumn} = {parentTable}.{m.TargetColumn}"))
+                        .Aggregate((m1, m2) => StringUtilities.Invariant($"{m1} AND {m2}"));
 
                 if (relationConfig.MatchValue != null)
                 {
                     onClause =
-                        $"{onClause} AND {relationConfig.MatchValue.TargetColumn} = '{relationConfig.MatchValue.TargetColumnValue}'";
+                        StringUtilities.Invariant($"{onClause} AND {relationConfig.MatchValue.TargetColumn} = '{relationConfig.MatchValue.TargetColumnValue}'");
                 }
 
                 sql = sql.LeftJoin(entityModel.TableName).On(onClause);
@@ -78,7 +79,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
             // DateTimeOffset type
             if (fieldInfo.Value.ClrDataType == typeof(DateTimeOffset))
             {
-                jsonKey = $"'{jsonKey}'";
+                jsonKey = StringUtilities.Invariant($"'{jsonKey}'");
             }
 
             return JsonConvert.DeserializeObject(jsonKey, fieldInfo.Value.ClrDataType);

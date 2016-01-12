@@ -8,6 +8,9 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using System.Linq;
     using Persistence.Listener;
 
+    /// <summary>
+    /// Value map controller customization.
+    /// </summary>
     public partial class ValueMapController
     {
         partial void UpdateNested(

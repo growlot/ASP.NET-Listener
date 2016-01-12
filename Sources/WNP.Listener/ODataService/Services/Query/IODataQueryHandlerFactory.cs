@@ -2,10 +2,8 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services
+namespace AMSLLC.Listener.ODataService.Services.Query
 {
-    using Implementations.ODataQueryHandler;
-
     /// <summary>
     /// OData query handler factory interface.
     /// </summary>

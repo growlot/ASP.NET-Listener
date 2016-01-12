@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
 {
+    using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text;
@@ -47,8 +48,8 @@ namespace AMSLLC.Listener.ODataService.HttpMessageHandlers
         private static bool IsJson(string input)
         {
             input = input.Trim();
-            return (input.StartsWith("{") && input.EndsWith("}"))
-                   || (input.StartsWith("[") && input.EndsWith("]"));
+            return (input.StartsWith("{", StringComparison.Ordinal) && input.EndsWith("}", StringComparison.Ordinal))
+                   || (input.StartsWith("[", StringComparison.Ordinal) && input.EndsWith("]", StringComparison.Ordinal));
         }
     }
 }

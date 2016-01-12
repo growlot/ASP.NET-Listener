@@ -4,13 +4,13 @@
 
 namespace AMSLLC.Listener.ODataService.Controllers
 {
-    using AMSLLC.Listener.ApplicationService;
+    using ApplicationService;
     using Base;
     using MetadataService;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
-    using Services;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
 
     /// <summary>
     /// Controller for MeterTestResults entity

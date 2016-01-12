@@ -18,8 +18,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
-    using Services;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
     using Utilities;
 
     /// <summary>
@@ -66,6 +66,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <returns>
         /// The result of action.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "This is OData action and it must support optional parameters.")]
         [BoundAction]
         public async Task<IHttpActionResult> Uninstall(
             [BoundEntityKey] string equipmentNumber,
@@ -114,20 +115,6 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await this.CommandBus.PublishAsync(uninstallMeterCommand);
             return this.StatusCode(HttpStatusCode.NoContent);
-        }
-
-        /// <summary>
-        /// Example URI: ~/ElectricMeters/AMSLLC.Listener.ElectricMeter_ColTest
-        /// POST data:
-        /// {mystr: "user"}
-        /// </summary>
-        /// <param name="mystr">Test string</param>
-        /// <returns>Modified test string.</returns>
-        [BoundAction]
-        [CollectionWideAction]
-        public string ColTest(string mystr)
-        {
-            return mystr + "_col";
         }
     }
 }

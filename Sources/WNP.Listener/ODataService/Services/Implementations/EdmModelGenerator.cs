@@ -13,6 +13,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
     using MetadataService.Attributes;
     using Microsoft.OData.Edm;
     using Ninject.Infrastructure.Language;
+    using Utilities;
 
     /// <summary>
     /// Implements <see cref="IEdmModelGenerator"/>
@@ -50,13 +51,13 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
                 this.metadataService.ODataModelAssembly.GetTypes()
                     .Where(type => typeof(IODataEntity).IsAssignableFrom(type) && !typeof(IContainedEntity).IsAssignableFrom(type));
 
-            entitySetTypes.Map(type => this.GenerateEntitySet(type, builder));
+            entitySetTypes.Map(type => GenerateEntitySet(type, builder));
 
             var virtualEntityTypes =
                 this.metadataService.ODataModelAssembly.GetTypes()
                     .Where(type => typeof(IVirtualODataEntity).IsAssignableFrom(type));
 
-            virtualEntityTypes.Map(type => this.GenerateEntityType(type, builder));
+            virtualEntityTypes.Map(type => GenerateEntityType(type, builder));
 
             var entityTypes =
                 this.metadataService.ODataModelAssembly.GetTypes()
@@ -64,7 +65,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
 
             entityTypes.Map(type => this.GenerateBoundActions(type, builder));
 
-            this.GenerateUnboundActions(builder);
+            GenerateUnboundActions(builder);
 
             return model = builder.GetEdmModel();
         }
@@ -101,9 +102,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
         /// </summary>
         /// <param name="actionMethod">The action method.</param>
         /// <param name="entityTypeConfiguration">The entity type configuration.</param>
-        /// <param name="actionsContainer">The actions container.</param>
         /// <returns>The OData action configuration.</returns>
-        private static ActionConfiguration CreateActionConfiguration(MethodInfo actionMethod, object entityTypeConfiguration, Type actionsContainer)
+        private static ActionConfiguration CreateActionConfiguration(MethodInfo actionMethod, object entityTypeConfiguration)
         {
             var isCollectionWide =
                 actionMethod.CustomAttributes.Any(a => a.AttributeType == typeof(CollectionWideActionAttribute));
@@ -111,15 +111,6 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
             var etcType = entityTypeConfiguration.GetType();
 
             object actionConfiguration;
-            ////var actionPrefix = actionsContainer.Name;
-            ////var actionPrefixAttribute =
-            ////    actionsContainer.GetCustomAttributes(typeof (ActionPrefixAttribute)).FirstOrDefault() as
-            ////        ActionPrefixAttribute;
-
-            ////if (actionPrefixAttribute != null)
-            ////{
-            ////    actionPrefix = actionPrefixAttribute.Prefix;
-            ////}
 
             if (isCollectionWide)
             {
@@ -143,7 +134,13 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
             return actionConfiguration as ActionConfiguration;
         }
 
-        private void GenerateUnboundActions(ODataConventionModelBuilder builder)
+        private static void GenerateEntitySet(Type type, ODataConventionModelBuilder builder)
+        {
+            var entitySetMethod = typeof(ODataConventionModelBuilder).GetMethod("EntitySet");
+            entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] { StringUtilities.Invariant($"{type.Name}s") });
+        }
+
+        private static void GenerateUnboundActions(ODataConventionModelBuilder builder)
         {
             var unboundActionContainers =
                 AppDomain.CurrentDomain.GetAssemblies()
@@ -165,13 +162,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
             });
         }
 
-        private void GenerateEntitySet(Type type, ODataConventionModelBuilder builder)
-        {
-            var entitySetMethod = typeof(ODataConventionModelBuilder).GetMethod("EntitySet");
-            entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] { $"{type.Name}s" });
-        }
-
-        private void GenerateEntityType(Type type, ODataConventionModelBuilder builder)
+        private static void GenerateEntityType(Type type, ODataConventionModelBuilder builder)
         {
             var entitySetMethod = typeof(ODataConventionModelBuilder).GetMethod("EntityType");
             entitySetMethod.MakeGenericMethod(type).Invoke(builder, new object[] { });
@@ -194,7 +185,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
 
                 actionMethodsList.Map(info =>
                 {
-                    var actionConfiguration = CreateActionConfiguration(info, entityTypeConfiguration, actionsContainer);
+                    var actionConfiguration = CreateActionConfiguration(info, entityTypeConfiguration);
                     CreateActionParameters(info, actionConfiguration);
                 });
             }

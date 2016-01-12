@@ -2,11 +2,12 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 {
     using MetadataService;
     using Repository.WNP;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
 
     /// <summary>
     /// Factory class for creating fluent OData request handlers

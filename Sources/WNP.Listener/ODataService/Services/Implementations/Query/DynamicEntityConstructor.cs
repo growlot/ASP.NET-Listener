@@ -2,16 +2,16 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
-    using AMSLLC.Listener.Utilities;
     using Controllers.Base;
     using MetadataService;
+    using Utilities;
 
     internal class DynamicEntityConstructor
     {
@@ -75,7 +75,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
 
                 var virtualType =
                     this.metadataProvider.GetEntityType(
-                        $"{this.metadataProvider.ODataModelNamespace}.{relation.VirtualEntityName}");
+                        StringUtilities.Invariant($"{this.metadataProvider.ODataModelNamespace}.{relation.VirtualEntityName}"));
 
                 var expandProperty = this.GetRelationPropertyName(relation.VirtualEntityName);
                 var isCollection = expandProperty.PropertyType.IsGenericType
@@ -151,7 +151,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
             {
                 var clrType =
                     this.metadataProvider.GetEntityType(
-                        $"{this.metadataProvider.ODataModelNamespace}.{model.ClassName}");
+                        StringUtilities.Invariant($"{this.metadataProvider.ODataModelNamespace}.{model.ClassName}"));
 
                 var expandProperty = this.GetRelationPropertyName(model.ClassName);
                 var isCollection = expandProperty.PropertyType.IsGenericType

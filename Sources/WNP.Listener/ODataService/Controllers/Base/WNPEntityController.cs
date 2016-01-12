@@ -26,9 +26,8 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using Persistence.WNP;
     using Repository.WNP;
     using Serilog;
-    using Services;
-    using Services.FilterTransformer;
-    using Services.Implementations.ODataQueryHandler;
+    using Services.Filter;
+    using Services.Query;
     using Utilities;
 
     /// <summary>
@@ -182,9 +181,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             // get types' entity models
             var parentType =
-                this.MetadataService.GetEntityType($"{this.MetadataService.ODataModelNamespace}.{parentEntityType.Name}");
+                this.MetadataService.GetEntityType(StringUtilities.Invariant($"{this.MetadataService.ODataModelNamespace}.{parentEntityType.Name}"));
             var childType =
-                this.MetadataService.GetEntityType($"{this.MetadataService.ODataModelNamespace}.{childEntityType.Name}");
+                this.MetadataService.GetEntityType(StringUtilities.Invariant($"{this.MetadataService.ODataModelNamespace}.{childEntityType.Name}"));
 
             var expands =
                 this.QueryOptions.SelectExpand?.SelectExpandClause?.SelectedItems?.OfType<ExpandedNavigationSelectItem>().ToArray();
@@ -280,9 +279,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             // get types' entity models
             var parentType =
-                this.MetadataService.GetEntityType($"{this.MetadataService.ODataModelNamespace}.{parentEntityType.Name}");
+                this.MetadataService.GetEntityType(StringUtilities.Invariant($"{this.MetadataService.ODataModelNamespace}.{parentEntityType.Name}"));
             var childType =
-                this.MetadataService.GetEntityType($"{this.MetadataService.ODataModelNamespace}.{childEntityType.Name}");
+                this.MetadataService.GetEntityType(StringUtilities.Invariant($"{this.MetadataService.ODataModelNamespace}.{childEntityType.Name}"));
 
             try
             {
@@ -310,14 +309,17 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// Gets the property value from delta object if it is in delta, or returns current value.
         /// </summary>
         /// <typeparam name="T">Type of the property</typeparam>
-        /// <typeparam name="TEntity">The type of the delta entity.</typeparam>
         /// <param name="delta">The delta.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="currentValue">The current value.</param>
         /// <returns>Property value.</returns>
-        protected static T GetChangedOrCurrent<T, TEntity>(Delta<TEntity> delta, string propertyName, T currentValue)
-                    where TEntity : class
+        protected static T GetChangedOrCurrent<T>(Delta delta, string propertyName, T currentValue)
         {
+            if (delta == null)
+            {
+                throw new ArgumentNullException(nameof(delta), "Can not get property value if delta object is not specified.");
+            }
+
             if (delta.GetChangedPropertyNames().Contains(propertyName))
             {
                 object value;
@@ -339,6 +341,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <returns>The key used in request.</returns>
         protected KeyValuePair<string, object>[] GetRequestKey(MetadataEntityModel modelMapping, int keyPosition)
         {
+            if (modelMapping == null)
+            {
+                throw new ArgumentNullException(nameof(modelMapping), "Can not get key from request if model mapping is not provided.");
+            }
+
             var entityConfig = modelMapping.EntityConfiguration;
 
             bool hasCompositeKey;
@@ -395,10 +402,10 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             var sql =
                 Sql.Builder.Select(dbFieldNames)
-                    .From($"{modelMapping.TableName}")
+                    .From(modelMapping.TableName)
                     .Where(
-                        key.Select((kvp, ind) => $"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                            .Aggregate((s, s1) => $"{s} AND {s1}"),
+                        key.Select((kvp, ind) => StringUtilities.Invariant($"{modelMapping.ModelToColumnMappings[kvp.Key]}=@{ind}"))
+                            .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}")),
                         key.Select(kvp => kvp.Value).ToArray());
 
             return ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
@@ -412,7 +419,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <returns>The entity.</returns>
         protected TEntity GetEntity<TEntity>(KeyValuePair<string, object>[] key)
         {
-            var modelMapping = this.MetadataService.GetModelMapping(this.EdmEntityClrType);
             return this.GetEntity<TEntity>(key, this.MetadataService.GetModelMapping(this.EdmEntityClrType), "*");
         }
 
@@ -464,12 +470,13 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             var responseContent = this.CreateEdmEntity();
             try
             {
-            var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
-            setFromEntityMethod.Invoke(responseContent, new object[] { entity });
+                var setFromEntityMethod = this.EdmEntityClrType.GetMethod("SetFromEntity");
+                setFromEntityMethod.Invoke(responseContent, new object[] { entity });
             }
             catch (Exception ex)
             {
                 Log.Error(ex.ToString());
+                throw;
             }
 
             var result = (IHttpActionResult)this.GetCreatedMethod().Invoke(this, new[] { responseContent });
@@ -530,7 +537,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         {
             var odataFormatters = ODataMediaTypeFormatters.Create();
             var deltaType = typeof(Delta<>).MakeGenericType(this.EdmEntityClrType);
-            var delta = this.CreateEdmEntityDelta();
 
             IEnumerable<MediaTypeFormatter> perRequestFormatters = odataFormatters.Select(
                 (f) => f.GetPerRequestFormatterInstance(deltaType, this.Request, null));
@@ -593,11 +599,6 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
 
             return entityInstance;
         }
-
-        private object CreateEdmEntityDelta()
-            => MemoryCache.Default.GetOrAddExisting(
-                StringUtilities.Invariant($"WNPController.List<{this.EdmEntityClrType.FullName}>"),
-                () => typeof(Delta<>).MakeGenericType(this.EdmEntityClrType));
 
         private Type GetGenericListType()
             => MemoryCache.Default.GetOrAddExisting(

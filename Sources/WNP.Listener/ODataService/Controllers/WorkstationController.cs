@@ -14,8 +14,8 @@ namespace AMSLLC.Listener.ODataService.Controllers
     using MetadataService.Attributes;
     using Persistence.WNP.Metadata;
     using Repository.WNP;
-    using Services;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
 
     /// <summary>
     /// Controller for workstations
@@ -61,6 +61,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// <returns>
         /// A <see cref="Task" /> representing the asynchronous operation result.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "This is OData action and it must support optional parameters.")]
         [BoundAction]
         public async Task<IHttpActionResult> ExecuteBusinessRule(
             [BoundEntityKey] string workstation,

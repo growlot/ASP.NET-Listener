@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.FilterTransformer
+namespace AMSLLC.Listener.ODataService.Services.Filter
 {
     using System;
     using System.Collections.Generic;
@@ -21,12 +21,12 @@ namespace AMSLLC.Listener.ODataService.Services.FilterTransformer
         bool IsSupported(string functionName);
 
         /// <summary>
-        /// Converts the specified function name.
+        /// Converts the specified OData function to SQL function.
         /// </summary>
         /// <param name="functionName">Name of the function.</param>
         /// <param name="genericBinder">The generic binder.</param>
         /// <param name="arguments">The arguments.</param>
         /// <returns>SQL function string.</returns>
-        string Convert(string functionName, Func<QueryNode, string> genericBinder, List<QueryNode> arguments);
+        string Convert(string functionName, Func<QueryNode, string> genericBinder, IList<QueryNode> arguments);
     }
 }

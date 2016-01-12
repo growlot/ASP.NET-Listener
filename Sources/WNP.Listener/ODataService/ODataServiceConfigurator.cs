@@ -6,6 +6,7 @@
 
 namespace AMSLLC.Listener.ODataService
 {
+    using System;
     using System.Net.Http;
     using System.Web.Http;
     using System.Web.Http.Dispatcher;
@@ -42,6 +43,11 @@ namespace AMSLLC.Listener.ODataService
         /// <param name="config">The HTTP configuration.</param>
         public void Configure(HttpConfiguration config)
         {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config), "Can not configure OData service if HTTP configuration is not provided.");
+            }
+
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
             config.Filters.Add(new CommonExceptionFilterAttribute());
 
@@ -51,22 +57,32 @@ namespace AMSLLC.Listener.ODataService
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
 
             DelegatingHandler[] handlersWnp = new DelegatingHandler[] { new RequestScopeHandler() };
-            var routeHandlersWnp = HttpClientFactory.CreatePipeline(new HttpControllerDispatcher(config), handlersWnp);
 
             // Adding batch handler. Code taken from OData implementation.
             // Can not use MapODataServiceRoute, because it doesn't allow to specify defaultHandler and batchHandler at the same time.
-            var batchHandler = new TransactionalODataBatchHandler(new HttpServer(config));
-            batchHandler.ODataRouteName = "WNPODataRoute";
-            string batchTemplate = ODataRouteConstants.Batch;
-            config.Routes.MapHttpBatchRoute(batchHandler.ODataRouteName + "Batch", batchTemplate, batchHandler);
+            using (var httpServer = new HttpServer(config))
+            {
+                using (var batchHandler = new TransactionalODataBatchHandler(httpServer))
+                {
+                    batchHandler.ODataRouteName = "WNPODataRoute";
+                    string batchTemplate = ODataRouteConstants.Batch;
+                    config.Routes.MapHttpBatchRoute(batchHandler.ODataRouteName + "Batch", batchTemplate, batchHandler);
+                }
+            }
 
-            config.MapODataServiceRoute(
-                routeName: "WNPODataRoute",
-                routePrefix: null,
-                model: this.modelGenerator.GenerateODataModel(),
-                pathHandler: new DefaultODataPathHandler(),
-                routingConventions: conventions,
-                defaultHandler: routeHandlersWnp);
+            using (var httpController = new HttpControllerDispatcher(config))
+            {
+                using (var routeHandlersWnp = HttpClientFactory.CreatePipeline(httpController, handlersWnp))
+                {
+                    config.MapODataServiceRoute(
+                        routeName: "WNPODataRoute",
+                        routePrefix: null,
+                        model: this.modelGenerator.GenerateODataModel(),
+                        pathHandler: new DefaultODataPathHandler(),
+                        routingConventions: conventions,
+                        defaultHandler: routeHandlersWnp);
+                }
+            }
 
             var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener", ContainerName = "ListenerContainer" };
 

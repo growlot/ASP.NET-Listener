@@ -20,6 +20,7 @@ namespace AMSLLC.Listener.ODataService
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
         /// <param name="tableName">The table name.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "This is an override method and it's signature can not be changed.")]
         protected override void SetupTransactionRegistryController(
             ODataModelBuilder builder,
             Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null,
@@ -66,6 +67,7 @@ namespace AMSLLC.Listener.ODataService
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
         /// <param name="tableName">The table name.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "This is an override method and it's signature can not be changed.")]
         protected override void SetupEndpointController(
             ODataModelBuilder builder,
             Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null,
@@ -87,6 +89,7 @@ namespace AMSLLC.Listener.ODataService
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
         /// <param name="tableName">The table name.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "This is an override method and it's signature can not be changed.")]
         protected override void SetupEntityCategoryOperationController(
             ODataModelBuilder builder,
             Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryOperationEntity>> actionBuilder = null,
@@ -109,6 +112,7 @@ namespace AMSLLC.Listener.ODataService
         /// <param name="builder">The builder.</param>
         /// <param name="actionBuilder">The action builder.</param>
         /// <param name="tableName">The table name.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "This is an override method and it's signature can not be changed.")]
         protected override void SetupTransactionRegistryDetailsController(
             ODataModelBuilder builder,
             Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null,

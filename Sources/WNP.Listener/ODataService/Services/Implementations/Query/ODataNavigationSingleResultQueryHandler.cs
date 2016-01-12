@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 {
     using System;
     using System.Collections.Generic;
@@ -11,6 +11,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
     using MetadataService;
     using Persistence.WNP;
     using Repository.WNP;
+    using Services.Query;
+    using Utilities;
 
     /// <summary>
     /// IODataNavigationSingleResultQueryHandler default implementation
@@ -66,6 +68,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         /// <param name="rawParentKey">The json-formatted parent key</param>
         /// <param name="rawChildKey">The json-formatted child key</param>
         /// <returns>Current instance of the IODataNavigationSingleResultQueryHandler</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithKeys", Justification = "It's a method name.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "OnTypes", Justification = "It's a method name.")]
         public IODataNavigationSingleResultQueryHandler WithKeys(string rawParentKey, string rawChildKey)
         {
             if (this.childModel == null)
@@ -90,6 +94,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         /// </summary>
         /// <param name="fields">The list of requested fields</param>
         /// <returns>Current instance of the IODataNavigationSingleResultQueryHandler</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "SelectFields", Justification = "It's a method name.")]
         public IODataNavigationSingleResultQueryHandler SelectFields(string[] fields)
         {
             if (this.relatedEntityModels == null)
@@ -129,7 +134,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
 
             // Generate SQL
             var sql =
-                Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From($"{this.childModel.TableName}");
+                Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.childModel.TableName);
 
             // Add necessary joins
             Helper.PerformJoins(ref sql, this.childModel, this.relatedEntityModels);
@@ -138,8 +143,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
             sql = sql.Where(
                     this.key.Select(
                         (kvp, ind) =>
-                        $"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind}")
-                        .Aggregate((s, s1) => $"{s} AND {s1}"),
+                        StringUtilities.Invariant($"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind}"))
+                        .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}")),
                     this.key.Select(kvp => kvp.Value).ToArray());
 
             // Fetch the results in one big batch

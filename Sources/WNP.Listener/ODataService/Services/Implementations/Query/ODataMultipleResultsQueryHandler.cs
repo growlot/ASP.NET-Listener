@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandler
+namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 {
     using System;
     using System.Collections;
@@ -11,11 +11,11 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
     using System.Web.OData.Query;
     using Controllers.Base;
     using Core;
-    using FilterTransformer;
     using MetadataService;
     using Persistence.WNP;
     using Repository.WNP;
-    using Services.FilterTransformer;
+    using Services.Filter;
+    using Services.Query;
 
     /// <summary>
     /// Query handler for multiple results query
@@ -73,6 +73,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         /// </summary>
         /// <param name="fields">The list of requested fields</param>
         /// <returns>Current instance of the IODataMultipleResultsQueryHandler</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "SelectFields", Justification = "It's a method name.")]
         public IODataMultipleResultsQueryHandler SelectFields(string[] fields)
         {
             if (this.relatedEntityModels == null)
@@ -100,7 +101,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
                 this.sqlFilter = this.filterTransformer.TransformFilterQueryOption(filterQueryOption);
 
                 // convert parameters supplied as UTC time to local time, because WNP saves values as local time in db
-                this.sqlFilter.ConvertUtcParamsToLocalTime();
+                this.sqlFilter.ConvertUtcParametersToLocalTime();
             }
 
             return this;
@@ -151,7 +152,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.ODataQueryHandle
         /// <returns>Set of the entity class instances, defined in OData model assembly.</returns>
         public IEnumerable<object> Fetch()
         {
-            var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From($"{this.mainModel.TableName}");
+            var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.mainModel.TableName);
 
             // Add necessary joins
             Helper.PerformJoins(ref sql, this.mainModel, this.relatedEntityModels);
