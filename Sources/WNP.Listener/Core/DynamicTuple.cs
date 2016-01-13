@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Core
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
 
     /// <summary>
@@ -25,6 +26,7 @@ namespace AMSLLC.Listener.Core
         /// <param name="values">The values</param>
         public DynamicTuple(IEnumerable<T> values)
         {
+            Contract.Requires(values != null);
             this.values = values.ToArray();
         }
 
@@ -51,6 +53,9 @@ namespace AMSLLC.Listener.Core
             {
                 return false;
             }
+
+            // values property will always be set on other, because it's the same type as this.
+            Contract.Assume(other.values != null);
 
             var length = this.values.Length;
             if (length != other.values.Length)
