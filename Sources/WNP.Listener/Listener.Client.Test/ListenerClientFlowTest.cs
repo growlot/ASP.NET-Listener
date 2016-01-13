@@ -19,7 +19,7 @@ namespace AMSLLC.Listener.Client.Test
         [TestMethod]
         public void TestListenerClientSuccess()
         {
-            var lc = new Mock<ListenerClient>("http://localhost") ;
+            var lc = new Mock<ListenerClient>("http://localhost");
             lc.Setup(
                 s => s.OpenTransaction(It.IsAny<BaseListenerRequestMessage>()))
                 .Returns(basicResponse);
