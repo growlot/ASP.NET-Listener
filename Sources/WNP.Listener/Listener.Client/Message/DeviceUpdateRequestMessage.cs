@@ -6,6 +6,9 @@ namespace AMSLLC.Listener.Client.Message
 {
     using System;
 
+    /// <summary>
+    /// Device update request.
+    /// </summary>
     public class DeviceUpdateRequestMessage : BaseListenerRequestMessage
     {
         /// <summary>

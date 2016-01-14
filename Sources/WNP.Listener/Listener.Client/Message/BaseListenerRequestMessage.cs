@@ -4,6 +4,9 @@
 
 namespace AMSLLC.Listener.Client.Message
 {
+    /// <summary>
+    /// Base class for any Listener request.
+    /// </summary>
     public abstract class BaseListenerRequestMessage
     {
         /// <summary>

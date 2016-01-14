@@ -6,8 +6,15 @@ namespace AMSLLC.Listener.Client.Message
 {
     using System;
 
+    /// <summary>
+    /// Change device status request
+    /// </summary>
     public class ChangeDeviceStatusRequestMessage : BaseListenerRequestMessage
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChangeDeviceStatusRequestMessage"/> class.
+        /// </summary>
+        /// <param name="entityCategory">The entity category.</param>
         public ChangeDeviceStatusRequestMessage(string entityCategory)
             : base(entityCategory, "StateChange")
         {

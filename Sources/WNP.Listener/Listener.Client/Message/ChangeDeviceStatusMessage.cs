@@ -6,6 +6,9 @@ namespace AMSLLC.Listener.Client.Message
 {
     using System;
 
+    /// <summary>
+    /// Change device status
+    /// </summary>
     public class ChangeDeviceStatusMessage
     {
         /// <summary>

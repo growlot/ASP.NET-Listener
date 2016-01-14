@@ -2,24 +2,24 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using AMSLLC.Listener.Client.Exception;
-using AMSLLC.Listener.Client.Message;
-using AMSLLC.Listener.Persistence.Listener;
-using AMSLLC.Listener.Shared;
-using Microsoft.OData.Client;
-using Newtonsoft.Json;
-using Serilog;
-
 namespace AMSLLC.Listener.Client
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Dynamic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using AMSLLC.Listener.Client.Exception;
+    using AMSLLC.Listener.Client.Message;
+    using AMSLLC.Listener.Persistence.Listener;
+    using AMSLLC.Listener.Shared;
+    using Microsoft.OData.Client;
+    using Newtonsoft.Json;
+    using Serilog;
+
     /// <summary>
-    ///     Allows to interact with Listener server.
+    /// Allows to interact with Listener server.
     /// </summary>
     public class ListenerClient : IDisposable
     {
@@ -30,7 +30,6 @@ namespace AMSLLC.Listener.Client
         ///     Initializes a new instance of the <see cref="ListenerClient" /> class.
         /// </summary>
         /// <param name="baseUri">The base URI.</param>
-        /// <param name="proxy">The proxy.</param>
         public ListenerClient(string baseUri)
             : this(new Uri(baseUri))
         {
@@ -48,21 +47,21 @@ namespace AMSLLC.Listener.Client
         }
 
         /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
         ///     Finalizes an instance of the <see cref="ListenerClient" /> class.
         /// </summary>
         ~ListenerClient()
         {
             // Finalizer calls Dispose(false)
             this.Dispose(false);
+        }
+
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -119,6 +118,7 @@ namespace AMSLLC.Listener.Client
             {
                 throw new ArgumentNullException(nameof(request));
             }
+
             this.Execute(() => this.OpenBatch(request.BatchNumber));
         }
 
@@ -150,8 +150,8 @@ namespace AMSLLC.Listener.Client
         /// <typeparam name="TRequest">The type of the request.</typeparam>
         /// <param name="request">The request.</param>
         /// <returns>The unique transaction key.</returns>
-        public virtual Task<string> OpenTransactionAsync<TRequest>(
-            TRequest request) where TRequest : BaseListenerRequestMessage
+        public virtual Task<string> OpenTransactionAsync<TRequest>(TRequest request)
+            where TRequest : BaseListenerRequestMessage
         {
             DataServiceActionQuerySingle<string> result = this.container.Open(
                 request.EntityCategory,
@@ -283,6 +283,7 @@ namespace AMSLLC.Listener.Client
                 filterExpression = BuildQuery(filter);
                 Log.Debug("Applying filter: {0}", filterExpression);
             }
+
             List<TransactionRegistryViewEntity> result =
                 (filterExpression == null
                     ? this.container.TransactionRegistryDetails
@@ -316,6 +317,7 @@ namespace AMSLLC.Listener.Client
             {
                 throw new ArgumentNullException(nameof(message));
             }
+
             DataServiceActionQuerySingle<string> result = this.container.Open(
                 message.EntityCategory,
                 message.OperationKey,

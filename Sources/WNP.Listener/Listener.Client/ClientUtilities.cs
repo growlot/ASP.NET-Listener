@@ -5,13 +5,24 @@
 namespace AMSLLC.Listener.Client
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
 
+    /// <summary>
+    /// Utilities class for Listener client.
+    /// </summary>
     public static class ClientUtilities
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+        /// <summary>
+        /// Composes two expressions to one.
+        /// </summary>
+        /// <typeparam name="T">The type of expression</typeparam>
+        /// <param name="first">The first expression.</param>
+        /// <param name="second">The second expression.</param>
+        /// <param name="merge">The merge function.</param>
+        /// <returns>The merged expression</returns>
+        /// <exception cref="ArgumentNullException">At least one expression is not provided.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Method is specifically designe to work with Expressions.")]
         public static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second, Func<Expression, Expression, Expression> merge)
         {
             if (first == null)

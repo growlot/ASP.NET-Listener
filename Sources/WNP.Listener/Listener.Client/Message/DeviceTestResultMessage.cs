@@ -6,6 +6,9 @@ namespace AMSLLC.Listener.Client.Message
 {
     using System;
 
+    /// <summary>
+    /// Device test result message.
+    /// </summary>
     public class DeviceTestResultMessage
     {
         /// <summary>
