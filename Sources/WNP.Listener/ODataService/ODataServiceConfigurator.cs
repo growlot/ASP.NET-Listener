@@ -56,8 +56,6 @@ namespace AMSLLC.Listener.ODataService
             conventions.Insert(0, new WNPGenericRoutingConvention(this.metadataService));
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
 
-            DelegatingHandler[] handlersWnp = new DelegatingHandler[] { new RequestScopeHandler() };
-
             // Adding batch handler. Code taken from OData implementation.
             // Can not use MapODataServiceRoute, because it doesn't allow to specify defaultHandler and batchHandler at the same time.
             using (var httpServer = new HttpServer(config))
@@ -72,8 +70,11 @@ namespace AMSLLC.Listener.ODataService
 
             using (var httpController = new HttpControllerDispatcher(config))
             {
-                using (var routeHandlersWnp = HttpClientFactory.CreatePipeline(httpController, handlersWnp))
-                {
+                DelegatingHandler[] handlersWnp = new DelegatingHandler[] { new RequestScopeHandler() };
+
+                var routeHandlersWnp = HttpClientFactory.CreatePipeline(httpController, handlersWnp);
+                ////using (var routeHandlersWnp = HttpClientFactory.CreatePipeline(httpController, handlersWnp))
+                ////{
                     config.MapODataServiceRoute(
                         routeName: "WNPODataRoute",
                         routePrefix: null,
@@ -81,7 +82,7 @@ namespace AMSLLC.Listener.ODataService
                         pathHandler: new DefaultODataPathHandler(),
                         routingConventions: conventions,
                         defaultHandler: routeHandlersWnp);
-                }
+                ////}
             }
 
             var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener", ContainerName = "ListenerContainer" };
