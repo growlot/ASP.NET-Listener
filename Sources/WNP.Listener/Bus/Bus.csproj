@@ -51,7 +51,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug.SQLServer\</OutputPath>
     <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>bin\Debug\AMSLLC.Listener.Bus.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug.SQLServer\AMSLLC.Listener.Bus.XML</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
