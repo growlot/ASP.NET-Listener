@@ -33,7 +33,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     .Include(s => s.EnabledOperation)
                     .Include(s => s.EnabledOperation.Operation)
                         .Include(s => s.OperationEndpoints.Select(ss => ss.Endpoint))
-                        .SingleOrDefault(s => s.EntityCategoryOperationId == key);
+                        .SingleOrDefault(s => s.EntityCategoryOperationId == key && s.CompanyId == this.CompanyId);
                 return this.Ok(result);
             }
             catch (Exception exc)

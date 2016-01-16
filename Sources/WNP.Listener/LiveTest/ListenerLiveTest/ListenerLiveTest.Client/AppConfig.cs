@@ -13,6 +13,9 @@ namespace ListenerLiveTest.Client
         private static readonly Lazy<string> _companyCodeInitializer = new Lazy<string>(() => ConfigurationManager.AppSettings["ams:company"]);
         public static string CompanyCode { get { return _companyCodeInitializer.Value; } }
 
+        private static readonly Lazy<string> _companyIdInitializer = new Lazy<string>(() => ConfigurationManager.AppSettings["ams:company-id"]);
+        public static string CompanyId { get { return _companyIdInitializer.Value; } }
+
         private static readonly Lazy<string> _applicationCodeInitializer = new Lazy<string>(() => ConfigurationManager.AppSettings["ams:application"]);
         public static string ApplicationCode { get { return _applicationCodeInitializer.Value; } }
 

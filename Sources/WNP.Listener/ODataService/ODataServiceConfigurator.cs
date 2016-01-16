@@ -88,7 +88,6 @@ namespace AMSLLC.Listener.ODataService
             }
 
             var builder = new ODataConventionModelBuilder { Namespace = "AMSLLC.Listener", ContainerName = "ListenerContainer" };
-
             new ODataListenerServiceConfigurator().Run(builder);
 
             // Create a message handler chain with an end-point.

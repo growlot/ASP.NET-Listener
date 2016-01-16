@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9D1BAC4D-F4C5-4C05-B995-87C5AF989CDF}</ProjectGuid>
+    <ProjectGuid>{BAED4900-0BEB-4543-9E9B-EDE794B83E4E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AMSLLC.Listener.Core.Unit.Test</RootNamespace>

@@ -102,6 +102,7 @@ namespace ListenerLiveTest.Client.Communication
 
             client.DefaultRequestHeaders.Add("AMS-Company", AppConfig.CompanyCode);
             client.DefaultRequestHeaders.Add("AMS-Application", AppConfig.ApplicationCode);
+            client.DefaultRequestHeaders.Add("AMS-CompanyId", AppConfig.CompanyId);
 
             if (data != null)
             {

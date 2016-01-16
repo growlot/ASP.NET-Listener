@@ -121,7 +121,7 @@
       <Name>Core.Ninject</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core.Unit.Test\Core.Unit.Test.csproj">
-      <Project>{9d1bac4d-f4c5-4c05-b995-87c5af989cdf}</Project>
+      <Project>{BAED4900-0BEB-4543-9E9B-EDE794B83E4E}</Project>
       <Name>Core.Unit.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">

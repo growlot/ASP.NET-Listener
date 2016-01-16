@@ -22,6 +22,7 @@ namespace AMSLLC.Listener.Client
         {
             this.Add("AMS-Company", ConfigurationManager.AppSettings["ams:company"]);
             this.Add("AMS-Application", ConfigurationManager.AppSettings["ams:application"]);
+            this.Add("AMS-CompanyId", ConfigurationManager.AppSettings["ams:company-id"]);
         }
 
         /// <summary>

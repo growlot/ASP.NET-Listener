@@ -101,7 +101,9 @@
     <Compile Include="DataPropertyInfo.cs" />
     <Compile Include="DynamicTuple.cs" />
     <Compile Include="DynamicUtilities.cs" />
+    <Compile Include="ExpressionHelpers.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ParameterRebinder.cs" />
     <Compile Include="WnpDbHelpers.cs" />
     <Compile Include="StringUtilities.cs" />
     <Compile Include="TypeExtensions\XmlDocumentExtensions.cs" />

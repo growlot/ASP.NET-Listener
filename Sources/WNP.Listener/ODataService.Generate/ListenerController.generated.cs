@@ -25,15 +25,19 @@ using Newtonsoft.Json;
 using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-	public abstract partial class BaseListenerODataController: ODataController{
+    public abstract partial class BaseListenerODataController : ODataController
+    {
 		protected string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
 
 		protected string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+
+        protected int CompanyId => int.Parse(this.Request.Headers.GetValues("AMS-CompanyId").FirstOrDefault());
 	}
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class TransactionRegistryController : BaseListenerODataController{
+    public partial class TransactionRegistryController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -45,12 +49,12 @@ using System.Net;
 				this._dbContext = dbctx;
 			}
 
-        /// <summary>
-        /// Get the IQueryable of the served entity.
-        /// </summary>
-        /// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+			/// <summary>
+			/// Get the IQueryable of the served entity.
+			/// </summary>
+			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
         [CLSCompliant(false)]
-        public IQueryable<TransactionRegistryEntity> Get()
+			public IQueryable<TransactionRegistryEntity> Get()
 			{
 				try
 				{
@@ -173,7 +177,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< TransactionRegistryEntity>().SingleOrDefaultAsync(s=>s.RecordKey == key);
+            var entity = await this._dbContext.Set<TransactionRegistryEntity>().SingleOrDefaultAsync(s => s.RecordKey == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -225,7 +229,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class TransactionMessageDataController : BaseListenerODataController{
+    public partial class TransactionMessageDataController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -364,7 +369,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< TransactionMessageDatumEntity>().SingleOrDefaultAsync(s=>s.RecordKey == key);
+            var entity = await this._dbContext.Set<TransactionMessageDatumEntity>().SingleOrDefaultAsync(s => s.RecordKey == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -416,7 +421,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class TransactionRegistryDetailsController : BaseListenerODataController{
+    public partial class TransactionRegistryDetailsController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -555,7 +561,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< TransactionRegistryViewEntity>().SingleOrDefaultAsync(s=>s.RecordKey == key);
+            var entity = await this._dbContext.Set<TransactionRegistryViewEntity>().SingleOrDefaultAsync(s => s.RecordKey == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -607,7 +613,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class EndpointController : BaseListenerODataController{
+    public partial class EndpointController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -627,7 +634,7 @@ using System.Net;
 			{
 				try
 				{
-					return this._dbContext.Set<EndpointEntity>().AsQueryable();
+                return this._dbContext.Set<EndpointEntity>().Where(e => e.CompanyId == CompanyId).AsQueryable();
 				}
 				catch (Exception exc)
 				{
@@ -645,7 +652,7 @@ using System.Net;
 			{
 				try
 				{
-					var result = this._dbContext.Set<EndpointEntity>().SingleOrDefault(s => s.EndpointId == key);
+                var result = this._dbContext.Set<EndpointEntity>().SingleOrDefault(s => s.EndpointId == key && s.CompanyId == CompanyId);
 					return this.Ok(result);
 				}
 				catch (Exception exc)
@@ -746,7 +753,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< EndpointEntity>().SingleOrDefaultAsync(s=>s.EndpointId == key);
+            var entity = await this._dbContext.Set<EndpointEntity>().SingleOrDefaultAsync(s => s.EndpointId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -798,7 +805,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class ProtocolTypeController : BaseListenerODataController{
+    public partial class ProtocolTypeController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -937,7 +945,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< ProtocolTypeEntity>().SingleOrDefaultAsync(s=>s.ProtocolTypeId == key);
+            var entity = await this._dbContext.Set<ProtocolTypeEntity>().SingleOrDefaultAsync(s => s.ProtocolTypeId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -989,7 +997,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class EndpointTriggerTypeController : BaseListenerODataController{
+    public partial class EndpointTriggerTypeController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -1128,7 +1137,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< EndpointTriggerTypeEntity>().SingleOrDefaultAsync(s=>s.EndpointTriggerTypeId == key);
+            var entity = await this._dbContext.Set<EndpointTriggerTypeEntity>().SingleOrDefaultAsync(s => s.EndpointTriggerTypeId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -1180,7 +1189,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class ValueMapController : BaseListenerODataController{
+    public partial class ValueMapController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -1200,7 +1210,7 @@ using System.Net;
 			{
 				try
 				{
-					return this._dbContext.Set<ValueMapEntity>().AsQueryable();
+                return this._dbContext.Set<ValueMapEntity>().Where(e => e.CompanyId == CompanyId).AsQueryable();
 				}
 				catch (Exception exc)
 				{
@@ -1218,7 +1228,7 @@ using System.Net;
 			{
 				try
 				{
-					var result = this._dbContext.Set<ValueMapEntity>().SingleOrDefault(s => s.ValueMapId == key);
+                var result = this._dbContext.Set<ValueMapEntity>().SingleOrDefault(s => s.ValueMapId == key && s.CompanyId == CompanyId);
 					return this.Ok(result);
 				}
 				catch (Exception exc)
@@ -1319,7 +1329,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< ValueMapEntity>().SingleOrDefaultAsync(s=>s.ValueMapId == key);
+            var entity = await this._dbContext.Set<ValueMapEntity>().SingleOrDefaultAsync(s => s.ValueMapId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -1371,7 +1381,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class ValueMapEntryController : BaseListenerODataController{
+    public partial class ValueMapEntryController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -1510,7 +1521,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< ValueMapEntryEntity>().SingleOrDefaultAsync(s=>s.ValueMapEntryId == key);
+            var entity = await this._dbContext.Set<ValueMapEntryEntity>().SingleOrDefaultAsync(s => s.ValueMapEntryId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -1562,7 +1573,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class FieldConfigurationController : BaseListenerODataController{
+    public partial class FieldConfigurationController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -1582,7 +1594,7 @@ using System.Net;
 			{
 				try
 				{
-					return this._dbContext.Set<FieldConfigurationEntity>().AsQueryable();
+                return this._dbContext.Set<FieldConfigurationEntity>().Where(e => e.CompanyId == CompanyId).AsQueryable();
 				}
 				catch (Exception exc)
 				{
@@ -1600,7 +1612,7 @@ using System.Net;
 			{
 				try
 				{
-					var result = this._dbContext.Set<FieldConfigurationEntity>().SingleOrDefault(s => s.FieldConfigurationId == key);
+                var result = this._dbContext.Set<FieldConfigurationEntity>().SingleOrDefault(s => s.FieldConfigurationId == key && s.CompanyId == CompanyId);
 					return this.Ok(result);
 				}
 				catch (Exception exc)
@@ -1701,7 +1713,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< FieldConfigurationEntity>().SingleOrDefaultAsync(s=>s.FieldConfigurationId == key);
+            var entity = await this._dbContext.Set<FieldConfigurationEntity>().SingleOrDefaultAsync(s => s.FieldConfigurationId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -1753,7 +1765,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class FieldConfigurationEntryController : BaseListenerODataController{
+    public partial class FieldConfigurationEntryController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -1892,7 +1905,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< FieldConfigurationEntryEntity>().SingleOrDefaultAsync(s=>s.FieldConfigurationEntryId == key);
+            var entity = await this._dbContext.Set<FieldConfigurationEntryEntity>().SingleOrDefaultAsync(s => s.FieldConfigurationEntryId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -1944,7 +1957,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class EntityCategoryOperationController : BaseListenerODataController{
+    public partial class EntityCategoryOperationController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -1964,7 +1978,7 @@ using System.Net;
 			{
 				try
 				{
-					return this._dbContext.Set<EntityCategoryOperationEntity>().AsQueryable();
+                return this._dbContext.Set<EntityCategoryOperationEntity>().Where(e => e.CompanyId == CompanyId).AsQueryable();
 				}
 				catch (Exception exc)
 				{
@@ -1974,6 +1988,8 @@ using System.Net;
 			}
 
 		
+
+
 
 		/// <summary>
         /// Update entity
@@ -2064,7 +2080,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< EntityCategoryOperationEntity>().SingleOrDefaultAsync(s=>s.EntityCategoryOperationId == key);
+            var entity = await this._dbContext.Set<EntityCategoryOperationEntity>().SingleOrDefaultAsync(s => s.EntityCategoryOperationId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -2116,7 +2132,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class EnabledOperationController : BaseListenerODataController{
+    public partial class EnabledOperationController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -2136,7 +2153,7 @@ using System.Net;
 			{
 				try
 				{
-					return this._dbContext.Set<EnabledOperationEntity>().AsQueryable();
+                return this._dbContext.Set<EnabledOperationEntity>().Where(e => e.CompanyId == CompanyId).AsQueryable();
 				}
 				catch (Exception exc)
 				{
@@ -2154,7 +2171,7 @@ using System.Net;
 			{
 				try
 				{
-					var result = this._dbContext.Set<EnabledOperationEntity>().SingleOrDefault(s => s.EnabledOperationId == key);
+                var result = this._dbContext.Set<EnabledOperationEntity>().SingleOrDefault(s => s.EnabledOperationId == key && s.CompanyId == CompanyId);
 					return this.Ok(result);
 				}
 				catch (Exception exc)
@@ -2255,7 +2272,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< EnabledOperationEntity>().SingleOrDefaultAsync(s=>s.EnabledOperationId == key);
+            var entity = await this._dbContext.Set<EnabledOperationEntity>().SingleOrDefaultAsync(s => s.EnabledOperationId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -2307,7 +2324,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class EntityCategoryController : BaseListenerODataController{
+    public partial class EntityCategoryController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -2446,7 +2464,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< EntityCategoryEntity>().SingleOrDefaultAsync(s=>s.EntityCategoryId == key);
+            var entity = await this._dbContext.Set<EntityCategoryEntity>().SingleOrDefaultAsync(s => s.EntityCategoryId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -2498,7 +2516,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class OperationController : BaseListenerODataController{
+    public partial class OperationController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -2637,7 +2656,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< OperationEntity>().SingleOrDefaultAsync(s=>s.OperationId == key);
+            var entity = await this._dbContext.Set<OperationEntity>().SingleOrDefaultAsync(s => s.OperationId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -2689,7 +2708,8 @@ using System.Net;
 
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
-	public partial class OperationEndpointController : BaseListenerODataController{
+    public partial class OperationEndpointController : BaseListenerODataController
+    {
 			private readonly ListenerODataContext _dbContext;
 
 			/// <summary>
@@ -2828,7 +2848,7 @@ using System.Net;
 				return this.BadRequest();
 			}
 
-			var entity = await this._dbContext.Set< OperationEndpointEntity>().SingleOrDefaultAsync(s=>s.OperationEndpointId == key);
+            var entity = await this._dbContext.Set<OperationEndpointEntity>().SingleOrDefaultAsync(s => s.OperationEndpointId == key);
 			this._dbContext.Entry(entity).CurrentValues.SetValues(update);
 			this.UpdateNested(entity, update);
 
@@ -2879,13 +2899,15 @@ using System.Net;
 	}
 
 [GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
-public partial class ODataControllerConfigurator{
+    public partial class ODataControllerConfigurator
+    {
 
 	/// <summary>
     /// Execute configurator to setup OData controllers
     /// </summary>
     /// <param name="builder">The builder.</param>
-	public void Run(ODataModelBuilder builder){
+        public void Run(ODataModelBuilder builder)
+        {
 	
 		this.SetupTransactionRegistryController(builder);
 			this.SetupTransactionMessageDataController(builder);
@@ -2909,7 +2931,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupTransactionRegistryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupTransactionRegistryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<TransactionRegistryEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
 			}
 
@@ -2918,7 +2941,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupTransactionMessageDataController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionMessageDatumEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupTransactionMessageDataController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionMessageDatumEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<TransactionMessageDatumEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
 			}
 
@@ -2927,7 +2951,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupTransactionRegistryDetailsController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupTransactionRegistryDetailsController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<TransactionRegistryViewEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<TransactionRegistryViewEntity, System.Guid>(builder, a => a.RecordKey, actionBuilder, tableName);
 			}
 
@@ -2936,7 +2961,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<EndpointEntity, System.Int32>(builder, a => a.EndpointId, actionBuilder, tableName);
 			}
 
@@ -2945,7 +2971,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupProtocolTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ProtocolTypeEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupProtocolTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ProtocolTypeEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<ProtocolTypeEntity, System.Int32>(builder, a => a.ProtocolTypeId, actionBuilder, tableName);
 			}
 
@@ -2954,7 +2981,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupEndpointTriggerTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointTriggerTypeEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupEndpointTriggerTypeController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EndpointTriggerTypeEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<EndpointTriggerTypeEntity, System.Int32>(builder, a => a.EndpointTriggerTypeId, actionBuilder, tableName);
 			}
 
@@ -2963,7 +2991,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupValueMapController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ValueMapEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupValueMapController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ValueMapEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<ValueMapEntity, System.Int32>(builder, a => a.ValueMapId, actionBuilder, tableName);
 			}
 
@@ -2972,7 +3001,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupValueMapEntryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ValueMapEntryEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupValueMapEntryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<ValueMapEntryEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<ValueMapEntryEntity, System.Int32>(builder, a => a.ValueMapEntryId, actionBuilder, tableName);
 			}
 
@@ -2981,7 +3011,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupFieldConfigurationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<FieldConfigurationEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupFieldConfigurationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<FieldConfigurationEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<FieldConfigurationEntity, System.Int32>(builder, a => a.FieldConfigurationId, actionBuilder, tableName);
 			}
 
@@ -2990,7 +3021,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupFieldConfigurationEntryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<FieldConfigurationEntryEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupFieldConfigurationEntryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<FieldConfigurationEntryEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<FieldConfigurationEntryEntity, System.Int32>(builder, a => a.FieldConfigurationEntryId, actionBuilder, tableName);
 			}
 
@@ -2999,7 +3031,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupEntityCategoryOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryOperationEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupEntityCategoryOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryOperationEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<EntityCategoryOperationEntity, System.Int32>(builder, a => a.EntityCategoryOperationId, actionBuilder, tableName);
 			}
 
@@ -3008,7 +3041,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupEnabledOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EnabledOperationEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupEnabledOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EnabledOperationEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<EnabledOperationEntity, System.Int32>(builder, a => a.EnabledOperationId, actionBuilder, tableName);
 			}
 
@@ -3017,7 +3051,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupEntityCategoryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupEntityCategoryController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<EntityCategoryEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<EntityCategoryEntity, System.Int32>(builder, a => a.EntityCategoryId, actionBuilder, tableName);
 			}
 
@@ -3026,7 +3061,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<OperationEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupOperationController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<OperationEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<OperationEntity, System.Int32>(builder, a => a.OperationId, actionBuilder, tableName);
 			}
 
@@ -3035,7 +3071,8 @@ public partial class ODataControllerConfigurator{
 			/// </summary>
 			/// <param name="builder">The builder.</param>
 			/// <param name="actionBuilder">The action builder.</param>
-			protected virtual void SetupOperationEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<OperationEndpointEntity>> actionBuilder = null, string tableName = null){
+        protected virtual void SetupOperationEndpointController(ODataModelBuilder builder, Action<ODataModelBuilder, EntityTypeConfiguration<OperationEndpointEntity>> actionBuilder = null, string tableName = null)
+        {
 				this.PrepareODataController<OperationEndpointEntity, System.Int32>(builder, a => a.OperationEndpointId, actionBuilder, tableName);
 			}
 

@@ -72,6 +72,13 @@
     <Compile Include="Application\DeviceTypeEnabledForApplication.cs" />
     <Compile Include="DeviceBatch\DeviceBatchProcessing.cs" />
     <Compile Include="DeviceBatch\DeviceBatchProcessingMemento.cs" />
+    <Compile Include="Operation\EnabledOperation.cs" />
+    <Compile Include="Operation\EnabledOperationConfiguration.cs" />
+    <Compile Include="Operation\EnabledOperationConfigurationMemento.cs" />
+    <Compile Include="Operation\Endpoint.cs" />
+    <Compile Include="Operation\EndpointMemento.cs" />
+    <Compile Include="Operation\EntityCategoryOperationMemento.cs" />
+    <Compile Include="Operation\EntityCategoryOperation.cs" />
     <Compile Include="EndpointTriggerType.cs" />
     <Compile Include="Exception\UnableToSucceedTransactionException.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -84,6 +91,13 @@
     <Compile Include="Company\CompanyConfigurationMemento.cs" />
     <Compile Include="Application\ApplicationConfiguration.cs" />
     <Compile Include="Company\CompanyConfiguration.cs" />
+    <Compile Include="Operation\EntityCategory.cs" />
+    <Compile Include="Operation\EntityCategoryMemento.cs" />
+    <Compile Include="Operation\OperationEvents\EntityOperationAdded.cs" />
+    <Compile Include="Operation\OperationEvents\EntityOperationRemoved.cs" />
+    <Compile Include="Operation\OperationEvents\EntityOperationUpdated.cs" />
+    <Compile Include="Operation\FieldConfiguration.cs" />
+    <Compile Include="Operation\FieldConfigurationMemento.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionMessage.cs" />
     <Compile Include="Transaction\ChildTransactionEntity.cs" />

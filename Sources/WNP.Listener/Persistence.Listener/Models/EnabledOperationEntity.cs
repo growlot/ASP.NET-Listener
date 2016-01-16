@@ -10,7 +10,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     /// <summary>
     /// Extends <see cref="EnabledOperationEntity"/> class
     /// </summary>
-    [MetadataType(typeof(EnabledOperationEntity.EnabledOperationMetadata))]
+    [MetadataType(typeof(EnabledOperationMetadata))]
     partial class EnabledOperationEntity
     {
         /// <summary>

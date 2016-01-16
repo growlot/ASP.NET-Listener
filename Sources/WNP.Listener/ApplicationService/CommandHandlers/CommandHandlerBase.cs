@@ -27,6 +27,15 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="CommandHandlerBase" /> class.
+        /// </summary>
+        /// <param name="domainEventBus">The domain event bus.</param>
+        public CommandHandlerBase(IDomainEventBus domainEventBus)
+            : this(null, domainEventBus)
+        {
+        }
+
+        /// <summary>
         /// Gets the unit of work for this command.
         /// </summary>
         /// <value>

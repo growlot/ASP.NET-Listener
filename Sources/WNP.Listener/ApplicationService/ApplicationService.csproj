@@ -90,6 +90,10 @@
     <Compile Include="CommandHandlers\AddElectricMeterReadingCommandHandler.cs" />
     <Compile Include="CommandHandlers\ExecuteBusinessRuleCommandHandler.cs" />
     <Compile Include="CommandHandlers\CreateCircuitCommandHandler.cs" />
+    <Compile Include="CommandHandlers\FailTransactionCommandHandler.cs" />
+    <Compile Include="CommandHandlers\OpenTransactionCommandHandler.cs" />
+    <Compile Include="CommandHandlers\ProcessTransactionCommandHandler.cs" />
+    <Compile Include="CommandHandlers\SucceedTransactionCommandHandler.cs" />
     <Compile Include="CommandHandlers\UninstallMeterCommandHandler.cs" />
     <Compile Include="CommandHandlers\InstallMeterCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateCircuitDetailsCommandHandler.cs" />

@@ -427,6 +427,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public int EntityCategoryId { get; set; }
 		[Column] public int EnabledOperationId { get; set; }
 		[Column] public int? FieldConfigurationId { get; set; }
+		[Column] public int CompanyId { get; set; }
 	}
     
 	[TableName("Endpoint")]
@@ -440,6 +441,7 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public string ConnectionConfiguration { get; set; }
 		[Column] public string AdapterConfiguration { get; set; }
 		[Column] public int EndpointTriggerTypeId { get; set; }
+		[Column] public int CompanyId { get; set; }
 	}
     
 	[TableName("OperationEndpoint")]

@@ -36,6 +36,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     public class IntegrationTest
     {
         private const string CompanyCode = "PPL";
+        private const string CompanyId = "0";
         private static TestServer server;
 
         [ClassInitialize]
@@ -532,6 +533,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 await
                     server.CreateRequest($"listener/TransactionRegistry({nextKey})/AMSLLC.Listener.Succeed()")
                         .AddHeader("AMS-Company", CompanyCode)
+                        .AddHeader("AMS-CompanyId", CompanyId)
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, succeedResponse.StatusCode);
@@ -562,6 +564,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         new JsonMediaTypeFormatter { SerializerSettings = settings },
                                         mediaType))
                         .AddHeader("AMS-Company", CompanyCode)
+                        .AddHeader("AMS-CompanyId", CompanyId)
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, failResponse.StatusCode);
@@ -595,6 +598,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         new JsonMediaTypeFormatter { SerializerSettings = settings },
                                         mediaType))
                         .AddHeader("AMS-Company", CompanyCode)
+                        .AddHeader("AMS-CompanyId", CompanyId)
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
                         .PostAsync();
 
@@ -624,6 +628,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                         //         new JsonMediaTypeFormatter { SerializerSettings = settings },
                         //         mediaType))
                         .AddHeader("AMS-Company", CompanyCode)
+                        .AddHeader("AMS-CompanyId", CompanyId)
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
                         .PostAsync();
 
@@ -712,6 +717,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         new JsonMediaTypeFormatter { SerializerSettings = settings },
                                         mediaType))
                         .AddHeader("AMS-Company", CompanyCode)
+                        .AddHeader("AMS-CompanyId", CompanyId)
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
                         .PostAsync();
 
@@ -739,6 +745,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 await
                     server.CreateRequest($"listener/TransactionRegistry?$filter=RecordKey%20eq%20{nextKey}")
                         .AddHeader("AMS-Company", CompanyCode)
+                        .AddHeader("AMS-CompanyId", CompanyId)
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
             string rstr = await registryEntry.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, registryEntry.StatusCode, rstr);
@@ -778,6 +785,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 await
                     server.CreateRequest($"listener/TransactionMessageData?$filter=RecordKey%20eq%20{nextKey}")
                         .AddHeader("AMS-Company", CompanyCode)
+                        .AddHeader("AMS-CompanyId", CompanyId)
                         .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
             string rstr = await registryEntry.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, registryEntry.StatusCode, rstr);

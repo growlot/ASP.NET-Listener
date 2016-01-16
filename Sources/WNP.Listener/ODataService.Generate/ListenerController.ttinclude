@@ -44,6 +44,8 @@ using System.Net;
 		protected string CompanyCode => this.Request.Headers.GetValues("AMS-Company").FirstOrDefault();
 
 		protected string ApplicationKey => this.Request.Headers.GetValues("AMS-Application").FirstOrDefault();
+
+		protected int CompanyId => int.Parse(this.Request.Headers.GetValues("AMS-CompanyId").FirstOrDefault());
 	}
 
 <#
@@ -54,6 +56,7 @@ using System.Net;
 	EdmProperty key = GetKeyNames(listenerContext, type.PropertyType.GetGenericArguments()[0]).First();
 		var keyName = key.Name;
 	var keyType = key.PrimitiveType;
+	var companySpecific = type.PropertyType.GetGenericArguments()[0].GetProperty("CompanyId") != null;
 #>
 	[GeneratedCode("Listener Controller Generator Template", "1.0.0.0")]
 	[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, AllowedLogicalOperators = AllowedLogicalOperators.All)]
@@ -77,7 +80,11 @@ using System.Net;
 			{
 				try
 				{
+				<# if (companySpecific){#>
+					return this._dbContext.Set<<#= entityType #>>().Where(e=>e.CompanyId == CompanyId).AsQueryable();
+					<# }else{#>
 					return this._dbContext.Set<<#= entityType #>>().AsQueryable();
+					<# }#>
 				}
 				catch (Exception exc)
 				{
@@ -95,7 +102,11 @@ using System.Net;
 			{
 				try
 				{
+				<# if (companySpecific){#>
+					var result = this._dbContext.Set<<#= entityType #>>().SingleOrDefault(s => s.<#= keyName #> == key && s.CompanyId == CompanyId);
+					<# }else{#>
 					var result = this._dbContext.Set<<#= entityType #>>().SingleOrDefault(s => s.<#= keyName #> == key);
+					<# }#>
 					return this.Ok(result);
 				}
 				catch (Exception exc)

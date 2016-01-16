@@ -39,6 +39,24 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Create.ForeignKey("FK_OperEndp_EntCatOper")
                 .FromTable("OperationEndpoint").ForeignColumn("EntityCategoryOperationId")
                 .ToTable("EntityCategoryOperation").PrimaryColumn("EntityCategoryOperationId").OnDeleteOrUpdate(System.Data.Rule.Cascade);
+
+            this.Alter.Table("Endpoint")
+                .AddColumn("CompanyId")
+                .AsInt32().Nullable()
+                .ForeignKey("FK_Endp_Comp", "Company", "CompanyId");
+
+            this.Update.Table("Endpoint").Set(new { CompanyId = 0 }).AllRows();
+
+            this.Alter.Table("Endpoint").AlterColumn("CompanyId").AsInt32().NotNullable();
+
+            this.Alter.Table("EntityCategoryOperation")
+                .AddColumn("CompanyId")
+                .AsInt32().Nullable()
+                .ForeignKey("FK_EnCaOp_Comp", "Company", "CompanyId");
+
+            this.Update.Table("EntityCategoryOperation").Set(new { CompanyId = 0 }).AllRows();
+
+            this.Alter.Table("EntityCategoryOperation").AlterColumn("CompanyId").AsInt32().NotNullable();
         }
 
         /// <summary>
@@ -65,6 +83,9 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Create.ForeignKey("FK_OperEndp_EntCatOper")
                 .FromTable("OperationEndpoint").ForeignColumn("EntityCategoryOperationId")
                 .ToTable("EntityCategoryOperation").PrimaryColumn("EntityCategoryOperationId");
+
+            this.Execute.Sql("ALTER TABLE Endpoint DROP CONSTRAINT FK_Endp_Comp");
+            this.Execute.Sql("ALTER TABLE EntityCategoryOperation DROP CONSTRAINT FK_EnCaOp_Comp");
         }
     }
 }

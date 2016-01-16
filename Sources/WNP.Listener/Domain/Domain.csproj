@@ -205,6 +205,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="AggregateRoot{TId}.cs" />
+    <Compile Include="DomainUtilities.cs" />
     <Compile Include="Entity{TId}.cs" />
     <Compile Include="IAggregateRoot.cs" />
     <Compile Include="IDomainEventHandler{TEvent}.cs" />
