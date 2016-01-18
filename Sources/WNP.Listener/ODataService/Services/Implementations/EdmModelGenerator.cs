@@ -75,19 +75,23 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations
             var methodParameters = actionMethodInfo.GetParameters();
             var actionConfigurationType = typeof(ActionConfiguration);
 
-            methodParameters.Map(parameterInfo =>
-            {
-                var paramConfig =
-                    actionConfigurationType.GetMethod("Parameter")
-                        .MakeGenericMethod(parameterInfo.ParameterType)
-                        .Invoke(actionConfiguration, new object[] { parameterInfo.Name }) as ParameterConfiguration;
+            methodParameters.Where(
+                info => info.CustomAttributes.All(data => data.AttributeType != typeof(BoundEntityKeyAttribute)))
+                .Map(
+                    parameterInfo =>
+                        {
+                            var paramConfig =
+                                actionConfigurationType.GetMethod("Parameter")
+                                    .MakeGenericMethod(parameterInfo.ParameterType)
+                                    .Invoke(actionConfiguration, new object[] { parameterInfo.Name }) as
+                                ParameterConfiguration;
 
-                Debug.Assert(paramConfig != null, "paramConfig != null");
-                if (parameterInfo.IsOptional)
-                {
-                    paramConfig.OptionalParameter = true;
-                }
-            });
+                            Debug.Assert(paramConfig != null, "paramConfig != null");
+                            if (parameterInfo.IsOptional)
+                            {
+                                paramConfig.OptionalParameter = true;
+                            }
+                        });
 
             if (actionMethodInfo.ReturnType != typeof(void))
             {
