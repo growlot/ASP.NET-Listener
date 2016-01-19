@@ -14,20 +14,12 @@ namespace AMSLLC.Listener.Persistence.Poco
     /// </summary>
     public class PocoDbContext : Database
     {
-        //public ListenerDbContext(IDbConnection connection) : base(connection)
-        //{
-        //}
-
-        public PocoDbContext(
-            string connectionString,
-            string providerName)
+        public PocoDbContext(string connectionString, string providerName)
             : base(connectionString, providerName)
         {
         }
 
-        public PocoDbContext(
-            string connectionString,
-            DbProviderFactory provider)
+        public PocoDbContext(string connectionString,  DbProviderFactory provider)
             : base(connectionString, provider)
         {
         }
@@ -35,6 +27,11 @@ namespace AMSLLC.Listener.Persistence.Poco
         public PocoDbContext(string connectionStringName)
             : base(connectionStringName)
         {
+        }
+
+        public override DbConnection OnConnectionOpened(DbConnection conn)
+        {
+            return base.OnConnectionOpened(conn);
         }
 
         public override void OnExecutingCommand(

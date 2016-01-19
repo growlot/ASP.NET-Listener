@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     {
         internal sealed class EndpointTriggerTypeMetadata
         {
-            [Key()]
+            [Key]
             public int EndpointTriggerTypeId { get; set; }
         }
     }

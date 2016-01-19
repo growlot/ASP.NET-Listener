@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     {
         internal sealed class ProtocolTypeMetadata
         {
-            [Key()]
+            [Key]
             public int ProtocolTypeId { get; set; }
         }
     }

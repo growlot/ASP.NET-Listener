@@ -1,9 +1,12 @@
-﻿namespace AMSLLC.Listener.Persistence.Listener
+﻿// <copyright file="ValueMapEntity.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.Persistence.Listener
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     [MetadataType(typeof(ValueMapMetadata))]
     partial class ValueMapEntity

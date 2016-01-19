@@ -7,6 +7,9 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System.Data.Common;
     using Poco;
 
+    /// <summary>
+    /// Database context for Listener.
+    /// </summary>
     public class ListenerDbContext : PocoDbContext
     {
         /// <summary>
@@ -14,8 +17,7 @@ namespace AMSLLC.Listener.Persistence.Listener
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="providerName">Name of the provider.</param>
-        public ListenerDbContext(string connectionString,
-            string providerName)
+        public ListenerDbContext(string connectionString, string providerName)
             : base(connectionString, providerName)
         {
         }
@@ -25,8 +27,7 @@ namespace AMSLLC.Listener.Persistence.Listener
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="provider">The provider.</param>
-        public ListenerDbContext(string connectionString,
-            DbProviderFactory provider)
+        public ListenerDbContext(string connectionString, DbProviderFactory provider)
             : base(connectionString, provider)
         {
         }

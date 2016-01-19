@@ -1,5 +1,5 @@
-﻿// <copyright file="IntegrationTest.cs" company="Advanced Metering Services LLC">
-//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+﻿// <copyright file="IntegrationTest.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
 namespace AMSLLC.Listener.Bootstrapper.Test
@@ -36,14 +36,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     public class IntegrationTest
     {
         private const string CompanyCode = "PPL";
-        private static TestServer _server;
-
+        private static TestServer server;
 
         [ClassInitialize]
         public static void ClassInit(TestContext context)
         {
             ApplicationIntegration.SetDependencyInjectionResolver(new TestDependencyInjectionAdapter());
-            _server = TestServer.Create<Startup>();
+            server = TestServer.Create<Startup>();
         }
 
         [ClassCleanup]
@@ -51,12 +50,12 @@ namespace AMSLLC.Listener.Bootstrapper.Test
         {
         }
 
-        [TestInitialize()]
+        [TestInitialize]
         public void Initialize()
         {
         }
 
-        [TestCleanup()]
+        [TestCleanup]
         public void Cleanup()
         {
             var di = ApplicationIntegration.DependencyResolver as TestDependencyInjectionAdapter;
@@ -88,10 +87,10 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var responseMessage = await OpenTransaction(_server, entityKey);
+            var responseMessage = await OpenTransaction(server, entityKey);
             Assert.AreEqual(nextKey, responseMessage);
 
-            await ProcessTransaction(_server, nextKey);
+            await ProcessTransaction(server, nextKey);
             communicationHandler.Verify(
                 s =>
                     s.Handle(
@@ -101,13 +100,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                     StringComparison.InvariantCulture) == 0), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
                 Times.Once, "Received unexpected {0}{1}Expected: {2}".FormatWith(JsonConvert.SerializeObject(receivedData), Environment.NewLine, expectedMessage));
 
-            await SucceedTransaction(_server, nextKey);
+            await SucceedTransaction(server, nextKey);
 
-            var transactionStatusId = await GetTransactionStatus(_server, nextKey);
+            var transactionStatusId = await GetTransactionStatus(server, nextKey);
 
             Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId);
 
-            var transactionMessageData = await GetTransactionData(_server, nextKey);
+            var transactionMessageData = await GetTransactionData(server, nextKey);
             Assert.AreEqual(expectedMessage, transactionMessageData);
         }
 
@@ -126,18 +125,18 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var transactionRecordKey1 = await OpenTransaction(_server, entityKey);
-            var transactionRecordKey2 = await OpenTransaction(_server, entityKey);
+            var transactionRecordKey1 = await OpenTransaction(server, entityKey);
+            var transactionRecordKey2 = await OpenTransaction(server, entityKey);
 
-            await ProcessTransaction(_server, transactionRecordKey1);
-            await SucceedTransaction(_server, transactionRecordKey1);
+            await ProcessTransaction(server, transactionRecordKey1);
+            await SucceedTransaction(server, transactionRecordKey1);
 
-            await ProcessTransaction(_server, transactionRecordKey2);
+            await ProcessTransaction(server, transactionRecordKey2);
 
-            var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+            var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKey1);
             Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId1);
 
-            var transactionStatusId2 = await GetTransactionStatus(_server, transactionRecordKey2);
+            var transactionStatusId2 = await GetTransactionStatus(server, transactionRecordKey2);
             Assert.AreEqual(TransactionStatusType.Skipped, (TransactionStatusType)transactionStatusId2);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
@@ -158,13 +157,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var recordKey = await OpenTransaction(_server, entityKey);
+            var recordKey = await OpenTransaction(server, entityKey);
 
-            await ProcessTransaction(_server, recordKey);
+            await ProcessTransaction(server, recordKey);
 
-            await FailTransaction(_server, recordKey, "Test Failure Message", "Test Failure Details");
+            await FailTransaction(server, recordKey, "Test Failure Message", "Test Failure Details");
 
-            var transactionStatusId1 = await GetTransactionStatus(_server, recordKey);
+            var transactionStatusId1 = await GetTransactionStatus(server, recordKey);
             Assert.AreEqual(TransactionStatusType.Failed, (TransactionStatusType)transactionStatusId1);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
@@ -204,10 +203,10 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var responseMessage = await OpenBatchTransaction(_server);
+            var responseMessage = await OpenBatchTransaction(server);
             Assert.AreEqual(nextKey, responseMessage);
 
-            await ProcessTransaction(_server, nextKey);
+            await ProcessTransaction(server, nextKey);
 
             Assert.AreEqual(10, receivedData.Count);
 
@@ -233,13 +232,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Exactly(10));
 
-            await SucceedTransaction(_server, nextKey);
+            await SucceedTransaction(server, nextKey);
 
-            var transactionStatusId = await GetTransactionStatus(_server, nextKey);
+            var transactionStatusId = await GetTransactionStatus(server, nextKey);
 
             Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId);
 
-            var childStatuses = await GetChildTransactionStatus(_server, nextKey);
+            var childStatuses = await GetChildTransactionStatus(server, nextKey);
             Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Success));
         }
 
@@ -265,17 +264,17 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var transactionRecordKey1 = await OpenBatchTransaction(_server);
+            var transactionRecordKey1 = await OpenBatchTransaction(server);
             Assert.AreEqual(nextKey, transactionRecordKey1);
 
-            await FailTransaction(_server, transactionRecordKey1, "Batch Failure Message", "Batch failure details");
+            await FailTransaction(server, transactionRecordKey1, "Batch Failure Message", "Batch failure details");
 
-            var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+            var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKey1);
             Assert.AreEqual(TransactionStatusType.Failed, (TransactionStatusType)transactionStatusId1);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Never);
 
-            var childStatuses = await GetChildTransactionStatus(_server, nextKey);
+            var childStatuses = await GetChildTransactionStatus(server, nextKey);
             Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Canceled));
         }
 
@@ -301,15 +300,15 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var transactionRecordKey1 = await OpenBatchTransaction(_server);
+            var transactionRecordKey1 = await OpenBatchTransaction(server);
             Assert.AreEqual(nextKey, transactionRecordKey1);
 
-            await ProcessTransaction(_server, nextKey, HttpStatusCode.InternalServerError);
+            await ProcessTransaction(server, nextKey, HttpStatusCode.InternalServerError);
 
-            var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+            var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKey1);
             Assert.AreEqual(TransactionStatusType.Failed, (TransactionStatusType)transactionStatusId1);
 
-            var childStatuses = await GetChildTransactionStatus(_server, nextKey);
+            var childStatuses = await GetChildTransactionStatus(server, nextKey);
             Assert.IsTrue(childStatuses.Count > 2);
             Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Failed));
             // Assert.AreEqual(1, childStatuses.Count(c => (TransactionStatusType)c.Value == TransactionStatusType.Failed));
@@ -346,15 +345,15 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             priorities.Reverse();
             var pStack = new Stack<int?>(priorities);
 
-            var transactionRecordKey1 = await OpenBatchTransaction(_server, priorities: pStack);
+            var transactionRecordKey1 = await OpenBatchTransaction(server, priorities: pStack);
             Assert.AreEqual(nextKey, transactionRecordKey1);
 
-            await ProcessTransaction(_server, nextKey, HttpStatusCode.InternalServerError);
+            await ProcessTransaction(server, nextKey, HttpStatusCode.InternalServerError);
 
-            var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+            var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKey1);
             Assert.AreEqual(TransactionStatusType.Failed, (TransactionStatusType)transactionStatusId1);
 
-            var childStatuses = await GetChildTransactionStatus(_server, nextKey);
+            var childStatuses = await GetChildTransactionStatus(server, nextKey);
             Assert.IsTrue(childStatuses.Count > 2);
             //Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Failed));
             Assert.AreEqual(2, childStatuses.Count(c => (TransactionStatusType)c.Value == TransactionStatusType.Failed));
@@ -391,26 +390,26 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 entityKeys.Add(Guid.NewGuid().ToString("D"));
             }
 
-            var transactionRecordKey1 = await OpenBatchTransaction(_server, entityKeys);
+            var transactionRecordKey1 = await OpenBatchTransaction(server, entityKeys);
             Assert.AreEqual(nextKey, transactionRecordKey1);
 
-            var transactionRecordKey2 = await OpenBatchTransaction(_server, entityKeys);
+            var transactionRecordKey2 = await OpenBatchTransaction(server, entityKeys);
             Assert.AreNotEqual(nextKey, transactionRecordKey2);
 
-            await ProcessTransaction(_server, transactionRecordKey1);
-            await SucceedTransaction(_server, transactionRecordKey1);
+            await ProcessTransaction(server, transactionRecordKey1);
+            await SucceedTransaction(server, transactionRecordKey1);
 
-            await ProcessTransaction(_server, transactionRecordKey2);
+            await ProcessTransaction(server, transactionRecordKey2);
 
-            var transactionStatusId1 = await GetTransactionStatus(_server, transactionRecordKey1);
+            var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKey1);
             Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId1);
 
-            var transactionStatusId2 = await GetTransactionStatus(_server, transactionRecordKey2);
+            var transactionStatusId2 = await GetTransactionStatus(server, transactionRecordKey2);
             Assert.AreEqual(TransactionStatusType.Skipped, (TransactionStatusType)transactionStatusId2);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Exactly(10));
 
-            var childStatuses = await GetChildTransactionStatus(_server, transactionRecordKey2);
+            var childStatuses = await GetChildTransactionStatus(server, transactionRecordKey2);
             Assert.IsTrue(childStatuses.All(c => (TransactionStatusType)c.Value == TransactionStatusType.Canceled));
         }
 
@@ -490,7 +489,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var result = await OpenWnpBatchTransaction(_server, "B1");
+            var result = await OpenWnpBatchTransaction(server, "B1");
 
             transactionRegistryMock.Verify(
                 t => t.Create(It.IsAny<DateTime>(), It.IsAny<Dictionary<int, IEnumerable<FieldConfiguration>>>()),
@@ -517,10 +516,10 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<ICommunicationHandler>(new DummyCommunicationHandler()).Named("communication-jms");
             di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
 
-            var responseMessage = await OpenTransaction(_server, entityKey);
+            var responseMessage = await OpenTransaction(server, entityKey);
             Assert.AreEqual(nextKey, responseMessage, $"Expected {nextKey}, got {responseMessage} with entity key as {entityKey}");
 
-            await ProcessTransaction(_server, nextKey, HttpStatusCode.InternalServerError);
+            await ProcessTransaction(server, nextKey, HttpStatusCode.InternalServerError);
         }
 
         #endregion

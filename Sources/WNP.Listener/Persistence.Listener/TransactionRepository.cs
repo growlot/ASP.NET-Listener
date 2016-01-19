@@ -37,6 +37,15 @@ namespace AMSLLC.Listener.Persistence.Listener
             this.persistence = persistence;
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="TransactionRepository" /> class.
+        /// </summary>
+        ~TransactionRepository()
+        {
+            // Finalizer calls Dispose(false)
+            this.Dispose(false);
+        }
+
         /// <inheritdoc/>
         public Task CreateAsync(
             TransactionExecution transaction)
@@ -490,7 +499,7 @@ WHERE TR.RecordKey = @0";
                 await this.persistence.UpdateAsync(
                     entity,
                     transactionRegistry.RecordKey,
-                    new[]
+                    new[] 
                     {
                         "TransactionStatusId",
                         "UpdatedDateTime",
@@ -566,20 +575,24 @@ WHERE TR.RecordKey = @0";
                     hash);
         }
 
+        /// <summary>
+        /// Gets the transaction data asynchronously.
+        /// </summary>
+        /// <param name="recordKey">The record key.</param>
+        /// <returns>The transaction data.</returns>
+        public Task<string> GetTransactionDataAsync(Guid recordKey)
+        {
+            return
+                this.persistence.ExecuteScalarAsync<string>(
+                    "SELECT Data FROM TransactionRegistry WHERE RecordKey = @0",
+                    recordKey);
+        }
+
         /// <inheritdoc/>
         public void Dispose()
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="TransactionRepository" /> class.
-        /// </summary>
-        ~TransactionRepository()
-        {
-            // Finalizer calls Dispose(false)
-            this.Dispose(false);
         }
 
         private Task UpdateHashCode(
@@ -592,10 +605,7 @@ WHERE TR.RecordKey = @0";
                     RecordKey = hashCode.Key
                 },
                 hashCode.Key,
-                new[]
-                {
-                    "OutgoingHash"
-                });
+                new[] { "OutgoingHash" });
         }
 
         private Task InsertRoot(
@@ -620,15 +630,13 @@ WHERE TR.RecordKey = @0";
                 "TransactionId");
         }
 
-        private static
-            Func
-                <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity,
-                    TransactionRegistryMemento> CreateRegistryEntryProjectionCallback(
+        private static Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> CreateRegistryEntryProjectionCallback(
             IEnumerable<TransactionRegistryMemento> childTransactions)
         {
             Func
                 <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity,
-                    TransactionRegistryMemento> callback = (tr,
+                    TransactionRegistryMemento> callback = (
+                        tr,
                         app,
                         cmp,
                         op) =>
@@ -650,16 +658,6 @@ WHERE TR.RecordKey = @0";
                             tr.EntityCategoryOperationId,
                             childTransactions);
             return callback;
-        }
-
-        /// <inheritdoc/>
-        public Task<string> GetTransactionDataAsync(
-            Guid recordKey)
-        {
-            return
-                this.persistence.ExecuteScalarAsync<string>(
-                    "SELECT Data FROM TransactionRegistry WHERE RecordKey = @0",
-                    recordKey);
         }
 
         /// <summary>
