@@ -58,15 +58,17 @@ namespace AMSLLC.Listener.ODataService
 
             // Adding batch handler. Code taken from OData implementation.
             // Can not use MapODataServiceRoute, because it doesn't allow to specify defaultHandler and batchHandler at the same time.
-            using (var httpServer = new HttpServer(config))
-            {
-                using (var batchHandler = new TransactionalODataBatchHandler(httpServer))
-                {
+            ////using (var httpServer = new HttpServer(config))
+            ////{
+                var httpServer = new HttpServer(config);
+                var batchHandler = new TransactionalODataBatchHandler(httpServer);
+                ////using (var batchHandler = new TransactionalODataBatchHandler(httpServer))
+                ////{
                     batchHandler.ODataRouteName = "WNPODataRoute";
                     string batchTemplate = ODataRouteConstants.Batch;
                     config.Routes.MapHttpBatchRoute(batchHandler.ODataRouteName + "Batch", batchTemplate, batchHandler);
-                }
-            }
+                ////}
+            ////}
 
             using (var httpController = new HttpControllerDispatcher(config))
             {
