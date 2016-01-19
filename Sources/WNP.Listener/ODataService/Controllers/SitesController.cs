@@ -64,7 +64,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             this.ConstructQueryOptions();
             var site = this.GetRequestEntity<SiteEntity>();
-            return this.CreateSite(site);
+            return this.CreateSiteAsync(site);
         }
 
         /// <summary>
@@ -72,11 +72,11 @@ namespace AMSLLC.Listener.ODataService.Controllers
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>The OData response for upserted Site.</returns>
-        public Task<IHttpActionResult> Patch([FromODataUri] string key)
+        public async Task<IHttpActionResult> Patch([FromODataUri] string key)
         {
             if (!this.ModelState.IsValid)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
+                return this.BadRequest(this.ModelState);
             }
 
             this.ConstructQueryOptions();
@@ -84,16 +84,16 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var siteKey = this.GetRequestKey(1);
             if (siteKey == null)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(StringUtilities.Invariant($"Invalid key specified.")));
+                return this.BadRequest(StringUtilities.Invariant($"Invalid key specified."));
             }
 
-            var existingSite = this.GetEntity<SiteEntity>(siteKey);
+            var existingSite = await this.GetEntityAsync<SiteEntity>(siteKey);
 
             // if site exists, update it
             if (existingSite != null)
             {
                 var siteDelta = this.GetRequestEntityDelta<SiteEntity>();
-                return this.UpdateSite(existingSite, siteDelta, siteKey);
+                return await this.UpdateSiteAsync(existingSite, siteDelta, siteKey);
             }
             else
             {
@@ -106,17 +106,17 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 {
                     var site = this.GetRequestEntity<SiteEntity>();
                     site.PremiseNo = key;
-                    return this.CreateSite(site);
+                    return await this.CreateSiteAsync(site);
                 }
                 else
                 {
                     // will return 404 Not Found result because existingSite is null
-                    return this.PrepareGetResponse(existingSite);
+                    return await this.PrepareGetResponse(existingSite);
                 }
             }
         }
 
-        private async Task<IHttpActionResult> UpdateSite(SiteEntity existingSite, Delta<SiteEntity> siteDelta, KeyValuePair<string, object>[] siteKey)
+        private async Task<IHttpActionResult> UpdateSiteAsync(SiteEntity existingSite, Delta<SiteEntity> siteDelta, KeyValuePair<string, object>[] siteKey)
         {
             var changedProperties = siteDelta.GetChangedPropertyNames();
 
@@ -189,12 +189,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await Task.WhenAll(commandResults);
 
-            var updateEntity = this.GetEntity<SiteEntity>(siteKey);
+            var updateEntity = await this.GetEntityAsync<SiteEntity>(siteKey);
 
             return await this.PrepareUpdatedResponse(updateEntity);
         }
 
-        private async Task<IHttpActionResult> CreateSite(SiteEntity site)
+        private async Task<IHttpActionResult> CreateSiteAsync(SiteEntity site)
         {
             var createSiteCommand = new CreateSiteCommand()
             {
@@ -215,7 +215,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await this.CommandBus.PublishAsync(createSiteCommand);
 
-            var createdSite = ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefault<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, site.SiteDescription);
+            var createdSite = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefaultAsync<SiteEntity>($"WHERE {DBMetadata.Site.Owner}=@0 and {DBMetadata.Site.SiteDescription}=@1", this.Owner, site.SiteDescription);
 
             return await this.PrepareCreatedResponse(createdSite);
         }

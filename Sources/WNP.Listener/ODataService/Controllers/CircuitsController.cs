@@ -65,18 +65,18 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             this.ConstructQueryOptions();
             var circuit = this.GetRequestEntity<CircuitEntity>();
-            return this.CreateCircuit(circuit);
+            return this.CreateCircuitAsync(circuit);
         }
 
         /// <summary>
         /// Updates existing Circiut or creates new one if it didn't exist.
         /// </summary>
         /// <returns>The OData response for upserted Circuit.</returns>
-        public Task<IHttpActionResult> Patch()
+        public async Task<IHttpActionResult> Patch()
         {
             if (!this.ModelState.IsValid)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(this.ModelState));
+                return this.BadRequest(this.ModelState);
             }
 
             this.ConstructQueryOptions();
@@ -85,14 +85,14 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var siteKey = this.GetRequestKey(siteModelMapping, 1);
             if (siteKey == null)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(StringUtilities.Invariant($"Invalid key specified for the {siteModelMapping.ClassName}.")));
+                return this.BadRequest(StringUtilities.Invariant($"Invalid key specified for the {siteModelMapping.ClassName}."));
             }
 
-            var existingSite = this.GetEntity<SiteEntity>(siteKey, siteModelMapping, DBMetadata.Site.Site);
+            var existingSite = await this.GetEntityAsync<SiteEntity>(siteKey, siteModelMapping, DBMetadata.Site.Site);
 
             if (existingSite == null)
             {
-                return Task.FromResult<IHttpActionResult>(this.NotFound());
+                return this.NotFound();
             }
 
             var circuitModelMapping = this.MetadataService.GetModelMapping(this.EdmEntityClrType);
@@ -100,17 +100,17 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             if (circuitKey == null)
             {
-                return Task.FromResult<IHttpActionResult>(this.BadRequest(StringUtilities.Invariant($"Invalid key specified for the {circuitModelMapping.ClassName}.")));
+                return this.BadRequest(StringUtilities.Invariant($"Invalid key specified for the {circuitModelMapping.ClassName}."));
             }
 
             var circuitKeyList = circuitKey.ToList();
             circuitKeyList.Add(new KeyValuePair<string, object>(circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site], existingSite.Site));
 
-            var existingCircuit = this.GetEntity<CircuitEntity>(circuitKeyList.ToArray());
+            var existingCircuit = await this.GetEntityAsync<CircuitEntity>(circuitKeyList.ToArray());
             if (existingCircuit != null)
             {
                 var circuitDelta = this.GetRequestEntityDelta<CircuitEntity>();
-                return this.UpdateCircuit(existingCircuit, circuitDelta, circuitKeyList.ToArray());
+                return await this.UpdateCircuitAsync(existingCircuit, circuitDelta, circuitKeyList.ToArray());
             }
             else
             {
@@ -135,7 +135,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     throw new NotSupportedException(StringUtilities.Invariant($"Field {primaryKeyFieldName} is not supported as primary key."));
                 }
 
-                return this.CreateCircuit(circuit);
+                return await this.CreateCircuitAsync(circuit);
             }
         }
 
@@ -173,7 +173,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return this.BadRequest($"Invalid key specified for the {siteModelMapping.ClassName}.");
             }
 
-            var existingSite = this.GetEntity<SiteEntity>(siteKey, siteModelMapping, DBMetadata.Site.Site);
+            var existingSite = await this.GetEntityAsync<SiteEntity>(siteKey, siteModelMapping, DBMetadata.Site.Site);
 
             if (existingSite == null)
             {
@@ -191,7 +191,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             var circuitKeyList = circuitKey.ToList();
             circuitKeyList.Add(new KeyValuePair<string, object>(circuitModelMapping.ColumnToModelMappings[DBMetadata.Circuit.Site], existingSite.Site));
 
-            var existingCircuit = this.GetEntity<CircuitEntity>(circuitKeyList.ToArray());
+            var existingCircuit = await this.GetEntityAsync<CircuitEntity>(circuitKeyList.ToArray());
 
             if (existingCircuit == null)
             {
@@ -220,7 +220,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             }
         }
 
-        private async Task<IHttpActionResult> CreateCircuit(CircuitEntity circuit)
+        private async Task<IHttpActionResult> CreateCircuitAsync(CircuitEntity circuit)
         {
             var createCircuitCommand = new CreateCircuitCommand()
             {
@@ -256,12 +256,12 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await this.CommandBus.PublishAsync(createCircuitCommand);
 
-            var createdCircuit = ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefault<CircuitEntity>($"WHERE {DBMetadata.Circuit.Owner}=@0 and {DBMetadata.Circuit.Site}=@1 and {DBMetadata.Circuit.CircuitDesc}=@2", this.Owner, circuit.Site, circuit.CircuitDesc);
+            var createdCircuit = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefaultAsync<CircuitEntity>($"WHERE {DBMetadata.Circuit.Owner}=@0 and {DBMetadata.Circuit.Site}=@1 and {DBMetadata.Circuit.CircuitDesc}=@2", this.Owner, circuit.Site, circuit.CircuitDesc);
 
             return await this.PrepareCreatedResponse(createdCircuit);
         }
 
-        private async Task<IHttpActionResult> UpdateCircuit(CircuitEntity existingCircuit, Delta<CircuitEntity> circuitDelta, KeyValuePair<string, object>[] key)
+        private async Task<IHttpActionResult> UpdateCircuitAsync(CircuitEntity existingCircuit, Delta<CircuitEntity> circuitDelta, KeyValuePair<string, object>[] key)
         {
             var changedProperties = circuitDelta.GetChangedPropertyNames();
 
@@ -331,7 +331,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await Task.WhenAll(commandResults);
 
-            var updateEntity = this.GetEntity<CircuitEntity>(key);
+            var updateEntity = await this.GetEntityAsync<CircuitEntity>(key);
 
             return await this.PrepareUpdatedResponse(updateEntity);
         }

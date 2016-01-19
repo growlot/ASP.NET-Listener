@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AsyncPoco;
     using Domain;
     using Domain.WNP.OwnerAggregate;
     using Domain.WNP.SiteAggregate;
@@ -44,15 +45,15 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetOwnerWithCollidingSites(string sitePremiseNumber, string siteDescription)
+        public Task<IMemento> GetOwnerWithCollidingSitesAsync(string sitePremiseNumber, string siteDescription)
         {
-            return this.GetOwnerWithCollidingSites(-1, sitePremiseNumber, siteDescription);
+            return this.GetOwnerWithCollidingSitesAsync(-1, sitePremiseNumber, siteDescription);
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetSite(int siteId)
+        public async Task<IMemento> GetSiteAsync(int siteId)
         {
-            var siteEntity = this.dbContext.First<SiteEntity>(
+            var siteEntity = await this.dbContext.FirstAsync<SiteEntity>(
                 $@"
 SELECT * 
 FROM {DBMetadata.Site.FullTableName} 
@@ -74,13 +75,13 @@ WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1",
                 billingAccountNumber: siteEntity.AccountNo,
                 interconnectUtilityName: siteEntity.InterconnectUtility,
                 isInterconnect: siteEntity.IsInterconnect == "Y" ? true : false,
-                circuits: this.GetCircuits(siteEntity.Site.Value));
+                circuits: await this.GetCircuitsAsync(siteEntity.Site.Value));
 
-            return Task.FromResult((IMemento)siteMemento);
+            return siteMemento;
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetOwnerWithCollidingSites(int siteId, string sitePremiseNumber, string siteDescription)
+        public async Task<IMemento> GetOwnerWithCollidingSitesAsync(int siteId, string sitePremiseNumber, string siteDescription)
         {
             var siteMementos = new List<OwnerSiteMemento>();
 
@@ -89,28 +90,28 @@ WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1",
 
             if (!string.IsNullOrWhiteSpace(sitePremiseNumber))
             {
-                var sitesWithSamePremiseNumber = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.PremiseNo} = @1", this.operatingCompany, sitePremiseNumber));
+                var sitesWithSamePremiseNumber = await this.GetSitesAsync(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.PremiseNo} = @1", this.operatingCompany, sitePremiseNumber));
                 siteMementos.AddRange(sitesWithSamePremiseNumber);
             }
 
             if (!string.IsNullOrWhiteSpace(siteDescription))
             {
-                var sitesWithSameDescription = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.SiteDescription} = @1", this.operatingCompany, siteDescription));
+                var sitesWithSameDescription = await this.GetSitesAsync(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.SiteDescription} = @1", this.operatingCompany, siteDescription));
                 siteMementos.AddRange(sitesWithSameDescription);
             }
 
-            var sitesWithSameId = this.GetSites(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1", this.operatingCompany, siteId));
+            var sitesWithSameId = await this.GetSitesAsync(select.Where($"{DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1", this.operatingCompany, siteId));
             siteMementos.AddRange(sitesWithSameId);
 
             var ownerMemento = new OwnerMemento(this.operatingCompany, siteMementos);
 
-            return Task.FromResult((IMemento)ownerMemento);
+            return ownerMemento;
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetMeter(string equipmentNumber)
+        public async Task<IMemento> GetMeterAsync(string equipmentNumber)
         {
-            var meterEntity = this.dbContext.FirstOrDefault<EqpMeterEntity>(
+            var meterEntity = await this.dbContext.FirstOrDefaultAsync<EqpMeterEntity>(
                 $@"
 SELECT {DBMetadata.EqpMeter.EqpNo}, {DBMetadata.EqpMeter.Site}, {DBMetadata.EqpMeter.Circuit}, 
        {DBMetadata.EqpMeter.Scalar}, {DBMetadata.EqpMeter.EnergyMult}, {DBMetadata.EqpMeter.Kh}, 
@@ -122,7 +123,7 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
 
             if (meterEntity == null)
             {
-                return Task.FromResult<IMemento>(null);
+                return null;
             }
 
             decimal value;
@@ -141,13 +142,13 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
                 kh: value,
                 billingKh: meterEntity.PrimaryKh);
 
-            return Task.FromResult((IMemento)meterMemento);
+            return meterMemento;
         }
 
-        private List<OwnerSiteMemento> GetSites(Sql select)
+        private async Task<List<OwnerSiteMemento>> GetSitesAsync(Sql select)
         {
             var siteMementos = new List<OwnerSiteMemento>();
-            var siteEntities = this.dbContext.Fetch<SiteEntity>(select);
+            var siteEntities = await this.dbContext.FetchAsync<SiteEntity>(select);
 
             foreach (var siteEntity in siteEntities)
             {
@@ -162,11 +163,11 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
             return siteMementos;
         }
 
-        private IEnumerable<CircuitMemento> GetCircuits(int siteId)
+        private async Task<IEnumerable<CircuitMemento>> GetCircuitsAsync(int siteId)
         {
             var circuitMementos = new List<CircuitMemento>();
 
-            var circuitEntities = this.dbContext.Fetch<CircuitEntity>(
+            var circuitEntities = await this.dbContext.FetchAsync<CircuitEntity>(
                 $@"
 SELECT * 
 FROM {DBMetadata.Circuit.FullTableName} 
@@ -209,9 +210,9 @@ WHERE {DBMetadata.Circuit.Owner} = @0 and {DBMetadata.Circuit.Site} = @1",
                     numberOfConductorsPerPhase: circuitEntity.ConductorsPerPhase,
                     enclosureType: circuitEntity.EnclosureType,
                     installDate: circuitEntity.InstallDate,
-                    meters: this.GetMeters(siteId, circuitEntity.Circuit.Value),
-                    currentTransformers: this.GetCurrentTransformers(siteId, circuitEntity.Circuit.Value),
-                    potentialTransformers: this.GetPotentialTransformers(siteId, circuitEntity.Circuit.Value));
+                    meters: await this.GetMetersAsync(siteId, circuitEntity.Circuit.Value),
+                    currentTransformers: await this.GetCurrentTransformersAsync(siteId, circuitEntity.Circuit.Value),
+                    potentialTransformers: await this.GetPotentialTransformersAsync(siteId, circuitEntity.Circuit.Value));
 
                 circuitMementos.Add(circuitMemento);
             }
@@ -219,11 +220,11 @@ WHERE {DBMetadata.Circuit.Owner} = @0 and {DBMetadata.Circuit.Site} = @1",
             return circuitMementos;
         }
 
-        private IEnumerable<CircuitMeterMemento> GetMeters(int siteId, int circuitId)
+        private async Task<IEnumerable<CircuitMeterMemento>> GetMetersAsync(int siteId, int circuitId)
         {
             var meterMementos = new List<CircuitMeterMemento>();
 
-            var meterEntities = this.dbContext.Fetch<EqpMeterEntity>(
+            var meterEntities = await this.dbContext.FetchAsync<EqpMeterEntity>(
                 $@"
 SELECT {DBMetadata.EqpMeter.EqpNo}, {DBMetadata.EqpMeter.Site}, {DBMetadata.EqpMeter.Circuit}, 
        {DBMetadata.EqpMeter.Scalar}, {DBMetadata.EqpMeter.EnergyMult}, {DBMetadata.EqpMeter.Kh}, 
@@ -257,11 +258,11 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.Site} = @1 and {
             return meterMementos;
         }
 
-        private IEnumerable<CircuitCurrentTransformerMemento> GetCurrentTransformers(int siteId, int circuitId)
+        private async Task<IEnumerable<CircuitCurrentTransformerMemento>> GetCurrentTransformersAsync(int siteId, int circuitId)
         {
             var currentTransformerMementos = new List<CircuitCurrentTransformerMemento>();
 
-            var currentTransformerEntities = this.dbContext.Fetch<EqpCtEntity>(
+            var currentTransformerEntities = await this.dbContext.FetchAsync<EqpCtEntity>(
                 $@"
 SELECT {DBMetadata.EqpCt.EqpNo}, {DBMetadata.EqpCt.SelectedRatio}, {DBMetadata.EqpCt.AuxMult}
 FROM {DBMetadata.EqpCt.FullTableName} 
@@ -290,11 +291,11 @@ WHERE {DBMetadata.EqpCt.Owner} = @0 and {DBMetadata.EqpCt.Site} = @1 and {DBMeta
             return currentTransformerMementos;
         }
 
-        private IEnumerable<CircuitPotentialTransformerMemento> GetPotentialTransformers(int siteId, int circuitId)
+        private async Task<IEnumerable<CircuitPotentialTransformerMemento>> GetPotentialTransformersAsync(int siteId, int circuitId)
         {
             var potentialTransformerMementos = new List<CircuitPotentialTransformerMemento>();
 
-            var potentialTransformerEntities = this.dbContext.Fetch<EqpCtEntity>(
+            var potentialTransformerEntities = await this.dbContext.FetchAsync<EqpCtEntity>(
                 $@"
 SELECT {DBMetadata.EqpPt.EqpNo}, {DBMetadata.EqpPt.SelectedRatio}
 FROM {DBMetadata.EqpPt.FullTableName} 

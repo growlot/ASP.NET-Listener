@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     using System;
     using System.Data;
     using System.Data.Common;
+    using Poco;
     using Serilog;
     using StackExchange.Profiling;
     using StackExchange.Profiling.Data;
@@ -14,7 +15,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     /// <summary>
     /// WNP database context based on PetaPoco
     /// </summary>
-    public class WNPDBContext : Database
+    public class WNPDBContext : PocoDbContext
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WNPDBContext"/> class.
@@ -32,11 +33,11 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
-        public override IDbConnection OnConnectionOpened(IDbConnection conn)
+        public override DbConnection OnConnectionOpened(DbConnection conn)
         {
             if (MiniProfiler.Current != null)
             {
-                return new ProfiledDbConnection((DbConnection)conn, MiniProfiler.Current);
+                return new ProfiledDbConnection(conn, MiniProfiler.Current);
             }
 
             return base.OnConnectionOpened(conn);

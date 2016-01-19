@@ -29,18 +29,18 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         /// <inheritdoc/>
         public async Task HandleAsync(ExecuteBusinessRuleCommand command)
         {
-            IMemento workstationMemento = await this.UnitOfWork.WorkstationRepository.GetWorkstation(command.Workstation);
+            IMemento workstationMemento = await this.UnitOfWork.WorkstationRepository.GetWorkstationAsync(command.Workstation);
             var workstation = new Workstation();
             ((IOriginator)workstation).SetMemento(workstationMemento);
 
-            IMemento equipmentStateMemento = await this.UnitOfWork.WorkstationRepository.GetEquipmentState(command.EquipmentType, command.EquipmentNumber);
+            IMemento equipmentStateMemento = await this.UnitOfWork.WorkstationRepository.GetEquipmentStateAsync(command.EquipmentType, command.EquipmentNumber);
             var equipmentState = new EquipmentState();
             ((IOriginator)equipmentState).SetMemento(equipmentStateMemento);
 
             Location location = null;
             if (command.Location != null)
             {
-                var locationMemento = await this.UnitOfWork.WorkstationRepository.GetLocation(command.Location);
+                var locationMemento = await this.UnitOfWork.WorkstationRepository.GetLocationAsync(command.Location);
                 location = new Location();
                 ((IOriginator)location).SetMemento(locationMemento);
             }

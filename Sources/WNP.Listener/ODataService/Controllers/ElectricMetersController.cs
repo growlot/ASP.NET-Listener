@@ -90,7 +90,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return this.BadRequest($"Invalid key specified for the {meterModelMapping.ClassName}.");
             }
 
-            var existingMeter = this.GetEntity<EqpMeterEntity>(meterKey, meterModelMapping, DBMetadata.EqpMeter.EqpNo, DBMetadata.EqpMeter.Site, DBMetadata.EqpMeter.Circuit);
+            var existingMeter = await this.GetEntityAsync<EqpMeterEntity>(meterKey, meterModelMapping, DBMetadata.EqpMeter.EqpNo, DBMetadata.EqpMeter.Site, DBMetadata.EqpMeter.Circuit);
             if (existingMeter == null)
             {
                 return this.NotFound();

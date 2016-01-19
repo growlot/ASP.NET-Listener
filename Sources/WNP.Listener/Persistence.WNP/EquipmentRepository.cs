@@ -32,9 +32,9 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetElectricMeter(string equipmentNumber)
+        public async Task<IMemento> GetElectricMeter(string equipmentNumber)
         {
-            var electricMeterEntity = this.dbContext.FirstOrDefault<EqpMeterEntity>(
+            var electricMeterEntity = await this.dbContext.FirstOrDefaultAsync<EqpMeterEntity>(
                 $@"
 SELECT {DBMetadata.EqpMeter.EqpNo}
 FROM {DBMetadata.EqpMeter.FullTableName} 
@@ -44,14 +44,14 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
 
             if (electricMeterEntity == null)
             {
-                return Task.FromResult<IMemento>(null);
+                return null;
             }
 
             var meterMemento = new ElectricMeterMemento(
                 equipmentNumber: electricMeterEntity.EqpNo,
-                readings: this.GetElectricMeterReadings(electricMeterEntity.EqpNo));
+                readings: await this.GetElectricMeterReadingsAsync(electricMeterEntity.EqpNo));
 
-            return Task.FromResult((IMemento)meterMemento);
+            return meterMemento;
         }
 
         /// <summary>
@@ -79,9 +79,9 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
             }
         }
 
-        private IEnumerable<IMemento> GetElectricMeterReadings(string equipmentNumber)
+        private async Task<IEnumerable<IMemento>> GetElectricMeterReadingsAsync(string equipmentNumber)
         {
-            var readings = this.dbContext.Fetch<ReadingEntity>(
+            var readings = await this.dbContext.FetchAsync<ReadingEntity>(
                 $@"
 SELECT *
 FROM {DBMetadata.Reading.FullTableName}

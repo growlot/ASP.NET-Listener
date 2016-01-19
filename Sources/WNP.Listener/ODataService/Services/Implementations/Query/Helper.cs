@@ -8,9 +8,9 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using AsyncPoco;
     using MetadataService;
     using Newtonsoft.Json;
-    using Persistence.WNP;
     using Utilities;
 
     internal static class Helper

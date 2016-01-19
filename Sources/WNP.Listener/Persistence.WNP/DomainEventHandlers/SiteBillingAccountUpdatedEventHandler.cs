@@ -43,7 +43,22 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             columnList.Add(DBMetadata.Site.AccountName);
             columnList.Add(DBMetadata.Site.AccountNo);
 
-            return this.UpdateAsync(site, columnList);
+            // return this.UpdateAsync(site, columnList);
+            return ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync<SiteEntity>(
+                $@"
+SET 
+{DBMetadata.Site.AccountName} = @0,
+{DBMetadata.Site.AccountNo} = @1,
+{DBMetadata.Site.ModBy} = @2,
+{DBMetadata.Site.ModDate} = @3
+WHERE
+{DBMetadata.Site.Site} = @4
+",
+                domainEvent.AccountName,
+                domainEvent.AccountNumber,
+                this.User,
+                this.TimeProvider.Now(),
+                domainEvent.SiteId);
         }
     }
 }

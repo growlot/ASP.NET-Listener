@@ -35,7 +35,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         {
             IList<Task> result = new List<Task>();
 
-            var installCount = ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstOrDefault<int?>(
+            var installCount = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstOrDefaultAsync<int?>(
                 $@"
 SELECT {DBMetadata.SiteInstallHistory.InstallCount}
 FROM {DBMetadata.SiteInstallHistory.FullTableName} 
@@ -48,7 +48,7 @@ WHERE {DBMetadata.SiteInstallHistory.Owner} = @0 and {DBMetadata.SiteInstallHist
             if (installCount.HasValue)
             {
                 // a workaround, because PetaPoco doesn't understand composite keys
-                ((WNPUnitOfWork)this.UnitOfWork).DbContext.Update<SiteInstallHistoryEntity>(
+                var updateTask = ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync<SiteInstallHistoryEntity>(
                     $@"
 SET
 {DBMetadata.SiteInstallHistory.InstallStatus} = @0,
@@ -73,6 +73,8 @@ and {DBMetadata.SiteInstallHistory.InstallCount} = @9
                     domainEvent.EquipmentNumber,
                     domainEvent.EquipmentType,
                     installCount.Value);
+
+                result.Add(updateTask);
             }
             else
             {
@@ -82,7 +84,7 @@ and {DBMetadata.SiteInstallHistory.InstallCount} = @9
                 switch (domainEvent.EquipmentType)
                 {
                     case "EM":
-                        var meterEntity = ((WNPUnitOfWork)this.UnitOfWork).DbContext.First<EqpMeterEntity>(
+                        var meterEntity = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstAsync<EqpMeterEntity>(
                             $@"
 SELECT {DBMetadata.EqpMeter.Site}, {DBMetadata.EqpMeter.Circuit}
 FROM {DBMetadata.EqpMeter.FullTableName} 
@@ -96,7 +98,7 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
                         throw new InvalidOperationException(StringUtilities.Invariant($"Can not persist the equipment installation information, because equipment type {domainEvent} is not supported."));
                 }
 
-                var siteEntity = ((WNPUnitOfWork)this.UnitOfWork).DbContext.First<SiteEntity>(
+                var siteEntity = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstAsync<SiteEntity>(
                     $@"
 SELECT {DBMetadata.Site.AccountName}, {DBMetadata.Site.PremiseNo}
 FROM {DBMetadata.Site.FullTableName} 
@@ -141,7 +143,7 @@ WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1",
                     //// result.Add(this.UpdateAsync(meter, meterColumns));
 
                     // a workaround, because PetaPoco doesn't understand composite keys
-                    ((WNPUnitOfWork)this.UnitOfWork).DbContext.Update<EqpMeterEntity>(
+                    var updateTask = ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync<EqpMeterEntity>(
                         $@"
 SET
 {DBMetadata.EqpMeter.Site} = @0,
@@ -158,6 +160,7 @@ and {DBMetadata.EqpMeter.EqpNo} = @5
                         this.TimeProvider.Now(),
                         this.Owner,
                         domainEvent.EquipmentNumber);
+                    result.Add(updateTask);
 
                     break;
                 default:

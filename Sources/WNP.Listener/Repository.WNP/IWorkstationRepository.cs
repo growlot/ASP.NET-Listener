@@ -13,25 +13,25 @@ namespace AMSLLC.Listener.Repository.WNP
     public interface IWorkstationRepository : IRepository
     {
         /// <summary>
-        /// Gets the workstation.
+        /// Gets the workstation asynchronously.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns>The workstation memento</returns>
-        Task<IMemento> GetWorkstation(string name);
+        Task<IMemento> GetWorkstationAsync(string name);
 
         /// <summary>
-        /// Gets the location.
+        /// Gets the location asynchronously.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns>The location memento</returns>
-        Task<IMemento> GetLocation(string name);
+        Task<IMemento> GetLocationAsync(string name);
 
         /// <summary>
-        /// Gets the state of the equipment.
+        /// Gets the state of the equipment asynchronously.
         /// </summary>
         /// <param name="equipmentType">Type of the equipment.</param>
         /// <param name="equipmentNumber">The equipment number.</param>
         /// <returns>The equipment state memento</returns>
-        Task<IMemento> GetEquipmentState(string equipmentType, string equipmentNumber);
+        Task<IMemento> GetEquipmentStateAsync(string equipmentType, string equipmentNumber);
     }
 }

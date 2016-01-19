@@ -41,7 +41,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         /// <inheritdoc/>
         public Task<IMemento> GetOwner()
         {
-            return Task.FromResult((IMemento)this.dbContext.FirstOrDefault<OwnerMemento>(
+            return Task.FromResult((IMemento)this.dbContext.FirstOrDefaultAsync<OwnerMemento>(
                 $@"
 SELECT {DBMetadata.Owner.Owner}
 FROM {DBMetadata.Owner.FullTableName}

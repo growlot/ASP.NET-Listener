@@ -30,14 +30,14 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
             TableInfo ti = new TableInfo();
 
             // Get the table name
-            var a = pocoType.GetCustomAttributes(typeof(WNP.TableNameAttribute), true);
-            ti.TableName = a.Length == 0 ? pocoType.Name : (a[0] as WNP.TableNameAttribute).Value;
+            var a = pocoType.GetCustomAttributes(typeof(TableNameAttribute), true);
+            ti.TableName = a.Length == 0 ? pocoType.Name : (a[0] as TableNameAttribute).Value;
 
             // Get the primary key
-            a = pocoType.GetCustomAttributes(typeof(WNP.PrimaryKeyAttribute), true);
-            ti.PrimaryKey = a.Length == 0 ? "ID" : (a[0] as WNP.PrimaryKeyAttribute).Value;
-            ti.SequenceName = a.Length == 0 ? null : (a[0] as WNP.PrimaryKeyAttribute).sequenceName;
-            ti.AutoIncrement = a.Length == 0 ? false : (a[0] as WNP.PrimaryKeyAttribute).autoIncrement;
+            a = pocoType.GetCustomAttributes(typeof(PrimaryKeyAttribute), true);
+            ti.PrimaryKey = a.Length == 0 ? "ID" : (a[0] as PrimaryKeyAttribute).Value;
+            ti.SequenceName = a.Length == 0 ? null : (a[0] as PrimaryKeyAttribute).sequenceName;
+            ti.AutoIncrement = a.Length == 0 ? false : (a[0] as PrimaryKeyAttribute).autoIncrement;
 
             return ti;
         }
@@ -58,10 +58,10 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
 
             // Check if declaring poco has [Explicit] attribute
             bool explicitColumns =
-                pocoProperty.DeclaringType.GetCustomAttributes(typeof(WNP.ExplicitColumnsAttribute), true).Length > 0;
+                pocoProperty.DeclaringType.GetCustomAttributes(typeof(ExplicitColumnsAttribute), true).Length > 0;
 
             // Check for [Column]/[Ignore] Attributes
-            var colAttrs = pocoProperty.GetCustomAttributes(typeof(WNP.ColumnAttribute), true);
+            var colAttrs = pocoProperty.GetCustomAttributes(typeof(ColumnAttribute), true);
             if (explicitColumns)
             {
                 if (colAttrs.Length == 0)
@@ -71,7 +71,7 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
             }
             else
             {
-                if (pocoProperty.GetCustomAttributes(typeof(WNP.IgnoreAttribute), true).Length != 0)
+                if (pocoProperty.GetCustomAttributes(typeof(IgnoreAttribute), true).Length != 0)
                 {
                     return null;
                 }
@@ -82,11 +82,11 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
             // Read attribute
             if (colAttrs.Length > 0)
             {
-                var colattr = (WNP.ColumnAttribute)colAttrs[0];
+                var colattr = (ColumnAttribute)colAttrs[0];
 
                 ci.ColumnName = colattr.Name == null ? pocoProperty.Name : colattr.Name;
                 ci.ForceToUtc = colattr.ForceToUtc;
-                if ((colattr as WNP.ResultColumnAttribute) != null)
+                if ((colattr as ResultColumnAttribute) != null)
                 {
                     ci.ResultColumn = true;
                 }

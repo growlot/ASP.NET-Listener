@@ -28,9 +28,9 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
         }
 
         /// <inheritdoc/>
-        public Task HandleAsync(ElectricMeterReadingAddedEvent domainEvent)
+        public async Task HandleAsync(ElectricMeterReadingAddedEvent domainEvent)
         {
-            var readIndex = ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstOrDefault<int?>(
+            var readIndex = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstOrDefaultAsync<int?>(
                 $@"
 SELECT MAX({DBMetadata.Reading.ReadIndex})
 FROM {DBMetadata.Reading.FullTableName} 
@@ -52,7 +52,7 @@ WHERE {DBMetadata.Reading.Owner} = @0 and {DBMetadata.Reading.EqpNo} = @1",
                 ReadBy = domainEvent.User,
             };
 
-            return this.InsertAsync(reading);
+            await this.InsertAsync(reading);
         }
     }
 }

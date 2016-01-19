@@ -19,6 +19,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
     using ApplicationService;
+    using AsyncPoco;
     using MetadataService;
     using Microsoft.OData.Core.UriParser.Semantic;
     using Microsoft.OData.Edm;
@@ -119,7 +120,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// Gets this collection of entities.
         /// </summary>
         /// <returns>The collection of entities.</returns>
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
@@ -134,14 +135,14 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 this.QueryOptions.SelectExpand?.SelectExpandClause?.SelectedItems?.OfType<ExpandedNavigationSelectItem>().ToArray();
 
             var resultInstances =
-                this.queryHandlerFactory.MultipleResultsQueryHandler()
+                await this.queryHandlerFactory.MultipleResultsQueryHandler()
                     .OnType(this.EdmEntityClrType)
                     .Expand(expands?.Select(item => item.NavigationSource.EntityType().Name).ToArray())
                     .SelectFields(selectedFields)
                     .Filter(this.QueryOptions.Filter)
                     .Skip(skip)
                     .Top(top)
-                    .Fetch();
+                    .FetchAsync();
 
             return this.CreateOkResponseList(resultInstances);
         }
@@ -150,7 +151,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// Gets this collection of navigation entities.
         /// </summary>
         /// <returns>The collection of entities.</returns>
-        public IHttpActionResult GetNavigation()
+        public async Task<IHttpActionResult> GetNavigation()
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
@@ -189,7 +190,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                 this.QueryOptions.SelectExpand?.SelectExpandClause?.SelectedItems?.OfType<ExpandedNavigationSelectItem>().ToArray();
 
             var resultInstances =
-                this.queryHandlerFactory.NavigationMultipleResultsQuery()
+                await this.queryHandlerFactory.NavigationMultipleResultsQuery()
                     .OnTypes(parentType, childType)
                     .WithKey(rawParentKey)
                     .Expand(expands?.Select(item => item.NavigationSource.EntityType().Name).ToArray())
@@ -197,16 +198,16 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                     .Filter(this.QueryOptions.Filter)
                     .Skip(skip)
                     .Top(top)
-                    .Fetch();
+                    .FetchAsync();
 
             return this.CreateOkResponseList(resultInstances);
         }
 
         /// <summary>
-        /// Gets single entity using primary key specified in Url.
+        /// Gets single entity using primary key specified in Url asyncronously.
         /// </summary>
         /// <returns>Single entity</returns>
-        public IHttpActionResult GetSingleSimple()
+        public async Task<IHttpActionResult> GetSingleSimple()
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
@@ -225,12 +226,12 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             try
             {
                 var entityInstance =
-                    this.queryHandlerFactory.SingleResultQuery()
+                    await this.queryHandlerFactory.SingleResultQuery()
                         .OnType(this.EdmEntityClrType)
                         .WithKey(rawKey)
                         .Expand(expands?.Select(item => item.NavigationSource.EntityType().Name).ToArray())
                         .SelectFields(selectedFields)
-                        .Fetch();
+                        .FetchAsync();
 
                 return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
             }
@@ -249,7 +250,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// and child keys.
         /// </summary>
         /// <returns>Single entity</returns>
-        public IHttpActionResult GetSingleByNavigation()
+        public async Task<IHttpActionResult> GetSingleByNavigation()
         {
             // constructing oData options since we can not use generic return type
             // without first generating Controller dynamically
@@ -286,12 +287,12 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
             try
             {
                 var entityInstance =
-                    this.queryHandlerFactory.NavigationSingleResultQuery()
+                    await this.queryHandlerFactory.NavigationSingleResultQuery()
                         .OnTypes(parentType, childType)
                         .WithKeys(rawParentKey, rawChildKey)
                         .Expand(expands?.Select(item => item.NavigationSource.EntityType().Name).ToArray())
                         .SelectFields(selectedFields)
-                        .Fetch();
+                        .FetchAsync();
 
                 return this.CreateSimpleOkResponse(this.EdmEntityClrType, entityInstance);
             }
@@ -398,7 +399,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <param name="modelMapping">The model mapping.</param>
         /// <param name="dbFieldNames">The fields that has to be selected.</param>
         /// <returns>The entity with specified fields retrieved.</returns>
-        protected TEntity GetEntity<TEntity>(KeyValuePair<string, object>[] key, MetadataEntityModel modelMapping, params object[] dbFieldNames)
+        protected Task<TEntity> GetEntityAsync<TEntity>(KeyValuePair<string, object>[] key, MetadataEntityModel modelMapping, params object[] dbFieldNames)
         {
             var sql =
                 Sql.Builder.Select(dbFieldNames)
@@ -408,7 +409,7 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
                             .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}")),
                         key.Select(kvp => kvp.Value).ToArray());
 
-            return ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstOrDefault<TEntity>(sql);
+            return ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstOrDefaultAsync<TEntity>(sql);
         }
 
         /// <summary>
@@ -417,9 +418,9 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="key">The key.</param>
         /// <returns>The entity.</returns>
-        protected TEntity GetEntity<TEntity>(KeyValuePair<string, object>[] key)
+        protected Task<TEntity> GetEntityAsync<TEntity>(KeyValuePair<string, object>[] key)
         {
-            return this.GetEntity<TEntity>(key, this.MetadataService.GetModelMapping(this.EdmEntityClrType), "*");
+            return this.GetEntityAsync<TEntity>(key, this.MetadataService.GetModelMapping(this.EdmEntityClrType), "*");
         }
 
         /// <summary>

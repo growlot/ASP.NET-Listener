@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using ApplicationService;
+    using AsyncPoco;
     using Core;
     using Repository.WNP;
 
@@ -73,9 +74,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             columns.Add("mod_by");
             columns.Add("mod_date");
 
-            ((WNPUnitOfWork)this.UnitOfWork).DbContext.Update(entity, columns);
-
-            return Task.CompletedTask;
+            return ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync(entity, columns);
         }
 
         /// <summary>
@@ -112,14 +111,12 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
                     throw new InvalidOperationException("Can not determine table name of specified entity.");
                 }
 
-                ((WNPUnitOfWork)this.UnitOfWork).DbContext.Insert(tableNameAttribute.Value, "id", true, entity);
+                return ((WNPUnitOfWork)this.UnitOfWork).DbContext.InsertAsync(tableNameAttribute.Value, "id", true, entity);
             }
             else
             {
-                ((WNPUnitOfWork)this.UnitOfWork).DbContext.Insert(entity);
+                return ((WNPUnitOfWork)this.UnitOfWork).DbContext.InsertAsync(entity);
             }
-
-            return Task.CompletedTask;
         }
     }
 }

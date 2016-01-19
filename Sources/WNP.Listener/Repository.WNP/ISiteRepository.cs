@@ -14,19 +14,19 @@ namespace AMSLLC.Listener.Repository.WNP
     public interface ISiteRepository : IRepository
     {
         /// <summary>
-        /// Gets the memento for site agregate.
+        /// Gets the memento for site agregate asynchronously.
         /// </summary>
         /// <param name="siteId">The site identifier.</param>
         /// <returns>The site memento</returns>
-        Task<IMemento> GetSite(int siteId);
+        Task<IMemento> GetSiteAsync(int siteId);
 
         /// <summary>
-        /// Gets the owner with sites that belong to this owner and have same premise number or description.
+        /// Gets the owner with sites that belong to this owner and have same premise number or description asynchronously.
         /// </summary>
         /// <param name="sitePremiseNumber">The site premise number.</param>
         /// <param name="siteDescription">The site description.</param>
         /// <returns>The owner mementos.</returns>
-        Task<IMemento> GetOwnerWithCollidingSites(string sitePremiseNumber, string siteDescription);
+        Task<IMemento> GetOwnerWithCollidingSitesAsync(string sitePremiseNumber, string siteDescription);
 
         /// <summary>
         /// Gets the owner with sites that belong to this owner and have same site identity, premise number or description.
@@ -37,13 +37,13 @@ namespace AMSLLC.Listener.Repository.WNP
         /// <returns>
         /// The owner mementos.
         /// </returns>
-        Task<IMemento> GetOwnerWithCollidingSites(int siteId, string sitePremiseNumber, string siteDescription);
+        Task<IMemento> GetOwnerWithCollidingSitesAsync(int siteId, string sitePremiseNumber, string siteDescription);
 
         /// <summary>
-        /// Gets the meter fields used in inventory management context.
+        /// Gets the meter fields used in inventory management context asynchronously.
         /// </summary>
         /// <param name="equipmentNumber">The equipment number.</param>
         /// <returns>The meter memento.</returns>
-        Task<IMemento> GetMeter(string equipmentNumber);
+        Task<IMemento> GetMeterAsync(string equipmentNumber);
     }
 }

@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.ODataService.Services.Query
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using System.Web.OData.Query;
 
     /// <summary>
@@ -69,6 +70,7 @@ namespace AMSLLC.Listener.ODataService.Services.Query
         /// Fetches the fully formatted collection of resulting instances of the requested entity.
         /// </summary>
         /// <returns>Set of the entity class instances, defined in OData model assembly.</returns>
-        IEnumerable<object> Fetch();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Specifics of the asynchronous programming.")]
+        Task<IEnumerable<object>> FetchAsync();
     }
 }

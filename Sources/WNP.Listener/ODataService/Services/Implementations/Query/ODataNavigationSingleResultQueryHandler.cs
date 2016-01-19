@@ -7,6 +7,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
+    using AsyncPoco;
     using Controllers.Base;
     using MetadataService;
     using Persistence.WNP;
@@ -128,13 +130,12 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
         /// Fetches the fully formatted resulting instance of the requested entity.
         /// </summary>
         /// <returns>Instance of the entity class, defined in OData model assembly.</returns>
-        public object Fetch()
+        public async Task<object> FetchAsync()
         {
             this.CheckMandatoryFields();
 
             // Generate SQL
-            var sql =
-                Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.childModel.TableName);
+            var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.childModel.TableName);
 
             // Add necessary joins
             Helper.PerformJoins(ref sql, this.childModel, this.relatedEntityModels);
@@ -150,16 +151,17 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
             // Fetch the results in one big batch
             var dbContext = ((WNPUnitOfWork)this.unitOfWork).DbContext;
 
-            var dbResults = dbContext.Fetch<dynamic>(sql).Cast<IDictionary<string, object>>().ToArray();
+            var dbResults = await dbContext.FetchAsync<dynamic>(sql);
+            var dbResultsDictionary = dbResults.Cast<IDictionary<string, object>>().ToArray();
 
             // Check obvious errors
             if (this.relatedEntityModels.Length == 0
                 && this.childModel.EntityConfiguration.VirtualRelations.Count == 0
-                && dbResults.Length > 1)
+                && dbResultsDictionary.Length > 1)
             {
                 throw new InvalidNumberOfRecordsException("Request returned more than 1 record.");
             }
-            else if (dbResults.Length == 0)
+            else if (dbResultsDictionary.Length == 0)
             {
                 throw new EntityNotFoundException();
             }
@@ -171,7 +173,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
                     this.selectedFields,
                     this.relatedEntityModels,
                     this.childEdmEntityClrType,
-                    dbResults).GetEntity();
+                    dbResultsDictionary).GetEntity();
         }
 
         private void CheckMandatoryFields()

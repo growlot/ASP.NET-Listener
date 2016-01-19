@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Bootstrapper
     using ApplicationService;
     using ApplicationService.BatchBuilder;
     using ApplicationService.Implementations;
+    using AsyncPoco;
     using Bus;
     using Communication;
     using Communication.Jms;
@@ -79,7 +80,7 @@ namespace AMSLLC.Listener.Bootstrapper
             try
             {
                 Mappers.Register(typeof(WNPMetadataEntry), new WNPMetadataMapping());
-                AsyncPoco.Mappers.Register(typeof(MeterTestResultsEntity), new AsyncMapper());
+                Mappers.Register(typeof(MeterTestResultsEntity), new AsyncMapper());
             }
             catch (ArgumentException)
             {

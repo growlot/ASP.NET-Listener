@@ -31,11 +31,11 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         /// <inheritdoc/>
         public async Task HandleAsync(InstallMeterCommand command)
         {
-            IMemento siteMemento = await this.UnitOfWork.SitesRepository.GetSite(command.SiteId);
+            IMemento siteMemento = await this.UnitOfWork.SitesRepository.GetSiteAsync(command.SiteId);
             var site = new Site();
             ((IOriginator)site).SetMemento(siteMemento);
 
-            IMemento meterMemento = await this.UnitOfWork.SitesRepository.GetMeter(command.EquipmentNumber);
+            IMemento meterMemento = await this.UnitOfWork.SitesRepository.GetMeterAsync(command.EquipmentNumber);
             if (meterMemento == null)
             {
                 throw new InvalidOperationException("Can not install meter to circuit, because specified meter was not found.");

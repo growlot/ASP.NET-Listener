@@ -12,6 +12,8 @@ namespace AMSLLC.Listener.MetadataService.Implementations
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
+    using AsyncPoco;
     using Microsoft.CSharp;
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
@@ -43,7 +45,7 @@ namespace AMSLLC.Listener.MetadataService.Implementations
 
             if (oDataModelMappings == null)
             {
-                this.PrepareModel();
+                Task.Run(() => this.PrepareModelAsync()).Wait();
             }
 
             if (odataModelAssembly == null)
@@ -162,11 +164,11 @@ namespace AMSLLC.Listener.MetadataService.Implementations
             }
         }
 
-        private void PrepareModel()
+        private async Task PrepareModelAsync()
         {
             oDataModelMappings = new Dictionary<string, MetadataEntityModel>();
 
-            var rawMetadata = this.dbContext.Fetch<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata));
+            var rawMetadata = await this.dbContext.FetchAsync<WNPMetadataEntry>(Sql.Builder.Select(DBMetadata.ALL).From(DBMetadata.Metadata));
             foreach (var metadataEntry in rawMetadata)
             {
                 metadataEntry.TableName = metadataEntry.TableName.ToUpperInvariant();

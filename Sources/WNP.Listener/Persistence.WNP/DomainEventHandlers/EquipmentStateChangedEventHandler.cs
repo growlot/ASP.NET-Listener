@@ -40,7 +40,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             {
                 case "EM":
                     // a workaround because PetaPoco doesn't support composite keys.
-                    ((WNPUnitOfWork)this.UnitOfWork).DbContext.Update<EqpMeterEntity>(
+                    var updateTask = ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync<EqpMeterEntity>(
                         $@"
 SET 
 {DBMetadata.EqpMeter.EqpStatus} = @0,
@@ -73,6 +73,7 @@ and {DBMetadata.EqpMeter.EqpNo} = @13
                         currentTime,
                         this.Owner,
                         domainEvent.EquipmentNumber);
+                    result.Add(updateTask);
 
                     break;
                 default:

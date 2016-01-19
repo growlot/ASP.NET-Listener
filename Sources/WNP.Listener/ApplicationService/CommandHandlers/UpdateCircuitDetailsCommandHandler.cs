@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         /// <inheritdoc/>
         public async Task HandleAsync(UpdateCircuitDetailsCommand command)
         {
-            IMemento siteMemento = await this.UnitOfWork.SitesRepository.GetSite(command.SiteId);
+            IMemento siteMemento = await this.UnitOfWork.SitesRepository.GetSiteAsync(command.SiteId);
             Site site = new Site();
             ((IOriginator)site).SetMemento(siteMemento);
 

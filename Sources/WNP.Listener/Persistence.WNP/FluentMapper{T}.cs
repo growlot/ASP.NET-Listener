@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using AsyncPoco;
 
     /// <summary>
     /// Implments custom PetaPoco's Database to POCO mapping mechanism.
@@ -37,11 +38,8 @@ namespace AMSLLC.Listener.Persistence.WNP
             this.tableInfo.PrimaryKey = primaryKey;
         }
 
-        /// <summary>
-        /// Gets the table information.
-        /// </summary>
-        /// <param name="pocoType">Type of the poco.</param>
-        /// <returns>The table information</returns>
+        /// <inheritdoc/>
+        [CLSCompliant(false)]
         public TableInfo GetTableInfo(Type pocoType)
         {
             return this.tableInfo;
@@ -58,6 +56,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
+        [CLSCompliant(false)]
         public ColumnInfo GetColumnInfo(PropertyInfo pocoProperty)
         {
             var fluentMap = default(FluentColumnMap);

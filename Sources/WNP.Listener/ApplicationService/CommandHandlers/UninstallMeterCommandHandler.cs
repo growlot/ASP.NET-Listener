@@ -30,7 +30,7 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         /// <inheritdoc/>
         public async Task HandleAsync(UninstallMeterCommand command)
         {
-            IMemento siteMemento = await this.UnitOfWork.SitesRepository.GetSite(command.SiteId);
+            IMemento siteMemento = await this.UnitOfWork.SitesRepository.GetSiteAsync(command.SiteId);
             var site = new Site();
             ((IOriginator)site).SetMemento(siteMemento);
 

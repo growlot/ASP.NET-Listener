@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Persistence.WNP
 {
     using System;
+    using AsyncPoco;
 
     /// <summary>
     /// Stores column mapping information for <see cref="FluentMapper{T}"/>
@@ -22,6 +23,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         /// Initializes a new instance of the <see cref="FluentColumnMap"/> class.
         /// </summary>
         /// <param name="columnInfo">The column information.</param>
+        [CLSCompliant(false)]
         public FluentColumnMap(ColumnInfo columnInfo)
             : this(columnInfo, null)
         {
@@ -32,6 +34,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         /// </summary>
         /// <param name="columnInfo">The column information.</param>
         /// <param name="fromDbConverter">From database converter.</param>
+        [CLSCompliant(false)]
         public FluentColumnMap(ColumnInfo columnInfo, Func<object, object> fromDbConverter)
             : this(columnInfo, fromDbConverter, null)
         {
@@ -43,6 +46,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         /// <param name="columnInfo">The column information.</param>
         /// <param name="fromDbConverter">From database converter.</param>
         /// <param name="toDbConverter">To database converter.</param>
+        [CLSCompliant(false)]
         public FluentColumnMap(ColumnInfo columnInfo, Func<object, object> fromDbConverter, Func<object, object> toDbConverter)
         {
             this.ColumnInfo = columnInfo;
@@ -56,6 +60,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         /// <value>
         /// The column information.
         /// </value>
+        [CLSCompliant(false)]
         public ColumnInfo ColumnInfo { get; private set; }
 
         /// <summary>

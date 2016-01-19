@@ -29,7 +29,7 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         /// <inheritdoc/>
         public async Task HandleAsync(UpdateSiteDetailsCommand command)
         {
-            IMemento ownerMemento = await this.UnitOfWork.SitesRepository.GetOwnerWithCollidingSites(command.SiteId, command.PremiseNumber, command.Description);
+            IMemento ownerMemento = await this.UnitOfWork.SitesRepository.GetOwnerWithCollidingSitesAsync(command.SiteId, command.PremiseNumber, command.Description);
             Owner owner = new Owner();
             ((IOriginator)owner).SetMemento(ownerMemento);
 

@@ -43,7 +43,22 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             columnList.Add(DBMetadata.Site.SiteDescription);
             columnList.Add(DBMetadata.Site.PremiseNo);
 
-            return this.UpdateAsync(site, columnList);
+            // return this.UpdateAsync(site, columnList);
+            return ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync<SiteEntity>(
+                $@"
+SET
+{DBMetadata.Site.SiteDescription} = @0,
+{DBMetadata.Site.PremiseNo} = @1,
+{DBMetadata.Site.ModBy} = @2,
+{DBMetadata.Site.ModDate} = @3
+WHERE
+{DBMetadata.Site.Site} = @4
+",
+                domainEvent.Description,
+                domainEvent.PremiseNumber,
+                this.User,
+                this.TimeProvider.Now(),
+                domainEvent.SiteId);
         }
     }
 }

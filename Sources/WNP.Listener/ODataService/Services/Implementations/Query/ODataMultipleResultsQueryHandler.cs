@@ -8,7 +8,9 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.OData.Query;
+    using AsyncPoco;
     using Controllers.Base;
     using Core;
     using MetadataService;
@@ -150,7 +152,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
         /// Fetches the fully formatted collection of resulting instances of the requested entity.
         /// </summary>
         /// <returns>Set of the entity class instances, defined in OData model assembly.</returns>
-        public IEnumerable<object> Fetch()
+        public async Task<IEnumerable<object>> FetchAsync()
         {
             var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.mainModel.TableName);
 
@@ -162,7 +164,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
                 sql = sql.Where(this.sqlFilter.Clause, this.sqlFilter.PositionalParameters);
             }
 
-            var dbResults = ((WNPUnitOfWork)this.unitOfWork).DbContext.Fetch<dynamic>(sql);
+            var dbResults = await ((WNPUnitOfWork)this.unitOfWork).DbContext.FetchAsync<dynamic>(sql);
             var results = dbResults.Cast<IDictionary<string, object>>().ToArray();
 
             // create actual result object we will be sending over the wire

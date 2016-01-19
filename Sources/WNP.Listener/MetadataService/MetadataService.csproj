@@ -60,6 +60,9 @@
     <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncPoco">
+      <HintPath>..\..\..\3rdParty\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.OData.Core, Version=6.13.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.OData.Core.6.13.0\lib\portable-net40+sl5+wp8+win8+wpa\Microsoft.OData.Core.dll</HintPath>
       <Private>True</Private>
@@ -162,6 +165,10 @@
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistence.Poco\Persistence.Poco.csproj">
+      <Project>{91d72e44-f89a-4e9d-9646-e44fa0b04778}</Project>
+      <Name>Persistence.Poco</Name>
     </ProjectReference>
     <ProjectReference Include="..\Persistence.WNP\Persistence.WNP.csproj">
       <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>

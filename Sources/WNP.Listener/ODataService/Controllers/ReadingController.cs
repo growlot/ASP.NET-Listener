@@ -70,7 +70,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 return this.BadRequest($"Invalid key specified for the {electricMeterModelMapping.ClassName}.");
             }
 
-            var existingElectricMeter = this.GetEntity<EqpMeterEntity>(electricMeterKey, electricMeterModelMapping, DBMetadata.EqpMeter.EqpNo);
+            var existingElectricMeter = await this.GetEntityAsync<EqpMeterEntity>(electricMeterKey, electricMeterModelMapping, DBMetadata.EqpMeter.EqpNo);
 
             if (existingElectricMeter == null)
             {
@@ -85,10 +85,10 @@ namespace AMSLLC.Listener.ODataService.Controllers
                 reading.ReadDate = this.dateTimeProvider.Now();
         }
 
-            return await this.AddReading(reading);
+            return await this.AddReadingAsync(reading);
         }
 
-        private async Task<IHttpActionResult> AddReading(ReadingEntity reading)
+        private async Task<IHttpActionResult> AddReadingAsync(ReadingEntity reading)
         {
             var addReading = new AddElectricMeterReadingCommand()
             {
@@ -104,7 +104,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
 
             await this.CommandBus.PublishAsync(addReading);
 
-            var createdReading = ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefault<ReadingEntity>(
+            var createdReading = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.SingleOrDefaultAsync<ReadingEntity>(
                 $@"
 SELECT *
 FROM {DBMetadata.Reading.FullTableName}

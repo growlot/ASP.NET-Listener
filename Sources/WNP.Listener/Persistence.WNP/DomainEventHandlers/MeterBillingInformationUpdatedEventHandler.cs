@@ -43,7 +43,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             columnList.Add(DBMetadata.EqpMeter.EnergyMult);
             columnList.Add(DBMetadata.EqpMeter.PrimaryKh);
 
-            ((WNPUnitOfWork)this.UnitOfWork).DbContext.Update<EqpMeterEntity>(
+            return ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync<EqpMeterEntity>(
                 $@"
 SET 
 {DBMetadata.EqpMeter.EnergyMult} = @0,
@@ -56,8 +56,6 @@ and {DBMetadata.EqpMeter.EqpNo} = @3
                 domainEvent.BillingKh,
                 this.Owner,
                 domainEvent.EquipmentNumber);
-
-            return Task.CompletedTask; // this.UpdateAsync(meter, columnList);
         }
     }
 }

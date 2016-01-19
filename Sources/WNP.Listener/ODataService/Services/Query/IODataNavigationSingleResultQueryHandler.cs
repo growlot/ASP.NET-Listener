@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.ODataService.Services.Query
 {
     using System;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Interface for OData query handler that returns single navigation object as a result.
@@ -46,6 +47,6 @@ namespace AMSLLC.Listener.ODataService.Services.Query
         /// Fetches the fully formatted resulting instance of the requested entity.
         /// </summary>
         /// <returns>Instance of the entity class, defined in OData model assembly.</returns>
-        object Fetch();
+        Task<object> FetchAsync();
     }
 }

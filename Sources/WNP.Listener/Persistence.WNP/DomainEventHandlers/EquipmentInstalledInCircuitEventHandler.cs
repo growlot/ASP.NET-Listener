@@ -51,7 +51,7 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
                     //// result.Add(this.UpdateAsync(meter, meterColumns));
 
                     // a workaround because PetaPoco doesn't support composite keys.
-                    ((WNPUnitOfWork)this.UnitOfWork).DbContext.Update<EqpMeterEntity>(
+                    await ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync<EqpMeterEntity>(
                         $@"
 SET 
 {DBMetadata.EqpMeter.Site} = @0,
@@ -74,7 +74,7 @@ and {DBMetadata.EqpMeter.EqpNo} = @5
                     throw new InvalidOperationException(StringUtilities.Invariant($"Can not persist the equipment installation information, because equipment type {domainEvent.EquipmentType} is not supported."));
             }
 
-            var siteEntity = ((WNPUnitOfWork)this.UnitOfWork).DbContext.First<SiteEntity>(
+            var siteEntity = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstAsync<SiteEntity>(
                 $@"
 SELECT {DBMetadata.Site.AccountName}, {DBMetadata.Site.PremiseNo}
 FROM {DBMetadata.Site.FullTableName} 
@@ -82,7 +82,7 @@ WHERE {DBMetadata.Site.Owner} = @0 and {DBMetadata.Site.Site} = @1",
                 this.Owner,
                 domainEvent.SiteId);
 
-            var installCount = ((WNPUnitOfWork)this.UnitOfWork).DbContext.First<int?>(
+            var installCount = await ((WNPUnitOfWork)this.UnitOfWork).DbContext.FirstAsync<int?>(
                 $@"
 SELECT max({DBMetadata.SiteInstallHistory.InstallCount})
 FROM {DBMetadata.SiteInstallHistory.FullTableName} 

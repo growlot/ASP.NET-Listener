@@ -34,8 +34,8 @@ namespace AMSLLC.Listener.Bootstrapper
         /// </value>
         private MiniProfiler Current
         {
-            get { return OwinRequestScopeContext.Current.Context?.Get<MiniProfiler>(":mini-profiler:"); }
-            set { OwinRequestScopeContext.Current.Context?.Set(":mini-profiler:", value); }
+            get { return OwinRequestScopeContext.Current?.Context?.Get<MiniProfiler>(":mini-profiler:"); }
+            set { OwinRequestScopeContext.Current?.Context?.Set(":mini-profiler:", value); }
         }
 
         /// <summary>

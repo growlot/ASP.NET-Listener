@@ -34,12 +34,12 @@ namespace AMSLLC.Listener.Persistence.WNP
         }
 
         /// <inheritdoc/>
-        public async Task<IMemento> GetEquipmentState(string equipmentType, string equipmentNumber)
+        public async Task<IMemento> GetEquipmentStateAsync(string equipmentType, string equipmentNumber)
         {
             switch (equipmentType)
             {
                 case "EM":
-                    var electricMeter = this.dbContext.FirstOrDefault<EqpMeterEntity>(
+                    var electricMeter = await this.dbContext.FirstOrDefaultAsync<EqpMeterEntity>(
                         $@"
 SELECT *
 FROM {DBMetadata.EqpMeter.FullTableName}
@@ -56,7 +56,7 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
                             equipmentNumber: equipmentNumber,
                             equipmentType: equipmentType,
                             workflow: electricMeter.TestProgram,
-                            location: await this.GetLocation(electricMeter.Location),
+                            location: await this.GetLocationAsync(electricMeter.Location),
                             equipmentStatus: electricMeter.EqpStatus,
                             detailedStatus: electricMeter.ShopStatus,
                             shopCycle: electricMeter.ShopCycle.HasValue ? electricMeter.ShopCycle.Value : 0,
@@ -74,9 +74,9 @@ WHERE {DBMetadata.EqpMeter.Owner} = @0 and {DBMetadata.EqpMeter.EqpNo} = @1",
         }
 
         /// <inheritdoc/>
-        public Task<IMemento> GetLocation(string name)
+        public async Task<IMemento> GetLocationAsync(string name)
         {
-            var location = this.dbContext.First<LocationEntity>(
+            var location = await this.dbContext.FirstAsync<LocationEntity>(
                 $@"
 SELECT * 
 FROM {DBMetadata.Location.FullTableName} 
@@ -88,13 +88,13 @@ WHERE {DBMetadata.Location.Owner} = @0 and {DBMetadata.Location.Location} = @1",
                 locationName: location.Location,
                 locationType: location.AreaName);
 
-            return Task.FromResult((IMemento)locationMemento);
+            return locationMemento;
         }
 
         /// <inheritdoc/>
-        public async Task<IMemento> GetWorkstation(string name)
+        public async Task<IMemento> GetWorkstationAsync(string name)
         {
-            var workstation = this.dbContext.First<WorkstationEntity>(
+            var workstation = await this.dbContext.FirstAsync<WorkstationEntity>(
                 $@"
 SELECT * 
 FROM {DBMetadata.Workstation.FullTableName} 
@@ -137,7 +137,7 @@ WHERE {DBMetadata.Workstation.Owner} = @0 and {DBMetadata.Workstation.Workstatio
 
         private async Task<IEnumerable<IMemento>> GetBusinessActions(string name)
         {
-            var businessActions = this.dbContext.Fetch<TrackingOutEntity>(
+            var businessActions = await this.dbContext.FetchAsync<TrackingOutEntity>(
                 $@"
 SELECT *
 FROM {DBMetadata.TrackingOut.FullTableName}
@@ -154,7 +154,7 @@ WHERE {DBMetadata.TrackingOut.Owner} = @0 and {DBMetadata.TrackingOut.Workstatio
                     newWorkflow: businessAction.ChangeToTestProg,
                     newEquipmentStatus: businessAction.OutEqpStatus,
                     newDetailedStatus: businessAction.OutShopStatus,
-                    newLocation: businessAction.LocationType == "S" ? businessAction.OutLocation == "*LEAVE_AS_IS*" ? new LocationMemento(businessAction.OutLocation, null) : await this.GetLocation(businessAction.OutLocation) : null,
+                    newLocation: businessAction.LocationType == "S" ? businessAction.OutLocation == "*LEAVE_AS_IS*" ? new LocationMemento(businessAction.OutLocation, null) : await this.GetLocationAsync(businessAction.OutLocation) : null,
                     newLocationType: businessAction.LocationType == "A" ? businessAction.OutLocation : null,
                     incrementCycle: businessAction.IncrementCycle == "Y" ? true : false,
                     clearBox: businessAction.ClearBox == "Y" ? true : false,
@@ -170,7 +170,7 @@ WHERE {DBMetadata.TrackingOut.Owner} = @0 and {DBMetadata.TrackingOut.Workstatio
 
         private async Task<IEnumerable<IMemento>> GetIncomingRules(string name)
         {
-            var incomingRules = this.dbContext.Fetch<TrackingInEntity>(
+            var incomingRules = await this.dbContext.FetchAsync<TrackingInEntity>(
                 $@"
 SELECT *
 FROM {DBMetadata.TrackingIn.FullTableName}
@@ -186,7 +186,7 @@ WHERE {DBMetadata.TrackingIn.Owner} = @0 and {DBMetadata.TrackingIn.Workstation}
                     isAllowed: incomingRule.IsAllowed == "Y" ? true : false,
                     equipmentStatus: incomingRule.InEqpStatus,
                     detailedStatus: incomingRule.InShopStatus,
-                    location: incomingRule.LocationType == "S" ? await this.GetLocation(incomingRule.InLocation) : null,
+                    location: incomingRule.LocationType == "S" ? await this.GetLocationAsync(incomingRule.InLocation) : null,
                     locationType: incomingRule.LocationType == "A" ? incomingRule.InLocation : null,
                     message: incomingRule.DisplayMessage);
                 result.Add(incomingRuleMemento);
