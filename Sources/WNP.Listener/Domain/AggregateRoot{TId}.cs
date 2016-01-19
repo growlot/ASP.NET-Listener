@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.Domain
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// Base class for all AgregateRoots
@@ -18,6 +19,8 @@ namespace AMSLLC.Listener.Domain
         {
             get
             {
+                // Events always initialized at least to empty list.
+                Contract.Assume(this.Events != null);
                 return new ReadOnlyCollection<IDomainEvent>(this.Events);
             }
         }

@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Domain
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Reflection;
 
     /// <summary>
@@ -79,12 +80,15 @@ namespace AMSLLC.Listener.Domain
         /// </returns>
         public override int GetHashCode()
         {
-            IEnumerable<FieldInfo> fields = this.GetFields();
-
             int startValue = 17;
             int multiplier = 59;
 
             int hashCode = startValue;
+
+            IEnumerable<FieldInfo> fields = this.GetFields();
+
+            // This is ValueObject class and value object always contain at least one field.
+            Contract.Assert(fields != null);
 
             foreach (FieldInfo field in fields)
             {
@@ -122,6 +126,9 @@ namespace AMSLLC.Listener.Domain
 
             foreach (FieldInfo field in fields)
             {
+                // list of fields was retrieved from object definition, so it can't contain null's
+                Contract.Assume(field != null);
+
                 object thisValue = field.GetValue(this);
                 object otherValue = field.GetValue(other);
 
@@ -147,14 +154,25 @@ namespace AMSLLC.Listener.Domain
         /// <returns>List of fields in the object.</returns>
         private IEnumerable<FieldInfo> GetFields()
         {
+            Contract.Ensures(Contract.Result<IEnumerable<FieldInfo>>() != null);
+            Contract.Ensures(Contract.ForAll(Contract.Result<IEnumerable<FieldInfo>>(), x => x != null));
+
             Type t = this.GetType();
 
             List<FieldInfo> fields = new List<FieldInfo>();
 
+            // fields are retrieved from object using reflection, so they can't be null
+            ////Contract.Assume(Contract.ForAll(fields, x => x != null));
+            ////Contract.Assert(Contract.ForAll(fields, x => x != null));
             while (t != typeof(object))
             {
-                fields.AddRange(t.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public));
+                var currentTypeFields = t.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+                fields.AddRange(currentTypeFields);
                 t = t.BaseType;
+
+                // all types in C# inherit from object, and this part is not executed when type is object.
+                Contract.Assume(t != null);
             }
 
             return fields;
