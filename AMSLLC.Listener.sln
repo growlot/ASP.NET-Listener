@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Listener.Client.Test", "Sou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Listener.Shared", "Sources\WNP.Listener\Listener.Shared\Listener.Shared.csproj", "{ED495806-3082-49A2-A243-EBEAFF4029B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.Listener", "Sources\WNP.Listener\Repository.Listener\Repository.Listener.csproj", "{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug.SQLServer|Any CPU = Debug.SQLServer|Any CPU
@@ -260,6 +262,12 @@ Global
 		{ED495806-3082-49A2-A243-EBEAFF4029B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED495806-3082-49A2-A243-EBEAFF4029B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED495806-3082-49A2-A243-EBEAFF4029B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D}.Debug.SQLServer|Any CPU.ActiveCfg = Debug.SQLServer|Any CPU
+		{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D}.Debug.SQLServer|Any CPU.Build.0 = Debug.SQLServer|Any CPU
+		{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -291,5 +299,6 @@ Global
 		{91D72E44-F89A-4E9D-9646-E44FA0B04778} = {8C0D6EAD-4A1B-4247-9F61-32F99423BA5B}
 		{6B57711D-F549-4D80-AB52-2C22FFA113A2} = {8C0D6EAD-4A1B-4247-9F61-32F99423BA5B}
 		{ED495806-3082-49A2-A243-EBEAFF4029B8} = {60141318-ECBA-478D-B316-878BA875EAA6}
+		{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D} = {8021E4C2-62DB-4866-9EF7-771D4F3468B2}
 	EndGlobalSection
 EndGlobal
