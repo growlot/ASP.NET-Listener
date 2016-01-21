@@ -185,7 +185,7 @@ namespace AMSLLC.Listener.Communication.Jms
         private static ITextMessage CreateMessage(ISession session, TransactionDataReady data, ProtocolConfiguration configuration)
         {
             Log.Information("JMS: Creating message");
-            var returnValue = session.CreateTextMessage(JsonConvert.SerializeObject(data.RecordKey));
+            var returnValue = session.CreateTextMessage(JsonConvert.SerializeObject(data.Data));
             returnValue.JMSType = CreateMessageType(data.Data, configuration.MessageTypeTemplate);
             return returnValue;
         }

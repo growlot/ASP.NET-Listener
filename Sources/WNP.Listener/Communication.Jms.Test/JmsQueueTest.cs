@@ -51,7 +51,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
                 var protocolConfiguration = new ProtocolConfiguration();
 
                 await dispatcher.Handle(eventData, connectionConfiguration, protocolConfiguration);
-                ReadMessage(JsonConvert.SerializeObject(eventData.RecordKey), connectionConfiguration);
+                ReadMessage(JsonConvert.SerializeObject(eventData.Data), connectionConfiguration);
             }
             catch (MessageException exc)
             {
