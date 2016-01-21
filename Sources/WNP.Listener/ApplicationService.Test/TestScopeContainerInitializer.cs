@@ -4,15 +4,16 @@
 
 namespace AMSLLC.Listener.ApplicationService.Test
 {
-using System;
-using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+    using System.Threading.Tasks;
     using Core;
     using Domain;
     using Domain.Listener.Transaction;
     using Ninject;
     using Repository;
+    using Repository.Listener;
 
     public class TestScopeContainerInitializer : IDependencyInjectionModule
     {

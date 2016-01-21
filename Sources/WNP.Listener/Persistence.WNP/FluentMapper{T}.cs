@@ -7,7 +7,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using AsyncPoco;
+    using Persistence.Poco;
 
     /// <summary>
     /// Implments custom PetaPoco's Database to POCO mapping mechanism.

@@ -6,7 +6,7 @@ namespace AMSLLC.Listener.Persistence.WNPAsync
 {
     using System;
     using System.Reflection;
-    using AsyncPoco;
+    using Persistence.Poco;
 
     /// <summary>
     /// PetaPoco - AsyncPoco Mapper.

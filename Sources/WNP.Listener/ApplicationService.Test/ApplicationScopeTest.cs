@@ -10,7 +10,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using Implementations;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
-    using Repository;
+    using Repository.Listener;
 
     [TestClass]
     public class ApplicationScopeTest

@@ -52,7 +52,32 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
             columnList.Add(DBMetadata.Circuit.MeterPoint);
             columnList.Add(DBMetadata.Circuit.ServicePoint);
 
-            return this.UpdateAsync(circuit, columnList);
+            // return this.UpdateAsync(circuit, columnList);
+            return ((WNPUnitOfWork)this.UnitOfWork).DbContext.UpdateAsync<CircuitEntity>(
+                $@"
+SET
+{DBMetadata.Circuit.CircuitDesc} = @0,
+{DBMetadata.Circuit.EnclosureType} = @1,
+{DBMetadata.Circuit.HasBracket} = @2,
+{DBMetadata.Circuit.InstallDate} = @3,
+{DBMetadata.Circuit.MeterPoint} = @4,
+{DBMetadata.Circuit.ServicePoint} = @5,
+{DBMetadata.Circuit.ModBy} = @6,
+{DBMetadata.Circuit.ModDate} = @7
+WHERE
+{DBMetadata.Circuit.Site} = @8 
+AND {DBMetadata.Circuit.Circuit} = @9
+",
+                domainEvent.Description,
+                domainEvent.EnclosureType,
+                domainEvent.HasBracket ? "Y" : "N",
+                domainEvent.InstallDate,
+                domainEvent.MeterPoint,
+                domainEvent.ServicePoint,
+                this.User,
+                this.TimeProvider.Now(),
+                domainEvent.SiteId,
+                domainEvent.CircuitId);
         }
     }
 }

@@ -54,10 +54,6 @@
     <DocumentationFile>bin\Debug.SQLServer\AMSLLC.Listener.Persistence.Listener.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\3rdParty\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -149,6 +145,10 @@
     <ProjectReference Include="..\Persistence.Poco\Persistence.Poco.csproj">
       <Project>{91D72E44-F89A-4E9D-9646-E44FA0B04778}</Project>
       <Name>Persistence.Poco</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
+      <Project>{e0cb7a0f-6065-4abd-bf98-c98cfaa4230d}</Project>
+      <Name>Repository.Listener</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{72e29f3f-e27a-4224-9f7b-59c2497d3bf3}</Project>

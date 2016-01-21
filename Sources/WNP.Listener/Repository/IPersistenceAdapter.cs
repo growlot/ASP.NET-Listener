@@ -177,6 +177,6 @@ namespace AMSLLC.Listener.Repository
         /// Begins the transaction.
         /// </summary>
         /// <returns>Task&lt;ITransactionProxy&gt;.</returns>
-        Task<ITransactionProxy> BeginTransaction();
+        Task<ITransactionAdapter> BeginTransaction();
     }
 }

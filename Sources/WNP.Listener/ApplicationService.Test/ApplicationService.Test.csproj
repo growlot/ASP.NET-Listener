@@ -131,6 +131,10 @@
       <Project>{28de87b5-514b-4996-b65a-9d8f9e4578e0}</Project>
       <Name>ODataService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
+      <Project>{e0cb7a0f-6065-4abd-bf98-c98cfaa4230d}</Project>
+      <Name>Repository.Listener</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{72E29F3F-E27A-4224-9F7B-59C2497D3BF3}</Project>
       <Name>Repository</Name>

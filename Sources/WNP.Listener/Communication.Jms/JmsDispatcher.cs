@@ -5,13 +5,12 @@
 namespace AMSLLC.Listener.Communication.Jms
 {
     using System;
-    using System.CodeDom;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
-    using Repository;
+    using Repository.Listener;
     using Serilog;
     using Utilities;
     using WebLogic.Messaging;

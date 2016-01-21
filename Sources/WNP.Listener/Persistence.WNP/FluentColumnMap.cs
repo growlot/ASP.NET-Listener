@@ -5,7 +5,7 @@
 namespace AMSLLC.Listener.Persistence.WNP
 {
     using System;
-    using AsyncPoco;
+    using Persistence.Poco;
 
     /// <summary>
     /// Stores column mapping information for <see cref="FluentMapper{T}"/>

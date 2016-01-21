@@ -7,13 +7,13 @@ namespace AMSLLC.Listener.Persistence.WNP
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AsyncPoco;
     using Domain;
     using Domain.WNP.OwnerAggregate;
     using Domain.WNP.SiteAggregate;
     using Domain.WNP.SiteAggregate.CircuitChild;
     using Domain.WNP.SiteAggregate.CircuitChild.Equipment;
     using Metadata;
+    using Persistence.Poco;
     using Repository.WNP;
     using Utilities;
 

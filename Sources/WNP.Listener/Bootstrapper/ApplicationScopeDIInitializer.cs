@@ -10,6 +10,7 @@ namespace AMSLLC.Listener.Bootstrapper
     using Persistence.Listener;
     using Persistence.WNPAsync;
     using Repository;
+    using Repository.Listener;
 
     /// <summary>
     /// Initializing dependency injection for application scope

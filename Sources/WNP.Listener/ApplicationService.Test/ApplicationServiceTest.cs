@@ -22,7 +22,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using Moq;
     using Newtonsoft.Json;
     using ODataService;
-    using Repository;
+    using Repository.Listener;
     using Serilog;
     using Shared;
 

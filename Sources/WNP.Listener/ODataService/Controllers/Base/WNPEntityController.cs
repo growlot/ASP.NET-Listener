@@ -19,11 +19,11 @@ namespace AMSLLC.Listener.ODataService.Controllers.Base
     using System.Web.OData.Query;
     using System.Web.OData.Routing;
     using ApplicationService;
-    using AsyncPoco;
     using MetadataService;
     using Microsoft.OData.Core.UriParser.Semantic;
     using Microsoft.OData.Edm;
     using Newtonsoft.Json;
+    using Persistence.Poco;
     using Persistence.WNP;
     using Repository.WNP;
     using Serilog;

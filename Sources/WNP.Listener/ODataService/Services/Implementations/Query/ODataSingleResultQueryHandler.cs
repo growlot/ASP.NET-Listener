@@ -8,11 +8,11 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AsyncPoco;
     using Controllers.Base;
     using Domain;
     using MetadataService;
     using Newtonsoft.Json;
+    using Persistence.Poco;
     using Persistence.WNP;
     using Services.Query;
     using Utilities;

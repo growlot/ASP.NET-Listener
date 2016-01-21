@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
     using Commands;
     using Domain.Listener.Application;
     using Implementations;
-    using Repository;
+    using Repository.Listener;
 
     /// <summary>
     /// Application configuration service

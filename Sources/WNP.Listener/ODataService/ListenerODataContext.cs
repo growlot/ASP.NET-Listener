@@ -197,9 +197,9 @@ namespace AMSLLC.Listener.ODataService
             Expression<Func<T, TKey>> primaryKeySelector)
             where T : class
         {
-            var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
+            var tableNameAttribute = typeof(T).GetCustomAttribute<Persistence.Poco.TableNameAttribute>();
 
-            // var primaryKeyAttribute = typeof(T).GetCustomAttribute<AsyncPoco.PrimaryKeyAttribute>();
+            // var primaryKeyAttribute = typeof(T).GetCustomAttribute<Persistence.Poco.PrimaryKeyAttribute>();
             // var keyPropertyName = GetPropertyName(primaryKeySelector);
             // if (string.Compare(primaryKeyAttribute.Value, keyPropertyName, StringComparison.InvariantCulture) != 0)
             // {

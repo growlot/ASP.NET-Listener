@@ -45,11 +45,12 @@ using System.Net;
 				this._dbContext = dbctx;
 			}
 
-			/// <summary>
-			/// Get the IQueryable of the served entity.
-			/// </summary>
-			/// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
-			public IQueryable<TransactionRegistryEntity> Get()
+        /// <summary>
+        /// Get the IQueryable of the served entity.
+        /// </summary>
+        /// <returns>System.Linq.IQueryable&lt;AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity&gt;.</returns>
+        [CLSCompliant(false)]
+        public IQueryable<TransactionRegistryEntity> Get()
 			{
 				try
 				{
@@ -3060,7 +3061,7 @@ public partial class ODataControllerConfigurator{
         {
             if (string.IsNullOrWhiteSpace(tableName))
             {
-                var tableNameAttribute = typeof(T).GetCustomAttribute<AsyncPoco.TableNameAttribute>();
+                var tableNameAttribute = typeof(T).GetCustomAttribute<Persistence.Poco.TableNameAttribute>();
                 modelBuilder.EntitySet<T>(tableNameAttribute.Value);
             }
             else

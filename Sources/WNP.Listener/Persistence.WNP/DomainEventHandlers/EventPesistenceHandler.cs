@@ -8,8 +8,8 @@ namespace AMSLLC.Listener.Persistence.WNP.DomainEventHandlers
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using ApplicationService;
-    using AsyncPoco;
     using Core;
+    using Persistence.Poco;
     using Repository.WNP;
 
     /// <summary>

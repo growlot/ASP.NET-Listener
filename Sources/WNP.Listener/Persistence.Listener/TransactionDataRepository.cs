@@ -9,6 +9,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     using Core;
     using Newtonsoft.Json;
     using Repository;
+    using Repository.Listener;
 
     /// <summary>
     /// Transaction data repository

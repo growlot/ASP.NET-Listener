@@ -13,12 +13,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using AsyncPoco;
+using System.Web;
 
 namespace AMSLLC.Listener.Persistence.Listener
 {
-    public partial class ListenerDB : Database
+    using Poco;
+
+	[CLSCompliant(false)]
+	public partial class ListenerDB : Database
 	{
 		public ListenerDB() 
 			: base("Listener")

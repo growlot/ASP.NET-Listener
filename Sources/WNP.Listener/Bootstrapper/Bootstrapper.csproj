@@ -55,10 +55,6 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, PublicKeyToken=51490ee0cc295bc0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\3rdParty\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -280,6 +276,10 @@
     <ProjectReference Include="..\Persistence.WNP\Persistence.WNP.csproj">
       <Project>{993cdffd-fb9f-4c45-9f10-e4f006f0b8ea}</Project>
       <Name>Persistence.WNP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
+      <Project>{e0cb7a0f-6065-4abd-bf98-c98cfaa4230d}</Project>
+      <Name>Repository.Listener</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository.WNP\Repository.WNP.csproj">
       <Project>{2643c152-d7b8-4633-a540-8ee3a1db8e45}</Project>

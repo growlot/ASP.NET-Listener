@@ -6,7 +6,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 {
     using System;
     using System.Linq.Expressions;
-    using AsyncPoco;
+    using Persistence.Poco;
 
     /// <summary>
     /// Custom extensions for <see cref="FluentMapper{T}"/>

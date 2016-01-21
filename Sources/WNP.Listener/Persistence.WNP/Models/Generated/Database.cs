@@ -16,12 +16,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using AsyncPoco;
 
 namespace AMSLLC.Listener.Persistence.WNP
 {
-	
 
+    using Poco;
     
 	[TableName("wndba.ttransducer_test_results")]
 	[PrimaryKey("owner", autoIncrement=false)]

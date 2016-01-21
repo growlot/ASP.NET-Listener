@@ -4,7 +4,7 @@
 
 namespace AMSLLC.Listener.MetadataService
 {
-    using AsyncPoco;
+    using Persistence.Poco;
 
     /// <summary>
     /// Entry from WNP Metadata table

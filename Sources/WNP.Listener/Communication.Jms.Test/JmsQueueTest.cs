@@ -11,7 +11,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
-    using Repository;
+    using Repository.Listener;
     using WebLogic.Messaging;
 
     /// <summary>

@@ -10,10 +10,10 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.OData.Query;
-    using AsyncPoco;
     using Controllers.Base;
     using Core;
     using MetadataService;
+    using Persistence.Poco;
     using Persistence.WNP;
     using Repository.WNP;
     using Services.Filter;

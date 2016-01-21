@@ -17,6 +17,6 @@ namespace AMSLLC.Listener.Repository
         /// <typeparam name="TRepository">The type of the repository.</typeparam>
         /// <returns>The repository.</returns>
         TRepository Create<TRepository>()
-                    where TRepository : IRepository;
+            where TRepository : IRepository;
     }
 }

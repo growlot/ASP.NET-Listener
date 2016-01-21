@@ -27,7 +27,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
-    using Repository;
+    using Repository.Listener;
     using Repository.WNP;
     using Repository.WNP.Model;
     using Shared;

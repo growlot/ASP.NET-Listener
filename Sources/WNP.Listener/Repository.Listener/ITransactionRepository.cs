@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Repository
+namespace AMSLLC.Listener.Repository.Listener
 {
     using System;
     using System.Collections.Generic;
@@ -88,7 +88,7 @@ namespace AMSLLC.Listener.Repository
         /// <param name="companyCode">The company code.</param>
         /// <param name="sourceApplicationKey">The source application key.</param>
         /// <returns>The field configuration mementos.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review this")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Specifics of async programming.")]
         Task<Dictionary<string, IEnumerable<IMemento>>> GetFieldConfigurationsAsync(string companyCode, string sourceApplicationKey);
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace AMSLLC.Listener.Repository
         /// </summary>
         /// <returns>Task&lt;List&lt;EnabledOperationLookup&gt;&gt;.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This is expected to be too complex for property")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Review this")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Specifics of async programming.")]
         Task<List<EntityOperationLookup>> GetEnabledEntityOperations();
 
         /// <summary>
@@ -104,7 +104,6 @@ namespace AMSLLC.Listener.Repository
         /// </summary>
         /// <param name="modifiedRegistries">The modified registries.</param>
         /// <returns>Task.</returns>
-        Task UpdateTransactionRegistryBulkAsync(
-            Collection<TransactionRegistry> modifiedRegistries);
+        Task UpdateTransactionRegistryBulkAsync(Collection<TransactionRegistry> modifiedRegistries);
     }
 }

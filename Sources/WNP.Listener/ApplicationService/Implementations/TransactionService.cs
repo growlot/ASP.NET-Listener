@@ -16,7 +16,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
     using Domain.Listener.Transaction;
     using Model;
     using Newtonsoft.Json;
-    using Repository;
+    using Repository.Listener;
     using Serilog;
     using Shared;
 

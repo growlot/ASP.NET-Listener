@@ -8,7 +8,6 @@ namespace AMSLLC.Listener.Bootstrapper
     using ApplicationService;
     using ApplicationService.BatchBuilder;
     using ApplicationService.Implementations;
-    using AsyncPoco;
     using Bus;
     using Communication;
     using Communication.Jms;
@@ -27,9 +26,11 @@ namespace AMSLLC.Listener.Bootstrapper
     using ODataService.Services.Implementations.Query;
     using ODataService.Services.Query;
     using Persistence.Listener;
+    using Persistence.Poco;
     using Persistence.WNP;
     using Persistence.WNPAsync;
     using Repository;
+    using Repository.Listener;
     using Repository.WNP;
     using Serilog;
 

@@ -13,8 +13,8 @@ namespace AMSLLC.Listener.MetadataService.Implementations
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using AsyncPoco;
     using Microsoft.CSharp;
+    using Persistence.Poco;
     using Persistence.WNP;
     using Persistence.WNP.Metadata;
     using Utilities;

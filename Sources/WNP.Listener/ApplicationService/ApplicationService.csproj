@@ -164,6 +164,10 @@
       <Project>{ed495806-3082-49a2-a243-ebeaff4029b8}</Project>
       <Name>Listener.Shared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
+      <Project>{e0cb7a0f-6065-4abd-bf98-c98cfaa4230d}</Project>
+      <Name>Repository.Listener</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Repository.WNP\Repository.WNP.csproj">
       <Project>{2643c152-d7b8-4633-a540-8ee3a1db8e45}</Project>
       <Name>Repository.WNP</Name>

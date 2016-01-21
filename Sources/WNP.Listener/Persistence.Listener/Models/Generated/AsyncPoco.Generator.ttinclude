@@ -9,11 +9,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using AsyncPoco;
 
 namespace <#=Namespace #>
 {
+	using Poco	
+
 <# if (GenerateCommon) { #>
+	[CLSCompliant(false)]
 	public partial class <#=RepoName#> : Database
 	{
 		public <#=RepoName#>() 
