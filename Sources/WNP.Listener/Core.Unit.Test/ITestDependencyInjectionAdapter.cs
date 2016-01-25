@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Core
+namespace AMSLLC.Listener.Core.Unit.Test
 {
     /// <summary>
     /// Abstracts dependency injection framework.

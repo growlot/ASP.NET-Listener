@@ -25,17 +25,15 @@ namespace System
             Contract.Requires<ArgumentNullException>(type != null);
             Contract.Requires<ArgumentNullException>(name != null);
 
-            var methods = type
-                .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
-                .Where(mInfo => mInfo.Name == name && mInfo.IsGenericMethod)
-                .ToList();
+            // Contract.Ensures(Contract.Result<MethodInfo>() != null);
+            List<MethodInfo> methods = GetMethodsList(type, name);
             if (methods.Count == 0)
             {
                 throw new InvalidOperationException("No generic methods found with specified method name {0}.".FormatWith(name));
             }
             else if (methods.Count == 1)
             {
-                return methods.First();
+                return methods[0];
             }
 
             throw new InvalidOperationException("Multiple generic methods found with specified name {0}.".FormatWith(name));
@@ -53,9 +51,10 @@ namespace System
             Contract.Requires<ArgumentNullException>(type != null);
             Contract.Requires<ArgumentNullException>(name != null);
             Contract.Requires<ArgumentNullException>(parameterTypes != null);
+            Contract.Ensures(Contract.Result<MethodInfo>() != null);
 
-            var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
-            foreach (var method in methods.Where(m => m.Name == name && m.IsGenericMethodDefinition == true))
+            var methods = GetMethodsList(type, name);
+            foreach (var method in methods)
             {
                 Contract.Assume(method != null, "Method is enumerated from list of methods and should never be null");
                 var methodParameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
@@ -66,7 +65,7 @@ namespace System
                 }
             }
 
-            return null;
+            throw new InvalidOperationException("No generic methods found with specified method name {0} and signature.".FormatWith(name));
         }
 
         /// <summary>
@@ -90,12 +89,26 @@ namespace System
         {
             Contract.Requires<ArgumentNullException>(type != null);
 
-            if (type.IsValueType)
+            if (!type.IsNullable())
             {
                 return Activator.CreateInstance(type);
             }
 
             return null;
+        }
+
+        private static List<MethodInfo> GetMethodsList(Type type, string name)
+        {
+            Contract.Requires<ArgumentNullException>(type != null);
+
+            // Contract.Ensures(Contract.ForAll(Contract.Result<List<MethodInfo>>(), item => item != null));
+            var result = type
+                .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
+                .Where(mInfo => mInfo.Name == name && mInfo.IsGenericMethod)
+                .ToList();
+
+            // Contract.Assume(Contract.ForAll(result, item => item != null));
+            return result;
         }
 
         private class SimpleTypeComparer : IEqualityComparer<Type>

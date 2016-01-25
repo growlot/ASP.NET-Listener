@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="Converters.cs" />
     <Compile Include="DataPropertyInfo.cs" />
+    <Compile Include="DynamicTuple.cs" />
     <Compile Include="DynamicUtilities.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="WnpDbHelpers.cs" />
