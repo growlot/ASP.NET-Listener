@@ -4,6 +4,8 @@
 
 namespace AMSLLC.Listener.Core.Ninject.Test
 {
+    using Unit.Test;
+
     /// <summary>
     /// Implements <see cref="ITestDependencyInjectionAdapter"/> for Ninject
     /// </summary>
