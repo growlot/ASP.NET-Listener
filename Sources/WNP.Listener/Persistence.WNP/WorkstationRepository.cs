@@ -14,7 +14,7 @@ namespace AMSLLC.Listener.Persistence.WNP
     using Utilities;
 
     /// <summary>
-    /// Implmeent workstation repository interface for WNP database.
+    /// Implement workstation repository interface for WNP database.
     /// </summary>
     public class WorkstationRepository : IWorkstationRepository
     {
@@ -157,11 +157,11 @@ WHERE {DBMetadata.TrackingOut.Owner} = @0 and {DBMetadata.TrackingOut.Workstatio
                     newLocation: businessAction.LocationType == "S" ? businessAction.OutLocation == "*LEAVE_AS_IS*" ? new LocationMemento(businessAction.OutLocation, null) : await this.GetLocationAsync(businessAction.OutLocation) : null,
                     newLocationType: businessAction.LocationType == "A" ? businessAction.OutLocation : null,
                     incrementCycle: businessAction.IncrementCycle == "Y" ? true : false,
-                    clearBox: businessAction.ClearBox == "Y" ? true : false,
-                    clearPallet: businessAction.ClearPallet == "Y" ? true : false,
-                    clearShelf: businessAction.ClearShelf == "Y" ? true : false,
-                    clearIssuedTo: businessAction.ClearReceivedBy == "Y" ? true : false,
-                    clearVehicleNumber: businessAction.ClearVehicleNo == "Y" ? true : false);
+                    actionBox: businessAction.ActionBox,
+                    actionPallet: businessAction.ActionPallet,
+                    actionShelf: businessAction.ActionShelf,
+                    actionReceivedBy: businessAction.ActionReceivedBy,
+                    actionVehicleNumber: businessAction.ActionVehicleNumber);
                 result.Add(businessActionMemento);
             }
 

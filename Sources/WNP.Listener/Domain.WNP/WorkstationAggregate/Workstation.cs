@@ -137,11 +137,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
                     newLocation: location,
                     newLocationType: businessActionMemento.NewLocationType,
                     incrementCycle: businessActionMemento.IncrementCycle,
-                    clearBox: businessActionMemento.ClearBox,
-                    clearPallet: businessActionMemento.ClearPallet,
-                    clearShelf: businessActionMemento.ClearShelf,
-                    clearIssuedTo: businessActionMemento.ClearIssuedTo,
-                    clearVehicleNumber: businessActionMemento.ClearVehicleNumber);
+                    actionBox: businessActionMemento.ActionBox,
+                    actionPallet: businessActionMemento.ActionPallet,
+                    actionShelf: businessActionMemento.ActionShelf,
+                    actionReceivedBy: businessActionMemento.ActionReceivedBy,
+                    actionVehicleNumber: businessActionMemento.ActionVehicleNumber);
                 this.businessActions.Add(businessAction);
             }
         }

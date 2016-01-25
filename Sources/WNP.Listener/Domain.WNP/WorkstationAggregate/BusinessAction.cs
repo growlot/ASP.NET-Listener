@@ -17,11 +17,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         private readonly Location newLocation;
         private readonly string newLocationType;
         private readonly bool incrementCycle;
-        private readonly bool clearBox;
-        private readonly bool clearPallet;
-        private readonly bool clearShelf;
-        private readonly bool clearIssuedTo;
-        private readonly bool clearVehicleNumber;
+        private readonly string actionBox;
+        private readonly string actionPallet;
+        private readonly string actionShelf;
+        private readonly string actionReceivedBy;
+        private readonly string actionVehicleNumber;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BusinessAction" /> class.
@@ -34,11 +34,36 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="newLocation">New location.</param>
         /// <param name="newLocationType">Type of new location.</param>
         /// <param name="incrementCycle">if set to <c>true</c> [increment cycle].</param>
-        /// <param name="clearBox">if set to <c>true</c> [clear box].</param>
-        /// <param name="clearPallet">if set to <c>true</c> [clear pallet].</param>
-        /// <param name="clearShelf">if set to <c>true</c> [clear shelf].</param>
-        /// <param name="clearIssuedTo">if set to <c>true</c> [clear issued to].</param>
-        /// <param name="clearVehicleNumber">if set to <c>true</c> [clear vehicle number].</param>
+        /// <param name="actionBox">Represents the action field [action box]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
+        /// <param name="actionPallet">Represents the action field [action pallet]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
+        /// <param name="actionShelf">Represents the action field [action shelf]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
+        /// <param name="actionReceivedBy">Represents the action field [action received by]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
+        /// <param name="actionVehicleNumber">Represents the action field [action vehicle number]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
         public BusinessAction(
             string actionName,
             string currentWorkflow,
@@ -48,11 +73,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             Location newLocation,
             string newLocationType,
             bool incrementCycle,
-            bool clearBox,
-            bool clearPallet,
-            bool clearShelf,
-            bool clearIssuedTo,
-            bool clearVehicleNumber)
+            string actionBox,
+            string actionPallet,
+            string actionShelf,
+            string actionReceivedBy,
+            string actionVehicleNumber)
         {
             this.actionName = actionName;
             this.currentWorkflow = currentWorkflow;
@@ -62,11 +87,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             this.newLocation = newLocation;
             this.newLocationType = newLocationType;
             this.incrementCycle = incrementCycle;
-            this.clearBox = clearBox;
-            this.clearPallet = clearPallet;
-            this.clearShelf = clearShelf;
-            this.clearIssuedTo = clearIssuedTo;
-            this.clearVehicleNumber = clearVehicleNumber;
+            this.actionBox = actionBox;
+            this.actionPallet = actionPallet;
+            this.actionShelf = actionShelf;
+            this.actionReceivedBy = actionReceivedBy;
+            this.actionVehicleNumber = actionVehicleNumber;
         }
 
         /// <summary>
@@ -182,72 +207,117 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         }
 
         /// <summary>
-        /// Gets a value indicating whether equipment assignment to box (container) should be removed.
+        /// Gets a value indicating if box information should be set or cleared during this action.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if equipment assignment to box (container) should be removed; otherwise, <c>false</c>.
+        ///   'D' if rule is disabled.
         /// </value>
-        public bool ClearBox
+        /// <value>
+        ///   'E' if rule is enabled.
+        /// </value>
+        /// <value>
+        ///   'R' if value is required for Box.
+        /// </value>
+        /// <value>
+        ///   'C' if value needs to be clear for Box.
+        /// </value>
+        public string ActionBox
         {
             get
             {
-                return this.clearBox;
+                return this.actionBox;
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether equipment assignment to pallet (container) should be removed.
+        /// Gets a value indicating if pallet information should be set or cleared during this action.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if equipment assignment to pallet (container) should be removed; otherwise, <c>false</c>.
+        ///   'D' if rule is disabled.
         /// </value>
-        public bool ClearPallet
+        /// <value>
+        ///   'E' if rule is enabled.
+        /// </value>
+        /// <value>
+        ///   'R' if value is required for Pallet.
+        /// </value>
+        /// <value>
+        ///   'C' if value needs to be clear for Pallet.
+        /// </value>
+        public string ActionPallet
         {
             get
             {
-                return this.clearPallet;
+                return this.actionPallet;
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether equipment shelf location should be removed.
+        /// Gets a value indicating if shelf information should be set or cleared during this action.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if equipment shelf location should be removed; otherwise, <c>false</c>.
+        ///   'D' if rule is disabled.
         /// </value>
-        public bool ClearShelf
+        /// <value>
+        ///   'E' if rule is enabled.
+        /// </value>
+        /// <value>
+        ///   'R' if value is required for Shelf Id.
+        /// </value>
+        /// <value>
+        ///   'C' if value needs to be clear for Shelf Id.
+        /// </value>
+        public string ActionShelf
         {
             get
             {
-                return this.clearShelf;
+                return this.actionShelf;
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether equipment assignment to user should be removed.
+        /// Gets a value indicating whether if received by information should be set or cleared during this action.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if equipment assignment to user should be removed; otherwise, <c>false</c>.
+        ///   'D' if rule is disabled.
         /// </value>
-        public bool ClearIssuedTo
+        /// <value>
+        ///   'E' if rule is enabled.
+        /// </value>
+        /// <value>
+        ///   'R' if value is required for received by field.
+        /// </value>
+        /// <value>
+        ///   'C' if value needs to be clear for received by feild.
+        /// </value>
+        public string ActionReceivedBy
         {
             get
             {
-                return this.clearIssuedTo;
+                return this.actionReceivedBy;
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether equipment assignment to vehicle should be removed.
+        /// Gets a value indicating whether if vehicle number information should be set or cleared during this action.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if equipment assignment to vehicle should be removed; otherwise, <c>false</c>.
+        ///   'D' if rule is disabled.
         /// </value>
-        public bool ClearVehicleNumber
+        /// <value>
+        ///   'E' if rule is enabled.
+        /// </value>
+        /// <value>
+        ///   'R' if value is required for vehicle number.
+        /// </value>
+        /// <value>
+        ///   'C' if value needs to be clear for vehicle number.
+        /// </value>
+        public string ActionVehicleNumber
         {
             get
             {
-                return this.clearVehicleNumber;
+                return this.actionVehicleNumber;
             }
         }
     }

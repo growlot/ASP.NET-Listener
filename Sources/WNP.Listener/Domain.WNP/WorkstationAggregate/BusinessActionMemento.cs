@@ -20,11 +20,36 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="newLocation">The new location.</param>
         /// <param name="newLocationType">The type of new location.</param>
         /// <param name="incrementCycle">if set to <c>true</c> [increment cycle].</param>
-        /// <param name="clearBox">if set to <c>true</c> [clear box].</param>
-        /// <param name="clearPallet">if set to <c>true</c> [clear pallet].</param>
-        /// <param name="clearShelf">if set to <c>true</c> [clear shelf].</param>
-        /// <param name="clearIssuedTo">if set to <c>true</c> [clear issued to].</param>
-        /// <param name="clearVehicleNumber">if set to <c>true</c> [clear vehicle number].</param>
+        /// <param name="actionBox">Represents the action field [action box]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
+        /// <param name="actionPallet">Represents the action field [action pallet]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
+        /// <param name="actionShelf">Represents the action field [action shelf]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
+        /// <param name="actionReceivedBy">Represents the action field [action received by]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
+        /// <param name="actionVehicleNumber">Represents the action field [action vehicle number]. Possible values are:
+        ///  'D' = Disabled
+        ///  'E' = Enabled
+        ///  'R' = Required
+        ///  'C' = Clear
+        ///  </param>
         public BusinessActionMemento(
             string actionName,
             string currentWorkflow,
@@ -34,11 +59,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             IMemento newLocation,
             string newLocationType,
             bool incrementCycle,
-            bool clearBox,
-            bool clearPallet,
-            bool clearShelf,
-            bool clearIssuedTo,
-            bool clearVehicleNumber)
+            string actionBox,
+            string actionPallet,
+            string actionShelf,
+            string actionReceivedBy,
+            string actionVehicleNumber)
         {
             this.ActionName = actionName;
             this.CurrentWorkflow = currentWorkflow;
@@ -48,11 +73,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             this.NewLocation = newLocation;
             this.NewLocationType = newLocationType;
             this.IncrementCycle = incrementCycle;
-            this.ClearBox = clearBox;
-            this.ClearPallet = clearPallet;
-            this.ClearShelf = clearShelf;
-            this.ClearIssuedTo = clearIssuedTo;
-            this.ClearVehicleNumber = clearVehicleNumber;
+            this.ActionBox = actionBox;
+            this.ActionPallet = actionPallet;
+            this.ActionShelf = actionShelf;
+            this.ActionReceivedBy = actionReceivedBy;
+            this.ActionVehicleNumber = actionVehicleNumber;
         }
 
         internal string ActionName { get; private set; }
@@ -71,14 +96,14 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
 
         internal bool IncrementCycle { get; private set; }
 
-        internal bool ClearBox { get; private set; }
+        internal string ActionBox { get; private set; }
 
-        internal bool ClearPallet { get; private set; }
+        internal string ActionPallet { get; private set; }
 
-        internal bool ClearShelf { get; private set; }
+        internal string ActionShelf { get; private set; }
 
-        internal bool ClearIssuedTo { get; private set; }
+        internal string ActionReceivedBy { get; private set; }
 
-        internal bool ClearVehicleNumber { get; private set; }
+        internal string ActionVehicleNumber { get; private set; }
     }
 }

@@ -119,11 +119,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             this.vehicleNumber = newVehicleNumber;
 
             this.shopCycle = action.IncrementCycle ? this.shopCycle++ : this.shopCycle;
-            this.boxNumber = action.ClearBox ? null : this.boxNumber;
-            this.issuedTo = action.ClearIssuedTo ? null : this.issuedTo;
-            this.palletNumber = action.ClearPallet ? null : this.palletNumber;
-            this.shelfId = action.ClearShelf ? null : this.shelfId;
-            this.vehicleNumber = action.ClearVehicleNumber ? null : this.vehicleNumber;
+            this.boxNumber = (!string.IsNullOrWhiteSpace(action.ActionBox) && action.ActionBox == "C") ? null : this.boxNumber;
+            this.issuedTo = (!string.IsNullOrWhiteSpace(action.ActionReceivedBy) && action.ActionReceivedBy == "C") ? null : this.issuedTo;
+            this.palletNumber = (!string.IsNullOrWhiteSpace(action.ActionPallet) && action.ActionPallet == "C") ? null : this.palletNumber;
+            this.shelfId = (!string.IsNullOrWhiteSpace(action.ActionShelf) && action.ActionShelf == "C") ? null : this.shelfId;
+            this.vehicleNumber = (!string.IsNullOrWhiteSpace(action.ActionVehicleNumber) && action.ActionVehicleNumber == "C") ? null : this.vehicleNumber;
 
             var equipmentStateChangedEvent = new EquipmentStateChangedEvent(
                 equipmentNumber: this.Id.EquipmentNumber,

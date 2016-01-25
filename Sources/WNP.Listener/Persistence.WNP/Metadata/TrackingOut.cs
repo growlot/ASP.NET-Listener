@@ -93,18 +93,7 @@ public class TrackingOutTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModDate { get; } = "MOD_DATE";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ClearBox { get; } = "clear_box";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ClearPallet { get; } = "clear_pallet";
+	
 		/// <summary>
 	/// <para />Database Type: string
 	/// <para />Is Nullable: True
@@ -135,26 +124,44 @@ public class TrackingOutTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ProcessTag { get; } = "process_tag";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ClearShelf { get; } = "clear_shelf";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ClearReceivedBy { get; } = "clear_received_by";
-		/// <summary>
-	/// <para />Database Type: string
-	/// <para />Is Nullable: True
-	/// <para />Is Primary Key: False
-	/// </summary>
-	public string ClearVehicleNo { get; } = "clear_vehicle_no";
-	
-	public string RealTableName
+
+    /// <summary>
+    /// <para />Database Type: string
+    /// <para />Is Nullable: True
+    /// <para />Is Primary Key: False
+    /// </summary>
+    public string ActionBox { get; } = "action_box";
+
+    /// <summary>
+    /// <para />Database Type: string
+    /// <para />Is Nullable: True
+    /// <para />Is Primary Key: False
+    /// </summary>
+    public string ActionPallet { get; } = "action_pallet";
+
+    /// <summary>
+    /// <para />Database Type: string
+    /// <para />Is Nullable: True
+    /// <para />Is Primary Key: False
+    /// </summary>
+    public string ActionShelf { get; } = "action_shelf";
+
+    /// <summary>
+    /// <para />Database Type: string
+    /// <para />Is Nullable: True
+    /// <para />Is Primary Key: False
+    /// </summary>
+    public string ActionReceivedBy { get; } = "action_received_by";
+
+    /// <summary>
+    /// <para />Database Type: string
+    /// <para />Is Nullable: True
+    /// <para />Is Primary Key: False
+    /// </summary>
+    public string ActionVehicleNumber { get; } = "action_vehicle_no";
+
+
+        public string RealTableName
 	{
 		get { return "TTRACKING_OUT".ToUpperInvariant(); }		
 	}
@@ -182,17 +189,17 @@ public class TrackingOutTable: ITableInformation {
 				{"IncrementCycle", new ColumnInformation() { DataType = "string", ModelName = "IncrementCycle", ColumnName = "INCREMENT_CYCLE"}},
 				{"ModBy", new ColumnInformation() { DataType = "string", ModelName = "ModBy", ColumnName = "MOD_BY"}},
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "MOD_DATE"}},
-				{"ClearBox", new ColumnInformation() { DataType = "string", ModelName = "ClearBox", ColumnName = "clear_box"}},
-				{"ClearPallet", new ColumnInformation() { DataType = "string", ModelName = "ClearPallet", ColumnName = "clear_pallet"}},
 				{"OutFunctTrigger1", new ColumnInformation() { DataType = "string", ModelName = "OutFunctTrigger1", ColumnName = "out_funct_trigger_1"}},
 				{"OutFunctTrigger2", new ColumnInformation() { DataType = "string", ModelName = "OutFunctTrigger2", ColumnName = "out_funct_trigger_2"}},
 				{"OutFunctTrigger3", new ColumnInformation() { DataType = "string", ModelName = "OutFunctTrigger3", ColumnName = "out_funct_trigger_3"}},
 				{"LocationType", new ColumnInformation() { DataType = "string", ModelName = "LocationType", ColumnName = "location_type"}},
 				{"ProcessTag", new ColumnInformation() { DataType = "string", ModelName = "ProcessTag", ColumnName = "process_tag"}},
-				{"ClearShelf", new ColumnInformation() { DataType = "string", ModelName = "ClearShelf", ColumnName = "clear_shelf"}},
-				{"ClearReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ClearReceivedBy", ColumnName = "clear_received_by"}},
-				{"ClearVehicleNo", new ColumnInformation() { DataType = "string", ModelName = "ClearVehicleNo", ColumnName = "clear_vehicle_no"}},
-			};
+                {"ActionBox", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_box"}},
+                {"ActionPallet", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_pallet"}},
+                {"ActionShelf", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_shelf"}},
+                {"ActionReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_received_by"}},
+                {"ActionVehicleNumber", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_vehicle_no"}},
+            };
 
 	public override string ToString() 
 	{

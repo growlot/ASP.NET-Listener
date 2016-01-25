@@ -4372,10 +4372,12 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("out_funct_trigger_3")] public string OutFunctTrigger3 { get; set; }
 		[Column("location_type")] public string LocationType { get; set; }
 		[Column("process_tag")] public string ProcessTag { get; set; }
-		[Column("clear_shelf")] public string ClearShelf { get; set; }
-		[Column("clear_received_by")] public string ClearReceivedBy { get; set; }
-		[Column("clear_vehicle_no")] public string ClearVehicleNo { get; set; }
-	}
+        [Column("action_box")] public string ActionBox { get; set; }
+        [Column("action_pallet")] public string ActionPallet { get; set; }
+        [Column("action_shelf")] public string ActionShelf { get; set; }
+        [Column("action_received_by")]public string ActionReceivedBy { get; set; }
+        [Column("action_vehicle_no")] public string ActionVehicleNumber { get; set; }
+    }
     
 	[TableName("wndba.tlistener_transaction_source")]
 	[PrimaryKey("transaction_source", autoIncrement=false)]
