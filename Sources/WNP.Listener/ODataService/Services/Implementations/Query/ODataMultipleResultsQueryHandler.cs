@@ -11,13 +11,13 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
     using System.Threading.Tasks;
     using System.Web.OData.Query;
     using Controllers.Base;
-    using Core;
     using MetadataService;
     using Persistence.Poco;
     using Persistence.WNP;
     using Repository.WNP;
     using Services.Filter;
     using Services.Query;
+    using Utilities;
 
     /// <summary>
     /// Query handler for multiple results query

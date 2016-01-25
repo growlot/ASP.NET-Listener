@@ -206,7 +206,6 @@
     <Compile Include="ApplicationIntegration.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IDependencyInjectionModule.cs" />
-    <Compile Include="DynamicTuple.cs" />
     <Compile Include="TypeExtenstions\StringExtensions.cs" />
     <Compile Include="IDateTimeProvider.cs" />
     <Compile Include="IDependencyInjectionAdapter.cs" />
