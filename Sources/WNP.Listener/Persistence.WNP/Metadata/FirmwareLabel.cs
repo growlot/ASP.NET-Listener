@@ -129,6 +129,12 @@ public class FirmwareLabelTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ProcessTagRev08 { get; } = "process_tag_rev08";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: False
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string EqpType { get; } = "eqp_type";
 	
 	public string RealTableName
 	{
@@ -164,6 +170,7 @@ public class FirmwareLabelTable: ITableInformation {
 				{"ProcessTagRev06", new ColumnInformation() { DataType = "string", ModelName = "ProcessTagRev06", ColumnName = "process_tag_rev06"}},
 				{"ProcessTagRev07", new ColumnInformation() { DataType = "string", ModelName = "ProcessTagRev07", ColumnName = "process_tag_rev07"}},
 				{"ProcessTagRev08", new ColumnInformation() { DataType = "string", ModelName = "ProcessTagRev08", ColumnName = "process_tag_rev08"}},
+				{"EqpType", new ColumnInformation() { DataType = "string", ModelName = "EqpType", ColumnName = "eqp_type"}},
 			};
 
 	public override string ToString() 

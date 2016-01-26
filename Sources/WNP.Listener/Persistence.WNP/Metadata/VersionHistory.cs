@@ -147,6 +147,12 @@ public class VersionHistoryTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string NewFirmwareRev08 { get; } = "NEW_FIRMWARE_REV08";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: False
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string EqpType { get; } = "eqp_type";
 	
 	public string RealTableName
 	{
@@ -185,6 +191,7 @@ public class VersionHistoryTable: ITableInformation {
 				{"NewFirmwareRev06", new ColumnInformation() { DataType = "string", ModelName = "NewFirmwareRev06", ColumnName = "NEW_FIRMWARE_REV06"}},
 				{"NewFirmwareRev07", new ColumnInformation() { DataType = "string", ModelName = "NewFirmwareRev07", ColumnName = "NEW_FIRMWARE_REV07"}},
 				{"NewFirmwareRev08", new ColumnInformation() { DataType = "string", ModelName = "NewFirmwareRev08", ColumnName = "NEW_FIRMWARE_REV08"}},
+				{"EqpType", new ColumnInformation() { DataType = "string", ModelName = "EqpType", ColumnName = "eqp_type"}},
 			};
 
 	public override string ToString() 

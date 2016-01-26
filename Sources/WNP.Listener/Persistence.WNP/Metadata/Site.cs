@@ -6,12 +6,6 @@ public class SiteTable: ITableInformation {
 		/// <summary>
 	/// <para />Database Type: int
 	/// <para />Is Nullable: False
-	/// <para />Is Primary Key: True
-	/// </summary>
-	public string Site { get; } = "site";
-		/// <summary>
-	/// <para />Database Type: int
-	/// <para />Is Nullable: False
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string Owner { get; } = "owner";
@@ -117,10 +111,16 @@ public class SiteTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string InterconnectUtility { get; } = "interconnect_utility";
+		/// <summary>
+	/// <para />Database Type: int
+	/// <para />Is Nullable: False
+	/// <para />Is Primary Key: True
+	/// </summary>
+	public string Site { get; } = "site";
 	
 	public string RealTableName
 	{
-		get { return "TSITE".ToUpperInvariant(); }		
+		get { return "tsite".ToUpperInvariant(); }		
 	}
 
 	public string FullTableName
@@ -131,7 +131,6 @@ public class SiteTable: ITableInformation {
 
 	private Dictionary<string, ColumnInformation> columnsLookup = new Dictionary<string, ColumnInformation>() 
 	{
-				{"Site", new ColumnInformation() { DataType = "int", ModelName = "Site", ColumnName = "site"}},
 				{"Owner", new ColumnInformation() { DataType = "int", ModelName = "Owner", ColumnName = "owner"}},
 				{"SiteDescription", new ColumnInformation() { DataType = "string", ModelName = "SiteDescription", ColumnName = "site_description"}},
 				{"SiteAddress", new ColumnInformation() { DataType = "string", ModelName = "SiteAddress", ColumnName = "site_address"}},
@@ -150,6 +149,7 @@ public class SiteTable: ITableInformation {
 				{"TransactionId", new ColumnInformation() { DataType = "int", ModelName = "TransactionId", ColumnName = "transaction_id"}},
 				{"IsInterconnect", new ColumnInformation() { DataType = "string", ModelName = "IsInterconnect", ColumnName = "is_interconnect"}},
 				{"InterconnectUtility", new ColumnInformation() { DataType = "string", ModelName = "InterconnectUtility", ColumnName = "interconnect_utility"}},
+				{"Site", new ColumnInformation() { DataType = "int", ModelName = "Site", ColumnName = "site"}},
 			};
 
 	public override string ToString() 

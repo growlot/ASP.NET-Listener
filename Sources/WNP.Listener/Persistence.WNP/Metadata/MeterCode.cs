@@ -657,6 +657,12 @@ public class MeterCodeTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string AutoReceive { get; } = "auto_receive";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string CodeDesc { get; } = "code_desc";
 	
 	public string RealTableName
 	{
@@ -780,6 +786,7 @@ public class MeterCodeTable: ITableInformation {
 				{"AnsiSelectMethod", new ColumnInformation() { DataType = "string", ModelName = "AnsiSelectMethod", ColumnName = "ansi_select_method"}},
 				{"AllowPurchase", new ColumnInformation() { DataType = "string", ModelName = "AllowPurchase", ColumnName = "allow_purchase"}},
 				{"AutoReceive", new ColumnInformation() { DataType = "string", ModelName = "AutoReceive", ColumnName = "auto_receive"}},
+				{"CodeDesc", new ColumnInformation() { DataType = "string", ModelName = "CodeDesc", ColumnName = "code_desc"}},
 			};
 
 	public override string ToString() 

@@ -20,36 +20,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="newLocation">The new location.</param>
         /// <param name="newLocationType">The type of new location.</param>
         /// <param name="incrementCycle">if set to <c>true</c> [increment cycle].</param>
-        /// <param name="actionBox">Represents the action field [action box]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
-        /// <param name="actionPallet">Represents the action field [action pallet]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
-        /// <param name="actionShelf">Represents the action field [action shelf]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
-        /// <param name="actionReceivedBy">Represents the action field [action received by]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
-        /// <param name="actionVehicleNumber">Represents the action field [action vehicle number]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
+        /// <param name="actionBox">The action to be taken for box.</param>
+        /// <param name="actionPallet">The action to be taken for Pallet.</param>
+        /// <param name="actionShelf">The action to be taken for Shelf.</param>
+        /// <param name="actionReceivedBy">The action to be taken for Issued To.</param>
+        /// <param name="actionVehicleNumber">The action to be taken for Vehicle Number.</param>
         public BusinessActionMemento(
             string actionName,
             string currentWorkflow,

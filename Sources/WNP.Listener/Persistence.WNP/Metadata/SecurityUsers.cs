@@ -99,6 +99,12 @@ public class SecurityUsersTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string AllowIssueTo { get; } = "allow_issue_to";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ApiKey { get; } = "api_key";
 	
 	public string RealTableName
 	{
@@ -129,6 +135,7 @@ public class SecurityUsersTable: ITableInformation {
 				{"DefaultLocation", new ColumnInformation() { DataType = "string", ModelName = "DefaultLocation", ColumnName = "DEFAULT_LOCATION"}},
 				{"EmployeeId", new ColumnInformation() { DataType = "string", ModelName = "EmployeeId", ColumnName = "employee_id"}},
 				{"AllowIssueTo", new ColumnInformation() { DataType = "string", ModelName = "AllowIssueTo", ColumnName = "allow_issue_to"}},
+				{"ApiKey", new ColumnInformation() { DataType = "string", ModelName = "ApiKey", ColumnName = "api_key"}},
 			};
 
 	public override string ToString() 

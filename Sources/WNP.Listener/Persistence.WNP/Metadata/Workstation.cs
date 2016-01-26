@@ -45,6 +45,18 @@ public class WorkstationTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string WindowName { get; } = "window_name";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string Location { get; } = "location";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string LocationType { get; } = "location_type";
 	
 	public string RealTableName
 	{
@@ -66,6 +78,8 @@ public class WorkstationTable: ITableInformation {
 				{"ModDate", new ColumnInformation() { DataType = "DateTime", ModelName = "ModDate", ColumnName = "MOD_DATE"}},
 				{"AllowEdit", new ColumnInformation() { DataType = "string", ModelName = "AllowEdit", ColumnName = "ALLOW_EDIT"}},
 				{"WindowName", new ColumnInformation() { DataType = "string", ModelName = "WindowName", ColumnName = "window_name"}},
+				{"Location", new ColumnInformation() { DataType = "string", ModelName = "Location", ColumnName = "location"}},
+				{"LocationType", new ColumnInformation() { DataType = "string", ModelName = "LocationType", ColumnName = "location_type"}},
 			};
 
 	public override string ToString() 

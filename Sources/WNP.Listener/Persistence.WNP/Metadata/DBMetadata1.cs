@@ -210,6 +210,13 @@ public static class DBMetadata {
 	public static readonly CircuitHistTable CircuitHist = new CircuitHistTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: tmetadata
+	/// <para />Class Name: tmetadatum
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly MetadataTable Metadata = new MetadataTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TESTBOARD
 	/// <para />Class Name: TEQP_TESTBOARD
 	/// <para />Is View: False
@@ -287,11 +294,11 @@ public static class DBMetadata {
 	public static readonly EqpCtHistTable EqpCtHist = new EqpCtHistTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: tmetadata
-	/// <para />Class Name: tmetadatum
+	/// <para />Table Name: TAMI_INSTALL_HISTORY
+	/// <para />Class Name: TAMI_INSTALL_HISTORY
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly MetadataTable Metadata = new MetadataTable();	
+	public static readonly AmiInstallHistoryTable AmiInstallHistory = new AmiInstallHistoryTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_METER
@@ -301,11 +308,11 @@ public static class DBMetadata {
 	public static readonly EqpMeterTable EqpMeter = new EqpMeterTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TAMI_INSTALL_HISTORY
-	/// <para />Class Name: TAMI_INSTALL_HISTORY
+	/// <para />Table Name: TSITE_INSTALL_HISTORY
+	/// <para />Class Name: TSITE_INSTALL_HISTORY
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly AmiInstallHistoryTable AmiInstallHistory = new AmiInstallHistoryTable();	
+	public static readonly SiteInstallHistoryTable SiteInstallHistory = new SiteInstallHistoryTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_METER_HIST
@@ -315,11 +322,11 @@ public static class DBMetadata {
 	public static readonly EqpMeterHistTable EqpMeterHist = new EqpMeterHistTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TSITE_INSTALL_HISTORY
-	/// <para />Class Name: TSITE_INSTALL_HISTORY
+	/// <para />Table Name: TOBSOLETE
+	/// <para />Class Name: TOBSOLETE
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly SiteInstallHistoryTable SiteInstallHistory = new SiteInstallHistoryTable();	
+	public static readonly ObsoleteTable Obsolete = new ObsoleteTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_PT
@@ -329,11 +336,11 @@ public static class DBMetadata {
 	public static readonly EqpPtTable EqpPt = new EqpPtTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TOBSOLETE
-	/// <para />Class Name: TOBSOLETE
+	/// <para />Table Name: TEQP_TYPE
+	/// <para />Class Name: TEQP_TYPE
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly ObsoleteTable Obsolete = new ObsoleteTable();	
+	public static readonly EqpTypeTable EqpType = new EqpTypeTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_PT_HIST
@@ -343,11 +350,11 @@ public static class DBMetadata {
 	public static readonly EqpPtHistTable EqpPtHist = new EqpPtHistTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TEQP_TYPE
-	/// <para />Class Name: TEQP_TYPE
+	/// <para />Table Name: TMETER_PWDS
+	/// <para />Class Name: TMETER_PWD
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly EqpTypeTable EqpType = new EqpTypeTable();	
+	public static readonly MeterPwdsTable MeterPwds = new MeterPwdsTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_RECORDER
@@ -357,11 +364,11 @@ public static class DBMetadata {
 	public static readonly EqpRecorderTable EqpRecorder = new EqpRecorderTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TMETER_PWDS
-	/// <para />Class Name: TMETER_PWD
+	/// <para />Table Name: TEQP_GENERIC
+	/// <para />Class Name: TEQP_GENERIC
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly MeterPwdsTable MeterPwds = new MeterPwdsTable();	
+	public static readonly EqpGenericTable EqpGeneric = new EqpGenericTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_RECORDER_HIST
@@ -371,11 +378,11 @@ public static class DBMetadata {
 	public static readonly EqpRecorderHistTable EqpRecorderHist = new EqpRecorderHistTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TEQP_GENERIC
-	/// <para />Class Name: TEQP_GENERIC
+	/// <para />Table Name: TGENERIC_CODE
+	/// <para />Class Name: TGENERIC_CODE
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly EqpGenericTable EqpGeneric = new EqpGenericTable();	
+	public static readonly GenericCodeTable GenericCode = new GenericCodeTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TEQP_TOTALIZER
@@ -385,11 +392,11 @@ public static class DBMetadata {
 	public static readonly EqpTotalizerTable EqpTotalizer = new EqpTotalizerTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: TGENERIC_CODE
-	/// <para />Class Name: TGENERIC_CODE
+	/// <para />Table Name: tsite_harmonics
+	/// <para />Class Name: tsite_harmonic
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly GenericCodeTable GenericCode = new GenericCodeTable();	
+	public static readonly SiteHarmonicsTable SiteHarmonics = new SiteHarmonicsTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: pbcattbl
@@ -411,6 +418,13 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly EqpTotalizerHistTable EqpTotalizerHist = new EqpTotalizerHistTable();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tsite
+	/// <para />Class Name: tsite
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly SiteTable Site = new SiteTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: pbcatfmt
@@ -469,11 +483,11 @@ public static class DBMetadata {
 	public static readonly LotPercentDefTable LotPercentDef = new LotPercentDefTable();	
 	/// <summary>
 	/// <para />Schema: wndba
-	/// <para />Table Name: tsite_harmonics
-	/// <para />Class Name: tsite_harmonic
+	/// <para />Table Name: teqp_router
+	/// <para />Class Name: teqp_router
 	/// <para />Is View: False
 	/// </summary>
-	public static readonly SiteHarmonicsTable SiteHarmonics = new SiteHarmonicsTable();	
+	public static readonly EqpRouterTable EqpRouter = new EqpRouterTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TLOT_ACCEPT_QUALITY_LEVEL
@@ -490,6 +504,13 @@ public static class DBMetadata {
 	public static readonly ImportExportOptionsTable ImportExportOptions = new ImportExportOptionsTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: trouter_test_results
+	/// <para />Class Name: trouter_test_result
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly RouterTestResultsTable RouterTestResults = new RouterTestResultsTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TNEW_BATCH
 	/// <para />Class Name: TNEW_BATCH
 	/// <para />Is View: False
@@ -497,11 +518,25 @@ public static class DBMetadata {
 	public static readonly NewBatchTable NewBatch = new NewBatchTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: trouter_code
+	/// <para />Class Name: trouter_code
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly RouterCodeTable RouterCode = new RouterCodeTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TLOCATION
 	/// <para />Class Name: TLOCATION
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly LocationTable Location = new LocationTable();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: teqp_collector
+	/// <para />Class Name: teqp_collector
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly EqpCollectorTable EqpCollector = new EqpCollectorTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TTAMPER
@@ -518,6 +553,13 @@ public static class DBMetadata {
 	public static readonly ManufacturercodeTable Manufacturercode = new ManufacturercodeTable();	
 	/// <summary>
 	/// <para />Schema: wndba
+	/// <para />Table Name: tcollector_test_results
+	/// <para />Class Name: tcollector_test_result
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly CollectorTestResultsTable CollectorTestResults = new CollectorTestResultsTable();	
+	/// <summary>
+	/// <para />Schema: wndba
 	/// <para />Table Name: TMETER_CODE
 	/// <para />Class Name: TMETER_CODE
 	/// <para />Is View: False
@@ -530,6 +572,13 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly MeterEmulationTable MeterEmulation = new MeterEmulationTable();	
+	/// <summary>
+	/// <para />Schema: wndba
+	/// <para />Table Name: tcollector_code
+	/// <para />Class Name: tcollector_code
+	/// <para />Is View: False
+	/// </summary>
+	public static readonly CollectorCodeTable CollectorCode = new CollectorCodeTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: TMETER_POWER_SETUP
@@ -698,13 +747,6 @@ public static class DBMetadata {
 	/// <para />Is View: False
 	/// </summary>
 	public static readonly ListenerTransactionStateTable ListenerTransactionState = new ListenerTransactionStateTable();	
-	/// <summary>
-	/// <para />Schema: wndba
-	/// <para />Table Name: TSITE
-	/// <para />Class Name: TSITE
-	/// <para />Is View: False
-	/// </summary>
-	public static readonly SiteTable Site = new SiteTable();	
 	/// <summary>
 	/// <para />Schema: wndba
 	/// <para />Table Name: tlistener_transaction_statistics
@@ -877,6 +919,7 @@ public static class DBMetadata {
 				{RmaEqp.RealTableName, RmaEqp},
 				{EqpReference.RealTableName, EqpReference},
 				{CircuitHist.RealTableName, CircuitHist},
+				{Metadata.RealTableName, Metadata},
 				{EqpTestboard.RealTableName, EqpTestboard},
 				{Comment.RealTableName, Comment},
 				{EqpAmi.RealTableName, EqpAmi},
@@ -888,24 +931,25 @@ public static class DBMetadata {
 				{EqpCt.RealTableName, EqpCt},
 				{StandardsCompareSequence.RealTableName, StandardsCompareSequence},
 				{EqpCtHist.RealTableName, EqpCtHist},
-				{Metadata.RealTableName, Metadata},
-				{EqpMeter.RealTableName, EqpMeter},
 				{AmiInstallHistory.RealTableName, AmiInstallHistory},
-				{EqpMeterHist.RealTableName, EqpMeterHist},
+				{EqpMeter.RealTableName, EqpMeter},
 				{SiteInstallHistory.RealTableName, SiteInstallHistory},
-				{EqpPt.RealTableName, EqpPt},
+				{EqpMeterHist.RealTableName, EqpMeterHist},
 				{Obsolete.RealTableName, Obsolete},
-				{EqpPtHist.RealTableName, EqpPtHist},
+				{EqpPt.RealTableName, EqpPt},
 				{EqpType.RealTableName, EqpType},
-				{EqpRecorder.RealTableName, EqpRecorder},
+				{EqpPtHist.RealTableName, EqpPtHist},
 				{MeterPwds.RealTableName, MeterPwds},
-				{EqpRecorderHist.RealTableName, EqpRecorderHist},
+				{EqpRecorder.RealTableName, EqpRecorder},
 				{EqpGeneric.RealTableName, EqpGeneric},
-				{EqpTotalizer.RealTableName, EqpTotalizer},
+				{EqpRecorderHist.RealTableName, EqpRecorderHist},
 				{GenericCode.RealTableName, GenericCode},
+				{EqpTotalizer.RealTableName, EqpTotalizer},
+				{SiteHarmonics.RealTableName, SiteHarmonics},
 				{Pbcattbl.RealTableName, Pbcattbl},
 				{Pbcatcol.RealTableName, Pbcatcol},
 				{EqpTotalizerHist.RealTableName, EqpTotalizerHist},
+				{Site.RealTableName, Site},
 				{Pbcatfmt.RealTableName, Pbcatfmt},
 				{Pbcatvld.RealTableName, Pbcatvld},
 				{EqpTransducer.RealTableName, EqpTransducer},
@@ -914,15 +958,20 @@ public static class DBMetadata {
 				{LotSizeLookup.RealTableName, LotSizeLookup},
 				{ImportExportDefinitions.RealTableName, ImportExportDefinitions},
 				{LotPercentDef.RealTableName, LotPercentDef},
-				{SiteHarmonics.RealTableName, SiteHarmonics},
+				{EqpRouter.RealTableName, EqpRouter},
 				{LotAcceptQualityLevel.RealTableName, LotAcceptQualityLevel},
 				{ImportExportOptions.RealTableName, ImportExportOptions},
+				{RouterTestResults.RealTableName, RouterTestResults},
 				{NewBatch.RealTableName, NewBatch},
+				{RouterCode.RealTableName, RouterCode},
 				{Location.RealTableName, Location},
+				{EqpCollector.RealTableName, EqpCollector},
 				{Tamper.RealTableName, Tamper},
 				{Manufacturercode.RealTableName, Manufacturercode},
+				{CollectorTestResults.RealTableName, CollectorTestResults},
 				{MeterCode.RealTableName, MeterCode},
 				{MeterEmulation.RealTableName, MeterEmulation},
+				{CollectorCode.RealTableName, CollectorCode},
 				{MeterPowerSetup.RealTableName, MeterPowerSetup},
 				{MeterTestResults.RealTableName, MeterTestResults},
 				{MeterTestSequence.RealTableName, MeterTestSequence},
@@ -947,7 +996,6 @@ public static class DBMetadata {
 				{SelectionProgramGroup.RealTableName, SelectionProgramGroup},
 				{ShopGoals.RealTableName, ShopGoals},
 				{ListenerTransactionState.RealTableName, ListenerTransactionState},
-				{Site.RealTableName, Site},
 				{ListenerTransactionStatistics.RealTableName, ListenerTransactionStatistics},
 				{SiteComments.RealTableName, SiteComments},
 				{ListenerTransactionStatus.RealTableName, ListenerTransactionStatus},
@@ -990,3 +1038,4 @@ public class ColumnInformation
 }
 }
 #pragma warning restore 1591
+

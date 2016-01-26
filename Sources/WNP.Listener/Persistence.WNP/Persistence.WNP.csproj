@@ -135,6 +135,12 @@
     <Compile Include="Metadata\CircuitHist.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
+    <Compile Include="Metadata\CollectorCode.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\CollectorTestResults.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\Comment.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
@@ -153,6 +159,9 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpAmi.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\EqpCollector.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpCt.cs">
@@ -183,6 +192,9 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpReference.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\EqpRouter.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\EqpTestboard.cs">
@@ -360,6 +372,12 @@
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\RmaEqp.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\RouterCode.cs">
+      <DependentUpon>DBMetadata.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Metadata\RouterTestResults.cs">
       <DependentUpon>DBMetadata.tt</DependentUpon>
     </Compile>
     <Compile Include="Metadata\SampleList.cs">

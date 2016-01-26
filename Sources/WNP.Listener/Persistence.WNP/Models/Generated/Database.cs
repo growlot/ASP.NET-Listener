@@ -6,7 +6,7 @@
 // 
 //     Connection String Name: `WNPDatabase`
 //     Provider:               `System.Data.SqlClient`
-//     Connection String:      `Data Source=localhost\sqlexpress;Database=wattnetplusPPL_new;Integrated Security=True;`
+//     Connection String:      `Server=wecomobile.cloudapp.net; Database=wattnetplusPPL;User Id=wndba; password=**zapped**;`
 //     Schema:                 ``
 //     Include Views:          `False`
 
@@ -19,8 +19,10 @@ using System.Web;
 
 namespace AMSLLC.Listener.Persistence.WNP
 {
+	using Poco;
 
-    using Poco;
+	
+
     
 	[TableName("wndba.ttransducer_test_results")]
 	[PrimaryKey("owner", autoIncrement=false)]
@@ -460,6 +462,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
 		[Column("allow_purchase")] public string AllowPurchase { get; set; }
 		[Column("auto_receive")] public string AutoReceive { get; set; }
+		[Column("code_desc")] public string CodeDesc { get; set; }
 	}
     
 	[TableName("wndba.tversion")]
@@ -539,6 +542,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
 		[Column("allow_purchase")] public string AllowPurchase { get; set; }
 		[Column("auto_receive")] public string AutoReceive { get; set; }
+		[Column("code_desc")] public string CodeDesc { get; set; }
 	}
     
 	[TableName("wndba.tharmonic_config_data")]
@@ -606,6 +610,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("NEW_FIRMWARE_REV06")] public string NewFirmwareRev06 { get; set; }
 		[Column("NEW_FIRMWARE_REV07")] public string NewFirmwareRev07 { get; set; }
 		[Column("NEW_FIRMWARE_REV08")] public string NewFirmwareRev08 { get; set; }
+		[Column("eqp_type")] public string EqpType { get; set; }
 	}
     
 	[TableName("wndba.tsite_wiring_check")]
@@ -662,6 +667,8 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
 		[Column("ALLOW_EDIT")] public string AllowEdit { get; set; }
 		[Column("window_name")] public string WindowName { get; set; }
+		[Column("location")] public string Location { get; set; }
+		[Column("location_type")] public string LocationType { get; set; }
 	}
     
 	[TableName("wndba.TCIRCUIT")]
@@ -954,6 +961,41 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("sfl_desired_acc_rec")] public decimal? SflDesiredAccRec { get; set; }
 		[Column("sll_desired_acc_rec")] public decimal? SllDesiredAccRec { get; set; }
 		[Column("spf_desired_acc_rec")] public decimal? SpfDesiredAccRec { get; set; }
+	}
+    
+	[TableName("wndba.tmetadata")]
+	[PrimaryKey("owner", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class MetadataEntity 
+	 
+		 
+		 
+		: IUseId  
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("table_name")] public string TableName { get; set; }
+		[Column("column_name")] public string ColumnName { get; set; }
+		[Column("data_type")] public string DataType { get; set; }
+		[Column("data_length")] public int? DataLength { get; set; }
+		[Column("data_precision")] public int? DataPrecision { get; set; }
+		[Column("is_used")] public string IsUsed { get; set; }
+		[Column("is_required_on_new")] public string IsRequiredOnNew { get; set; }
+		[Column("is_required_always")] public string IsRequiredAlways { get; set; }
+		[Column("is_primary_key")] public string IsPrimaryKey { get; set; }
+		[Column("is_foreign_key")] public string IsForeignKey { get; set; }
+		[Column("is_identity")] public string IsIdentity { get; set; }
+		[Column("null_if_blank")] public string NullIfBlank { get; set; }
+		[Column("init_if_null")] public string InitIfNull { get; set; }
+		[Column("value_if_null")] public string ValueIfNull { get; set; }
+		[Column("data_regex")] public string DataRegex { get; set; }
+		[Column("data_format")] public string DataFormat { get; set; }
+		[Column("customer_label")] public string CustomerLabel { get; set; }
+		[Column("data_description")] public string DataDescription { get; set; }
+		[Column("data_example")] public string DataExample { get; set; }
+		[Column("id")] public int? Id { get; set; }
 	}
     
 	[TableName("wndba.TEQP_TESTBOARD")]
@@ -1411,39 +1453,23 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
 	}
     
-	[TableName("wndba.tmetadata")]
+	[TableName("wndba.TAMI_INSTALL_HISTORY")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class MetadataEntity 
-	 
-		 
-		 
-		: IUseId  
-		,  IHaveOwner  
-		 
+    public partial class AmiInstallHistoryEntity 
 	 
     {
 		[Column("owner")] public int? Owner { get; set; }
-		[Column("table_name")] public string TableName { get; set; }
-		[Column("column_name")] public string ColumnName { get; set; }
-		[Column("data_type")] public string DataType { get; set; }
-		[Column("data_length")] public int? DataLength { get; set; }
-		[Column("data_precision")] public int? DataPrecision { get; set; }
-		[Column("is_used")] public string IsUsed { get; set; }
-		[Column("is_required_on_new")] public string IsRequiredOnNew { get; set; }
-		[Column("is_required_always")] public string IsRequiredAlways { get; set; }
-		[Column("is_primary_key")] public string IsPrimaryKey { get; set; }
-		[Column("is_foreign_key")] public string IsForeignKey { get; set; }
-		[Column("is_identity")] public string IsIdentity { get; set; }
-		[Column("null_if_blank")] public string NullIfBlank { get; set; }
-		[Column("init_if_null")] public string InitIfNull { get; set; }
-		[Column("value_if_null")] public string ValueIfNull { get; set; }
-		[Column("data_regex")] public string DataRegex { get; set; }
-		[Column("data_format")] public string DataFormat { get; set; }
-		[Column("customer_label")] public string CustomerLabel { get; set; }
-		[Column("data_description")] public string DataDescription { get; set; }
-		[Column("data_example")] public string DataExample { get; set; }
-		[Column("id")] public int? Id { get; set; }
+		[Column("parent_eqp_type")] public string ParentEqpType { get; set; }
+		[Column("parent_eqp_no")] public string ParentEqpNo { get; set; }
+		[Column("ami_id")] public string AmiId { get; set; }
+		[Column("install_count")] public int? InstallCount { get; set; }
+		[Column("install_status")] public string InstallStatus { get; set; }
+		[Column("install_date")] public DateTime? InstallDate { get; set; }
+		[Column("install_by")] public string InstallBy { get; set; }
+		[Column("remove_date")] public DateTime? RemoveDate { get; set; }
+		[Column("remove_by")] public string RemoveBy { get; set; }
+		[Column("remove_reason")] public string RemoveReason { get; set; }
 	}
     
 	[TableName("wndba.TEQP_METER")]
@@ -1586,23 +1612,30 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
 	}
     
-	[TableName("wndba.TAMI_INSTALL_HISTORY")]
+	[TableName("wndba.TSITE_INSTALL_HISTORY")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class AmiInstallHistoryEntity 
+    public partial class SiteInstallHistoryEntity 
 	 
     {
 		[Column("owner")] public int? Owner { get; set; }
-		[Column("parent_eqp_type")] public string ParentEqpType { get; set; }
-		[Column("parent_eqp_no")] public string ParentEqpNo { get; set; }
-		[Column("ami_id")] public string AmiId { get; set; }
+		[Column("eqp_type")] public string EqpType { get; set; }
+		[Column("eqp_no")] public string EqpNo { get; set; }
 		[Column("install_count")] public int? InstallCount { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("circuit")] public int? Circuit { get; set; }
+		[Column("account_no")] public string AccountNo { get; set; }
+		[Column("premise_no")] public string PremiseNo { get; set; }
 		[Column("install_status")] public string InstallStatus { get; set; }
 		[Column("install_date")] public DateTime? InstallDate { get; set; }
 		[Column("install_by")] public string InstallBy { get; set; }
+		[Column("install_service_order_start")] public DateTime? InstallServiceOrderStart { get; set; }
+		[Column("install_service_order_complete")] public DateTime? InstallServiceOrderComplete { get; set; }
 		[Column("remove_date")] public DateTime? RemoveDate { get; set; }
 		[Column("remove_by")] public string RemoveBy { get; set; }
 		[Column("remove_reason")] public string RemoveReason { get; set; }
+		[Column("remove_service_order_start")] public DateTime? RemoveServiceOrderStart { get; set; }
+		[Column("remove_service_order_complete")] public DateTime? RemoveServiceOrderComplete { get; set; }
 	}
     
 	[TableName("wndba.TEQP_METER_HIST")]
@@ -1745,30 +1778,31 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
 	}
     
-	[TableName("wndba.TSITE_INSTALL_HISTORY")]
+	[TableName("wndba.TOBSOLETE")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SiteInstallHistoryEntity 
+    public partial class ObsoleteEntity 
+	 
+		: ITrackModification  
+		 
+		 
+		,  IHaveOwner  
+		 
 	 
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
-		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("install_count")] public int? InstallCount { get; set; }
-		[Column("site")] public int? Site { get; set; }
-		[Column("circuit")] public int? Circuit { get; set; }
-		[Column("account_no")] public string AccountNo { get; set; }
-		[Column("premise_no")] public string PremiseNo { get; set; }
-		[Column("install_status")] public string InstallStatus { get; set; }
-		[Column("install_date")] public DateTime? InstallDate { get; set; }
-		[Column("install_by")] public string InstallBy { get; set; }
-		[Column("install_service_order_start")] public DateTime? InstallServiceOrderStart { get; set; }
-		[Column("install_service_order_complete")] public DateTime? InstallServiceOrderComplete { get; set; }
-		[Column("remove_date")] public DateTime? RemoveDate { get; set; }
-		[Column("remove_by")] public string RemoveBy { get; set; }
-		[Column("remove_reason")] public string RemoveReason { get; set; }
-		[Column("remove_service_order_start")] public DateTime? RemoveServiceOrderStart { get; set; }
-		[Column("remove_service_order_complete")] public DateTime? RemoveServiceOrderComplete { get; set; }
+		[Column("mfr")] public string Mfr { get; set; }
+		[Column("serial_no_start")] public string SerialNoStart { get; set; }
+		[Column("serial_no_end")] public string SerialNoEnd { get; set; }
+		[Column("model_no")] public string ModelNo { get; set; }
+		[Column("eqp_code")] public string EqpCode { get; set; }
+		[Column("obsolete_notes")] public string ObsoleteNotes { get; set; }
+		[Column("obsolete_instruction")] public string ObsoleteInstruction { get; set; }
+		[Column("obsolete_date")] public DateTime? ObsoleteDate { get; set; }
+		[Column("obsolete_by")] public string ObsoleteBy { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
 	}
     
 	[TableName("wndba.TEQP_PT")]
@@ -1851,10 +1885,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
 	}
     
-	[TableName("wndba.TOBSOLETE")]
+	[TableName("wndba.TEQP_TYPE")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class ObsoleteEntity 
+    public partial class EqpTypeEntity 
 	 
 		: ITrackModification  
 		 
@@ -1865,15 +1899,8 @@ namespace AMSLLC.Listener.Persistence.WNP
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_type")] public string EqpType { get; set; }
-		[Column("mfr")] public string Mfr { get; set; }
-		[Column("serial_no_start")] public string SerialNoStart { get; set; }
-		[Column("serial_no_end")] public string SerialNoEnd { get; set; }
-		[Column("model_no")] public string ModelNo { get; set; }
-		[Column("eqp_code")] public string EqpCode { get; set; }
-		[Column("obsolete_notes")] public string ObsoleteNotes { get; set; }
-		[Column("obsolete_instruction")] public string ObsoleteInstruction { get; set; }
-		[Column("obsolete_date")] public DateTime? ObsoleteDate { get; set; }
-		[Column("obsolete_by")] public string ObsoleteBy { get; set; }
+		[Column("eqp_type_desc")] public string EqpTypeDesc { get; set; }
+		[Column("protected_type")] public string ProtectedType { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
 	}
@@ -1958,95 +1985,6 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
 	}
     
-	[TableName("wndba.TEQP_TYPE")]
-	[PrimaryKey("owner", autoIncrement=false)]
-	[ExplicitColumns]
-    public partial class EqpTypeEntity 
-	 
-		: ITrackModification  
-		 
-		 
-		,  IHaveOwner  
-		 
-	 
-    {
-		[Column("owner")] public int? Owner { get; set; }
-		[Column("eqp_type")] public string EqpType { get; set; }
-		[Column("eqp_type_desc")] public string EqpTypeDesc { get; set; }
-		[Column("protected_type")] public string ProtectedType { get; set; }
-		[Column("mod_date")] public DateTime? ModDate { get; set; }
-		[Column("mod_by")] public string ModBy { get; set; }
-	}
-    
-	[TableName("wndba.TEQP_RECORDER")]
-	[PrimaryKey("owner", autoIncrement=false)]
-	[ExplicitColumns]
-    public partial class EqpRecorderEntity 
-	 
-		: ITrackModification  
-		,  ITrackCreation  
-		 
-		,  IHaveOwner  
-		 
-	 
-    {
-		[Column("owner")] public int? Owner { get; set; }
-		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("site")] public int? Site { get; set; }
-		[Column("circuit")] public int? Circuit { get; set; }
-		[Column("catalog_no")] public string CatalogNo { get; set; }
-		[Column("purchase_date")] public DateTime? PurchaseDate { get; set; }
-		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
-		[Column("po_ref")] public string PoRef { get; set; }
-		[Column("retire_code")] public string RetireCode { get; set; }
-		[Column("retire_date")] public DateTime? RetireDate { get; set; }
-		[Column("retire_by")] public string RetireBy { get; set; }
-		[Column("retire_location")] public string RetireLocation { get; set; }
-		[Column("eqp_status")] public string EqpStatus { get; set; }
-		[Column("status_date")] public DateTime? StatusDate { get; set; }
-		[Column("shop_status")] public string ShopStatus { get; set; }
-		[Column("shop_cycle")] public int? ShopCycle { get; set; }
-		[Column("location")] public string Location { get; set; }
-		[Column("shelf")] public string Shelf { get; set; }
-		[Column("box_no")] public string BoxNo { get; set; }
-		[Column("pallet_no")] public string PalletNo { get; set; }
-		[Column("NEW_BATCH_NO")] public string NewBatchNo { get; set; }
-		[Column("strata_name")] public string StrataName { get; set; }
-		[Column("selection_program")] public string SelectionProgram { get; set; }
-		[Column("test_program")] public string TestProgram { get; set; }
-		[Column("next_test_due")] public string NextTestDue { get; set; }
-		[Column("test_period")] public string TestPeriod { get; set; }
-		[Column("serial_no")] public string SerialNo { get; set; }
-		[Column("mfr")] public string Mfr { get; set; }
-		[Column("model_no")] public string ModelNo { get; set; }
-		[Column("recorder_type")] public string RecorderType { get; set; }
-		[Column("recorder_id")] public string RecorderId { get; set; }
-		[Column("master_id")] public string MasterId { get; set; }
-		[Column("slave_id")] public string SlaveId { get; set; }
-		[Column("switch_id")] public string SwitchId { get; set; }
-		[Column("recorder_applic")] public string RecorderApplic { get; set; }
-		[Column("rec_user01")] public string RecUser01 { get; set; }
-		[Column("rec_user02")] public string RecUser02 { get; set; }
-		[Column("rec_user03")] public string RecUser03 { get; set; }
-		[Column("rec_user04")] public string RecUser04 { get; set; }
-		[Column("rec_user05")] public string RecUser05 { get; set; }
-		[Column("rec_user06")] public string RecUser06 { get; set; }
-		[Column("rec_user07")] public string RecUser07 { get; set; }
-		[Column("rec_user08")] public string RecUser08 { get; set; }
-		[Column("rec_user09")] public string RecUser09 { get; set; }
-		[Column("rec_user10")] public string RecUser10 { get; set; }
-		[Column("create_date")] public DateTime? CreateDate { get; set; }
-		[Column("create_by")] public string CreateBy { get; set; }
-		[Column("mod_date")] public DateTime? ModDate { get; set; }
-		[Column("mod_by")] public string ModBy { get; set; }
-		[Column("MFR_BUILD_DATE")] public DateTime? MfrBuildDate { get; set; }
-		[Column("transaction_id")] public int? TransactionId { get; set; }
-		[Column("alt_eqp_no")] public string AltEqpNo { get; set; }
-		[Column("vehicle_id")] public string VehicleId { get; set; }
-		[Column("received_by")] public string ReceivedBy { get; set; }
-		[Column("is_first_article")] public string IsFirstArticle { get; set; }
-	}
-    
 	[TableName("wndba.TMETER_PWDS")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
@@ -2072,10 +2010,10 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("mod_by")] public string ModBy { get; set; }
 	}
     
-	[TableName("wndba.TEQP_RECORDER_HIST")]
+	[TableName("wndba.TEQP_RECORDER")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class EqpRecorderHistEntity 
+    public partial class EqpRecorderEntity 
 	 
 		: ITrackModification  
 		,  ITrackCreation  
@@ -2086,7 +2024,6 @@ namespace AMSLLC.Listener.Persistence.WNP
     {
 		[Column("owner")] public int? Owner { get; set; }
 		[Column("eqp_no")] public string EqpNo { get; set; }
-		[Column("site_date")] public DateTime? SiteDate { get; set; }
 		[Column("site")] public int? Site { get; set; }
 		[Column("circuit")] public int? Circuit { get; set; }
 		[Column("catalog_no")] public string CatalogNo { get; set; }
@@ -2217,6 +2154,132 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("mod_by")] public string ModBy { get; set; }
 	}
     
+	[TableName("wndba.TEQP_RECORDER_HIST")]
+	[PrimaryKey("owner", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class EqpRecorderHistEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("eqp_no")] public string EqpNo { get; set; }
+		[Column("site_date")] public DateTime? SiteDate { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("circuit")] public int? Circuit { get; set; }
+		[Column("catalog_no")] public string CatalogNo { get; set; }
+		[Column("purchase_date")] public DateTime? PurchaseDate { get; set; }
+		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
+		[Column("po_ref")] public string PoRef { get; set; }
+		[Column("retire_code")] public string RetireCode { get; set; }
+		[Column("retire_date")] public DateTime? RetireDate { get; set; }
+		[Column("retire_by")] public string RetireBy { get; set; }
+		[Column("retire_location")] public string RetireLocation { get; set; }
+		[Column("eqp_status")] public string EqpStatus { get; set; }
+		[Column("status_date")] public DateTime? StatusDate { get; set; }
+		[Column("shop_status")] public string ShopStatus { get; set; }
+		[Column("shop_cycle")] public int? ShopCycle { get; set; }
+		[Column("location")] public string Location { get; set; }
+		[Column("shelf")] public string Shelf { get; set; }
+		[Column("box_no")] public string BoxNo { get; set; }
+		[Column("pallet_no")] public string PalletNo { get; set; }
+		[Column("NEW_BATCH_NO")] public string NewBatchNo { get; set; }
+		[Column("strata_name")] public string StrataName { get; set; }
+		[Column("selection_program")] public string SelectionProgram { get; set; }
+		[Column("test_program")] public string TestProgram { get; set; }
+		[Column("next_test_due")] public string NextTestDue { get; set; }
+		[Column("test_period")] public string TestPeriod { get; set; }
+		[Column("serial_no")] public string SerialNo { get; set; }
+		[Column("mfr")] public string Mfr { get; set; }
+		[Column("model_no")] public string ModelNo { get; set; }
+		[Column("recorder_type")] public string RecorderType { get; set; }
+		[Column("recorder_id")] public string RecorderId { get; set; }
+		[Column("master_id")] public string MasterId { get; set; }
+		[Column("slave_id")] public string SlaveId { get; set; }
+		[Column("switch_id")] public string SwitchId { get; set; }
+		[Column("recorder_applic")] public string RecorderApplic { get; set; }
+		[Column("rec_user01")] public string RecUser01 { get; set; }
+		[Column("rec_user02")] public string RecUser02 { get; set; }
+		[Column("rec_user03")] public string RecUser03 { get; set; }
+		[Column("rec_user04")] public string RecUser04 { get; set; }
+		[Column("rec_user05")] public string RecUser05 { get; set; }
+		[Column("rec_user06")] public string RecUser06 { get; set; }
+		[Column("rec_user07")] public string RecUser07 { get; set; }
+		[Column("rec_user08")] public string RecUser08 { get; set; }
+		[Column("rec_user09")] public string RecUser09 { get; set; }
+		[Column("rec_user10")] public string RecUser10 { get; set; }
+		[Column("create_date")] public DateTime? CreateDate { get; set; }
+		[Column("create_by")] public string CreateBy { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
+		[Column("MFR_BUILD_DATE")] public DateTime? MfrBuildDate { get; set; }
+		[Column("transaction_id")] public int? TransactionId { get; set; }
+		[Column("alt_eqp_no")] public string AltEqpNo { get; set; }
+		[Column("vehicle_id")] public string VehicleId { get; set; }
+		[Column("received_by")] public string ReceivedBy { get; set; }
+		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+	}
+    
+	[TableName("wndba.TGENERIC_CODE")]
+	[PrimaryKey("owner", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class GenericCodeEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("eqp_type")] public string EqpType { get; set; }
+		[Column("generic_code")] public string GenericCode { get; set; }
+		[Column("accept_test_percent")] public string AcceptTestPercent { get; set; }
+		[Column("rma_accept_test_percent")] public string RmaAcceptTestPercent { get; set; }
+		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+		[Column("catalog_no")] public string CatalogNo { get; set; }
+		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
+		[Column("strata_name")] public string StrataName { get; set; }
+		[Column("selection_program")] public string SelectionProgram { get; set; }
+		[Column("test_program")] public string TestProgram { get; set; }
+		[Column("test_period")] public string TestPeriod { get; set; }
+		[Column("mfr")] public string Mfr { get; set; }
+		[Column("model_no")] public string ModelNo { get; set; }
+		[Column("generic_user01")] public string GenericUser01 { get; set; }
+		[Column("generic_user02")] public string GenericUser02 { get; set; }
+		[Column("generic_user03")] public string GenericUser03 { get; set; }
+		[Column("generic_user04")] public string GenericUser04 { get; set; }
+		[Column("generic_user05")] public string GenericUser05 { get; set; }
+		[Column("generic_user06")] public string GenericUser06 { get; set; }
+		[Column("generic_user07")] public string GenericUser07 { get; set; }
+		[Column("generic_user08")] public string GenericUser08 { get; set; }
+		[Column("generic_user09")] public string GenericUser09 { get; set; }
+		[Column("generic_user10")] public string GenericUser10 { get; set; }
+		[Column("generic_user11")] public string GenericUser11 { get; set; }
+		[Column("generic_user12")] public string GenericUser12 { get; set; }
+		[Column("generic_user13")] public string GenericUser13 { get; set; }
+		[Column("generic_user14")] public string GenericUser14 { get; set; }
+		[Column("generic_user15")] public string GenericUser15 { get; set; }
+		[Column("generic_user16")] public string GenericUser16 { get; set; }
+		[Column("generic_user17")] public string GenericUser17 { get; set; }
+		[Column("generic_user18")] public string GenericUser18 { get; set; }
+		[Column("generic_user19")] public string GenericUser19 { get; set; }
+		[Column("generic_user20")] public string GenericUser20 { get; set; }
+		[Column("create_date")] public DateTime? CreateDate { get; set; }
+		[Column("create_by")] public string CreateBy { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("allow_purchase")] public string AllowPurchase { get; set; }
+		[Column("auto_receive")] public string AutoReceive { get; set; }
+		[Column("code_desc")] public string CodeDesc { get; set; }
+	}
+    
 	[TableName("wndba.TEQP_TOTALIZER")]
 	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
@@ -2284,59 +2347,30 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
 	}
     
-	[TableName("wndba.TGENERIC_CODE")]
-	[PrimaryKey("owner", autoIncrement=false)]
+	[TableName("wndba.tsite_harmonics")]
+	[PrimaryKey("site", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class GenericCodeEntity 
-	 
-		: ITrackModification  
-		,  ITrackCreation  
-		 
-		,  IHaveOwner  
-		 
+    public partial class SiteHarmonicsEntity 
 	 
     {
+		[Column("site")] public int? Site { get; set; }
+		[Column("date_read")] public DateTime? DateRead { get; set; }
 		[Column("owner")] public int? Owner { get; set; }
-		[Column("eqp_type")] public string EqpType { get; set; }
-		[Column("generic_code")] public string GenericCode { get; set; }
-		[Column("accept_test_percent")] public string AcceptTestPercent { get; set; }
-		[Column("rma_accept_test_percent")] public string RmaAcceptTestPercent { get; set; }
-		[Column("is_first_article")] public string IsFirstArticle { get; set; }
-		[Column("catalog_no")] public string CatalogNo { get; set; }
-		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
-		[Column("strata_name")] public string StrataName { get; set; }
-		[Column("selection_program")] public string SelectionProgram { get; set; }
-		[Column("test_program")] public string TestProgram { get; set; }
-		[Column("test_period")] public string TestPeriod { get; set; }
-		[Column("mfr")] public string Mfr { get; set; }
-		[Column("model_no")] public string ModelNo { get; set; }
-		[Column("generic_user01")] public string GenericUser01 { get; set; }
-		[Column("generic_user02")] public string GenericUser02 { get; set; }
-		[Column("generic_user03")] public string GenericUser03 { get; set; }
-		[Column("generic_user04")] public string GenericUser04 { get; set; }
-		[Column("generic_user05")] public string GenericUser05 { get; set; }
-		[Column("generic_user06")] public string GenericUser06 { get; set; }
-		[Column("generic_user07")] public string GenericUser07 { get; set; }
-		[Column("generic_user08")] public string GenericUser08 { get; set; }
-		[Column("generic_user09")] public string GenericUser09 { get; set; }
-		[Column("generic_user10")] public string GenericUser10 { get; set; }
-		[Column("generic_user11")] public string GenericUser11 { get; set; }
-		[Column("generic_user12")] public string GenericUser12 { get; set; }
-		[Column("generic_user13")] public string GenericUser13 { get; set; }
-		[Column("generic_user14")] public string GenericUser14 { get; set; }
-		[Column("generic_user15")] public string GenericUser15 { get; set; }
-		[Column("generic_user16")] public string GenericUser16 { get; set; }
-		[Column("generic_user17")] public string GenericUser17 { get; set; }
-		[Column("generic_user18")] public string GenericUser18 { get; set; }
-		[Column("generic_user19")] public string GenericUser19 { get; set; }
-		[Column("generic_user20")] public string GenericUser20 { get; set; }
-		[Column("create_date")] public DateTime? CreateDate { get; set; }
-		[Column("create_by")] public string CreateBy { get; set; }
-		[Column("mod_date")] public DateTime? ModDate { get; set; }
-		[Column("mod_by")] public string ModBy { get; set; }
-		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
-		[Column("allow_purchase")] public string AllowPurchase { get; set; }
-		[Column("auto_receive")] public string AutoReceive { get; set; }
+		[Column("harmonic")] public int? Harmonic { get; set; }
+		[Column("va_mag")] public double? VaMag { get; set; }
+		[Column("va_phase")] public double? VaPhase { get; set; }
+		[Column("vb_mag")] public double? VbMag { get; set; }
+		[Column("vb_phase")] public double? VbPhase { get; set; }
+		[Column("vc_mag")] public double? VcMag { get; set; }
+		[Column("vc_phase")] public double? VcPhase { get; set; }
+		[Column("ia_mag")] public double? IaMag { get; set; }
+		[Column("ia_phase")] public double? IaPhase { get; set; }
+		[Column("ib_mag")] public double? IbMag { get; set; }
+		[Column("ib_phase")] public double? IbPhase { get; set; }
+		[Column("ic_mag")] public double? IcMag { get; set; }
+		[Column("ic_phase")] public double? IcPhase { get; set; }
+		[Column("weco_sn")] public string WecoSn { get; set; }
+		[Column("standard_sn")] public string StandardSn { get; set; }
 	}
     
 	[TableName("wndba.pbcattbl")]
@@ -2464,6 +2498,39 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("vehicle_id")] public string VehicleId { get; set; }
 		[Column("received_by")] public string ReceivedBy { get; set; }
 		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+	}
+    
+	[TableName("wndba.tsite")]
+	[PrimaryKey("site", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class SiteEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("site_description")] public string SiteDescription { get; set; }
+		[Column("site_address")] public string SiteAddress { get; set; }
+		[Column("site_address2")] public string SiteAddress2 { get; set; }
+		[Column("site_city")] public string SiteCity { get; set; }
+		[Column("site_state")] public string SiteState { get; set; }
+		[Column("site_zipcode")] public string SiteZipcode { get; set; }
+		[Column("site_country")] public string SiteCountry { get; set; }
+		[Column("account_name")] public string AccountName { get; set; }
+		[Column("account_no")] public string AccountNo { get; set; }
+		[Column("premise_no")] public string PremiseNo { get; set; }
+		[Column("create_date")] public DateTime? CreateDate { get; set; }
+		[Column("create_by")] public string CreateBy { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
+		[Column("transaction_id")] public int? TransactionId { get; set; }
+		[Column("is_interconnect")] public string IsInterconnect { get; set; }
+		[Column("interconnect_utility")] public string InterconnectUtility { get; set; }
+		[Column("site")] public int? Site { get; set; }
 	}
     
 	[TableName("wndba.pbcatfmt")]
@@ -2694,30 +2761,81 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
 	}
     
-	[TableName("wndba.tsite_harmonics")]
-	[PrimaryKey("site", autoIncrement=false)]
+	[TableName("wndba.teqp_router")]
+	[PrimaryKey("owner", autoIncrement=false)]
 	[ExplicitColumns]
-    public partial class SiteHarmonicsEntity 
+    public partial class EqpRouterEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
 	 
     {
-		[Column("site")] public int? Site { get; set; }
-		[Column("date_read")] public DateTime? DateRead { get; set; }
 		[Column("owner")] public int? Owner { get; set; }
-		[Column("harmonic")] public int? Harmonic { get; set; }
-		[Column("va_mag")] public double? VaMag { get; set; }
-		[Column("va_phase")] public double? VaPhase { get; set; }
-		[Column("vb_mag")] public double? VbMag { get; set; }
-		[Column("vb_phase")] public double? VbPhase { get; set; }
-		[Column("vc_mag")] public double? VcMag { get; set; }
-		[Column("vc_phase")] public double? VcPhase { get; set; }
-		[Column("ia_mag")] public double? IaMag { get; set; }
-		[Column("ia_phase")] public double? IaPhase { get; set; }
-		[Column("ib_mag")] public double? IbMag { get; set; }
-		[Column("ib_phase")] public double? IbPhase { get; set; }
-		[Column("ic_mag")] public double? IcMag { get; set; }
-		[Column("ic_phase")] public double? IcPhase { get; set; }
-		[Column("weco_sn")] public string WecoSn { get; set; }
-		[Column("standard_sn")] public string StandardSn { get; set; }
+		[Column("eqp_no")] public string EqpNo { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("circuit")] public int? Circuit { get; set; }
+		[Column("catalog_no")] public string CatalogNo { get; set; }
+		[Column("mfr_build_date")] public DateTime? MfrBuildDate { get; set; }
+		[Column("purchase_date")] public DateTime? PurchaseDate { get; set; }
+		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
+		[Column("po_ref")] public string PoRef { get; set; }
+		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+		[Column("retire_code")] public string RetireCode { get; set; }
+		[Column("retire_date")] public DateTime? RetireDate { get; set; }
+		[Column("retire_by")] public string RetireBy { get; set; }
+		[Column("retire_location")] public string RetireLocation { get; set; }
+		[Column("eqp_status")] public string EqpStatus { get; set; }
+		[Column("status_date")] public DateTime? StatusDate { get; set; }
+		[Column("shop_status")] public string ShopStatus { get; set; }
+		[Column("shop_cycle")] public int? ShopCycle { get; set; }
+		[Column("location")] public string Location { get; set; }
+		[Column("shelf")] public string Shelf { get; set; }
+		[Column("box_no")] public string BoxNo { get; set; }
+		[Column("pallet_no")] public string PalletNo { get; set; }
+		[Column("vehicle_no")] public string VehicleNo { get; set; }
+		[Column("received_by")] public string ReceivedBy { get; set; }
+		[Column("new_batch_no")] public string NewBatchNo { get; set; }
+		[Column("strata_name")] public string StrataName { get; set; }
+		[Column("selection_program")] public string SelectionProgram { get; set; }
+		[Column("test_program")] public string TestProgram { get; set; }
+		[Column("next_test_due")] public string NextTestDue { get; set; }
+		[Column("test_period")] public string TestPeriod { get; set; }
+		[Column("serial_no")] public string SerialNo { get; set; }
+		[Column("alt_eqp_no")] public string AltEqpNo { get; set; }
+		[Column("mfr")] public string Mfr { get; set; }
+		[Column("model_no")] public string ModelNo { get; set; }
+		[Column("router_code")] public string RouterCode { get; set; }
+		[Column("battery_mfr")] public string BatteryMfr { get; set; }
+		[Column("battery_type")] public string BatteryType { get; set; }
+		[Column("battery_warranty")] public int? BatteryWarranty { get; set; }
+		[Column("battery_install_date")] public DateTime? BatteryInstallDate { get; set; }
+		[Column("ip_addr")] public string IpAddr { get; set; }
+		[Column("firmware_rev01")] public string FirmwareRev01 { get; set; }
+		[Column("firmware_rev02")] public string FirmwareRev02 { get; set; }
+		[Column("firmware_rev03")] public string FirmwareRev03 { get; set; }
+		[Column("firmware_rev04")] public string FirmwareRev04 { get; set; }
+		[Column("firmware_rev05")] public string FirmwareRev05 { get; set; }
+		[Column("firmware_rev06")] public string FirmwareRev06 { get; set; }
+		[Column("firmware_rev07")] public string FirmwareRev07 { get; set; }
+		[Column("firmware_rev08")] public string FirmwareRev08 { get; set; }
+		[Column("router_user01")] public string RouterUser01 { get; set; }
+		[Column("router_user02")] public string RouterUser02 { get; set; }
+		[Column("router_user03")] public string RouterUser03 { get; set; }
+		[Column("router_user04")] public string RouterUser04 { get; set; }
+		[Column("router_user05")] public string RouterUser05 { get; set; }
+		[Column("router_user06")] public string RouterUser06 { get; set; }
+		[Column("router_user07")] public string RouterUser07 { get; set; }
+		[Column("router_user08")] public string RouterUser08 { get; set; }
+		[Column("router_user09")] public string RouterUser09 { get; set; }
+		[Column("router_user10")] public string RouterUser10 { get; set; }
+		[Column("id")] public int? Id { get; set; }
+		[Column("create_date")] public DateTime? CreateDate { get; set; }
+		[Column("create_by")] public string CreateBy { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
 	}
     
 	[TableName("wndba.TLOT_ACCEPT_QUALITY_LEVEL")]
@@ -2775,6 +2893,51 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("has_file_header")] public string HasFileHeader { get; set; }
 	}
     
+	[TableName("wndba.trouter_test_results")]
+	[PrimaryKey("owner", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class RouterTestResultsEntity 
+	 
+		: ITrackModification  
+		 
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("eqp_no")] public string EqpNo { get; set; }
+		[Column("test_date_start")] public DateTime? TestDateStart { get; set; }
+		[Column("step_no")] public int? StepNo { get; set; }
+		[Column("test_date_stop")] public DateTime? TestDateStop { get; set; }
+		[Column("pass_fail")] public string PassFail { get; set; }
+		[Column("test_reason")] public string TestReason { get; set; }
+		[Column("tester_id")] public string TesterId { get; set; }
+		[Column("board_no")] public string BoardNo { get; set; }
+		[Column("test_location")] public string TestLocation { get; set; }
+		[Column("batch_no")] public string BatchNo { get; set; }
+		[Column("shop_cycle")] public int? ShopCycle { get; set; }
+		[Column("process_tag")] public string ProcessTag { get; set; }
+		[Column("trouble1")] public string Trouble1 { get; set; }
+		[Column("trouble2")] public string Trouble2 { get; set; }
+		[Column("trouble3")] public string Trouble3 { get; set; }
+		[Column("trouble4")] public string Trouble4 { get; set; }
+		[Column("trouble5")] public string Trouble5 { get; set; }
+		[Column("results_user01")] public string ResultsUser01 { get; set; }
+		[Column("results_user02")] public string ResultsUser02 { get; set; }
+		[Column("results_user03")] public string ResultsUser03 { get; set; }
+		[Column("results_user04")] public string ResultsUser04 { get; set; }
+		[Column("results_user05")] public string ResultsUser05 { get; set; }
+		[Column("results_user06")] public string ResultsUser06 { get; set; }
+		[Column("results_user07")] public string ResultsUser07 { get; set; }
+		[Column("results_user08")] public string ResultsUser08 { get; set; }
+		[Column("results_user09")] public string ResultsUser09 { get; set; }
+		[Column("results_user10")] public string ResultsUser10 { get; set; }
+		[Column("id")] public int? Id { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
+	}
+    
 	[TableName("wndba.TNEW_BATCH")]
 	[PrimaryKey("NEW_BATCH_NO", autoIncrement=false)]
 	[ExplicitColumns]
@@ -2813,6 +2976,51 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("sample_size_code")] public string SampleSizeCode { get; set; }
 	}
     
+	[TableName("wndba.trouter_code")]
+	[PrimaryKey("owner", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class RouterCodeEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("router_code")] public string RouterCode { get; set; }
+		[Column("code_desc")] public string CodeDesc { get; set; }
+		[Column("accept_test_percent")] public string AcceptTestPercent { get; set; }
+		[Column("rma_accept_test_percent")] public string RmaAcceptTestPercent { get; set; }
+		[Column("allow_purchase")] public string AllowPurchase { get; set; }
+		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("auto_receive")] public string AutoReceive { get; set; }
+		[Column("catalog_no")] public string CatalogNo { get; set; }
+		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
+		[Column("strata_name")] public string StrataName { get; set; }
+		[Column("selection_program")] public string SelectionProgram { get; set; }
+		[Column("test_program")] public string TestProgram { get; set; }
+		[Column("test_period")] public string TestPeriod { get; set; }
+		[Column("mfr")] public string Mfr { get; set; }
+		[Column("model_no")] public string ModelNo { get; set; }
+		[Column("router_user01")] public string RouterUser01 { get; set; }
+		[Column("router_user02")] public string RouterUser02 { get; set; }
+		[Column("router_user03")] public string RouterUser03 { get; set; }
+		[Column("router_user04")] public string RouterUser04 { get; set; }
+		[Column("router_user05")] public string RouterUser05 { get; set; }
+		[Column("router_user06")] public string RouterUser06 { get; set; }
+		[Column("router_user07")] public string RouterUser07 { get; set; }
+		[Column("router_user08")] public string RouterUser08 { get; set; }
+		[Column("router_user09")] public string RouterUser09 { get; set; }
+		[Column("router_user10")] public string RouterUser10 { get; set; }
+		[Column("create_date")] public DateTime? CreateDate { get; set; }
+		[Column("create_by")] public string CreateBy { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
+	}
+    
 	[TableName("wndba.TLOCATION")]
 	[PrimaryKey("OWNER", autoIncrement=false)]
 	[ExplicitColumns]
@@ -2833,6 +3041,95 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
 		[Column("location_type")] public string LocationType { get; set; }
 		[Column("area_name")] public string AreaName { get; set; }
+	}
+    
+	[TableName("wndba.teqp_collector")]
+	[PrimaryKey("owner", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class EqpCollectorEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("eqp_no")] public string EqpNo { get; set; }
+		[Column("site")] public int? Site { get; set; }
+		[Column("circuit")] public int? Circuit { get; set; }
+		[Column("catalog_no")] public string CatalogNo { get; set; }
+		[Column("mfr_build_date")] public DateTime? MfrBuildDate { get; set; }
+		[Column("purchase_date")] public DateTime? PurchaseDate { get; set; }
+		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
+		[Column("po_ref")] public string PoRef { get; set; }
+		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+		[Column("retire_code")] public string RetireCode { get; set; }
+		[Column("retire_date")] public DateTime? RetireDate { get; set; }
+		[Column("retire_by")] public string RetireBy { get; set; }
+		[Column("retire_location")] public string RetireLocation { get; set; }
+		[Column("eqp_status")] public string EqpStatus { get; set; }
+		[Column("status_date")] public DateTime? StatusDate { get; set; }
+		[Column("shop_status")] public string ShopStatus { get; set; }
+		[Column("shop_cycle")] public int? ShopCycle { get; set; }
+		[Column("location")] public string Location { get; set; }
+		[Column("shelf")] public string Shelf { get; set; }
+		[Column("box_no")] public string BoxNo { get; set; }
+		[Column("pallet_no")] public string PalletNo { get; set; }
+		[Column("vehicle_no")] public string VehicleNo { get; set; }
+		[Column("received_by")] public string ReceivedBy { get; set; }
+		[Column("new_batch_no")] public string NewBatchNo { get; set; }
+		[Column("strata_name")] public string StrataName { get; set; }
+		[Column("selection_program")] public string SelectionProgram { get; set; }
+		[Column("test_program")] public string TestProgram { get; set; }
+		[Column("next_test_due")] public string NextTestDue { get; set; }
+		[Column("test_period")] public string TestPeriod { get; set; }
+		[Column("serial_no")] public string SerialNo { get; set; }
+		[Column("alt_eqp_no")] public string AltEqpNo { get; set; }
+		[Column("mfr")] public string Mfr { get; set; }
+		[Column("model_no")] public string ModelNo { get; set; }
+		[Column("collector_code")] public string CollectorCode { get; set; }
+		[Column("battery_mfr")] public string BatteryMfr { get; set; }
+		[Column("battery_type")] public string BatteryType { get; set; }
+		[Column("battery_warranty")] public int? BatteryWarranty { get; set; }
+		[Column("battery_install_date")] public DateTime? BatteryInstallDate { get; set; }
+		[Column("collector_ip_addr")] public string CollectorIpAddr { get; set; }
+		[Column("radio1_serial_no")] public string Radio1SerialNo { get; set; }
+		[Column("radio1_ip_addr")] public string Radio1IpAddr { get; set; }
+		[Column("radio1_install_date")] public DateTime? Radio1InstallDate { get; set; }
+		[Column("radio2_serial_no")] public string Radio2SerialNo { get; set; }
+		[Column("radio2_ip_addr")] public string Radio2IpAddr { get; set; }
+		[Column("radio2_install_date")] public DateTime? Radio2InstallDate { get; set; }
+		[Column("radio3_serial_no")] public string Radio3SerialNo { get; set; }
+		[Column("radio3_ip_addr")] public string Radio3IpAddr { get; set; }
+		[Column("radio3_install_date")] public DateTime? Radio3InstallDate { get; set; }
+		[Column("radio4_serial_no")] public string Radio4SerialNo { get; set; }
+		[Column("radio4_ip_addr")] public string Radio4IpAddr { get; set; }
+		[Column("radio4_install_date")] public DateTime? Radio4InstallDate { get; set; }
+		[Column("firmware_rev01")] public string FirmwareRev01 { get; set; }
+		[Column("firmware_rev02")] public string FirmwareRev02 { get; set; }
+		[Column("firmware_rev03")] public string FirmwareRev03 { get; set; }
+		[Column("firmware_rev04")] public string FirmwareRev04 { get; set; }
+		[Column("firmware_rev05")] public string FirmwareRev05 { get; set; }
+		[Column("firmware_rev06")] public string FirmwareRev06 { get; set; }
+		[Column("firmware_rev07")] public string FirmwareRev07 { get; set; }
+		[Column("firmware_rev08")] public string FirmwareRev08 { get; set; }
+		[Column("collector_user01")] public string CollectorUser01 { get; set; }
+		[Column("collector_user02")] public string CollectorUser02 { get; set; }
+		[Column("collector_user03")] public string CollectorUser03 { get; set; }
+		[Column("collector_user04")] public string CollectorUser04 { get; set; }
+		[Column("collector_user05")] public string CollectorUser05 { get; set; }
+		[Column("collector_user06")] public string CollectorUser06 { get; set; }
+		[Column("collector_user07")] public string CollectorUser07 { get; set; }
+		[Column("collector_user08")] public string CollectorUser08 { get; set; }
+		[Column("collector_user09")] public string CollectorUser09 { get; set; }
+		[Column("collector_user10")] public string CollectorUser10 { get; set; }
+		[Column("id")] public int? Id { get; set; }
+		[Column("create_date")] public DateTime? CreateDate { get; set; }
+		[Column("create_by")] public string CreateBy { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
 	}
     
 	[TableName("wndba.TTAMPER")]
@@ -2875,6 +3172,51 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("OWNER")] public int? Owner { get; set; }
 		[Column("MFR")] public string Mfr { get; set; }
 		[Column("DESCRIPTION")] public string Description { get; set; }
+	}
+    
+	[TableName("wndba.tcollector_test_results")]
+	[PrimaryKey("owner", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class CollectorTestResultsEntity 
+	 
+		: ITrackModification  
+		 
+		,  IUseId  
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("eqp_no")] public string EqpNo { get; set; }
+		[Column("test_date_start")] public DateTime? TestDateStart { get; set; }
+		[Column("step_no")] public int? StepNo { get; set; }
+		[Column("test_date_stop")] public DateTime? TestDateStop { get; set; }
+		[Column("pass_fail")] public string PassFail { get; set; }
+		[Column("test_reason")] public string TestReason { get; set; }
+		[Column("tester_id")] public string TesterId { get; set; }
+		[Column("board_no")] public string BoardNo { get; set; }
+		[Column("test_location")] public string TestLocation { get; set; }
+		[Column("batch_no")] public string BatchNo { get; set; }
+		[Column("shop_cycle")] public int? ShopCycle { get; set; }
+		[Column("process_tag")] public string ProcessTag { get; set; }
+		[Column("trouble1")] public string Trouble1 { get; set; }
+		[Column("trouble2")] public string Trouble2 { get; set; }
+		[Column("trouble3")] public string Trouble3 { get; set; }
+		[Column("trouble4")] public string Trouble4 { get; set; }
+		[Column("trouble5")] public string Trouble5 { get; set; }
+		[Column("results_user01")] public string ResultsUser01 { get; set; }
+		[Column("results_user02")] public string ResultsUser02 { get; set; }
+		[Column("results_user03")] public string ResultsUser03 { get; set; }
+		[Column("results_user04")] public string ResultsUser04 { get; set; }
+		[Column("results_user05")] public string ResultsUser05 { get; set; }
+		[Column("results_user06")] public string ResultsUser06 { get; set; }
+		[Column("results_user07")] public string ResultsUser07 { get; set; }
+		[Column("results_user08")] public string ResultsUser08 { get; set; }
+		[Column("results_user09")] public string ResultsUser09 { get; set; }
+		[Column("results_user10")] public string ResultsUser10 { get; set; }
+		[Column("id")] public int? Id { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
 	}
     
 	[TableName("wndba.TMETER_CODE")]
@@ -2998,6 +3340,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
 		[Column("allow_purchase")] public string AllowPurchase { get; set; }
 		[Column("auto_receive")] public string AutoReceive { get; set; }
+		[Column("code_desc")] public string CodeDesc { get; set; }
 	}
     
 	[TableName("wndba.tmeter_emulation")]
@@ -3032,6 +3375,51 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("pc")] public string Pc { get; set; }
 		[Column("pab")] public string Pab { get; set; }
 		[Column("pac")] public string Pac { get; set; }
+	}
+    
+	[TableName("wndba.tcollector_code")]
+	[PrimaryKey("owner", autoIncrement=false)]
+	[ExplicitColumns]
+    public partial class CollectorCodeEntity 
+	 
+		: ITrackModification  
+		,  ITrackCreation  
+		 
+		,  IHaveOwner  
+		 
+	 
+    {
+		[Column("owner")] public int? Owner { get; set; }
+		[Column("collector_code")] public string CollectorCode { get; set; }
+		[Column("code_desc")] public string CodeDesc { get; set; }
+		[Column("accept_test_percent")] public string AcceptTestPercent { get; set; }
+		[Column("rma_accept_test_percent")] public string RmaAcceptTestPercent { get; set; }
+		[Column("allow_purchase")] public string AllowPurchase { get; set; }
+		[Column("is_first_article")] public string IsFirstArticle { get; set; }
+		[Column("ansi_select_method")] public string AnsiSelectMethod { get; set; }
+		[Column("auto_receive")] public string AutoReceive { get; set; }
+		[Column("catalog_no")] public string CatalogNo { get; set; }
+		[Column("warranty_period")] public int? WarrantyPeriod { get; set; }
+		[Column("strata_name")] public string StrataName { get; set; }
+		[Column("selection_program")] public string SelectionProgram { get; set; }
+		[Column("test_program")] public string TestProgram { get; set; }
+		[Column("test_period")] public string TestPeriod { get; set; }
+		[Column("mfr")] public string Mfr { get; set; }
+		[Column("model_no")] public string ModelNo { get; set; }
+		[Column("collector_user01")] public string CollectorUser01 { get; set; }
+		[Column("collector_user02")] public string CollectorUser02 { get; set; }
+		[Column("collector_user03")] public string CollectorUser03 { get; set; }
+		[Column("collector_user04")] public string CollectorUser04 { get; set; }
+		[Column("collector_user05")] public string CollectorUser05 { get; set; }
+		[Column("collector_user06")] public string CollectorUser06 { get; set; }
+		[Column("collector_user07")] public string CollectorUser07 { get; set; }
+		[Column("collector_user08")] public string CollectorUser08 { get; set; }
+		[Column("collector_user09")] public string CollectorUser09 { get; set; }
+		[Column("collector_user10")] public string CollectorUser10 { get; set; }
+		[Column("create_date")] public DateTime? CreateDate { get; set; }
+		[Column("create_by")] public string CreateBy { get; set; }
+		[Column("mod_date")] public DateTime? ModDate { get; set; }
+		[Column("mod_by")] public string ModBy { get; set; }
 	}
     
 	[TableName("wndba.TMETER_POWER_SETUP")]
@@ -3636,6 +4024,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("DEFAULT_LOCATION")] public string DefaultLocation { get; set; }
 		[Column("employee_id")] public string EmployeeId { get; set; }
 		[Column("allow_issue_to")] public string AllowIssueTo { get; set; }
+		[Column("api_key")] public string ApiKey { get; set; }
 	}
     
 	[TableName("wndba.tred_tag")]
@@ -3829,39 +4218,6 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("transaction_state_desc")] public string TransactionStateDesc { get; set; }
 		[Column("mod_date")] public DateTime? ModDate { get; set; }
 		[Column("mod_by")] public string ModBy { get; set; }
-	}
-    
-	[TableName("wndba.TSITE")]
-	[PrimaryKey("site")]
-	[ExplicitColumns]
-    public partial class SiteEntity 
-	 
-		: ITrackModification  
-		,  ITrackCreation  
-		 
-		,  IHaveOwner  
-		 
-	 
-    {
-		[Column("site")] public int? Site { get; set; }
-		[Column("owner")] public int? Owner { get; set; }
-		[Column("site_description")] public string SiteDescription { get; set; }
-		[Column("site_address")] public string SiteAddress { get; set; }
-		[Column("site_address2")] public string SiteAddress2 { get; set; }
-		[Column("site_city")] public string SiteCity { get; set; }
-		[Column("site_state")] public string SiteState { get; set; }
-		[Column("site_zipcode")] public string SiteZipcode { get; set; }
-		[Column("site_country")] public string SiteCountry { get; set; }
-		[Column("account_name")] public string AccountName { get; set; }
-		[Column("account_no")] public string AccountNo { get; set; }
-		[Column("premise_no")] public string PremiseNo { get; set; }
-		[Column("create_date")] public DateTime? CreateDate { get; set; }
-		[Column("create_by")] public string CreateBy { get; set; }
-		[Column("mod_date")] public DateTime? ModDate { get; set; }
-		[Column("mod_by")] public string ModBy { get; set; }
-		[Column("transaction_id")] public int? TransactionId { get; set; }
-		[Column("is_interconnect")] public string IsInterconnect { get; set; }
-		[Column("interconnect_utility")] public string InterconnectUtility { get; set; }
 	}
     
 	[TableName("wndba.tlistener_transaction_statistics")]
@@ -4136,6 +4492,7 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("process_tag_rev06")] public string ProcessTagRev06 { get; set; }
 		[Column("process_tag_rev07")] public string ProcessTagRev07 { get; set; }
 		[Column("process_tag_rev08")] public string ProcessTagRev08 { get; set; }
+		[Column("eqp_type")] public string EqpType { get; set; }
 	}
     
 	[TableName("wndba.tlistener_config")]
@@ -4365,19 +4722,17 @@ namespace AMSLLC.Listener.Persistence.WNP
 		[Column("INCREMENT_CYCLE")] public string IncrementCycle { get; set; }
 		[Column("MOD_BY")] public string ModBy { get; set; }
 		[Column("MOD_DATE")] public DateTime? ModDate { get; set; }
-		[Column("clear_box")] public string ClearBox { get; set; }
-		[Column("clear_pallet")] public string ClearPallet { get; set; }
 		[Column("out_funct_trigger_1")] public string OutFunctTrigger1 { get; set; }
 		[Column("out_funct_trigger_2")] public string OutFunctTrigger2 { get; set; }
 		[Column("out_funct_trigger_3")] public string OutFunctTrigger3 { get; set; }
 		[Column("location_type")] public string LocationType { get; set; }
 		[Column("process_tag")] public string ProcessTag { get; set; }
-        [Column("action_box")] public string ActionBox { get; set; }
-        [Column("action_pallet")] public string ActionPallet { get; set; }
-        [Column("action_shelf")] public string ActionShelf { get; set; }
-        [Column("action_received_by")]public string ActionReceivedBy { get; set; }
-        [Column("action_vehicle_no")] public string ActionVehicleNumber { get; set; }
-    }
+		[Column("action_box")] public string ActionBox { get; set; }
+		[Column("action_pallet")] public string ActionPallet { get; set; }
+		[Column("action_shelf")] public string ActionShelf { get; set; }
+		[Column("action_received_by")] public string ActionReceivedBy { get; set; }
+		[Column("action_vehicle_no")] public string ActionVehicleNo { get; set; }
+	}
     
 	[TableName("wndba.tlistener_transaction_source")]
 	[PrimaryKey("transaction_source", autoIncrement=false)]

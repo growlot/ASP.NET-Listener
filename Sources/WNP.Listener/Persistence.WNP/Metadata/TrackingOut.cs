@@ -93,7 +93,6 @@ public class TrackingOutTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ModDate { get; } = "MOD_DATE";
-	
 		/// <summary>
 	/// <para />Database Type: string
 	/// <para />Is Nullable: True
@@ -124,44 +123,38 @@ public class TrackingOutTable: ITableInformation {
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string ProcessTag { get; } = "process_tag";
-
-    /// <summary>
-    /// <para />Database Type: string
-    /// <para />Is Nullable: True
-    /// <para />Is Primary Key: False
-    /// </summary>
-    public string ActionBox { get; } = "action_box";
-
-    /// <summary>
-    /// <para />Database Type: string
-    /// <para />Is Nullable: True
-    /// <para />Is Primary Key: False
-    /// </summary>
-    public string ActionPallet { get; } = "action_pallet";
-
-    /// <summary>
-    /// <para />Database Type: string
-    /// <para />Is Nullable: True
-    /// <para />Is Primary Key: False
-    /// </summary>
-    public string ActionShelf { get; } = "action_shelf";
-
-    /// <summary>
-    /// <para />Database Type: string
-    /// <para />Is Nullable: True
-    /// <para />Is Primary Key: False
-    /// </summary>
-    public string ActionReceivedBy { get; } = "action_received_by";
-
-    /// <summary>
-    /// <para />Database Type: string
-    /// <para />Is Nullable: True
-    /// <para />Is Primary Key: False
-    /// </summary>
-    public string ActionVehicleNumber { get; } = "action_vehicle_no";
-
-
-        public string RealTableName
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ActionBox { get; } = "action_box";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ActionPallet { get; } = "action_pallet";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ActionShelf { get; } = "action_shelf";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ActionReceivedBy { get; } = "action_received_by";
+		/// <summary>
+	/// <para />Database Type: string
+	/// <para />Is Nullable: True
+	/// <para />Is Primary Key: False
+	/// </summary>
+	public string ActionVehicleNo { get; } = "action_vehicle_no";
+	
+	public string RealTableName
 	{
 		get { return "TTRACKING_OUT".ToUpperInvariant(); }		
 	}
@@ -194,12 +187,12 @@ public class TrackingOutTable: ITableInformation {
 				{"OutFunctTrigger3", new ColumnInformation() { DataType = "string", ModelName = "OutFunctTrigger3", ColumnName = "out_funct_trigger_3"}},
 				{"LocationType", new ColumnInformation() { DataType = "string", ModelName = "LocationType", ColumnName = "location_type"}},
 				{"ProcessTag", new ColumnInformation() { DataType = "string", ModelName = "ProcessTag", ColumnName = "process_tag"}},
-                {"ActionBox", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_box"}},
-                {"ActionPallet", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_pallet"}},
-                {"ActionShelf", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_shelf"}},
-                {"ActionReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_received_by"}},
-                {"ActionVehicleNumber", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_vehicle_no"}},
-            };
+				{"ActionBox", new ColumnInformation() { DataType = "string", ModelName = "ActionBox", ColumnName = "action_box"}},
+				{"ActionPallet", new ColumnInformation() { DataType = "string", ModelName = "ActionPallet", ColumnName = "action_pallet"}},
+				{"ActionShelf", new ColumnInformation() { DataType = "string", ModelName = "ActionShelf", ColumnName = "action_shelf"}},
+				{"ActionReceivedBy", new ColumnInformation() { DataType = "string", ModelName = "ActionReceivedBy", ColumnName = "action_received_by"}},
+				{"ActionVehicleNo", new ColumnInformation() { DataType = "string", ModelName = "ActionVehicleNo", ColumnName = "action_vehicle_no"}},
+			};
 
 	public override string ToString() 
 	{

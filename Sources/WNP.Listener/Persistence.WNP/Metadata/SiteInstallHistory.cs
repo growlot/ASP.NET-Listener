@@ -29,13 +29,13 @@ public class SiteInstallHistoryTable: ITableInformation {
 	public string InstallCount { get; } = "install_count";
 		/// <summary>
 	/// <para />Database Type: int
-	/// <para />Is Nullable: True
+	/// <para />Is Nullable: False
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string Site { get; } = "site";
 		/// <summary>
 	/// <para />Database Type: int
-	/// <para />Is Nullable: True
+	/// <para />Is Nullable: False
 	/// <para />Is Primary Key: False
 	/// </summary>
 	public string Circuit { get; } = "circuit";
