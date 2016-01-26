@@ -110,6 +110,7 @@
     <Compile Include="SiteAggregate\Site.cs" />
     <Compile Include="SiteAggregate\SiteAddressUpdated.cs" />
     <Compile Include="SiteAggregate\SiteMemento.cs" />
+    <Compile Include="WorkstationAggregate\ActionFlag.cs" />
     <Compile Include="WorkstationAggregate\BusinessAction.cs" />
     <Compile Include="WorkstationAggregate\EquipmentState.cs" />
     <Compile Include="WorkstationAggregate\EquipmentStateChangedEvent.cs" />

@@ -34,11 +34,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             IMemento newLocation,
             string newLocationType,
             bool incrementCycle,
-            string actionBox,
-            string actionPallet,
-            string actionShelf,
-            string actionReceivedBy,
-            string actionVehicleNumber)
+            ActionFlag actionBox,
+            ActionFlag actionPallet,
+            ActionFlag actionShelf,
+            ActionFlag actionReceivedBy,
+            ActionFlag actionVehicleNumber)
         {
             this.ActionName = actionName;
             this.CurrentWorkflow = currentWorkflow;
@@ -71,14 +71,14 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
 
         internal bool IncrementCycle { get; private set; }
 
-        internal string ActionBox { get; private set; }
+        internal ActionFlag ActionBox { get; private set; }
 
-        internal string ActionPallet { get; private set; }
+        internal ActionFlag ActionPallet { get; private set; }
 
-        internal string ActionShelf { get; private set; }
+        internal ActionFlag ActionShelf { get; private set; }
 
-        internal string ActionReceivedBy { get; private set; }
+        internal ActionFlag ActionReceivedBy { get; private set; }
 
-        internal string ActionVehicleNumber { get; private set; }
+        internal ActionFlag ActionVehicleNumber { get; private set; }
     }
 }

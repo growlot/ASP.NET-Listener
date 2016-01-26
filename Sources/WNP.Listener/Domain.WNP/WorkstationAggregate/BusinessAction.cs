@@ -17,11 +17,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         private readonly Location newLocation;
         private readonly string newLocationType;
         private readonly bool incrementCycle;
-        private readonly string actionBox;
-        private readonly string actionPallet;
-        private readonly string actionShelf;
-        private readonly string actionReceivedBy;
-        private readonly string actionVehicleNumber;
+        private readonly ActionFlag actionBox;
+        private readonly ActionFlag actionPallet;
+        private readonly ActionFlag actionShelf;
+        private readonly ActionFlag actionReceivedBy;
+        private readonly ActionFlag actionVehicleNumber;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BusinessAction" /> class.
@@ -34,36 +34,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="newLocation">New location.</param>
         /// <param name="newLocationType">Type of new location.</param>
         /// <param name="incrementCycle">if set to <c>true</c> [increment cycle].</param>
-        /// <param name="actionBox">Represents the action field [action box]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
-        /// <param name="actionPallet">Represents the action field [action pallet]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
-        /// <param name="actionShelf">Represents the action field [action shelf]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
-        /// <param name="actionReceivedBy">Represents the action field [action received by]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
-        /// <param name="actionVehicleNumber">Represents the action field [action vehicle number]. Possible values are:
-        ///  'D' = Disabled
-        ///  'E' = Enabled
-        ///  'R' = Required
-        ///  'C' = Clear
-        ///  </param>
+        /// <param name="actionBox">Represents the action flag [action box].</param>
+        /// <param name="actionPallet">Represents the action flag [action pallet].</param>
+        /// <param name="actionShelf">Represents the action flag [action shelf].</param>
+        /// <param name="actionReceivedBy">Represents the action flag [action received by].</param>
+        /// <param name="actionVehicleNumber">Represents the action flag [action vehicle number].</param>
         public BusinessAction(
             string actionName,
             string currentWorkflow,
@@ -73,11 +48,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             Location newLocation,
             string newLocationType,
             bool incrementCycle,
-            string actionBox,
-            string actionPallet,
-            string actionShelf,
-            string actionReceivedBy,
-            string actionVehicleNumber)
+            ActionFlag actionBox,
+            ActionFlag actionPallet,
+            ActionFlag actionShelf,
+            ActionFlag actionReceivedBy,
+            ActionFlag actionVehicleNumber)
         {
             this.actionName = actionName;
             this.currentWorkflow = currentWorkflow;
@@ -209,19 +184,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating if box information should be set or cleared during this action.
         /// </summary>
-        /// <value>
-        ///   'D' if rule is disabled.
-        /// </value>
-        /// <value>
-        ///   'E' if rule is enabled.
-        /// </value>
-        /// <value>
-        ///   'R' if value is required for Box.
-        /// </value>
-        /// <value>
-        ///   'C' if value needs to be clear for Box.
-        /// </value>
-        public string ActionBox
+        public ActionFlag ActionBox
         {
             get
             {
@@ -232,19 +195,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating if pallet information should be set or cleared during this action.
         /// </summary>
-        /// <value>
-        ///   'D' if rule is disabled.
-        /// </value>
-        /// <value>
-        ///   'E' if rule is enabled.
-        /// </value>
-        /// <value>
-        ///   'R' if value is required for Pallet.
-        /// </value>
-        /// <value>
-        ///   'C' if value needs to be clear for Pallet.
-        /// </value>
-        public string ActionPallet
+        public ActionFlag ActionPallet
         {
             get
             {
@@ -255,19 +206,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating if shelf information should be set or cleared during this action.
         /// </summary>
-        /// <value>
-        ///   'D' if rule is disabled.
-        /// </value>
-        /// <value>
-        ///   'E' if rule is enabled.
-        /// </value>
-        /// <value>
-        ///   'R' if value is required for Shelf Id.
-        /// </value>
-        /// <value>
-        ///   'C' if value needs to be clear for Shelf Id.
-        /// </value>
-        public string ActionShelf
+        public ActionFlag ActionShelf
         {
             get
             {
@@ -278,19 +217,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating whether if received by information should be set or cleared during this action.
         /// </summary>
-        /// <value>
-        ///   'D' if rule is disabled.
-        /// </value>
-        /// <value>
-        ///   'E' if rule is enabled.
-        /// </value>
-        /// <value>
-        ///   'R' if value is required for received by field.
-        /// </value>
-        /// <value>
-        ///   'C' if value needs to be clear for received by feild.
-        /// </value>
-        public string ActionReceivedBy
+        public ActionFlag ActionReceivedBy
         {
             get
             {
@@ -301,19 +228,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating whether if vehicle number information should be set or cleared during this action.
         /// </summary>
-        /// <value>
-        ///   'D' if rule is disabled.
-        /// </value>
-        /// <value>
-        ///   'E' if rule is enabled.
-        /// </value>
-        /// <value>
-        ///   'R' if value is required for vehicle number.
-        /// </value>
-        /// <value>
-        ///   'C' if value needs to be clear for vehicle number.
-        /// </value>
-        public string ActionVehicleNumber
+        public ActionFlag ActionVehicleNumber
         {
             get
             {

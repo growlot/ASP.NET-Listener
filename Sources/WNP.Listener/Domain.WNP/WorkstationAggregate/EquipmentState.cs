@@ -119,11 +119,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             this.vehicleNumber = newVehicleNumber;
 
             this.shopCycle = action.IncrementCycle ? this.shopCycle++ : this.shopCycle;
-            this.boxNumber = (!string.IsNullOrWhiteSpace(action.ActionBox) && action.ActionBox == "C") ? null : this.boxNumber;
-            this.issuedTo = (!string.IsNullOrWhiteSpace(action.ActionReceivedBy) && action.ActionReceivedBy == "C") ? null : this.issuedTo;
-            this.palletNumber = (!string.IsNullOrWhiteSpace(action.ActionPallet) && action.ActionPallet == "C") ? null : this.palletNumber;
-            this.shelfId = (!string.IsNullOrWhiteSpace(action.ActionShelf) && action.ActionShelf == "C") ? null : this.shelfId;
-            this.vehicleNumber = (!string.IsNullOrWhiteSpace(action.ActionVehicleNumber) && action.ActionVehicleNumber == "C") ? null : this.vehicleNumber;
+            this.boxNumber = (action.ActionBox != null && action.ActionBox.FlagName == "C") ? null : this.boxNumber;
+            this.palletNumber = (action.ActionPallet != null && action.ActionPallet.FlagName == "C") ? null : this.palletNumber;
+            this.shelfId = (action.ActionShelf != null && action.ActionShelf.FlagName == "C") ? null : this.shelfId;
+            this.issuedTo = (action.ActionReceivedBy != null && action.ActionReceivedBy.FlagName == "C") ? null : this.issuedTo;
+            this.vehicleNumber = (action.ActionVehicleNumber != null && action.ActionVehicleNumber.FlagName == "C") ? null : this.vehicleNumber;
 
             var equipmentStateChangedEvent = new EquipmentStateChangedEvent(
                 equipmentNumber: this.Id.EquipmentNumber,

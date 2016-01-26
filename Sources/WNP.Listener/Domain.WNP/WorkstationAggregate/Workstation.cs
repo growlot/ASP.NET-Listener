@@ -60,6 +60,36 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
                 throw new ArgumentException("Can not perform business action, becasue there is no action with name {0} and workflow (test program) {1} defined in workstation {2}".FormatWith(actionName, equipment.Workflow, this.Id), nameof(actionName));
             }
 
+            // do not perform business action if boxNumber value is required but not provided
+            if (action.ActionBox != null && action.ActionBox.FlagName.Equals("R") && string.IsNullOrWhiteSpace(boxNumber))
+            {
+                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'boxNumber' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(boxNumber));
+            }
+
+            // do not perform business action if palletNumber value is required but not provided
+            if (action.ActionPallet != null && action.ActionPallet.FlagName.Equals("R") && string.IsNullOrWhiteSpace(palletNumber))
+            {
+                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'palletNumber' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(palletNumber));
+            }
+
+            // do not perform business action if shelfId value is required but not provided
+            if (action.ActionShelf != null && action.ActionShelf.FlagName.Equals("R") && string.IsNullOrWhiteSpace(shelfId))
+            {
+                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'shelfId' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(shelfId));
+            }
+
+            // do not perform business action if issuedTo value is required but not provided
+            if (action.ActionReceivedBy != null && action.ActionReceivedBy.FlagName.Equals("R") && string.IsNullOrWhiteSpace(issuedTo))
+            {
+                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'issuedTo' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(issuedTo));
+            }
+
+            // do not perform business action if vehicleId value is required but not provided
+            if (action.ActionVehicleNumber != null && action.ActionVehicleNumber.FlagName.Equals("R") && string.IsNullOrWhiteSpace(vehicleId))
+            {
+                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'vehicleId' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(vehicleId));
+            }
+
             // if at least one allowed inocmming rule match for current equipment status, then perform the action and exit.
             foreach (var rule in this.incomingRules.Where(item => item.IsAllowed))
             {
