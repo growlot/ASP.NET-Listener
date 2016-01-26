@@ -61,8 +61,9 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
             else
             {
                 var keyColumn = isParent
-                    ? entityConfig.ParentKey.ToArray()[0].ToUpperInvariant()
-                    : entityConfig.Key.ToArray()[0].ToUpperInvariant();
+                                    ? entityConfig.ParentKey.Where(s => s.ToUpperInvariant() != "OWNER").ToArray()[0]
+                                          .ToUpperInvariant()
+                                    : entityConfig.Key.ToArray()[0].ToUpperInvariant();
 
                 var keyModelField = model.ColumnToModelMappings[keyColumn];
                 var fieldInfo = model.FieldInfo.First(pair => pair.Key == keyModelField);
