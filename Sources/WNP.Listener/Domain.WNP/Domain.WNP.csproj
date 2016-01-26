@@ -122,10 +122,7 @@
     <Compile Include="WorkstationAggregate\BusinessActionMemento.cs" />
     <Compile Include="WorkstationAggregate\WorkstationMemento.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Metadata\" />
-    <Folder Include="Meter\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{b650a448-fc3b-4c43-a59a-b1ad3500abd2}</Project>

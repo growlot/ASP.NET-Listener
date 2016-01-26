@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Domain.Test
+namespace AMSLLC.Listener.Domain.Unit.Test
 {
     using System;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -111,6 +111,22 @@ namespace AMSLLC.Listener.Domain.Test
             Assert.IsTrue(persistedEntity.Equals(persistedEntity));
         }
 
+        [TestMethod]
+        public void EntityShouldBeCorrectlyRestoredFromMemento()
+        {
+            var testMemento = new TestEntityMemento()
+            {
+                Id = 1,
+                Field = "field"
+            };
+
+            var entity = new TestEntity();
+            ((IOriginator)entity).SetMemento(testMemento);
+
+            Assert.AreEqual(1, entity.Id);
+            Assert.AreEqual("field", entity.Field);
+        }
+
         /// <summary>
         /// Class that has same fields as <see cref="TestEntity"/>, but doesn't inherit from <see cref="Entity{T}"/>.
         /// </summary>
@@ -147,11 +163,24 @@ namespace AMSLLC.Listener.Domain.Test
             public string Field { get; private set; }
         }
 
+        private class TestEntityMemento : IMemento
+        {
+            public int Id { get; set; }
+            public string Field { get; set; }
+        }
+
         /// <summary>
         /// Class used for testing abstract Entity implementation
         /// </summary>
         private class TestEntity : Entity<int>
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TestEntity"/> class.
+            /// </summary>
+            public TestEntity()
+            {
+            }
+
             /// <summary>
             /// Initializes a new instance of the <see cref="TestEntity"/> class.
             /// For persisted entity simulation.
@@ -189,7 +218,9 @@ namespace AMSLLC.Listener.Domain.Test
             /// <exception cref="System.NotImplementedException"></exception>
             protected override void SetMemento(IMemento memento)
             {
-                throw new NotImplementedException();
+                var testMemento = (TestEntityMemento)memento;
+                this.Id = testMemento.Id;
+                this.Field = testMemento.Field;
             }
         }
     }

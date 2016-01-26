@@ -3,7 +3,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace AMSLLC.Listener.Domain.Test
+namespace AMSLLC.Listener.Domain.Unit.Test
 {
     using System;
     using AMSLLC.Listener.Domain.Events;

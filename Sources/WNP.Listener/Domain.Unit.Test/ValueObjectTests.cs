@@ -2,7 +2,7 @@
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
-namespace AMSLLC.Listener.Domain.Test
+namespace AMSLLC.Listener.Domain.Unit.Test
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
