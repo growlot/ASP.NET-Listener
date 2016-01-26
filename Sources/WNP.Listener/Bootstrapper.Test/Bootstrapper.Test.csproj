@@ -184,10 +184,6 @@
       <Project>{0213748A-3255-4704-84EA-8821B311A3A2}</Project>
       <Name>Communication.Jms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Communication\Communication.csproj">
-      <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
-      <Name>Communication</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core.Ninject.Test\Core.Ninject.Test.csproj">
       <Project>{253c8dc2-7e79-4e86-a799-e4909d9fe25e}</Project>
       <Name>Core.Ninject.Test</Name>

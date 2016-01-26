@@ -98,10 +98,6 @@
     <Compile Include="ProtocolConfigurationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Communication\Communication.csproj">
-      <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
-      <Name>Communication</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
       <Name>Core</Name>

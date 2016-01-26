@@ -8,6 +8,7 @@ namespace AMSLLC.Listener.Communication.Jms
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Domain.Listener;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
     using Repository.Listener;

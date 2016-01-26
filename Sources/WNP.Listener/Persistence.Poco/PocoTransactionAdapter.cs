@@ -4,7 +4,6 @@
 
 namespace AMSLLC.Listener.Persistence.Poco
 {
-    using System;
     using Repository;
 
     /// <summary>

@@ -10,9 +10,9 @@ namespace AMSLLC.Listener.ODataService
     using ApplicationService;
     using ApplicationService.CommandHandlers;
     using ApplicationService.Commands;
-    using Communication;
     using Core;
     using Domain;
+    using Domain.Listener;
     using Domain.Listener.Transaction;
     using Domain.WNP.ElectricMeterAggregate;
     using Domain.WNP.OwnerAggregate;

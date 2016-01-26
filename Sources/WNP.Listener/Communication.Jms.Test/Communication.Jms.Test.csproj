@@ -102,10 +102,6 @@
       <Project>{0213748A-3255-4704-84EA-8821B311A3A2}</Project>
       <Name>Communication.Jms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Communication\Communication.csproj">
-      <Project>{0b0bf704-a960-47a3-816d-e7c5aa36d1ac}</Project>
-      <Name>Communication</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
       <Name>Core</Name>

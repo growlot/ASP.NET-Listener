@@ -4,6 +4,8 @@
 
 namespace AMSLLC.Listener.Communication.Jms
 {
+    using Domain.Listener;
+
     /// <summary>
     /// JMS Protocol configuration
     /// </summary>

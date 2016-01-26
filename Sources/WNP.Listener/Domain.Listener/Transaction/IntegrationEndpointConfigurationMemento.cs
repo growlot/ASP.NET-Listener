@@ -4,8 +4,6 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
-    using Communication;
-
     /// <summary>
     /// Integration Endpoint Configuration Memento.
     /// </summary>

@@ -4,7 +4,6 @@
 
 namespace AMSLLC.Listener.Client.Test
 {
-    using System;
     using System.Net;
     using Exception;
     using Message;

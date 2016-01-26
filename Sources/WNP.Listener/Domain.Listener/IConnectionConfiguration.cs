@@ -4,7 +4,7 @@
 // </copyright>
 // //-----------------------------------------------------------------------
 
-namespace AMSLLC.Listener.Communication
+namespace AMSLLC.Listener.Domain.Listener
 {
     /// <summary>
     /// Marker interface for connection configurations

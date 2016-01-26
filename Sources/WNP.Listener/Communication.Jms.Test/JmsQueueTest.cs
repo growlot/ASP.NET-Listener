@@ -7,6 +7,7 @@ namespace AMSLLC.Listener.Communication.Jms.Test
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Domain.Listener;
     using Domain.Listener.Transaction;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;

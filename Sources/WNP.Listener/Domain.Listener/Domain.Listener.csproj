@@ -72,8 +72,12 @@
     <Compile Include="Application\DeviceTypeEnabledForApplication.cs" />
     <Compile Include="DeviceBatch\DeviceBatchProcessing.cs" />
     <Compile Include="DeviceBatch\DeviceBatchProcessingMemento.cs" />
+    <Compile Include="EndpointTriggerType.cs" />
     <Compile Include="Exception\UnableToSucceedTransactionException.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ICommunicationHandler.cs" />
+    <Compile Include="IConnectionConfiguration.cs" />
+    <Compile Include="IProtocolConfiguration.cs" />
     <Compile Include="Lookups\ServiceTypeLookup.cs" />
     <Compile Include="Lookups\DeviceTypeLookup.cs" />
     <Compile Include="Application\ApplicationConfigurationMemento.cs" />
@@ -81,6 +85,7 @@
     <Compile Include="Application\ApplicationConfiguration.cs" />
     <Compile Include="Company\CompanyConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransactionMessage.cs" />
     <Compile Include="Transaction\ChildTransactionEntity.cs" />
     <Compile Include="Transaction\ChildTransactionRegistryEntity.cs" />
     <Compile Include="Transaction\ConnectionConfigurationFactory.cs" />
@@ -122,10 +127,6 @@
     <Folder Include="Specifications\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Communication\Communication.csproj">
-      <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
-      <Name>Communication</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{B650A448-FC3B-4C43-A59A-B1AD3500ABD2}</Project>
       <Name>Core</Name>

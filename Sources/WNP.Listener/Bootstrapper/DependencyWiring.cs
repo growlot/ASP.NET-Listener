@@ -9,10 +9,10 @@ namespace AMSLLC.Listener.Bootstrapper
     using ApplicationService.BatchBuilder;
     using ApplicationService.Implementations;
     using Bus;
-    using Communication;
     using Communication.Jms;
     using Core;
     using Domain;
+    using Domain.Listener;
     using Domain.Listener.Transaction;
     using MetadataService;
     using MetadataService.Implementations;

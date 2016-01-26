@@ -6,7 +6,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 {
     using System;
     using System.Threading.Tasks;
-    using Communication;
+    using Domain.Listener;
 
     public class DummyCommunicationHandler : ICommunicationHandler
     {

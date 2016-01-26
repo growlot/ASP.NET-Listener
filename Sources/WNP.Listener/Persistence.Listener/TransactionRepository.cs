@@ -10,9 +10,9 @@ namespace AMSLLC.Listener.Persistence.Listener
     using System.Dynamic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Communication;
     using Core;
     using Domain;
+    using Domain.Listener;
     using Domain.Listener.Transaction;
     using Models;
     using Newtonsoft.Json;

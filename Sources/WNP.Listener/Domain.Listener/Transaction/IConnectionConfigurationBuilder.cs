@@ -6,8 +6,6 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
-    using Communication;
-
     /// <summary>
     /// Connection configuration builder
     /// </summary>

@@ -6,6 +6,8 @@
 
 namespace AMSLLC.Listener.Communication.Jms
 {
+    using Domain.Listener;
+
     /// <summary>
     /// Java Message Service connection configuration
     /// </summary>

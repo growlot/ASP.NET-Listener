@@ -258,10 +258,6 @@
       <Project>{6B540066-84AB-4D63-81A6-9C724AEF039F}</Project>
       <Name>ApplicationService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Communication\Communication.csproj">
-      <Project>{0B0BF704-A960-47A3-816D-E7C5AA36D1AC}</Project>
-      <Name>Communication</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{b650a448-fc3b-4c43-a59a-b1ad3500abd2}</Project>
       <Name>Core</Name>

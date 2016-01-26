@@ -10,7 +10,6 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
     using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
-    using Communication;
     using Core;
     using Shared;
 

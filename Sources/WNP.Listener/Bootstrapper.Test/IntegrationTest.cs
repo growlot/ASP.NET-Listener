@@ -17,11 +17,11 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Threading;
     using System.Threading.Tasks;
     using ApplicationService;
-    using Communication;
     using Communication.Jms;
     using Core;
     using Core.Ninject.Test;
     using Domain;
+    using Domain.Listener;
     using Domain.Listener.Transaction;
     using Microsoft.Owin.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

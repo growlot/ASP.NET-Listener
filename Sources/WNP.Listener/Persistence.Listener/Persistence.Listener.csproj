@@ -122,10 +122,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Communication\Communication.csproj">
-      <Project>{0b0bf704-a960-47a3-816d-e7c5aa36d1ac}</Project>
-      <Name>Communication</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{b650a448-fc3b-4c43-a59a-b1ad3500abd2}</Project>
       <Name>Core</Name>

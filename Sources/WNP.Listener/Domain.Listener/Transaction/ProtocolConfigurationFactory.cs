@@ -5,7 +5,6 @@
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
     using System;
-    using Communication;
     using Core;
 
     /// <summary>

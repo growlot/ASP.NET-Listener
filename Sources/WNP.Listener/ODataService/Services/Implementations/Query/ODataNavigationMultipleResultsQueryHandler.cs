@@ -11,7 +11,6 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
     using System.Threading.Tasks;
     using System.Web.OData.Query;
     using Controllers.Base;
-    using Core;
     using MetadataService;
     using Persistence.Poco;
     using Persistence.WNP;

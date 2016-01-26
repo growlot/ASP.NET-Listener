@@ -12,10 +12,10 @@ namespace AMSLLC.Listener.ApplicationService.Test
     using System.Threading.Tasks;
     using Bus;
     using Commands;
-    using Communication;
     using Core;
     using Core.Ninject.Test;
     using Domain;
+    using Domain.Listener;
     using Domain.Listener.Transaction;
     using Implementations;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

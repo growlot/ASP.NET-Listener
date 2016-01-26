@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Communication.Jms
 {
     using Domain;
+    using Domain.Listener;
     using Domain.Listener.Transaction;
     using Newtonsoft.Json;
 
