@@ -26,15 +26,6 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         {
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="FailTransactionCommandHandler" /> class.
-        /// </summary>
-        /// <param name="domainEventBus">The domain event bus.</param>
-        public FailTransactionCommandHandler(IDomainEventBus domainEventBus)
-            : base(domainEventBus)
-        {
-        }
-
         /// <inheritdoc/>
         public Task HandleAsync(
             FailTransactionCommand command)

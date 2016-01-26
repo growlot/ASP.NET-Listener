@@ -206,10 +206,13 @@
     <Compile Include="Controllers\ValueMapController.cs" />
     <Compile Include="Controllers\WorkstationController.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="DbRepository.cs" />
     <Compile Include="HttpMessageHandlers\RequestScopeHandler.cs" />
     <Compile Include="Services\Filter\WhereClause.cs" />
     <Compile Include="TypeExtensions\KeyValuePathSegmentExtensions.cs" />
     <Compile Include="ListenerODataContext.cs" />
+    <Compile Include="ListenerPersistenceContext.cs" />
+    
     <Compile Include="HttpMessageHandlers\TransactionalODataBatchHandler.cs" />
     <Compile Include="ODataListenerServiceConfigurator.cs" />
     <Compile Include="ODataServiceConfigurator.cs" />

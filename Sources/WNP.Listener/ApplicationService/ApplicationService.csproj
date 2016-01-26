@@ -91,12 +91,14 @@
     <Compile Include="CommandHandlers\ExecuteBusinessRuleCommandHandler.cs" />
     <Compile Include="CommandHandlers\CreateCircuitCommandHandler.cs" />
     <Compile Include="CommandHandlers\FailTransactionCommandHandler.cs" />
+    <Compile Include="CommandHandlers\ListenerCommandHandlerBase.cs" />
     <Compile Include="CommandHandlers\OpenTransactionCommandHandler.cs" />
     <Compile Include="CommandHandlers\ProcessTransactionCommandHandler.cs" />
     <Compile Include="CommandHandlers\SucceedTransactionCommandHandler.cs" />
     <Compile Include="CommandHandlers\UninstallMeterCommandHandler.cs" />
     <Compile Include="CommandHandlers\InstallMeterCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateCircuitDetailsCommandHandler.cs" />
+    <Compile Include="CommandHandlers\UpdateEntityCategoryOperationCommandHandler.cs" />
     <Compile Include="Commands\AddElectricMeterReadingCommand.cs" />
     <Compile Include="Commands\CreateCircuitCommand.cs" />
     <Compile Include="CommandHandlers\UpdateSiteDetailsCommandHandler.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="CommandHandlers\UpdateSiteAddressCommandHandler.cs" />
     <Compile Include="Commands\UninstallMeterCommand.cs" />
     <Compile Include="Commands\UpdateCircuitDetailsCommand.cs" />
+    <Compile Include="Commands\UpdateEntityCategoryOperationCommand.cs" />
     <Compile Include="Commands\UpdateSiteAddressCommand.cs" />
     <Compile Include="Commands\UpdateSiteBillingAccountCommand.cs" />
     <Compile Include="BatchBuilder\MeterTestResultBatchBuilder.cs" />
@@ -141,6 +144,7 @@
     <Compile Include="IWnpIntegrationService.cs" />
     <Compile Include="Model\BatchTransactionEntry.cs" />
     <Compile Include="Commands\ExecuteBusinessRuleCommand.cs" />
+    <Compile Include="PersistenceContextAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryManager.cs" />
     <Compile Include="ErrorMessage.cs" />
@@ -168,9 +172,9 @@
       <Project>{ed495806-3082-49a2-a243-ebeaff4029b8}</Project>
       <Name>Listener.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
-      <Project>{e0cb7a0f-6065-4abd-bf98-c98cfaa4230d}</Project>
-      <Name>Repository.Listener</Name>
+    <ProjectReference Include="..\Persistence.Listener\Persistence.Listener.csproj">
+      <Project>{5a7fea99-bb93-4bda-91ae-2ddec17e3d21}</Project>
+      <Name>Persistence.Listener</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository.WNP\Repository.WNP.csproj">
       <Project>{2643c152-d7b8-4633-a540-8ee3a1db8e45}</Project>

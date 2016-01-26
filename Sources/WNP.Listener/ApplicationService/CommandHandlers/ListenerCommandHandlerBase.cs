@@ -1,4 +1,4 @@
-﻿// <copyright file="CommandHandlerBase.cs" company="Advanced Metering Services LLC">
+﻿// <copyright file="ListenerCommandHandlerBase.cs" company="Advanced Metering Services LLC">
 //     Copyright (c) Advanced Metering Services LLC. All rights reserved.
 // </copyright>
 
@@ -8,31 +8,20 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Domain;
-    using Repository.WNP;
 
     /// <summary>
-    /// Base class for all command handlers.
+    /// Base class for listener command handlers
     /// </summary>
-    public abstract class CommandHandlerBase
+    public abstract class ListenerCommandHandlerBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandHandlerBase" /> class.
+        /// Initializes a new instance of the <see cref="ListenerCommandHandlerBase" /> class.
         /// </summary>
-        /// <param name="unitOfWork">The unit of work.</param>
         /// <param name="domainEventBus">The domain event bus.</param>
-        public CommandHandlerBase(IWNPUnitOfWork unitOfWork, IDomainEventBus domainEventBus)
+        protected ListenerCommandHandlerBase(IDomainEventBus domainEventBus)
         {
-            this.UnitOfWork = unitOfWork;
             this.DomainEventBus = domainEventBus;
         }
-
-        /// <summary>
-        /// Gets the unit of work for this command.
-        /// </summary>
-        /// <value>
-        /// The unit of work.
-        /// </value>
-        protected IWNPUnitOfWork UnitOfWork { get; private set; }
 
         /// <summary>
         /// Gets the domain event bus used by this command.

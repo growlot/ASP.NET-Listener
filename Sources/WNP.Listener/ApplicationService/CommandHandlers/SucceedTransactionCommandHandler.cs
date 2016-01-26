@@ -23,14 +23,5 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
             : base(unitOfWork, domainEventBus)
         {
         }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="SucceedTransactionCommandHandler" /> class.
-        /// </summary>
-        /// <param name="domainEventBus">The domain event bus.</param>
-        public SucceedTransactionCommandHandler(IDomainEventBus domainEventBus)
-            : base(domainEventBus)
-        {
-        }
     }
 }

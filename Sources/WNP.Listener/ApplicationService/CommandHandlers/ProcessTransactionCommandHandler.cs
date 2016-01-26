@@ -27,15 +27,6 @@ namespace AMSLLC.Listener.ApplicationService.CommandHandlers
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ProcessTransactionCommandHandler" /> class.
-        /// </summary>
-        /// <param name="domainEventBus">The domain event bus.</param>
-        public ProcessTransactionCommandHandler(IDomainEventBus domainEventBus)
-            : base(domainEventBus)
-        {
-        }
-
-        /// <summary>
         /// Handles the specified command.
         /// </summary>
         /// <param name="command">The command.</param>

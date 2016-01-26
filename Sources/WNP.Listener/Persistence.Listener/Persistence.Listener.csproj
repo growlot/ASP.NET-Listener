@@ -81,6 +81,8 @@
     <Compile Include="..\..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="IDbRepository.cs" />
+    <Compile Include="IListenerPersistenceContext.cs" />
     <Compile Include="ListenerDbContext.cs" />
     <Compile Include="ListenerPersistenceAdapter.cs" />
     <Compile Include="Models\EnabledOperationEntity.cs" />
