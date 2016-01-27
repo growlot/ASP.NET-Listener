@@ -8,10 +8,14 @@ namespace AMSLLC.Listener.ODataService
     using System.Linq;
     using Persistence.Listener;
 
+    /// <summary>
+    /// Common DB repository implementation
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the t entity.</typeparam>
     public class DbRepository<TEntity> : IDbRepository<TEntity>
-        where TEntity : class
+            where TEntity : class
     {
-        private readonly DbContext _ctx;
+        private readonly DbContext ctx;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbRepository{TEntity}"/> class.
@@ -19,7 +23,7 @@ namespace AMSLLC.Listener.ODataService
         /// <param name="ctx">The CTX.</param>
         public DbRepository(DbContext ctx)
         {
-            this._ctx = ctx;
+            this.ctx = ctx;
         }
 
         /// <summary>
@@ -28,7 +32,7 @@ namespace AMSLLC.Listener.ODataService
         /// <returns>IQueryable&lt;TEntity&gt;.</returns>
         public virtual IQueryable<TEntity> AsQueryable()
         {
-            return this._ctx.Set<TEntity>().AsQueryable();
+            return this.ctx.Set<TEntity>().AsQueryable();
         }
 
         /// <summary>
@@ -40,7 +44,7 @@ namespace AMSLLC.Listener.ODataService
             TEntity target,
             object source)
         {
-            this._ctx.Entry(target).CurrentValues.SetValues(source);
+            this.ctx.Entry(target).CurrentValues.SetValues(source);
         }
 
         /// <summary>
@@ -50,7 +54,7 @@ namespace AMSLLC.Listener.ODataService
         public virtual void Delete(
             TEntity entity)
         {
-            this._ctx.Entry(entity).State = EntityState.Deleted;
+            this.ctx.Entry(entity).State = EntityState.Deleted;
         }
 
         /// <summary>
@@ -60,7 +64,7 @@ namespace AMSLLC.Listener.ODataService
         public virtual void Add(
             TEntity entity)
         {
-            this._ctx.Entry(entity).State = EntityState.Added;
+            this.ctx.Entry(entity).State = EntityState.Added;
         }
     }
 }
