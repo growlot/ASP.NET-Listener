@@ -65,7 +65,7 @@ namespace ListenerLiveTest.Client.Communication
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
-        private Task<string> OpenTransaction(Uri uri, BaseListenerRequestMessage request)
+        private Task<Guid> OpenTransaction(Uri uri, BaseListenerRequestMessage request)
         {
             var d = request;
             ListenerClient client = new ListenerClient(uri);

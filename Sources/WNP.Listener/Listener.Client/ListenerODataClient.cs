@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generation date: 1/27/2016 4:49:22 AM
+// Generation date: 1/27/2016 5:15:35 AM
 namespace AMSLLC.Listener.Persistence.Listener
 {
     using System;
@@ -4476,16 +4476,16 @@ namespace AMSLLC.Listener
         <Parameter Name=""EntityCategory"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
         <Parameter Name=""OperationKey"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
         <Parameter Name=""Body"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
-        <ReturnType Type=""Edm.String"" Unicode=""false"" />
+        <ReturnType Type=""Edm.Guid"" Nullable=""false"" />
       </Action>
       <Action Name=""Batch"">
         <Parameter Name=""BatchNumber"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
         <Parameter Name=""Body"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
-        <ReturnType Type=""Edm.String"" Unicode=""false"" />
+        <ReturnType Type=""Edm.Guid"" Nullable=""false"" />
       </Action>
       <Action Name=""BuildBatch"">
         <Parameter Name=""batchKey"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
-        <ReturnType Type=""Edm.String"" Unicode=""false"" />
+        <ReturnType Type=""Edm.Guid"" Nullable=""false"" />
       </Action>
       <Function Name=""CountByStatus"" IsBound=""true"">
         <Parameter Name=""bindingParameter"" Type=""Collection(AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity)"" />
@@ -4551,9 +4551,9 @@ namespace AMSLLC.Listener
         /// There are no comments for Open in the schema.
         /// </summary>
         [global::Microsoft.OData.Client.OriginalNameAttribute("Open")]
-        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<string> Open(string EntityCategory, string OperationKey, string Body)
+        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid> Open(string EntityCategory, string OperationKey, string Body)
         {
-            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<string>(this, this.BaseUri.OriginalString.Trim('/') + "/Open", new global::Microsoft.OData.Client.BodyOperationParameter("EntityCategory", EntityCategory),
+            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/Open", new global::Microsoft.OData.Client.BodyOperationParameter("EntityCategory", EntityCategory),
                     new global::Microsoft.OData.Client.BodyOperationParameter("OperationKey", OperationKey),
                     new global::Microsoft.OData.Client.BodyOperationParameter("Body", Body));
         }
@@ -4561,18 +4561,18 @@ namespace AMSLLC.Listener
         /// There are no comments for Batch in the schema.
         /// </summary>
         [global::Microsoft.OData.Client.OriginalNameAttribute("Batch")]
-        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<string> Batch(string BatchNumber, string Body)
+        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid> Batch(string BatchNumber, string Body)
         {
-            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<string>(this, this.BaseUri.OriginalString.Trim('/') + "/Batch", new global::Microsoft.OData.Client.BodyOperationParameter("BatchNumber", BatchNumber),
+            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/Batch", new global::Microsoft.OData.Client.BodyOperationParameter("BatchNumber", BatchNumber),
                     new global::Microsoft.OData.Client.BodyOperationParameter("Body", Body));
         }
         /// <summary>
         /// There are no comments for BuildBatch in the schema.
         /// </summary>
         [global::Microsoft.OData.Client.OriginalNameAttribute("BuildBatch")]
-        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<string> BuildBatch(string batchKey)
+        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid> BuildBatch(string batchKey)
         {
-            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<string>(this, this.BaseUri.OriginalString.Trim('/') + "/BuildBatch", new global::Microsoft.OData.Client.BodyOperationParameter("batchKey", batchKey));
+            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/BuildBatch", new global::Microsoft.OData.Client.BodyOperationParameter("batchKey", batchKey));
         }
     }
     /// <summary>

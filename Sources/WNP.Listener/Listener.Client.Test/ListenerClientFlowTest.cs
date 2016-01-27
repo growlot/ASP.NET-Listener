@@ -4,6 +4,7 @@
 
 namespace AMSLLC.Listener.Client.Test
 {
+    using System;
     using System.Net;
     using Exception;
     using Message;
@@ -13,7 +14,7 @@ namespace AMSLLC.Listener.Client.Test
     [TestClass]
     public class ListenerClientFlowTest
     {
-        private const string basicResponse = "{\"value\":\"TestKey\"}";
+        private Guid basicResponse = Guid.NewGuid();
 
         [TestMethod]
         public void TestListenerClientSuccess()
@@ -52,7 +53,7 @@ namespace AMSLLC.Listener.Client.Test
                 .Returns(basicResponse);
             //var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
 
-            lc.Setup(s => s.ProcessTransaction(It.IsAny<string>()))
+            lc.Setup(s => s.ProcessTransaction(It.IsAny<Guid>()))
                 .Throws(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
 
             try
@@ -65,8 +66,8 @@ namespace AMSLLC.Listener.Client.Test
             }
 
             lc.Verify(f => f.OpenTransaction(It.IsAny<BaseListenerRequestMessage>()), Times.Once);
-            lc.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Never);
-            lc.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            lc.Verify(f => f.SucceedTransaction(It.IsAny<Guid>()), Times.Never);
+            lc.Verify(f => f.FailTransaction(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [TestMethod]
@@ -78,7 +79,7 @@ namespace AMSLLC.Listener.Client.Test
                 .Returns(basicResponse);
             // var mq = new Mock<ListenerClient>("http://localhost", proxyMock.Object) { CallBase = true };
 
-            lc.Setup(s => s.SucceedTransaction(It.IsAny<string>()))
+            lc.Setup(s => s.SucceedTransaction(It.IsAny<Guid>()))
                 .Throws(new ListenerRequestFailedException(HttpStatusCode.InternalServerError));
 
             try
@@ -91,8 +92,8 @@ namespace AMSLLC.Listener.Client.Test
             }
 
             lc.Verify(f => f.OpenTransaction(It.IsAny<BaseListenerRequestMessage>()), Times.Once);
-            lc.Verify(f => f.SucceedTransaction(It.IsAny<string>()), Times.Once);
-            lc.Verify(f => f.FailTransaction(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            lc.Verify(f => f.SucceedTransaction(It.IsAny<Guid>()), Times.Once);
+            lc.Verify(f => f.FailTransaction(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
     }

@@ -64,7 +64,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     User = this.User?.Identity.Name
                 };
 
-                return this.Ok((await this.transactionService.Open(message)).ToString());
+                return this.Ok(await this.transactionService.Open(message));
             }
             catch (Exception exc)
             {
@@ -136,7 +136,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
             try
             {
                 var openBatchTransactionCommand = await this.wnpIntegrationService.Create(batchKey, this.CompanyCode, this.ApplicationKey, this.User?.Identity.Name);
-                return this.Ok((await this.transactionService.Open(openBatchTransactionCommand)).ToString()); // await Task.WhenAll(records.Select(r => this._transactionService.Open(r)))
+                return this.Ok(await this.transactionService.Open(openBatchTransactionCommand)); // await Task.WhenAll(records.Select(r => this._transactionService.Open(r)))
             }
             catch (Exception exc)
             {

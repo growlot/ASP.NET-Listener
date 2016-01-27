@@ -150,10 +150,10 @@ namespace AMSLLC.Listener.Client
         /// <typeparam name="TRequest">The type of the request.</typeparam>
         /// <param name="request">The request.</param>
         /// <returns>The unique transaction key.</returns>
-        public virtual Task<string> OpenTransactionAsync<TRequest>(TRequest request)
+        public virtual Task<Guid> OpenTransactionAsync<TRequest>(TRequest request)
             where TRequest : BaseListenerRequestMessage
         {
-            DataServiceActionQuerySingle<string> result = this.container.Open(
+            DataServiceActionQuerySingle<Guid> result = this.container.Open(
                 request.EntityCategory,
                 request.OperationKey,
                 JsonConvert.SerializeObject(request));
@@ -169,13 +169,13 @@ namespace AMSLLC.Listener.Client
         ///     Task.
         /// </returns>
         public virtual Task ProcessTransactionAsync(
-            string transactionKey)
+            Guid transactionKey)
         {
             DataServiceActionQuery query = this.container.TransactionRegistry.ByKey(
                 new Dictionary<string, object>
                 {
                     {
-                        "RecordKey", Guid.Parse(transactionKey)
+                        "RecordKey", transactionKey
                     }
                 }).Process();
             return query.ExecuteAsync().ContinueWith(
@@ -204,13 +204,13 @@ namespace AMSLLC.Listener.Client
         ///     Task.
         /// </returns>
         public Task SucceedTransactionAsync(
-            string transactionKey)
+            Guid transactionKey)
         {
             DataServiceActionQuery query = this.container.TransactionRegistry.ByKey(
                 new Dictionary<string, object>
                 {
                     {
-                        "RecordKey", Guid.Parse(transactionKey)
+                        "RecordKey", transactionKey
                     }
                 }).Succeed();
             return query.ExecuteAsync().ContinueWith(
@@ -310,7 +310,7 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>The transaction key.</returns>
-        public virtual string OpenTransaction(
+        public virtual Guid OpenTransaction(
             BaseListenerRequestMessage message)
         {
             if (message == null)
@@ -318,7 +318,7 @@ namespace AMSLLC.Listener.Client
                 throw new ArgumentNullException(nameof(message));
             }
 
-            DataServiceActionQuerySingle<string> result = this.container.Open(
+            DataServiceActionQuerySingle<Guid> result = this.container.Open(
                 message.EntityCategory,
                 message.OperationKey,
                 JsonConvert.SerializeObject(message));
@@ -330,10 +330,10 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="batchKey">The batch key.</param>
         /// <returns>The transaction key.</returns>
-        public virtual string OpenBatch(
+        public virtual Guid OpenBatch(
             string batchKey)
         {
-            DataServiceActionQuerySingle<string> result = this.container.BuildBatch(batchKey);
+            DataServiceActionQuerySingle<Guid> result = this.container.BuildBatch(batchKey);
 
             return result.GetValue();
         }
@@ -345,7 +345,7 @@ namespace AMSLLC.Listener.Client
         /// <param name="errorMessage">The error message for user.</param>
         /// <param name="errorDetails">The error details.</param>
         public virtual void FailTransaction(
-            string transactionKey,
+            Guid transactionKey,
             string errorMessage,
             string errorDetails)
         {
@@ -353,7 +353,7 @@ namespace AMSLLC.Listener.Client
                 new Dictionary<string, object>
                 {
                     {
-                        "RecordKey", Guid.Parse(transactionKey)
+                        "RecordKey", transactionKey
                     }
                 }).Fail(errorMessage, errorDetails);
             OperationResponse response = query.Execute();
@@ -368,13 +368,13 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="transactionKey">The transaction key.</param>
         public virtual void ProcessTransaction(
-            string transactionKey)
+            Guid transactionKey)
         {
             DataServiceActionQuery query = this.container.TransactionRegistry.ByKey(
                 new Dictionary<string, object>
                 {
                     {
-                        "RecordKey", Guid.Parse(transactionKey)
+                        "RecordKey", transactionKey
                     }
                 }).Process();
 
@@ -390,13 +390,13 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="transactionKey">The transaction key.</param>
         public virtual void SucceedTransaction(
-            string transactionKey)
+            Guid transactionKey)
         {
             DataServiceActionQuery query = this.container.TransactionRegistry.ByKey(
                 new Dictionary<string, object>
                 {
                     {
-                        "RecordKey", Guid.Parse(transactionKey)
+                        "RecordKey", transactionKey
                     }
                 }).Succeed();
 
@@ -470,9 +470,9 @@ namespace AMSLLC.Listener.Client
         }
 
         private void Execute(
-            Func<string> opener)
+            Func<Guid> opener)
         {
-            string transactionKey;
+            Guid transactionKey;
             try
             {
                 transactionKey = opener();
