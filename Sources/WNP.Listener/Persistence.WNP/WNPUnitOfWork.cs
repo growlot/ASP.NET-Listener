@@ -27,7 +27,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         public WNPUnitOfWork(WNPDBContext dbContext)
         {
             this.dbContext = dbContext;
-            Task.Run(() => this.dbContext.BeginTransactionAsync());
+            Task.Run(() => this.dbContext.BeginTransactionAsync()).Wait();
         }
 
         /// <summary>
