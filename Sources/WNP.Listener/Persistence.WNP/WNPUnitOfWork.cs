@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Persistence.WNP
 {
     using System;
+    using System.Threading.Tasks;
     using Repository.WNP;
 
     /// <summary>
@@ -26,8 +27,7 @@ namespace AMSLLC.Listener.Persistence.WNP
         public WNPUnitOfWork(WNPDBContext dbContext)
         {
             this.dbContext = dbContext;
-
-            // this.dbContext.BeginTransactionAsync();
+            Task.Run(() => this.dbContext.BeginTransactionAsync());
         }
 
         /// <summary>
