@@ -8,12 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generation date: 12/30/2015 4:08:56 AM
-
-using System;
-
+// Generation date: 1/27/2016 4:49:22 AM
 namespace AMSLLC.Listener.Persistence.Listener
 {
+    using System;
+
     /// <summary>
     /// There are no comments for TransactionRegistryEntitySingle in the schema.
     /// </summary>
@@ -1062,15 +1061,22 @@ namespace AMSLLC.Listener.Persistence.Listener
         /// <param name="endpointId">Initial value of EndpointId.</param>
         /// <param name="protocolTypeId">Initial value of ProtocolTypeId.</param>
         /// <param name="endpointTriggerTypeId">Initial value of EndpointTriggerTypeId.</param>
+        /// <param name="companyId">Initial value of CompanyId.</param>
         /// <param name="protocolType">Initial value of ProtocolType.</param>
         /// <param name="endpointTriggerType">Initial value of EndpointTriggerType.</param>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
-        public static EndpointEntity CreateEndpointEntity(int endpointId, int protocolTypeId, int endpointTriggerTypeId, global::AMSLLC.Listener.Persistence.Listener.ProtocolTypeEntity protocolType, global::AMSLLC.Listener.Persistence.Listener.EndpointTriggerTypeEntity endpointTriggerType)
+        public static EndpointEntity CreateEndpointEntity(int endpointId, 
+                    int protocolTypeId, 
+                    int endpointTriggerTypeId, 
+                    int companyId, 
+                    global::AMSLLC.Listener.Persistence.Listener.ProtocolTypeEntity protocolType, 
+                    global::AMSLLC.Listener.Persistence.Listener.EndpointTriggerTypeEntity endpointTriggerType)
         {
             EndpointEntity endpointEntity = new EndpointEntity();
             endpointEntity.EndpointId = endpointId;
             endpointEntity.ProtocolTypeId = protocolTypeId;
             endpointEntity.EndpointTriggerTypeId = endpointTriggerTypeId;
+            endpointEntity.CompanyId = companyId;
             if ((protocolType == null))
             {
                 throw new global::System.ArgumentNullException("protocolType");
@@ -1221,6 +1227,29 @@ namespace AMSLLC.Listener.Persistence.Listener
         private int _EndpointTriggerTypeId;
         partial void OnEndpointTriggerTypeIdChanging(int value);
         partial void OnEndpointTriggerTypeIdChanged();
+        /// <summary>
+        /// There are no comments for Property CompanyId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("CompanyId")]
+        public int CompanyId
+        {
+            get
+            {
+                return this._CompanyId;
+            }
+            set
+            {
+                this.OnCompanyIdChanging(value);
+                this._CompanyId = value;
+                this.OnCompanyIdChanged();
+                this.OnPropertyChanged("CompanyId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _CompanyId;
+        partial void OnCompanyIdChanging(int value);
+        partial void OnCompanyIdChanged();
         /// <summary>
         /// There are no comments for Property ProtocolType in the schema.
         /// </summary>
@@ -2345,6 +2374,998 @@ namespace AMSLLC.Listener.Persistence.Listener
         }
     }
     /// <summary>
+    /// There are no comments for EntityCategoryOperationEntitySingle in the schema.
+    /// </summary>
+    [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryOperationEntitySingle")]
+    public partial class EntityCategoryOperationEntitySingle : global::Microsoft.OData.Client.DataServiceQuerySingle<EntityCategoryOperationEntity>
+    {
+        /// <summary>
+        /// Initialize a new EntityCategoryOperationEntitySingle object.
+        /// </summary>
+        public EntityCategoryOperationEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path)
+            : base(context, path) {}
+
+        /// <summary>
+        /// Initialize a new EntityCategoryOperationEntitySingle object.
+        /// </summary>
+        public EntityCategoryOperationEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path, bool isComposable)
+            : base(context, path, isComposable) {}
+
+        /// <summary>
+        /// Initialize a new EntityCategoryOperationEntitySingle object.
+        /// </summary>
+        public EntityCategoryOperationEntitySingle(global::Microsoft.OData.Client.DataServiceQuerySingle<EntityCategoryOperationEntity> query)
+            : base(query) {}
+
+        /// <summary>
+        /// There are no comments for EnabledOperation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EnabledOperation")]
+        public global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle EnabledOperation
+        {
+            get
+            {
+                if (!this.IsComposable)
+                {
+                    throw new global::System.NotSupportedException("The previous function is not composable.");
+                }
+                if ((this._EnabledOperation == null))
+                {
+                    this._EnabledOperation = new global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle(this.Context, GetPath("EnabledOperation"));
+                }
+                return this._EnabledOperation;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle _EnabledOperation;
+        /// <summary>
+        /// There are no comments for EntityCategory in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategory")]
+        public global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle EntityCategory
+        {
+            get
+            {
+                if (!this.IsComposable)
+                {
+                    throw new global::System.NotSupportedException("The previous function is not composable.");
+                }
+                if ((this._EntityCategory == null))
+                {
+                    this._EntityCategory = new global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle(this.Context, GetPath("EntityCategory"));
+                }
+                return this._EntityCategory;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle _EntityCategory;
+        /// <summary>
+        /// There are no comments for OperationEndpoints in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("OperationEndpoints")]
+        public global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> OperationEndpoints
+        {
+            get
+            {
+                if (!this.IsComposable)
+                {
+                    throw new global::System.NotSupportedException("The previous function is not composable.");
+                }
+                if ((this._OperationEndpoints == null))
+                {
+                    this._OperationEndpoints = Context.CreateQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity>(GetPath("OperationEndpoints"));
+                }
+                return this._OperationEndpoints;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> _OperationEndpoints;
+    }
+    /// <summary>
+    /// There are no comments for EntityCategoryOperationEntity in the schema.
+    /// </summary>
+    /// <KeyProperties>
+    /// EntityCategoryOperationId
+    /// </KeyProperties>
+    [global::Microsoft.OData.Client.Key("EntityCategoryOperationId")]
+    [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryOperationEntity")]
+    public partial class EntityCategoryOperationEntity : global::Microsoft.OData.Client.BaseEntityType, global::System.ComponentModel.INotifyPropertyChanged
+    {
+        /// <summary>
+        /// Create a new EntityCategoryOperationEntity object.
+        /// </summary>
+        /// <param name="entityCategoryOperationId">Initial value of EntityCategoryOperationId.</param>
+        /// <param name="entityCategoryId">Initial value of EntityCategoryId.</param>
+        /// <param name="enabledOperationId">Initial value of EnabledOperationId.</param>
+        /// <param name="companyId">Initial value of CompanyId.</param>
+        /// <param name="enabledOperation">Initial value of EnabledOperation.</param>
+        /// <param name="entityCategory">Initial value of EntityCategory.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public static EntityCategoryOperationEntity CreateEntityCategoryOperationEntity(int entityCategoryOperationId, 
+                    int entityCategoryId, 
+                    int enabledOperationId, 
+                    int companyId, 
+                    global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity enabledOperation, 
+                    global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity entityCategory)
+        {
+            EntityCategoryOperationEntity entityCategoryOperationEntity = new EntityCategoryOperationEntity();
+            entityCategoryOperationEntity.EntityCategoryOperationId = entityCategoryOperationId;
+            entityCategoryOperationEntity.EntityCategoryId = entityCategoryId;
+            entityCategoryOperationEntity.EnabledOperationId = enabledOperationId;
+            entityCategoryOperationEntity.CompanyId = companyId;
+            if ((enabledOperation == null))
+            {
+                throw new global::System.ArgumentNullException("enabledOperation");
+            }
+            entityCategoryOperationEntity.EnabledOperation = enabledOperation;
+            if ((entityCategory == null))
+            {
+                throw new global::System.ArgumentNullException("entityCategory");
+            }
+            entityCategoryOperationEntity.EntityCategory = entityCategory;
+            return entityCategoryOperationEntity;
+        }
+        /// <summary>
+        /// There are no comments for Property EntityCategoryOperationId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryOperationId")]
+        public int EntityCategoryOperationId
+        {
+            get
+            {
+                return this._EntityCategoryOperationId;
+            }
+            set
+            {
+                this.OnEntityCategoryOperationIdChanging(value);
+                this._EntityCategoryOperationId = value;
+                this.OnEntityCategoryOperationIdChanged();
+                this.OnPropertyChanged("EntityCategoryOperationId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _EntityCategoryOperationId;
+        partial void OnEntityCategoryOperationIdChanging(int value);
+        partial void OnEntityCategoryOperationIdChanged();
+        /// <summary>
+        /// There are no comments for Property EntityCategoryId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryId")]
+        public int EntityCategoryId
+        {
+            get
+            {
+                return this._EntityCategoryId;
+            }
+            set
+            {
+                this.OnEntityCategoryIdChanging(value);
+                this._EntityCategoryId = value;
+                this.OnEntityCategoryIdChanged();
+                this.OnPropertyChanged("EntityCategoryId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _EntityCategoryId;
+        partial void OnEntityCategoryIdChanging(int value);
+        partial void OnEntityCategoryIdChanged();
+        /// <summary>
+        /// There are no comments for Property EnabledOperationId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EnabledOperationId")]
+        public int EnabledOperationId
+        {
+            get
+            {
+                return this._EnabledOperationId;
+            }
+            set
+            {
+                this.OnEnabledOperationIdChanging(value);
+                this._EnabledOperationId = value;
+                this.OnEnabledOperationIdChanged();
+                this.OnPropertyChanged("EnabledOperationId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _EnabledOperationId;
+        partial void OnEnabledOperationIdChanging(int value);
+        partial void OnEnabledOperationIdChanged();
+        /// <summary>
+        /// There are no comments for Property FieldConfigurationId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("FieldConfigurationId")]
+        public global::System.Nullable<int> FieldConfigurationId
+        {
+            get
+            {
+                return this._FieldConfigurationId;
+            }
+            set
+            {
+                this.OnFieldConfigurationIdChanging(value);
+                this._FieldConfigurationId = value;
+                this.OnFieldConfigurationIdChanged();
+                this.OnPropertyChanged("FieldConfigurationId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::System.Nullable<int> _FieldConfigurationId;
+        partial void OnFieldConfigurationIdChanging(global::System.Nullable<int> value);
+        partial void OnFieldConfigurationIdChanged();
+        /// <summary>
+        /// There are no comments for Property CompanyId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("CompanyId")]
+        public int CompanyId
+        {
+            get
+            {
+                return this._CompanyId;
+            }
+            set
+            {
+                this.OnCompanyIdChanging(value);
+                this._CompanyId = value;
+                this.OnCompanyIdChanged();
+                this.OnPropertyChanged("CompanyId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _CompanyId;
+        partial void OnCompanyIdChanging(int value);
+        partial void OnCompanyIdChanged();
+        /// <summary>
+        /// There are no comments for Property EnabledOperation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EnabledOperation")]
+        public global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity EnabledOperation
+        {
+            get
+            {
+                return this._EnabledOperation;
+            }
+            set
+            {
+                this.OnEnabledOperationChanging(value);
+                this._EnabledOperation = value;
+                this.OnEnabledOperationChanged();
+                this.OnPropertyChanged("EnabledOperation");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity _EnabledOperation;
+        partial void OnEnabledOperationChanging(global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity value);
+        partial void OnEnabledOperationChanged();
+        /// <summary>
+        /// There are no comments for Property EntityCategory in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategory")]
+        public global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity EntityCategory
+        {
+            get
+            {
+                return this._EntityCategory;
+            }
+            set
+            {
+                this.OnEntityCategoryChanging(value);
+                this._EntityCategory = value;
+                this.OnEntityCategoryChanged();
+                this.OnPropertyChanged("EntityCategory");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity _EntityCategory;
+        partial void OnEntityCategoryChanging(global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity value);
+        partial void OnEntityCategoryChanged();
+        /// <summary>
+        /// There are no comments for Property OperationEndpoints in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("OperationEndpoints")]
+        public global::Microsoft.OData.Client.DataServiceCollection<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> OperationEndpoints
+        {
+            get
+            {
+                return this._OperationEndpoints;
+            }
+            set
+            {
+                this.OnOperationEndpointsChanging(value);
+                this._OperationEndpoints = value;
+                this.OnOperationEndpointsChanged();
+                this.OnPropertyChanged("OperationEndpoints");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::Microsoft.OData.Client.DataServiceCollection<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> _OperationEndpoints = new global::Microsoft.OData.Client.DataServiceCollection<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity>(null, global::Microsoft.OData.Client.TrackingMode.None);
+        partial void OnOperationEndpointsChanging(global::Microsoft.OData.Client.DataServiceCollection<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> value);
+        partial void OnOperationEndpointsChanged();
+        /// <summary>
+        /// This event is raised when the value of the property is changed
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// The value of the property is changed
+        /// </summary>
+        /// <param name="property">property name</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        protected virtual void OnPropertyChanged(string property)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new global::System.ComponentModel.PropertyChangedEventArgs(property));
+            }
+        }
+    }
+    /// <summary>
+    /// There are no comments for EnabledOperationEntitySingle in the schema.
+    /// </summary>
+    [global::Microsoft.OData.Client.OriginalNameAttribute("EnabledOperationEntitySingle")]
+    public partial class EnabledOperationEntitySingle : global::Microsoft.OData.Client.DataServiceQuerySingle<EnabledOperationEntity>
+    {
+        /// <summary>
+        /// Initialize a new EnabledOperationEntitySingle object.
+        /// </summary>
+        public EnabledOperationEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path)
+            : base(context, path) {}
+
+        /// <summary>
+        /// Initialize a new EnabledOperationEntitySingle object.
+        /// </summary>
+        public EnabledOperationEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path, bool isComposable)
+            : base(context, path, isComposable) {}
+
+        /// <summary>
+        /// Initialize a new EnabledOperationEntitySingle object.
+        /// </summary>
+        public EnabledOperationEntitySingle(global::Microsoft.OData.Client.DataServiceQuerySingle<EnabledOperationEntity> query)
+            : base(query) {}
+
+        /// <summary>
+        /// There are no comments for Operation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("Operation")]
+        public global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle Operation
+        {
+            get
+            {
+                if (!this.IsComposable)
+                {
+                    throw new global::System.NotSupportedException("The previous function is not composable.");
+                }
+                if ((this._Operation == null))
+                {
+                    this._Operation = new global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle(this.Context, GetPath("Operation"));
+                }
+                return this._Operation;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle _Operation;
+    }
+    /// <summary>
+    /// There are no comments for EnabledOperationEntity in the schema.
+    /// </summary>
+    /// <KeyProperties>
+    /// EnabledOperationId
+    /// </KeyProperties>
+    [global::Microsoft.OData.Client.Key("EnabledOperationId")]
+    [global::Microsoft.OData.Client.OriginalNameAttribute("EnabledOperationEntity")]
+    public partial class EnabledOperationEntity : global::Microsoft.OData.Client.BaseEntityType, global::System.ComponentModel.INotifyPropertyChanged
+    {
+        /// <summary>
+        /// Create a new EnabledOperationEntity object.
+        /// </summary>
+        /// <param name="enabledOperationId">Initial value of EnabledOperationId.</param>
+        /// <param name="applicationId">Initial value of ApplicationId.</param>
+        /// <param name="companyId">Initial value of CompanyId.</param>
+        /// <param name="operationId">Initial value of OperationId.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public static EnabledOperationEntity CreateEnabledOperationEntity(int enabledOperationId, int applicationId, int companyId, int operationId)
+        {
+            EnabledOperationEntity enabledOperationEntity = new EnabledOperationEntity();
+            enabledOperationEntity.EnabledOperationId = enabledOperationId;
+            enabledOperationEntity.ApplicationId = applicationId;
+            enabledOperationEntity.CompanyId = companyId;
+            enabledOperationEntity.OperationId = operationId;
+            return enabledOperationEntity;
+        }
+        /// <summary>
+        /// There are no comments for Property EnabledOperationId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EnabledOperationId")]
+        public int EnabledOperationId
+        {
+            get
+            {
+                return this._EnabledOperationId;
+            }
+            set
+            {
+                this.OnEnabledOperationIdChanging(value);
+                this._EnabledOperationId = value;
+                this.OnEnabledOperationIdChanged();
+                this.OnPropertyChanged("EnabledOperationId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _EnabledOperationId;
+        partial void OnEnabledOperationIdChanging(int value);
+        partial void OnEnabledOperationIdChanged();
+        /// <summary>
+        /// There are no comments for Property ApplicationId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("ApplicationId")]
+        public int ApplicationId
+        {
+            get
+            {
+                return this._ApplicationId;
+            }
+            set
+            {
+                this.OnApplicationIdChanging(value);
+                this._ApplicationId = value;
+                this.OnApplicationIdChanged();
+                this.OnPropertyChanged("ApplicationId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _ApplicationId;
+        partial void OnApplicationIdChanging(int value);
+        partial void OnApplicationIdChanged();
+        /// <summary>
+        /// There are no comments for Property CompanyId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("CompanyId")]
+        public int CompanyId
+        {
+            get
+            {
+                return this._CompanyId;
+            }
+            set
+            {
+                this.OnCompanyIdChanging(value);
+                this._CompanyId = value;
+                this.OnCompanyIdChanged();
+                this.OnPropertyChanged("CompanyId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _CompanyId;
+        partial void OnCompanyIdChanging(int value);
+        partial void OnCompanyIdChanged();
+        /// <summary>
+        /// There are no comments for Property OperationId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("OperationId")]
+        public int OperationId
+        {
+            get
+            {
+                return this._OperationId;
+            }
+            set
+            {
+                this.OnOperationIdChanging(value);
+                this._OperationId = value;
+                this.OnOperationIdChanged();
+                this.OnPropertyChanged("OperationId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _OperationId;
+        partial void OnOperationIdChanging(int value);
+        partial void OnOperationIdChanged();
+        /// <summary>
+        /// There are no comments for Property Operation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("Operation")]
+        public global::AMSLLC.Listener.Persistence.Listener.OperationEntity Operation
+        {
+            get
+            {
+                return this._Operation;
+            }
+            set
+            {
+                this.OnOperationChanging(value);
+                this._Operation = value;
+                this.OnOperationChanged();
+                this.OnPropertyChanged("Operation");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::AMSLLC.Listener.Persistence.Listener.OperationEntity _Operation;
+        partial void OnOperationChanging(global::AMSLLC.Listener.Persistence.Listener.OperationEntity value);
+        partial void OnOperationChanged();
+        /// <summary>
+        /// This event is raised when the value of the property is changed
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// The value of the property is changed
+        /// </summary>
+        /// <param name="property">property name</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        protected virtual void OnPropertyChanged(string property)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new global::System.ComponentModel.PropertyChangedEventArgs(property));
+            }
+        }
+    }
+    /// <summary>
+    /// There are no comments for EntityCategoryEntitySingle in the schema.
+    /// </summary>
+    [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryEntitySingle")]
+    public partial class EntityCategoryEntitySingle : global::Microsoft.OData.Client.DataServiceQuerySingle<EntityCategoryEntity>
+    {
+        /// <summary>
+        /// Initialize a new EntityCategoryEntitySingle object.
+        /// </summary>
+        public EntityCategoryEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path)
+            : base(context, path) {}
+
+        /// <summary>
+        /// Initialize a new EntityCategoryEntitySingle object.
+        /// </summary>
+        public EntityCategoryEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path, bool isComposable)
+            : base(context, path, isComposable) {}
+
+        /// <summary>
+        /// Initialize a new EntityCategoryEntitySingle object.
+        /// </summary>
+        public EntityCategoryEntitySingle(global::Microsoft.OData.Client.DataServiceQuerySingle<EntityCategoryEntity> query)
+            : base(query) {}
+
+    }
+    /// <summary>
+    /// There are no comments for EntityCategoryEntity in the schema.
+    /// </summary>
+    /// <KeyProperties>
+    /// EntityCategoryId
+    /// </KeyProperties>
+    [global::Microsoft.OData.Client.Key("EntityCategoryId")]
+    [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryEntity")]
+    public partial class EntityCategoryEntity : global::Microsoft.OData.Client.BaseEntityType, global::System.ComponentModel.INotifyPropertyChanged
+    {
+        /// <summary>
+        /// Create a new EntityCategoryEntity object.
+        /// </summary>
+        /// <param name="entityCategoryId">Initial value of EntityCategoryId.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public static EntityCategoryEntity CreateEntityCategoryEntity(int entityCategoryId)
+        {
+            EntityCategoryEntity entityCategoryEntity = new EntityCategoryEntity();
+            entityCategoryEntity.EntityCategoryId = entityCategoryId;
+            return entityCategoryEntity;
+        }
+        /// <summary>
+        /// There are no comments for Property EntityCategoryId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryId")]
+        public int EntityCategoryId
+        {
+            get
+            {
+                return this._EntityCategoryId;
+            }
+            set
+            {
+                this.OnEntityCategoryIdChanging(value);
+                this._EntityCategoryId = value;
+                this.OnEntityCategoryIdChanged();
+                this.OnPropertyChanged("EntityCategoryId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _EntityCategoryId;
+        partial void OnEntityCategoryIdChanging(int value);
+        partial void OnEntityCategoryIdChanged();
+        /// <summary>
+        /// There are no comments for Property Name in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("Name")]
+        public string Name
+        {
+            get
+            {
+                return this._Name;
+            }
+            set
+            {
+                this.OnNameChanging(value);
+                this._Name = value;
+                this.OnNameChanged();
+                this.OnPropertyChanged("Name");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private string _Name;
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
+        /// <summary>
+        /// There are no comments for Property DisplayName in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("DisplayName")]
+        public string DisplayName
+        {
+            get
+            {
+                return this._DisplayName;
+            }
+            set
+            {
+                this.OnDisplayNameChanging(value);
+                this._DisplayName = value;
+                this.OnDisplayNameChanged();
+                this.OnPropertyChanged("DisplayName");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private string _DisplayName;
+        partial void OnDisplayNameChanging(string value);
+        partial void OnDisplayNameChanged();
+        /// <summary>
+        /// This event is raised when the value of the property is changed
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// The value of the property is changed
+        /// </summary>
+        /// <param name="property">property name</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        protected virtual void OnPropertyChanged(string property)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new global::System.ComponentModel.PropertyChangedEventArgs(property));
+            }
+        }
+    }
+    /// <summary>
+    /// There are no comments for OperationEndpointEntitySingle in the schema.
+    /// </summary>
+    [global::Microsoft.OData.Client.OriginalNameAttribute("OperationEndpointEntitySingle")]
+    public partial class OperationEndpointEntitySingle : global::Microsoft.OData.Client.DataServiceQuerySingle<OperationEndpointEntity>
+    {
+        /// <summary>
+        /// Initialize a new OperationEndpointEntitySingle object.
+        /// </summary>
+        public OperationEndpointEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path)
+            : base(context, path) {}
+
+        /// <summary>
+        /// Initialize a new OperationEndpointEntitySingle object.
+        /// </summary>
+        public OperationEndpointEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path, bool isComposable)
+            : base(context, path, isComposable) {}
+
+        /// <summary>
+        /// Initialize a new OperationEndpointEntitySingle object.
+        /// </summary>
+        public OperationEndpointEntitySingle(global::Microsoft.OData.Client.DataServiceQuerySingle<OperationEndpointEntity> query)
+            : base(query) {}
+
+        /// <summary>
+        /// There are no comments for Endpoint in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("Endpoint")]
+        public global::AMSLLC.Listener.Persistence.Listener.EndpointEntitySingle Endpoint
+        {
+            get
+            {
+                if (!this.IsComposable)
+                {
+                    throw new global::System.NotSupportedException("The previous function is not composable.");
+                }
+                if ((this._Endpoint == null))
+                {
+                    this._Endpoint = new global::AMSLLC.Listener.Persistence.Listener.EndpointEntitySingle(this.Context, GetPath("Endpoint"));
+                }
+                return this._Endpoint;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::AMSLLC.Listener.Persistence.Listener.EndpointEntitySingle _Endpoint;
+    }
+    /// <summary>
+    /// There are no comments for OperationEndpointEntity in the schema.
+    /// </summary>
+    /// <KeyProperties>
+    /// OperationEndpointId
+    /// </KeyProperties>
+    [global::Microsoft.OData.Client.Key("OperationEndpointId")]
+    [global::Microsoft.OData.Client.OriginalNameAttribute("OperationEndpointEntity")]
+    public partial class OperationEndpointEntity : global::Microsoft.OData.Client.BaseEntityType, global::System.ComponentModel.INotifyPropertyChanged
+    {
+        /// <summary>
+        /// Create a new OperationEndpointEntity object.
+        /// </summary>
+        /// <param name="operationEndpointId">Initial value of OperationEndpointId.</param>
+        /// <param name="entityCategoryOperationId">Initial value of EntityCategoryOperationId.</param>
+        /// <param name="endpointId">Initial value of EndpointId.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public static OperationEndpointEntity CreateOperationEndpointEntity(int operationEndpointId, int entityCategoryOperationId, int endpointId)
+        {
+            OperationEndpointEntity operationEndpointEntity = new OperationEndpointEntity();
+            operationEndpointEntity.OperationEndpointId = operationEndpointId;
+            operationEndpointEntity.EntityCategoryOperationId = entityCategoryOperationId;
+            operationEndpointEntity.EndpointId = endpointId;
+            return operationEndpointEntity;
+        }
+        /// <summary>
+        /// There are no comments for Property OperationEndpointId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("OperationEndpointId")]
+        public int OperationEndpointId
+        {
+            get
+            {
+                return this._OperationEndpointId;
+            }
+            set
+            {
+                this.OnOperationEndpointIdChanging(value);
+                this._OperationEndpointId = value;
+                this.OnOperationEndpointIdChanged();
+                this.OnPropertyChanged("OperationEndpointId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _OperationEndpointId;
+        partial void OnOperationEndpointIdChanging(int value);
+        partial void OnOperationEndpointIdChanged();
+        /// <summary>
+        /// There are no comments for Property EntityCategoryOperationId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryOperationId")]
+        public int EntityCategoryOperationId
+        {
+            get
+            {
+                return this._EntityCategoryOperationId;
+            }
+            set
+            {
+                this.OnEntityCategoryOperationIdChanging(value);
+                this._EntityCategoryOperationId = value;
+                this.OnEntityCategoryOperationIdChanged();
+                this.OnPropertyChanged("EntityCategoryOperationId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _EntityCategoryOperationId;
+        partial void OnEntityCategoryOperationIdChanging(int value);
+        partial void OnEntityCategoryOperationIdChanged();
+        /// <summary>
+        /// There are no comments for Property EndpointId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EndpointId")]
+        public int EndpointId
+        {
+            get
+            {
+                return this._EndpointId;
+            }
+            set
+            {
+                this.OnEndpointIdChanging(value);
+                this._EndpointId = value;
+                this.OnEndpointIdChanged();
+                this.OnPropertyChanged("EndpointId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _EndpointId;
+        partial void OnEndpointIdChanging(int value);
+        partial void OnEndpointIdChanged();
+        /// <summary>
+        /// There are no comments for Property Endpoint in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("Endpoint")]
+        public global::AMSLLC.Listener.Persistence.Listener.EndpointEntity Endpoint
+        {
+            get
+            {
+                return this._Endpoint;
+            }
+            set
+            {
+                this.OnEndpointChanging(value);
+                this._Endpoint = value;
+                this.OnEndpointChanged();
+                this.OnPropertyChanged("Endpoint");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::AMSLLC.Listener.Persistence.Listener.EndpointEntity _Endpoint;
+        partial void OnEndpointChanging(global::AMSLLC.Listener.Persistence.Listener.EndpointEntity value);
+        partial void OnEndpointChanged();
+        /// <summary>
+        /// This event is raised when the value of the property is changed
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// The value of the property is changed
+        /// </summary>
+        /// <param name="property">property name</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        protected virtual void OnPropertyChanged(string property)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new global::System.ComponentModel.PropertyChangedEventArgs(property));
+            }
+        }
+    }
+    /// <summary>
+    /// There are no comments for OperationEntitySingle in the schema.
+    /// </summary>
+    [global::Microsoft.OData.Client.OriginalNameAttribute("OperationEntitySingle")]
+    public partial class OperationEntitySingle : global::Microsoft.OData.Client.DataServiceQuerySingle<OperationEntity>
+    {
+        /// <summary>
+        /// Initialize a new OperationEntitySingle object.
+        /// </summary>
+        public OperationEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path)
+            : base(context, path) {}
+
+        /// <summary>
+        /// Initialize a new OperationEntitySingle object.
+        /// </summary>
+        public OperationEntitySingle(global::Microsoft.OData.Client.DataServiceContext context, string path, bool isComposable)
+            : base(context, path, isComposable) {}
+
+        /// <summary>
+        /// Initialize a new OperationEntitySingle object.
+        /// </summary>
+        public OperationEntitySingle(global::Microsoft.OData.Client.DataServiceQuerySingle<OperationEntity> query)
+            : base(query) {}
+
+    }
+    /// <summary>
+    /// There are no comments for OperationEntity in the schema.
+    /// </summary>
+    /// <KeyProperties>
+    /// OperationId
+    /// </KeyProperties>
+    [global::Microsoft.OData.Client.Key("OperationId")]
+    [global::Microsoft.OData.Client.OriginalNameAttribute("OperationEntity")]
+    public partial class OperationEntity : global::Microsoft.OData.Client.BaseEntityType, global::System.ComponentModel.INotifyPropertyChanged
+    {
+        /// <summary>
+        /// Create a new OperationEntity object.
+        /// </summary>
+        /// <param name="operationId">Initial value of OperationId.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public static OperationEntity CreateOperationEntity(int operationId)
+        {
+            OperationEntity operationEntity = new OperationEntity();
+            operationEntity.OperationId = operationId;
+            return operationEntity;
+        }
+        /// <summary>
+        /// There are no comments for Property OperationId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("OperationId")]
+        public int OperationId
+        {
+            get
+            {
+                return this._OperationId;
+            }
+            set
+            {
+                this.OnOperationIdChanging(value);
+                this._OperationId = value;
+                this.OnOperationIdChanged();
+                this.OnPropertyChanged("OperationId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private int _OperationId;
+        partial void OnOperationIdChanging(int value);
+        partial void OnOperationIdChanged();
+        /// <summary>
+        /// There are no comments for Property Name in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("Name")]
+        public string Name
+        {
+            get
+            {
+                return this._Name;
+            }
+            set
+            {
+                this.OnNameChanging(value);
+                this._Name = value;
+                this.OnNameChanged();
+                this.OnPropertyChanged("Name");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private string _Name;
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
+        /// <summary>
+        /// There are no comments for Property DisplayName in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("DisplayName")]
+        public string DisplayName
+        {
+            get
+            {
+                return this._DisplayName;
+            }
+            set
+            {
+                this.OnDisplayNameChanging(value);
+                this._DisplayName = value;
+                this.OnDisplayNameChanged();
+                this.OnPropertyChanged("DisplayName");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private string _DisplayName;
+        partial void OnDisplayNameChanging(string value);
+        partial void OnDisplayNameChanged();
+        /// <summary>
+        /// This event is raised when the value of the property is changed
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// The value of the property is changed
+        /// </summary>
+        /// <param name="property">property name</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        protected virtual void OnPropertyChanged(string property)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new global::System.ComponentModel.PropertyChangedEventArgs(property));
+            }
+        }
+    }
+    /// <summary>
     /// Class containing all extension methods
     /// </summary>
     public static class ExtensionMethods
@@ -2649,10 +3670,162 @@ namespace AMSLLC.Listener.Persistence.Listener
             };
             return new global::AMSLLC.Listener.Persistence.Listener.FieldConfigurationEntryEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
         }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity as global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="keys">dictionary with the names and values of keys</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity> source, global::System.Collections.Generic.Dictionary<string, object> keys)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+            return new global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity as global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="entityCategoryOperationId">The value of entityCategoryOperationId</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity> source,
+            int entityCategoryOperationId)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
+            global::System.Collections.Generic.Dictionary<string, object> keys = new global::System.Collections.Generic.Dictionary<string, object>
+            {
+                { "EntityCategoryOperationId", entityCategoryOperationId }
+            };
+            return new global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity as global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="keys">dictionary with the names and values of keys</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity> source, global::System.Collections.Generic.Dictionary<string, object> keys)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+            return new global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity as global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="enabledOperationId">The value of enabledOperationId</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity> source,
+            int enabledOperationId)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
+            global::System.Collections.Generic.Dictionary<string, object> keys = new global::System.Collections.Generic.Dictionary<string, object>
+            {
+                { "EnabledOperationId", enabledOperationId }
+            };
+            return new global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity as global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="keys">dictionary with the names and values of keys</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity> source, global::System.Collections.Generic.Dictionary<string, object> keys)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+            return new global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity as global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="entityCategoryId">The value of entityCategoryId</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity> source,
+            int entityCategoryId)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
+            global::System.Collections.Generic.Dictionary<string, object> keys = new global::System.Collections.Generic.Dictionary<string, object>
+            {
+                { "EntityCategoryId", entityCategoryId }
+            };
+            return new global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity as global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="keys">dictionary with the names and values of keys</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> source, global::System.Collections.Generic.Dictionary<string, object> keys)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+            return new global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity as global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="operationEndpointId">The value of operationEndpointId</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> source,
+            int operationEndpointId)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
+            global::System.Collections.Generic.Dictionary<string, object> keys = new global::System.Collections.Generic.Dictionary<string, object>
+            {
+                { "OperationEndpointId", operationEndpointId }
+            };
+            return new global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.OperationEntity as global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="keys">dictionary with the names and values of keys</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEntity> source, global::System.Collections.Generic.Dictionary<string, object> keys)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+            return new global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
+        /// <summary>
+        /// Get an entity of type global::AMSLLC.Listener.Persistence.Listener.OperationEntity as global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle specified by key from an entity set
+        /// </summary>
+        /// <param name="source">source entity set</param>
+        /// <param name="operationId">The value of operationId</param>
+        public static global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEntity> source,
+            int operationId)
+        {
+			if (source == null){
+				throw new ArgumentNullException("source");
+			}
+
+            global::System.Collections.Generic.Dictionary<string, object> keys = new global::System.Collections.Generic.Dictionary<string, object>
+            {
+                { "OperationId", operationId }
+            };
+            return new global::AMSLLC.Listener.Persistence.Listener.OperationEntitySingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
+        }
     }
 }
 namespace AMSLLC.Listener
 {
+    using System;
+
     /// <summary>
     /// There are no comments for ListenerContainer in the schema.
     /// </summary>
@@ -2901,6 +4074,96 @@ namespace AMSLLC.Listener
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
         private global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.FieldConfigurationEntryEntity> _FieldConfigurationEntry;
         /// <summary>
+        /// There are no comments for EntityCategoryOperation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategoryOperation")]
+        public global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity> EntityCategoryOperation
+        {
+            get
+            {
+                if ((this._EntityCategoryOperation == null))
+                {
+                    this._EntityCategoryOperation = base.CreateQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity>("EntityCategoryOperation");
+                }
+                return this._EntityCategoryOperation;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity> _EntityCategoryOperation;
+        /// <summary>
+        /// There are no comments for EnabledOperation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EnabledOperation")]
+        public global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity> EnabledOperation
+        {
+            get
+            {
+                if ((this._EnabledOperation == null))
+                {
+                    this._EnabledOperation = base.CreateQuery<global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity>("EnabledOperation");
+                }
+                return this._EnabledOperation;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity> _EnabledOperation;
+        /// <summary>
+        /// There are no comments for EntityCategory in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("EntityCategory")]
+        public global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity> EntityCategory
+        {
+            get
+            {
+                if ((this._EntityCategory == null))
+                {
+                    this._EntityCategory = base.CreateQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity>("EntityCategory");
+                }
+                return this._EntityCategory;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity> _EntityCategory;
+        /// <summary>
+        /// There are no comments for Operation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("Operation")]
+        public global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEntity> Operation
+        {
+            get
+            {
+                if ((this._Operation == null))
+                {
+                    this._Operation = base.CreateQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEntity>("Operation");
+                }
+                return this._Operation;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEntity> _Operation;
+        /// <summary>
+        /// There are no comments for OperationEndpoint in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("OperationEndpoint")]
+        public global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> OperationEndpoint
+        {
+            get
+            {
+                if ((this._OperationEndpoint == null))
+                {
+                    this._OperationEndpoint = base.CreateQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity>("OperationEndpoint");
+                }
+                return this._OperationEndpoint;
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::Microsoft.OData.Client.DataServiceQuery<global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity> _OperationEndpoint;
+        /// <summary>
         /// There are no comments for TransactionRegistry in the schema.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
@@ -2980,6 +4243,46 @@ namespace AMSLLC.Listener
         {
             base.AddObject("FieldConfigurationEntry", fieldConfigurationEntryEntity);
         }
+        /// <summary>
+        /// There are no comments for EntityCategoryOperation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public void AddToEntityCategoryOperation(global::AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity entityCategoryOperationEntity)
+        {
+            base.AddObject("EntityCategoryOperation", entityCategoryOperationEntity);
+        }
+        /// <summary>
+        /// There are no comments for EnabledOperation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public void AddToEnabledOperation(global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity enabledOperationEntity)
+        {
+            base.AddObject("EnabledOperation", enabledOperationEntity);
+        }
+        /// <summary>
+        /// There are no comments for EntityCategory in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public void AddToEntityCategory(global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity entityCategoryEntity)
+        {
+            base.AddObject("EntityCategory", entityCategoryEntity);
+        }
+        /// <summary>
+        /// There are no comments for Operation in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public void AddToOperation(global::AMSLLC.Listener.Persistence.Listener.OperationEntity operationEntity)
+        {
+            base.AddObject("Operation", operationEntity);
+        }
+        /// <summary>
+        /// There are no comments for OperationEndpoint in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        public void AddToOperationEndpoint(global::AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity operationEndpointEntity)
+        {
+            base.AddObject("OperationEndpoint", operationEndpointEntity);
+        }
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
         private abstract class GeneratedEdmModel
         {
@@ -3047,6 +4350,7 @@ namespace AMSLLC.Listener
         <Property Name=""ConnectionConfiguration"" Type=""Edm.String"" />
         <Property Name=""AdapterConfiguration"" Type=""Edm.String"" />
         <Property Name=""EndpointTriggerTypeId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""CompanyId"" Type=""Edm.Int32"" Nullable=""false"" />
         <NavigationProperty Name=""ProtocolType"" Type=""AMSLLC.Listener.Persistence.Listener.ProtocolTypeEntity"" Nullable=""false"" ContainsTarget=""true"" />
         <NavigationProperty Name=""EndpointTriggerType"" Type=""AMSLLC.Listener.Persistence.Listener.EndpointTriggerTypeEntity"" Nullable=""false"" ContainsTarget=""true"" />
       </EntityType>
@@ -3107,6 +4411,54 @@ namespace AMSLLC.Listener
         <Property Name=""IncludeInSummary"" Type=""Edm.Boolean"" Nullable=""false"" />
         <Property Name=""MapToName"" Type=""Edm.String"" />
       </EntityType>
+      <EntityType Name=""EntityCategoryOperationEntity"">
+        <Key>
+          <PropertyRef Name=""EntityCategoryOperationId"" />
+        </Key>
+        <Property Name=""EntityCategoryOperationId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""EntityCategoryId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""EnabledOperationId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""FieldConfigurationId"" Type=""Edm.Int32"" />
+        <Property Name=""CompanyId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <NavigationProperty Name=""EnabledOperation"" Type=""AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity"" Nullable=""false"" ContainsTarget=""true"" />
+        <NavigationProperty Name=""EntityCategory"" Type=""AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity"" Nullable=""false"" ContainsTarget=""true"" />
+        <NavigationProperty Name=""OperationEndpoints"" Type=""Collection(AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity)"" ContainsTarget=""true"" />
+      </EntityType>
+      <EntityType Name=""EnabledOperationEntity"">
+        <Key>
+          <PropertyRef Name=""EnabledOperationId"" />
+        </Key>
+        <Property Name=""EnabledOperationId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""ApplicationId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""CompanyId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""OperationId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <NavigationProperty Name=""Operation"" Type=""AMSLLC.Listener.Persistence.Listener.OperationEntity"" />
+      </EntityType>
+      <EntityType Name=""EntityCategoryEntity"">
+        <Key>
+          <PropertyRef Name=""EntityCategoryId"" />
+        </Key>
+        <Property Name=""EntityCategoryId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""Name"" Type=""Edm.String"" />
+        <Property Name=""DisplayName"" Type=""Edm.String"" />
+      </EntityType>
+      <EntityType Name=""OperationEndpointEntity"">
+        <Key>
+          <PropertyRef Name=""OperationEndpointId"" />
+        </Key>
+        <Property Name=""OperationEndpointId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""EntityCategoryOperationId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""EndpointId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <NavigationProperty Name=""Endpoint"" Type=""AMSLLC.Listener.Persistence.Listener.EndpointEntity"" />
+      </EntityType>
+      <EntityType Name=""OperationEntity"">
+        <Key>
+          <PropertyRef Name=""OperationId"" />
+        </Key>
+        <Property Name=""OperationId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""Name"" Type=""Edm.String"" />
+        <Property Name=""DisplayName"" Type=""Edm.String"" />
+      </EntityType>
     </Schema>
     <Schema Namespace=""AMSLLC.Listener"" xmlns=""http://docs.oasis-open.org/odata/ns/edm"">
       <Action Name=""Process"" IsBound=""true"">
@@ -3155,6 +4507,15 @@ namespace AMSLLC.Listener
           <NavigationPropertyBinding Path=""FieldConfigurationEntries"" Target=""FieldConfigurationEntry"" />
         </EntitySet>
         <EntitySet Name=""FieldConfigurationEntry"" EntityType=""AMSLLC.Listener.Persistence.Listener.FieldConfigurationEntryEntity"" />
+        <EntitySet Name=""EntityCategoryOperation"" EntityType=""AMSLLC.Listener.Persistence.Listener.EntityCategoryOperationEntity"" />
+        <EntitySet Name=""EnabledOperation"" EntityType=""AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity"">
+          <NavigationPropertyBinding Path=""Operation"" Target=""Operation"" />
+        </EntitySet>
+        <EntitySet Name=""EntityCategory"" EntityType=""AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity"" />
+        <EntitySet Name=""Operation"" EntityType=""AMSLLC.Listener.Persistence.Listener.OperationEntity"" />
+        <EntitySet Name=""OperationEndpoint"" EntityType=""AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity"">
+          <NavigationPropertyBinding Path=""Endpoint"" Target=""Endpoint"" />
+        </EntitySet>
         <ActionImport Name=""Open"" Action=""AMSLLC.Listener.Open"" />
         <ActionImport Name=""Batch"" Action=""AMSLLC.Listener.Batch"" />
         <ActionImport Name=""BuildBatch"" Action=""AMSLLC.Listener.BuildBatch"" />

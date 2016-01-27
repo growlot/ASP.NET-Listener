@@ -40,8 +40,8 @@ namespace ListenerLiveTest.Client.Communication
                 {
                     Interlocked.Decrement(ref counter);
                     Interlocked.Increment(ref processingCounter);
-                    var obj = JsonConvert.DeserializeObject<ExpandoObject>(ttt.Result) as IDictionary<string, object>;
-                    var val = (string)obj["value"];
+                    // var obj = JsonConvert.DeserializeObject<ExpandoObject>(ttt.Result) as IDictionary<string, object>;
+                    var val = ttt.Result;//(string)obj["value"];
                     return PrepareRequest(
                         new Uri(
                             $"http://localhost:9000/listener/TransactionRegistry({val})/AMSLLC.Listener.Process()"),

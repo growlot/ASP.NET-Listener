@@ -111,8 +111,8 @@ namespace ListenerLiveTest.Client
                 Log.Logger.Information("Opening transaction");
                 var t = client.OpenTransactionAsync(new InstallMeterRequestMessage { EntityKey = Guid.NewGuid().ToString("D") });
                 t.Wait();
-                var obj = JsonConvert.DeserializeObject<ExpandoObject>(t.Result) as IDictionary<string, object>;
-                var transactionKey = (string)obj["value"];
+                //var obj = JsonConvert.DeserializeObject<ExpandoObject>(t.Result) as IDictionary<string, object>;
+                var transactionKey = t.Result;
                 Log.Logger.Information("Processing {0}", transactionKey);
                 var t1 = client.ProcessTransactionAsync(transactionKey);
                 t1.Wait();
