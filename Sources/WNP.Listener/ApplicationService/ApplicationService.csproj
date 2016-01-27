@@ -176,6 +176,10 @@
       <Project>{5a7fea99-bb93-4bda-91ae-2ddec17e3d21}</Project>
       <Name>Persistence.Listener</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
+      <Project>{E0CB7A0F-6065-4ABD-BF98-C98CFAA4230D}</Project>
+      <Name>Repository.Listener</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Repository.WNP\Repository.WNP.csproj">
       <Project>{2643c152-d7b8-4633-a540-8ee3a1db8e45}</Project>
       <Name>Repository.WNP</Name>

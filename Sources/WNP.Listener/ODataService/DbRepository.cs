@@ -15,15 +15,15 @@ namespace AMSLLC.Listener.ODataService
     public class DbRepository<TEntity> : IDbRepository<TEntity>
             where TEntity : class
     {
-        private readonly DbContext ctx;
+        private readonly DbContext dbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbRepository{TEntity}"/> class.
         /// </summary>
-        /// <param name="ctx">The CTX.</param>
-        public DbRepository(DbContext ctx)
+        /// <param name="dbContext">The dbContext.</param>
+        public DbRepository(DbContext dbContext)
         {
-            this.ctx = ctx;
+            this.dbContext = dbContext;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace AMSLLC.Listener.ODataService
         /// <returns>IQueryable&lt;TEntity&gt;.</returns>
         public virtual IQueryable<TEntity> AsQueryable()
         {
-            return this.ctx.Set<TEntity>().AsQueryable();
+            return this.dbContext.Set<TEntity>().AsQueryable();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace AMSLLC.Listener.ODataService
             TEntity target,
             object source)
         {
-            this.ctx.Entry(target).CurrentValues.SetValues(source);
+            this.dbContext.Entry(target).CurrentValues.SetValues(source);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace AMSLLC.Listener.ODataService
         public virtual void Delete(
             TEntity entity)
         {
-            this.ctx.Entry(entity).State = EntityState.Deleted;
+            this.dbContext.Entry(entity).State = EntityState.Deleted;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace AMSLLC.Listener.ODataService
         public virtual void Add(
             TEntity entity)
         {
-            this.ctx.Entry(entity).State = EntityState.Added;
+            this.dbContext.Entry(entity).State = EntityState.Added;
         }
     }
 }

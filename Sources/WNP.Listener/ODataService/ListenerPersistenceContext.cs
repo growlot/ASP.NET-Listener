@@ -13,53 +13,53 @@ namespace AMSLLC.Listener.ODataService
     /// </summary>
     public class ListenerPersistenceContext : IListenerPersistenceContext
     {
-        private readonly ListenerODataContext ctx;
+        // private readonly ListenerODataContext dbContext;
         private readonly Dictionary<Type, object> repositoryRegistry = new Dictionary<Type, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListenerPersistenceContext"/> class.
         /// </summary>
-        /// <param name="ctx">The CTX.</param>
-        public ListenerPersistenceContext(ListenerODataContext ctx)
+        /// <param name="dbContext">The dbContext.</param>
+        public ListenerPersistenceContext(ListenerODataContext dbContext)
         {
-            this.ctx = ctx;
+            // dbContext = dbContext;
             this.repositoryRegistry.Add(
-                typeof(TransactionRegistryEntity),
-                new DbRepository<TransactionRegistryEntity>(this.ctx));
+               typeof(TransactionRegistryEntity),
+               new DbRepository<TransactionRegistryEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(TransactionMessageDatumEntity),
-                new DbRepository<TransactionMessageDatumEntity>(this.ctx));
+               typeof(TransactionMessageDatumEntity),
+               new DbRepository<TransactionMessageDatumEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(TransactionRegistryViewEntity),
-                new DbRepository<TransactionRegistryViewEntity>(this.ctx));
-            this.repositoryRegistry.Add(typeof(EndpointEntity), new DbRepository<EndpointEntity>(this.ctx));
-            this.repositoryRegistry.Add(typeof(ProtocolTypeEntity), new DbRepository<ProtocolTypeEntity>(this.ctx));
+               typeof(TransactionRegistryViewEntity),
+               new DbRepository<TransactionRegistryViewEntity>(dbContext));
+            this.repositoryRegistry.Add(typeof(EndpointEntity), new DbRepository<EndpointEntity>(dbContext));
+            this.repositoryRegistry.Add(typeof(ProtocolTypeEntity), new DbRepository<ProtocolTypeEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(EndpointTriggerTypeEntity),
-                new DbRepository<EndpointTriggerTypeEntity>(this.ctx));
-            this.repositoryRegistry.Add(typeof(ValueMapEntity), new DbRepository<ValueMapEntity>(this.ctx));
+               typeof(EndpointTriggerTypeEntity),
+               new DbRepository<EndpointTriggerTypeEntity>(dbContext));
+            this.repositoryRegistry.Add(typeof(ValueMapEntity), new DbRepository<ValueMapEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(ValueMapEntryEntity),
-                new DbRepository<ValueMapEntryEntity>(this.ctx));
+               typeof(ValueMapEntryEntity),
+               new DbRepository<ValueMapEntryEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(FieldConfigurationEntity),
-                new DbRepository<FieldConfigurationEntity>(this.ctx));
+               typeof(FieldConfigurationEntity),
+               new DbRepository<FieldConfigurationEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(FieldConfigurationEntryEntity),
-                new DbRepository<FieldConfigurationEntryEntity>(this.ctx));
+               typeof(FieldConfigurationEntryEntity),
+               new DbRepository<FieldConfigurationEntryEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(EntityCategoryOperationEntity),
-                new DbRepository<EntityCategoryOperationEntity>(this.ctx));
+               typeof(EntityCategoryOperationEntity),
+               new DbRepository<EntityCategoryOperationEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(EnabledOperationEntity),
-                new DbRepository<EnabledOperationEntity>(this.ctx));
+               typeof(EnabledOperationEntity),
+               new DbRepository<EnabledOperationEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(EntityCategoryEntity),
-                new DbRepository<EntityCategoryEntity>(this.ctx));
-            this.repositoryRegistry.Add(typeof(OperationEntity), new DbRepository<OperationEntity>(this.ctx));
+               typeof(EntityCategoryEntity),
+               new DbRepository<EntityCategoryEntity>(dbContext));
+            this.repositoryRegistry.Add(typeof(OperationEntity), new DbRepository<OperationEntity>(dbContext));
             this.repositoryRegistry.Add(
-                typeof(OperationEndpointEntity),
-                new DbRepository<OperationEndpointEntity>(this.ctx));
+               typeof(OperationEndpointEntity),
+               new DbRepository<OperationEndpointEntity>(dbContext));
         }
 
         /// <summary>
