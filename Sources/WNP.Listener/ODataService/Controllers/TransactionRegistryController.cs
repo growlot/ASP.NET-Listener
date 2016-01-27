@@ -64,7 +64,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     User = this.User?.Identity.Name
                 };
 
-                return this.Ok(await this.transactionService.Open(message));
+                return this.Ok((await this.transactionService.Open(message)).ToString());
             }
             catch (Exception exc)
             {
@@ -115,7 +115,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     }
                 }
 
-                return this.Ok(await this.transactionService.Open(message));
+                return this.Ok((await this.transactionService.Open(message)).ToString());
             }
             catch (Exception exc)
             {

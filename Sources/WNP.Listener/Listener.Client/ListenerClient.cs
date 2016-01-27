@@ -473,22 +473,17 @@ namespace AMSLLC.Listener.Client
             Func<string> opener)
         {
             string transactionKey;
-            string response;
             try
             {
-                response = opener();
+                transactionKey = opener();
 
-                Log.Logger.Information("Opened transaction {0}", response);
+                Log.Logger.Information("Opened transaction {0}", transactionKey);
             }
             catch (System.Exception exc)
             {
                 throw new FailedToOpenTransactionException(exc.Message, exc);
             }
 
-            var responseExpando =
-                JsonConvert.DeserializeObject<ExpandoObject>(response) as IDictionary<string, object>;
-            transactionKey = responseExpando["value"]?.ToString();
-            Log.Logger.Information("Using transactionKey {0}", transactionKey);
             try
             {
                 this.ProcessTransaction(transactionKey);
