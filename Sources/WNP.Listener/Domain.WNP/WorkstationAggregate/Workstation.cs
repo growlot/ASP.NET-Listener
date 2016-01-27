@@ -29,11 +29,12 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <param name="issuedTo">The issued to.</param>
         /// <param name="vehicleId">The vehicle identifier.</param>
         /// <param name="location">The location.</param>
-        /// <exception cref="System.ArgumentNullException">Can not perform business action, because equipment is not specified.</exception>
-        /// <exception cref="System.ArgumentException">Can not perform business action, becasue there is no action with name {0} defined in workstation {1}.FormatWith(actionName, this.Id)</exception>
-        /// <exception cref="System.InvalidOperationException">Can not perform business action, becasue equipment state doesn't allow it: {0}.FormatWith(rule.Message)
+        /// <exception cref="ArgumentNullException">Can not perform business action, because equipment is not specified.</exception>
+        /// <exception cref="ArgumentException">Can not perform business action, becasue there is no action with name {0} defined in workstation {1}.FormatWith(actionName, this.Id)</exception>
+        /// <exception cref="InvalidOperationException">Can not perform business action, becasue equipment state doesn't allow it: {0}.FormatWith(rule.Message)
         /// or
         /// Can not perform business action, because equipment state doesn't allow it.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Review Me!")]
         public void PerformBusinessAction(
             EquipmentState equipment,
             string actionName,
