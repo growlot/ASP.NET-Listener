@@ -17,11 +17,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         private readonly Location newLocation;
         private readonly string newLocationType;
         private readonly bool incrementCycle;
-        private readonly ActionFlag actionBox;
-        private readonly ActionFlag actionPallet;
-        private readonly ActionFlag actionShelf;
-        private readonly ActionFlag actionReceivedBy;
-        private readonly ActionFlag actionVehicleNumber;
+        private readonly ActionValue actionBox;
+        private readonly ActionValue actionPallet;
+        private readonly ActionValue actionShelf;
+        private readonly ActionValue actionReceivedBy;
+        private readonly ActionValue actionVehicleNumber;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BusinessAction" /> class.
@@ -48,11 +48,11 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
             Location newLocation,
             string newLocationType,
             bool incrementCycle,
-            ActionFlag actionBox,
-            ActionFlag actionPallet,
-            ActionFlag actionShelf,
-            ActionFlag actionReceivedBy,
-            ActionFlag actionVehicleNumber)
+            ActionValue actionBox,
+            ActionValue actionPallet,
+            ActionValue actionShelf,
+            ActionValue actionReceivedBy,
+            ActionValue actionVehicleNumber)
         {
             this.actionName = actionName;
             this.currentWorkflow = currentWorkflow;
@@ -184,7 +184,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating if box information should be set or cleared during this action.
         /// </summary>
-        public ActionFlag ActionBox
+        public ActionValue ActionBox
         {
             get
             {
@@ -195,7 +195,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating if pallet information should be set or cleared during this action.
         /// </summary>
-        public ActionFlag ActionPallet
+        public ActionValue ActionPallet
         {
             get
             {
@@ -206,7 +206,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating if shelf information should be set or cleared during this action.
         /// </summary>
-        public ActionFlag ActionShelf
+        public ActionValue ActionShelf
         {
             get
             {
@@ -217,7 +217,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating whether if received by information should be set or cleared during this action.
         /// </summary>
-        public ActionFlag ActionReceivedBy
+        public ActionValue ActionReceivedBy
         {
             get
             {
@@ -228,7 +228,7 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
         /// <summary>
         /// Gets a value indicating whether if vehicle number information should be set or cleared during this action.
         /// </summary>
-        public ActionFlag ActionVehicleNumber
+        public ActionValue ActionVehicleNumber
         {
             get
             {

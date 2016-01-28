@@ -61,35 +61,20 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
                 throw new ArgumentException("Can not perform business action, becasue there is no action with name {0} and workflow (test program) {1} defined in workstation {2}".FormatWith(actionName, equipment.Workflow, this.Id), nameof(actionName));
             }
 
-            // do not perform business action if boxNumber value is required but not provided
-            if (action.ActionBox != null && action.ActionBox.FlagName.Equals("R") && string.IsNullOrWhiteSpace(boxNumber))
-            {
-                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'boxNumber' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(boxNumber));
-            }
+            // validate values for boxNumber field
+            this.ValidateFieldAction(actionName, action.ActionBox, nameof(boxNumber), boxNumber);
 
-            // do not perform business action if palletNumber value is required but not provided
-            if (action.ActionPallet != null && action.ActionPallet.FlagName.Equals("R") && string.IsNullOrWhiteSpace(palletNumber))
-            {
-                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'palletNumber' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(palletNumber));
-            }
+            // validate values for palletNumber field
+            this.ValidateFieldAction(actionName, action.ActionPallet, nameof(palletNumber), palletNumber);
 
-            // do not perform business action if shelfId value is required but not provided
-            if (action.ActionShelf != null && action.ActionShelf.FlagName.Equals("R") && string.IsNullOrWhiteSpace(shelfId))
-            {
-                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'shelfId' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(shelfId));
-            }
+            // validate values for shelfId field
+            this.ValidateFieldAction(actionName, action.ActionShelf, nameof(shelfId), shelfId);
 
-            // do not perform business action if issuedTo value is required but not provided
-            if (action.ActionReceivedBy != null && action.ActionReceivedBy.FlagName.Equals("R") && string.IsNullOrWhiteSpace(issuedTo))
-            {
-                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'issuedTo' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(issuedTo));
-            }
+            // validate values for issuedTo field
+            this.ValidateFieldAction(actionName, action.ActionReceivedBy, nameof(issuedTo), issuedTo);
 
-            // do not perform business action if vehicleId value is required but not provided
-            if (action.ActionVehicleNumber != null && action.ActionVehicleNumber.FlagName.Equals("R") && string.IsNullOrWhiteSpace(vehicleId))
-            {
-                throw new ArgumentException("Can not perform business action {0} becasue value for required parameter 'vehicleId' not provided for workstation {1}".FormatWith(actionName, this.Id), nameof(vehicleId));
-            }
+            // validate values for vehicleId field
+            this.ValidateFieldAction(actionName, action.ActionVehicleNumber, nameof(vehicleId), vehicleId);
 
             // if at least one allowed inocmming rule match for current equipment status, then perform the action and exit.
             foreach (var rule in this.incomingRules.Where(item => item.IsAllowed))
@@ -168,12 +153,45 @@ namespace AMSLLC.Listener.Domain.WNP.WorkstationAggregate
                     newLocation: location,
                     newLocationType: businessActionMemento.NewLocationType,
                     incrementCycle: businessActionMemento.IncrementCycle,
-                    actionBox: businessActionMemento.ActionBox,
-                    actionPallet: businessActionMemento.ActionPallet,
-                    actionShelf: businessActionMemento.ActionShelf,
-                    actionReceivedBy: businessActionMemento.ActionReceivedBy,
-                    actionVehicleNumber: businessActionMemento.ActionVehicleNumber);
+                    actionBox: new ActionValue(businessActionMemento.ActionBox),
+                    actionPallet: new ActionValue(businessActionMemento.ActionPallet),
+                    actionShelf: new ActionValue(businessActionMemento.ActionShelf),
+                    actionReceivedBy: new ActionValue(businessActionMemento.ActionReceivedBy),
+                    actionVehicleNumber: new ActionValue(businessActionMemento.ActionVehicleNumber));
                 this.businessActions.Add(businessAction);
+            }
+        }
+
+        /// <summary>
+        /// Validates the value for action fields.
+        /// </summary>
+        /// <param name="actionName">Name of business action.</param>
+        /// <param name="actionFlag">Action set for the business action.</param>
+        /// <param name="fieldName">Name of field to be validated for the action.</param>
+        /// <param name="fieldValue">Value of field to be validated for the business action.</param>
+        private void ValidateFieldAction(string actionName, ActionValue actionFlag, string fieldName, string fieldValue)
+        {
+            if (actionFlag == null)
+            {
+                return;
+            }
+
+            // do not perform business action if action for the field is set to Clear but value is provided
+            if (actionFlag == ActionValue.Clear && !string.IsNullOrWhiteSpace(fieldValue))
+            {
+                throw new ArgumentException("Can not perform business action '{0}' for workstation '{1}' becasue value is provided for parameter '{2}' where action field is set to clear".FormatWith(actionName, this.Id, fieldName));
+            }
+
+            // do not perform business action if action for the field is set to Disabled but value is provided
+            if (actionFlag == ActionValue.Disabled && !string.IsNullOrWhiteSpace(fieldValue))
+            {
+                throw new ArgumentException("Can not perform business action '{0}' for workstation '{1}' becasue value is provided for parameter '{2}' where action field is set to disabled".FormatWith(actionName, this.Id, fieldName));
+            }
+
+            // do not perform business action if action for the field is set to Required but value is missing
+            if (actionFlag == ActionValue.Required && string.IsNullOrWhiteSpace(fieldValue))
+            {
+                throw new ArgumentException("Can not perform business action '{0}' for workstation '{1}' becasue value not provided for required parameter '{2}'".FormatWith(actionName, this.Id, fieldName));
             }
         }
     }

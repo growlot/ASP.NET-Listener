@@ -157,11 +157,11 @@ WHERE {DBMetadata.TrackingOut.Owner} = @0 and {DBMetadata.TrackingOut.Workstatio
                     newLocation: businessAction.LocationType == "S" ? businessAction.OutLocation == "*LEAVE_AS_IS*" ? new LocationMemento(businessAction.OutLocation, null) : await this.GetLocationAsync(businessAction.OutLocation) : null,
                     newLocationType: businessAction.LocationType == "A" ? businessAction.OutLocation : null,
                     incrementCycle: businessAction.IncrementCycle == "Y" ? true : false,
-                    actionBox: new ActionFlag(businessAction.ActionBox),
-                    actionPallet: new ActionFlag(businessAction.ActionPallet),
-                    actionShelf: new ActionFlag(businessAction.ActionShelf),
-                    actionReceivedBy: new ActionFlag(businessAction.ActionReceivedBy),
-                    actionVehicleNumber: new ActionFlag(businessAction.ActionVehicleNo));
+                    actionBox: businessAction.ActionBox,
+                    actionPallet: businessAction.ActionPallet,
+                    actionShelf: businessAction.ActionShelf,
+                    actionReceivedBy: businessAction.ActionReceivedBy,
+                    actionVehicleNumber: businessAction.ActionVehicleNo);
                 result.Add(businessActionMemento);
             }
 
