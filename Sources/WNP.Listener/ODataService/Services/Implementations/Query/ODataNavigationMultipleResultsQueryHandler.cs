@@ -201,7 +201,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 
             sql = sql.Where(whereClause, whereArgs.ToArray());
 
-            var dbResults = await ((WNPUnitOfWork)this.unitOfWork).DbContext.FetchAsync<dynamic>(sql);
+            var dbResults = await ((WNPUnitOfWork)this.unitOfWork).DbContext.FetchAsync<dynamic>(1, 1000, sql);
             var results = dbResults.Cast<IDictionary<string, object>>().ToArray();
 
             var fullKey = this.childModel.EntityConfiguration.FullKey;

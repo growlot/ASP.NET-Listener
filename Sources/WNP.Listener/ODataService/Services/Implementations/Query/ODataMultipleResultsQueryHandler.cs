@@ -164,7 +164,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
                 sql = sql.Where(this.sqlFilter.Clause, this.sqlFilter.PositionalParameters);
             }
 
-            var dbResults = await ((WNPUnitOfWork)this.unitOfWork).DbContext.FetchAsync<dynamic>(sql);
+            var dbResults = await ((WNPUnitOfWork)this.unitOfWork).DbContext.FetchAsync<dynamic>(1, 1000, sql);
             var results = dbResults.Cast<IDictionary<string, object>>().ToArray();
 
             // create actual result object we will be sending over the wire

@@ -163,7 +163,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
             // Fetch the results in one big batch
             var dbContext = ((WNPUnitOfWork)this.unitOfWork).DbContext;
 
-            var dbResults = await dbContext.FetchAsync<dynamic>(sql);
+            var dbResults = await dbContext.FetchAsync<dynamic>(1, 1000, sql);
             var dbResultsDictionary = dbResults.Cast<IDictionary<string, object>>().ToArray();
 
             // Check obvious errors
