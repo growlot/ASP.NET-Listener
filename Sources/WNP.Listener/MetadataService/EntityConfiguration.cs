@@ -224,6 +224,7 @@ namespace AMSLLC.Listener.MetadataService
                     virtualEntityName,
                     new Collection<string>(discriminator),
                     new Collection<string>(columnList)));
+            this.UpdateKeys();
 
             return this;
         }
@@ -243,6 +244,7 @@ namespace AMSLLC.Listener.MetadataService
         /// <summary>
         /// When composite key is used it usually consists of parent entity key and current entity key parts.
         /// Only current entity key should be used as a key, and parent entity key will be enforced by select joins.
+        /// Same also applies to virtual entity keys. They shouldn't be a part of entity key.
         /// </summary>
         private void UpdateKeys()
         {
@@ -251,6 +253,17 @@ namespace AMSLLC.Listener.MetadataService
                 var tempList = this.Key.ToList();
                 tempList.RemoveAll(item => this.ParentKey.Contains(item, StringComparer.OrdinalIgnoreCase));
                 this.Key = tempList;
+            }
+
+            if (this.VirtualRelations != null && this.Key != null)
+            {
+                var virtualEntitiesKeys = new List<string>();
+                foreach (var virtualRelationship in this.VirtualRelations)
+                {
+                    virtualEntitiesKeys.AddRange(virtualRelationship.Discriminator.ToList());
+                }
+
+                this.Key = this.Key.Except(virtualEntitiesKeys);
             }
         }
     }

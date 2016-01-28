@@ -150,7 +150,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
             var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.mainModel.TableName);
 
             // Add necessary joins
-            Helper.PerformJoins(ref sql, this.mainModel, this.relatedEntityModels);
+            sql = Helper.PerformJoins(sql, this.mainModel, this.relatedEntityModels);
 
             // Add key selector
             sql = sql.Where(

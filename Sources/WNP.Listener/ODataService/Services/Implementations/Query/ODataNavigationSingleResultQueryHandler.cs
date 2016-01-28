@@ -29,11 +29,13 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 
         private Type childEdmEntityClrType;
 
-        private List<KeyValuePair<string, object>> key;
+        private List<KeyValuePair<string, object>> parentKey;
+        private List<KeyValuePair<string, object>> childKey;
 
         private DbColumnList selectedFields;
 
         private MetadataEntityModel childModel;
+        private MetadataEntityModel parentModel;
 
         private MetadataEntityModel[] relatedEntityModels;
 
@@ -60,6 +62,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
             this.childEdmEntityClrType = childClrType;
 
             this.childModel = this.metadataProvider.GetModelMapping(this.childEdmEntityClrType);
+            this.parentModel = this.metadataProvider.GetModelMapping(this.parentEdmEntityClrType);
 
             return this;
         }
@@ -81,11 +84,8 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
                 throw new InvalidOperationException("WithKeys method should be called after OnTypes");
             }
 
-            var parent = Helper.GetKey(rawParentKey, this.childModel, true).ToList();
-            var child = Helper.GetKey(rawChildKey, this.childModel, false).ToList();
-
-            this.key = new List<KeyValuePair<string, object>>(parent);
-            this.key.AddRange(child);
+            this.parentKey = Helper.GetKey(rawParentKey, this.parentModel, false).ToList();
+            this.childKey = Helper.GetKey(rawChildKey, this.childModel, false).ToList();
 
             return this;
         }
@@ -137,16 +137,39 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
             // Generate SQL
             var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.childModel.TableName);
 
-            // Add necessary joins
-            Helper.PerformJoins(ref sql, this.childModel, this.relatedEntityModels);
+            // Add join with parent
+            sql = Helper.JoinWithParrent(sql, this.childModel, this.parentModel);
+
+            // Add related entity joins
+            sql = Helper.PerformJoins(sql, this.childModel, this.relatedEntityModels);
 
             // Add key selector
-            sql = sql.Where(
-                    this.key.Select(
-                        (kvp, ind) =>
-                        StringUtilities.Invariant($"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind}"))
-                        .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}")),
-                    this.key.Select(kvp => kvp.Value).ToArray());
+            var parentWhereClause =
+                this.parentKey.Select(
+                    (kvp, ind) => StringUtilities.Invariant($"{this.parentModel.TableName}.{this.parentModel.ModelToColumnMappings[kvp.Key]}=@{ind}"))
+                    .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}"));
+
+            var childWhereClause =
+                this.childKey.Select(
+                    (kvp, ind) => StringUtilities.Invariant($"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind + this.parentKey.Count}"))
+                    .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}"));
+
+            var whereClause = StringUtilities.Invariant($"{parentWhereClause} AND {childWhereClause}");
+
+            var whereArgs =
+                this.parentKey.Select(kvp => kvp.Value).ToList();
+            whereArgs.AddRange(
+                this.childKey.Select(kvp => kvp.Value).ToList());
+
+            sql = sql.Where(whereClause, whereArgs.ToArray());
+
+            ////// Add key selector
+            ////sql = sql.Where(
+            ////        this.key.Select(
+            ////            (kvp, ind) =>
+            ////            StringUtilities.Invariant($"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind}"))
+            ////            .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}")),
+            ////        this.key.Select(kvp => kvp.Value).ToArray());
 
             // Fetch the results in one big batch
             var dbContext = ((WNPUnitOfWork)this.unitOfWork).DbContext;
@@ -178,14 +201,19 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 
         private void CheckMandatoryFields()
         {
-            if (this.parentEdmEntityClrType == null || this.childModel == null)
+            if (this.parentModel == null || this.childModel == null)
             {
                 throw new InvalidOperationException("Resulting Type is not set");
             }
 
-            if (this.key == null || this.key.Count == 0)
+            if (this.parentKey == null || this.parentKey.Count == 0)
             {
-                throw new InvalidOperationException("Required entity key is not set");
+                throw new InvalidOperationException("Required parent entity key is not set");
+            }
+
+            if (this.childKey == null || this.childKey.Count == 0)
+            {
+                throw new InvalidOperationException("Required child entity key is not set");
             }
         }
     }

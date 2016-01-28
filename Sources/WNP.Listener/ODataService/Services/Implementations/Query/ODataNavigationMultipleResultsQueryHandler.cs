@@ -29,7 +29,6 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 
         private readonly IFilterTransformer filterTransformer;
 
-        private Type childEdmEntityClrType;
         private DbColumnList selectedFields;
 
         private int? skip;
@@ -39,7 +38,11 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
 
         private List<KeyValuePair<string, object>> parentKey;
 
+        private Type childEdmEntityClrType;
+        private Type parentEdmEntityClrType;
+
         private MetadataEntityModel childModel;
+        private MetadataEntityModel parentModel;
 
         private MetadataEntityModel[] relatedEntityModels;
 
@@ -65,8 +68,10 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
         public IODataNavigationMultipleResultsQueryHandler OnTypes(Type parentClrType, Type childClrType)
         {
             this.childEdmEntityClrType = childClrType;
+            this.parentEdmEntityClrType = parentClrType;
 
             this.childModel = this.metadataProvider.GetModelMapping(this.childEdmEntityClrType);
+            this.parentModel = this.metadataProvider.GetModelMapping(this.parentEdmEntityClrType);
 
             return this;
         }
@@ -87,7 +92,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
                 throw new InvalidOperationException("WithKey method should be called after OnTypes");
             }
 
-            this.parentKey = Helper.GetKey(rawParentKey, this.childModel, true).ToList();
+            this.parentKey = Helper.GetKey(rawParentKey, this.parentModel, false).ToList();
 
             return this;
         }
@@ -169,13 +174,16 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
             // Generate SQL
             var sql = Sql.Builder.Select(this.selectedFields.GetQueryColumnList()).From(this.childModel.TableName);
 
-            // Add necessary joins
-            Helper.PerformJoins(ref sql, this.childModel, this.relatedEntityModels);
+            // Add join with parent
+            sql = Helper.JoinWithParrent(sql, this.childModel, this.parentModel);
+
+            // Add related entity joins
+            sql = Helper.PerformJoins(sql, this.childModel, this.relatedEntityModels);
 
             // Add key selector
             var whereClause =
                 this.parentKey.Select(
-                    (kvp, ind) => StringUtilities.Invariant($"{this.childModel.TableName}.{this.childModel.ModelToColumnMappings[kvp.Key]}=@{ind}"))
+                    (kvp, ind) => StringUtilities.Invariant($"{this.parentModel.TableName}.{this.parentModel.ModelToColumnMappings[kvp.Key]}=@{ind}"))
                     .Aggregate((s, s1) => StringUtilities.Invariant($"{s} AND {s1}"));
 
             object[] filterArgs = null;
@@ -197,6 +205,7 @@ namespace AMSLLC.Listener.ODataService.Services.Implementations.Query
             var results = dbResults.Cast<IDictionary<string, object>>().ToArray();
 
             var fullKey = this.childModel.EntityConfiguration.FullKey;
+
             var dbQueryKey =
                 fullKey.Select(
                     s =>
