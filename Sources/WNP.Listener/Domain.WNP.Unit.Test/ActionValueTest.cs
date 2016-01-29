@@ -16,16 +16,19 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         /// <summary>
         /// Action value code is case sensitive, and incorrectly cased code should not be recognized.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "value", Justification = "Justified")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ActionValueCodeIsCaseSensitive()
         {
-            new ActionValue("r");
+            var value = new ActionValue("r");
+            value = null;
         }
 
         /// <summary>
         /// Wrong action code should not work.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "AMSLLC.Listener.Domain.WNP.ActionValue", Justification = "Justified")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void WrongActionCodeShouldNotWork()
@@ -36,6 +39,7 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         /// <summary>
         /// NULL, empty string or whitespace characters should not work
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "AMSLLC.Listener.Domain.WNP.ActionValue", Justification = "Justified")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void NullOrEmptyActionCodeShouldNotWork()

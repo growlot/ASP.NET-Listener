@@ -24,7 +24,7 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         {
             string actionBox = "R";
             string boxNumber = null;
-            this.ExecuteBoxNumberNegativeTest(actionBox, boxNumber);
+            ExecuteBoxNumberNegativeTest(actionBox, boxNumber);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         {
             var actionBox = "C";
             string boxNumber = "123";
-            this.ExecuteBoxNumberNegativeTest(actionBox, boxNumber);
+            ExecuteBoxNumberNegativeTest(actionBox, boxNumber);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         {
             var actionBox = "D";
             string boxNumber = "123";
-            this.ExecuteBoxNumberNegativeTest(actionBox, boxNumber);
+            ExecuteBoxNumberNegativeTest(actionBox, boxNumber);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         {
             string actionBox = "D";
             string boxNumber = null;
-            this.ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         {
             string actionBox = "E";
             string boxNumber = "123";
-            this.ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         {
             string actionBox = "E";
             string boxNumber = null;
-            this.ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
         }
 
         /// <summary>
@@ -92,66 +92,67 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         {
             string actionBox = "R";
             string boxNumber = "123";
-            this.ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
         }
 
-        private void ExecuteBoxNumberPositiveTest(string actionBox, string boxNumber)
-        {
-            var location = this.GetLocationMemento();
-            var businessAction = new BusinessActionMemento("Install Meter", "Test Program", "Test Program", "V", "V", location, "S", false, actionBox, "D", "D", "D", "D");
-            var workstation = this.GetWorkstation(businessAction, location);
-            workstation.PerformBusinessAction(this.GetEquipment(location), "Install Meter", boxNumber, string.Empty, null, null, null, this.GetLocation(location));
-        }
-
-        private void ExecuteBoxNumberNegativeTest(string actionBox, string boxNumber)
-        {
-            string actionName = "Install Meter";
-            var location = this.GetLocationMemento();
-            var businessAction = new BusinessActionMemento(actionName, "Test Program", "Test Program", "V", "V", location, "S", false, actionBox, "D", "D", "D", "D");
-            var workstation = this.GetWorkstation(businessAction, location);
-            workstation.PerformBusinessAction(this.GetEquipment(location), "Install Meter", boxNumber, null, null, null, null, this.GetLocation(location));
-        }
-
-        private Location GetLocation(IMemento locationMemento)
+        private static Location GetLocation(IMemento locationMemento)
         {
             var location = new Location();
             ((IOriginator)location).SetMemento(locationMemento);
             return location;
         }
 
-        private IMemento GetLocationMemento()
+        private static IMemento GetLocationMemento()
         {
             return new LocationMemento("BETHLEHEM", "A");
         }
 
-        private IMemento GetWorkstationMemento(List<IMemento> businessActions, IMemento location)
-        {
-            return new WorkstationMemento("CSS", businessActions, this.GetIncomingRules(location));
-        }
-
-        private IMemento GetEquipmentMemento(IMemento location)
+        private static IMemento GetEquipmentMemento(IMemento location)
         {
             return new EquipmentStateMemento("A001003111", "EM", "Test Program", location, "V", "V", 0, null, null, null, null, null);
         }
 
-        private EquipmentState GetEquipment(IMemento location)
+        private static IEnumerable<IncomingRuleMemento> GetIncomingRules(IMemento location)
+        {
+            var message = Properties.Resources.BusinessRuleMessage;
+            return new List<IncomingRuleMemento> { new IncomingRuleMemento("Test Program", true, "V", "V", location, "A", message) };
+        }
+
+        private static IMemento GetWorkstationMemento(List<IMemento> businessActions, IMemento location)
+        {
+            return new WorkstationMemento("CSS", businessActions, GetIncomingRules(location));
+        }
+
+        private static EquipmentState GetEquipment(IMemento location)
         {
             var equipment = new EquipmentState();
-            ((IOriginator)equipment).SetMemento(this.GetEquipmentMemento(location));
+            ((IOriginator)equipment).SetMemento(GetEquipmentMemento(location));
             return equipment;
         }
 
-        private Workstation GetWorkstation(IMemento businessAction, IMemento location)
+        private static Workstation GetWorkstation(IMemento businessAction, IMemento location)
         {
-            var memento = this.GetWorkstationMemento(new List<IMemento> { businessAction }, location);
+            var memento = GetWorkstationMemento(new List<IMemento> { businessAction }, location);
             var workstation = new Workstation();
             ((IOriginator)workstation).SetMemento(memento);
             return workstation;
         }
 
-        private IEnumerable<IncomingRuleMemento> GetIncomingRules(IMemento location)
+        private static void ExecuteBoxNumberPositiveTest(string actionBox, string boxNumber)
         {
-            return new List<IncomingRuleMemento> { new IncomingRuleMemento("Test Program", true, "V", "V", location, "A", "rule message") };
+            var location = GetLocationMemento();
+            var businessAction = new BusinessActionMemento("Install Meter", "Test Program", "Test Program", "V", "V", location, "S", false, actionBox, "D", "D", "D", "D");
+            var workstation = GetWorkstation(businessAction, location);
+            workstation.PerformBusinessAction(GetEquipment(location), "Install Meter", boxNumber, string.Empty, null, null, null, GetLocation(location));
+        }
+
+        private static void ExecuteBoxNumberNegativeTest(string actionBox, string boxNumber)
+        {
+            string actionName = "Install Meter";
+            var location = GetLocationMemento();
+            var businessAction = new BusinessActionMemento(actionName, "Test Program", "Test Program", "V", "V", location, "S", false, actionBox, "D", "D", "D", "D");
+            var workstation = GetWorkstation(businessAction, location);
+            workstation.PerformBusinessAction(GetEquipment(location), "Install Meter", boxNumber, null, null, null, null, GetLocation(location));
         }
     }
 }
