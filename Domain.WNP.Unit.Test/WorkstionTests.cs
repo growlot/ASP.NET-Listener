@@ -11,74 +11,231 @@
     [TestClass]
     public class WorkstionTests
     {
+        #region Box Number Test 
+
+        #region Negative Tests
+
         [TestMethod]
-        public void BoxNumberRequiredValueTest()
+        public void BoxNumberActionRequiredButValueIsNull()
+        {          
+            string actionBox = "R";
+            string boxNumber = null;            
+            string expectedMessage = "Can not perform business action '{0}' for workstation '{1}' becasue value not provided for required parameter '{2}'";
+            ExecuteBoxNumberNegativeTest(actionBox, boxNumber, expectedMessage);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionRequiredButValueIsEmpty()
         {
-            IMemento newLocation = new LocationMemento("BETHLEHEM", "A");
-            IMemento bAction = new BusinessActionMemento("Install Meter", "Test Program", "Test Program", "V", "V", newLocation, "S", false, "R", null, null, null, null);
-            IMemento incomingRule = new IncomingRuleMemento("Test Program", true, "V", "V", newLocation, "A", "rule message");
-            IMemento wsMemento = new WorkstationMemento("CSS", new List<IMemento> { bAction }, new List<IMemento> { incomingRule });
-            IMemento equipmentMemento = new EquipmentStateMemento("A001003111", "EM", "Test Program", newLocation, "V", "V", 0, null, null, null, null, null);
+            string actionBox = "R";
+            string boxNumber = string.Empty;
+            string expectedMessage = "Can not perform business action '{0}' for workstation '{1}' becasue value not provided for required parameter '{2}'";
+            ExecuteBoxNumberNegativeTest(actionBox, boxNumber, expectedMessage);
+        }
 
-            var location = new Location();
-            ((IOriginator)location).SetMemento(newLocation);
+        [TestMethod]
+        public void BoxNumberActionRequiredButValueIsWhitespace()
+        {
+            string actionBox = "R";
+            string boxNumber = "   ";
+            string expectedMessage = "Can not perform business action '{0}' for workstation '{1}' becasue value not provided for required parameter '{2}'";
+            ExecuteBoxNumberNegativeTest(actionBox, boxNumber, expectedMessage);
+        }
 
-            var equipment = new EquipmentState();
-            ((IOriginator)equipment).SetMemento(equipmentMemento);
+        [TestMethod]
+        public void BoxNumberActionClearedButValueIsProvided()
+        {           
+            var actionBox = "C";
+            string boxNumber = "123";
+            string expectedMessage = "Can not perform business action '{0}' for workstation '{1}' becasue value is provided for parameter '{2}' where action field is set to clear";
+            ExecuteBoxNumberNegativeTest(actionBox, boxNumber, expectedMessage);           
+        }      
 
-            var workstation = new Workstation();
-            ((IOriginator)workstation).SetMemento(wsMemento);
+        [TestMethod]
+        public void BoxNumberActionDisabledButValueIsProvided()
+        {
+            var actionBox = "D";
+            string boxNumber = "123";
+            string expectedMessage = "Can not perform business action '{0}' for workstation '{1}' becasue value is provided for parameter '{2}' where action field is set to disabled";
+            ExecuteBoxNumberNegativeTest(actionBox, boxNumber, expectedMessage);
+        }       
+
+        #endregion
+
+        #region Positive Tests       
+        [TestMethod]
+        public void BoxNumberActionNoneAndValueIsNull()
+        {
+            string actionBox = null;
+            string boxNumber = null;
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionNoneAndValueIsEmpty()
+        {
+            string actionBox = string.Empty;
+            string boxNumber = string.Empty;
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionNoneAndValueIsWhiteSpace()
+        {
+            string actionBox = " ";
+            string boxNumber = " ";
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionDisabledAndValueIsNull()
+        {
+            string actionBox = "D";
+            string boxNumber = null;
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionDisabledAndValueIsEmpty()
+        {
+            string actionBox = "D";
+            string boxNumber = string.Empty;
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionDisabledAndValueIsWhiteSpace()
+        {
+            string actionBox = "D";
+            string boxNumber = " ";
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionEnabledAndValueIsProvided()
+        {
+            string actionBox = "E";
+            string boxNumber = "123";
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionEnabledAndValueIsNull()
+        {
+            string actionBox = "E";
+            string boxNumber = null;
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionEnabledAndValueIsEmpty()
+        {
+            string actionBox = "E";
+            string boxNumber = string.Empty;
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionEnabledAndValueIsWhitespace()
+        {
+            string actionBox = "E";
+            string boxNumber = " ";
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        [TestMethod]
+        public void BoxNumberActionRequiredAndValueIsProvided()
+        {
+            string actionBox = "R";
+            string boxNumber = "123";
+            ExecuteBoxNumberPositiveTest(actionBox, boxNumber);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Supporting Functions for tests
+
+        private void ExecuteBoxNumberPositiveTest(string actionBox, string boxNumber)
+        {
+            var location = GetLocationMemento();
+            var businessAction = new BusinessActionMemento("Install Meter", "Test Program", "Test Program", "V", "V", location, "S", false, actionBox, null, null, null, null);
+            var workstation = GetWorkstation(businessAction, location);
 
             try
             {
-                workstation.PerformBusinessAction(equipment, "Install Meter", null, null, null, null, null, location);
+                workstation.PerformBusinessAction(GetEquipment(location), "Install Meter", boxNumber, "", null, null, null, GetLocation(location));
+                Assert.IsTrue(true);
+            }
+            catch
+            {
+                Assert.Fail();
+            }
+        }
+
+        private void ExecuteBoxNumberNegativeTest(string actionBox, string boxNumber, string expectedMessage)
+        {
+            string actionName = "Install Meter";  
+            var location = GetLocationMemento();
+            var businessAction = new BusinessActionMemento(actionName, "Test Program", "Test Program", "V", "V", location, "S", false, actionBox, null, null, null, null);
+            var workstation = GetWorkstation(businessAction, location);
+
+            try
+            {
+                workstation.PerformBusinessAction(GetEquipment(location), "Install Meter", boxNumber, null, null, null, null, GetLocation(location));
                 Assert.Fail();
             }
             catch (Exception ex)
             {
-                if (!(ex is ArgumentException))
-                {
-                    Assert.Fail();
-                }
-
-                var expected = "Can not perform business action '{0}' for workstation '{1}' becasue value not provided for required parameter '{2}'".FormatWith("Install Meter", workstation.Id, "boxNumber");
-                Assert.AreEqual(expected, ex.Message);
+               // string expectedMessage = "Can not perform business action '{0}' for workstation '{1}' becasue value not provided for required parameter '{2}'");
+                Assert.IsTrue(ex is ArgumentException);                
+                Assert.IsTrue(ex.Message.ToLower().Contains(expectedMessage.FormatWith(actionName, workstation.Id, nameof(boxNumber)).ToLower()));
             }
         }
 
-        [TestMethod]
-        public void ClearBoxNumberActionTest()
+        private Location GetLocation(IMemento locationMemento)
         {
-            IMemento newLocation = new LocationMemento("BETHLEHEM", "A");
-            IMemento bAction = new BusinessActionMemento("Install Meter", "Test Program", "Test Program", "V", "V", newLocation, "S", false, "C", null, null, null, null);
-            IMemento incomingRule = new IncomingRuleMemento("Test Program", true, "V", "V", newLocation, "A", "rule message");
-            IMemento wsMemento = new WorkstationMemento("CSS", new List<IMemento> { bAction }, new List<IMemento> { incomingRule });
-            IMemento equipmentMemento = new EquipmentStateMemento("A001003111", "EM", "Test Program", newLocation, "V", "V", 0, "123456", null, null, null, null);
-
             var location = new Location();
-            ((IOriginator)location).SetMemento(newLocation);
-
-            var equipment = new EquipmentState();
-            ((IOriginator)equipment).SetMemento(equipmentMemento);
-
-            var workstation = new Workstation();
-            ((IOriginator)workstation).SetMemento(wsMemento);
-
-            try
-            {
-                workstation.PerformBusinessAction(equipment, "Install Meter", "boxnumber", null, null, null, null, location);
-                Assert.Fail();
-            }
-            catch (Exception ex)
-            {
-                if (!(ex is ArgumentException))
-                {
-                    Assert.Fail();
-                }
-                
-                var expected = "Can not perform business action '{0}' for workstation '{1}' becasue value is provided for parameter '{2}' where action field is set to clear".FormatWith("Install Meter", workstation.Id, "boxNumber");
-                Assert.AreEqual(expected, ex.Message);
-            }
+            ((IOriginator)location).SetMemento(locationMemento);
+            return location;
         }
+
+        private IMemento GetLocationMemento()
+        {
+            return new LocationMemento("BETHLEHEM", "A");
+        }
+
+        private IMemento GetWorkstationMemento(List<IMemento> businessActions, IMemento location)
+        {
+            return new WorkstationMemento("CSS", businessActions, GetIncomingRules(location));
+        }
+
+        private IMemento GetEquipmentMemento(IMemento location)
+        {
+            return new EquipmentStateMemento("A001003111", "EM", "Test Program", location, "V", "V", 0, null, null, null, null, null);
+        }
+
+        private EquipmentState GetEquipment(IMemento location)
+        {
+            var equipment = new EquipmentState();
+            ((IOriginator)equipment).SetMemento(GetEquipmentMemento(location));
+            return equipment;
+        }
+
+        private Workstation GetWorkstation(IMemento businessAction, IMemento location)
+        {
+            var memento = GetWorkstationMemento(new List<IMemento> { businessAction }, location);
+            var workstation = new Workstation();
+            ((IOriginator)workstation).SetMemento(memento);
+            return workstation;
+        }
+
+        private IEnumerable<IncomingRuleMemento> GetIncomingRules(IMemento location)
+        {
+            return new List<IncomingRuleMemento> { new IncomingRuleMemento("Test Program", true, "V", "V", location, "A", "rule message") };
+        }
+
+        #endregion
     }
 }
