@@ -1,101 +1,54 @@
-﻿namespace AMSLLC.Listener.Domain.WNP.Unit.Test
+﻿// <copyright file="ActionValueTest.cs" company="Advanced Metering Services LLC">
+//     Copyright (c) Advanced Metering Services LLC. All rights reserved.
+// </copyright>
+
+namespace AMSLLC.Listener.Domain.WNP.Unit.Test
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
-    using System.Collections.Generic;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Summary description for ActionValueTest
+    /// Tests for <see cref="ActionValue"/> value object.
     /// </summary>
     [TestClass]
     public class ActionValueTest
     {
-
-
+        /// <summary>
+        /// Action value code is case sensitive, and incorrectly cased code should not be recognized.
+        /// </summary>
         [TestMethod]
-        public void CreateActionValueFromNull()
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ActionValueCodeIsCaseSensitive()
         {
-            var actionValue = new ActionValue(null);
-            Assert.AreEqual("D", actionValue.Code);
+            new ActionValue("r");
         }
 
+        /// <summary>
+        /// Wrong action code should not work.
+        /// </summary>
         [TestMethod]
-        public void EmptyStringValueTest()
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void WrongActionCodeShouldNotWork()
         {
-            var actionValue = new ActionValue(string.Empty);
-            Assert.AreEqual(ActionValue.Disabled, actionValue);
+            new ActionValue("B");
         }
 
+        /// <summary>
+        /// Action values created from static methods should match created from code.
+        /// </summary>
         [TestMethod]
-        public void CaseSensitiveActionValueCreation()
-        {
-            try
-            {
-                var actionValue = new ActionValue("r");
-                Assert.Fail();
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.GetType(), typeof(ArgumentOutOfRangeException));
-            }
-        }
-
-        [TestMethod]
-        public void OutOfRangeValueTest()
-        {
-            try
-            {
-                var actionValue = new ActionValue("test");
-                Assert.Fail();
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.GetType(), typeof(ArgumentOutOfRangeException));
-            }
-        }
-
-        [TestMethod]
-        public void OutOfRangeMessageTest()
-        {
-            var supportedActions = new List<string>(new[] { "D", "E", "R", "C" });
-            try
-            {
-                var actionValue = new ActionValue("dummy");
-                Assert.Fail();
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.GetType(), typeof(ArgumentOutOfRangeException));
-                var expectedMessage = "Action value is not recognized. Supported values are: {0}".FormatWith(string.Join(",", supportedActions.ToArray()));
-                Assert.IsTrue(ex.Message.Contains(expectedMessage));
-            }
-        }
-
-        [TestMethod]
-        public void CompareValueTest()
+        public void ActionValuesCreatedFromStaticMethodsShouldMatchCreatedFromCode()
         {
             var actionValue = new ActionValue("R");
             Assert.AreEqual(ActionValue.Required, actionValue);
-        }
 
-        [TestMethod]
-        public void DisabledActionValueTest()
-        {
-            var actionValue = new ActionValue("D");
+            actionValue = new ActionValue("D");
             Assert.AreEqual(ActionValue.Disabled, actionValue);
-        }
 
-        [TestMethod]
-        public void EnabledActionValueTest()
-        {
-            var actionValue = new ActionValue("E");
+            actionValue = new ActionValue("E");
             Assert.AreEqual(ActionValue.Enabled, actionValue);
-        }
 
-        [TestMethod]
-        public void ClearActionValueTest()
-        {
-            var actionValue = new ActionValue("C");
+            actionValue = new ActionValue("C");
             Assert.AreEqual(ActionValue.Clear, actionValue);
         }
     }
