@@ -34,6 +34,18 @@ namespace AMSLLC.Listener.Domain.WNP.Unit.Test
         }
 
         /// <summary>
+        /// NULL, empty string or whitespace characters should not work
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void NullOrEmptyActionCodeShouldNotWork()
+        {
+            new ActionValue(null);
+            new ActionValue(string.Empty);
+            new ActionValue("  ");
+        }
+
+        /// <summary>
         /// Action values created from static methods should match created from code.
         /// </summary>
         [TestMethod]

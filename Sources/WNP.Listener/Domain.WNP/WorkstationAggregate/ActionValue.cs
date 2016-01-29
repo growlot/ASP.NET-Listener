@@ -21,11 +21,6 @@ namespace AMSLLC.Listener.Domain.WNP
         /// <param name="actionValue">The value of action to take place.</param>
         public ActionValue(string actionValue)
         {
-            if (string.IsNullOrWhiteSpace(actionValue))
-            {
-                actionValue = "D";
-            }
-
             if (!supportedActions.Contains(actionValue))
             {
                 throw new ArgumentOutOfRangeException(nameof(actionValue), "Action value is not recognized. Supported values are: {0}".FormatWith(string.Join(",", supportedActions.ToArray())));
