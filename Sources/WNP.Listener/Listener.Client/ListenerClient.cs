@@ -150,6 +150,7 @@ namespace AMSLLC.Listener.Client
         /// <typeparam name="TRequest">The type of the request.</typeparam>
         /// <param name="request">The request.</param>
         /// <returns>The unique transaction key.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Direct return of the async method for simplicity")]
         public virtual Task<IEnumerable<Guid>> OpenTransactionAsync<TRequest>(TRequest request)
             where TRequest : BaseListenerRequestMessage
         {
