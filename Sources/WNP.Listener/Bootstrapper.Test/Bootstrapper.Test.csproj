@@ -168,6 +168,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationService.Test\ApplicationService.Test.csproj">
+      <Project>{E484D671-EB70-42AE-ADAA-2CCF16FF60EF}</Project>
+      <Name>ApplicationService.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ApplicationService\ApplicationService.csproj">
       <Project>{6B540066-84AB-4D63-81A6-9C724AEF039F}</Project>
       <Name>ApplicationService</Name>
@@ -211,6 +215,10 @@
     <ProjectReference Include="..\ODataService\ODataService.csproj">
       <Project>{28DE87B5-514B-4996-B65A-9D8F9E4578E0}</Project>
       <Name>ODataService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistence.Listener\Persistence.Listener.csproj">
+      <Project>{5A7FEA99-BB93-4BDA-91AE-2DDEC17E3D21}</Project>
+      <Name>Persistence.Listener</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository.Listener\Repository.Listener.csproj">
       <Project>{e0cb7a0f-6065-4abd-bf98-c98cfaa4230d}</Project>

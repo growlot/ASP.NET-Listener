@@ -59,6 +59,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     CompanyCode = this.CompanyCode,
                     OperationKey = parameters["OperationKey"]?.ToString(),
                     EntityName = parameters["EntityCategory"]?.ToString(),
+                    OperationTransactionIdentifier = parameters.ContainsKey("OperationTransactionIdentifier") ? parameters["OperationTransactionIdentifier"]?.ToString() : null,
                     SourceApplicationKey = this.ApplicationKey,
                     Data = parameters["Body"]?.ToString(),
                     User = this.User?.Identity.Name

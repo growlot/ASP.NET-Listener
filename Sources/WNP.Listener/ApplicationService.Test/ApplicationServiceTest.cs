@@ -217,6 +217,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 1,
                 Guid.Parse(recordKey),
                 1,
+                false,
                 new[]
                 {
                     new IntegrationEndpointConfigurationMemento(
@@ -583,6 +584,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         0,
                         Guid.Parse(recordKey),
                         0,
+                        false,
                         new[]
                         {
                             new IntegrationEndpointConfigurationMemento(
@@ -733,6 +735,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         0,
                         Guid.Parse(recordKey),
                         0,
+                        false,
                         new[]
                         {
                             new IntegrationEndpointConfigurationMemento(
@@ -923,6 +926,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         0,
                         Guid.Parse(recordKey),
                         0,
+                        false,
                         new[]
                         {
                             new IntegrationEndpointConfigurationMemento(
@@ -1138,6 +1142,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         0,
                         Guid.Parse(recordKey),
                         0,
+                        false,
                         new[]
                         {
                             new IntegrationEndpointConfigurationMemento(
@@ -1234,6 +1239,7 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 0,
                 recordKey,
                 0,
+                false,
                 new[]
                 {
                     new IntegrationEndpointConfigurationMemento(

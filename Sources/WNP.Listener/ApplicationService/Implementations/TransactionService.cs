@@ -29,9 +29,9 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         private const string BatchEntityCategory = "Batch";
 
         /// <inheritdoc/>
-        public async Task<Guid> Open(OpenTransactionCommand requestMessage)
+        public async Task<Guid[]> Open(OpenTransactionCommand requestMessage)
         {
-            Guid returnValue = Guid.Empty;
+            List<Guid> returnValue = new List<Guid>();
             using (var scope = ApplicationServiceScope.Create())
             {
                 var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
@@ -50,47 +50,50 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     requestMessage.EntityName);
 
                 var enabledOperations = await transactionRepository.GetEnabledEntityOperations();
-                var enabledOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
+                var enabledOperation = enabledOperations.Where(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.OperationName, requestMessage.OperationKey, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.EntityName, requestMessage.EntityName, StringComparison.InvariantCulture) == 0);
 
-                var memento = new TransactionRegistryMemento(
-                    0,
-                    Guid.Empty,
-                    null,
-                    null,
-                    requestMessage.CompanyCode,
-                    requestMessage.SourceApplicationKey,
-                    requestMessage.OperationKey,
-                    TransactionStatusType.Pending,
-                    requestMessage.User,
-                    scope.ScopeCreated,
-                    null,
-                    requestMessage.Data,
-                    null,
-                    null,
-                    enabledOperation.EnabledOperationId,
-                    null);
+                foreach (EntityOperationLookup entityOperationLookup in enabledOperation)
+                {
+                    var memento = new TransactionRegistryMemento(
+                   0,
+                   Guid.Empty,
+                   null,
+                   null,
+                   requestMessage.CompanyCode,
+                   requestMessage.SourceApplicationKey,
+                   requestMessage.OperationKey,
+                   TransactionStatusType.Pending,
+                   requestMessage.User,
+                   scope.ScopeCreated,
+                   null,
+                   requestMessage.Data,
+                   null,
+                   null,
+                   entityOperationLookup.EnabledOperationId,
+                   null);
 
-                var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
-                ((IOriginator)transactionRegistry).SetMemento(memento);
+                    var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
+                    ((IOriginator)transactionRegistry).SetMemento(memento);
 
-                var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EntityCategoryOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
-                  {
-                      var item = new FieldConfiguration();
-                      ((IOriginator)item).SetMemento(s);
-                      return item;
-                  }));
+                    var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EntityCategoryOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
+                    {
+                        var item = new FieldConfiguration();
+                        ((IOriginator)item).SetMemento(s);
+                        return item;
+                    }));
 
-                transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
-                Log.Logger.Information("Opening transaction {0}", transactionRegistry.RecordKey);
-                await transactionRepository.CreateTransactionRegistryAsync(transactionRegistry);
+                    transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
+                    Log.Logger.Information("Opening transaction {0}", transactionRegistry.RecordKey);
+                    await transactionRepository.CreateTransactionRegistryAsync(transactionRegistry);
 
-                returnValue = transactionRegistry.RecordKey;
+                    returnValue.Add(transactionRegistry.RecordKey);
+                }
             }
 
-            return returnValue;
+            return returnValue.ToArray();
         }
 
         /// <summary>
@@ -120,7 +123,7 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                 foreach (BatchTransactionEntry transaction in requestMessage.Batch)
                 {
                     var enabledChildOperation =
-                        enabledOperations.Single(
+                        enabledOperations.Where(
                             s =>
                                 string.Compare(
                                     s.ApplicationKey,
@@ -139,7 +142,9 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                                     transaction.EntityCategory,
                                     StringComparison.InvariantCulture) == 0);
 
-                    batch.Add(new TransactionRegistryMemento(
+                    foreach (EntityOperationLookup entityOperationLookup in enabledChildOperation)
+                    {
+                        batch.Add(new TransactionRegistryMemento(
                         0,
                         Guid.Empty,
                         transaction.Priority,
@@ -154,8 +159,9 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                         transaction.Data,
                         null,
                         null,
-                        enabledChildOperation.EnabledOperationId,
+                        entityOperationLookup.EnabledOperationId,
                         null));
+                    }
                 }
 
                 var memento = new TransactionRegistryMemento(

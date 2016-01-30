@@ -100,6 +100,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public TransactionStatusType Status { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether if transaction should be automaticaly succeeded if delivered
+        /// </summary>
+        /// <value>The automatic complete.</value>
+        public bool AutoSucceed { get; private set; }
+
+        /// <summary>
         /// Retries execution of the transaction
         /// </summary>
         /// <returns>System.Threading.Tasks.Task.</returns>
@@ -154,6 +160,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.EntityCategoryOperationId = myMemento.EntityCategoryOperationId;
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
             this.Data = myMemento.Data;
+            this.AutoSucceed = myMemento.AutoSucceed;
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(s =>
             {
                 var itm = new FieldConfiguration();

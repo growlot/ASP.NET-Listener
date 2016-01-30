@@ -17,6 +17,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using System.Threading;
     using System.Threading.Tasks;
     using ApplicationService;
+    using ApplicationService.Test;
     using Communication.Jms;
     using Core;
     using Core.Ninject.Test;
@@ -27,6 +28,9 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
+    using Persistence.Listener;
+    using Persistence.Listener.Models;
+    using Repository;
     using Repository.Listener;
     using Repository.WNP;
     using Repository.WNP.Model;
@@ -37,6 +41,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
     {
         private const string CompanyCode = "PPL";
         private const string CompanyId = "0";
+        private const string ApplicationCode = "dde3ff6d-e368-4427-b75e-6ec47183f88e";
         private static TestServer server;
 
         [ClassInitialize]
@@ -89,7 +94,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
             var responseMessage = await OpenTransaction(server, entityKey);
-            Assert.AreEqual(nextKey, responseMessage);
+            Assert.AreEqual(1, responseMessage.Length);
+            Assert.AreEqual(nextKey, responseMessage.Single());
 
             await ProcessTransaction(server, nextKey);
             communicationHandler.Verify(
@@ -126,18 +132,19 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var transactionRecordKey1 = await OpenTransaction(server, entityKey);
-            var transactionRecordKey2 = await OpenTransaction(server, entityKey);
+            var transactionRecordKeys1 = await OpenTransaction(server, entityKey);
+            var transactionRecordKeys2 = await OpenTransaction(server, entityKey);
+            Assert.AreEqual(1, transactionRecordKeys1.Length);
+            Assert.AreEqual(1, transactionRecordKeys2.Length);
+            await ProcessTransaction(server, transactionRecordKeys1.Single());
+            await SucceedTransaction(server, transactionRecordKeys1.Single());
 
-            await ProcessTransaction(server, transactionRecordKey1);
-            await SucceedTransaction(server, transactionRecordKey1);
+            await ProcessTransaction(server, transactionRecordKeys2.Single());
 
-            await ProcessTransaction(server, transactionRecordKey2);
-
-            var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKey1);
+            var transactionStatusId1 = await GetTransactionStatus(server, transactionRecordKeys1.Single());
             Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId1);
 
-            var transactionStatusId2 = await GetTransactionStatus(server, transactionRecordKey2);
+            var transactionStatusId2 = await GetTransactionStatus(server, transactionRecordKeys2.Single());
             Assert.AreEqual(TransactionStatusType.Skipped, (TransactionStatusType)transactionStatusId2);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
@@ -158,13 +165,13 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var recordKey = await OpenTransaction(server, entityKey);
+            var recordKeys = await OpenTransaction(server, entityKey);
+            Assert.AreEqual(1, recordKeys.Length);
+            await ProcessTransaction(server, recordKeys.Single());
 
-            await ProcessTransaction(server, recordKey);
+            await FailTransaction(server, recordKeys.Single(), "Test Failure Message", "Test Failure Details");
 
-            await FailTransaction(server, recordKey, "Test Failure Message", "Test Failure Details");
-
-            var transactionStatusId1 = await GetTransactionStatus(server, recordKey);
+            var transactionStatusId1 = await GetTransactionStatus(server, recordKeys.Single());
             Assert.AreEqual(TransactionStatusType.Failed, (TransactionStatusType)transactionStatusId1);
 
             communicationHandler.Verify(s => s.Handle(It.IsAny<TransactionDataReady>(), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()), Times.Once);
@@ -518,9 +525,109 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
 
             var responseMessage = await OpenTransaction(server, entityKey);
-            Assert.AreEqual(nextKey, responseMessage, $"Expected {nextKey}, got {responseMessage} with entity key as {entityKey}");
+            Assert.AreEqual(1, responseMessage.Length);
+            Assert.AreEqual(nextKey, responseMessage.Single(), $"Expected {nextKey}, got {responseMessage} with entity key as {entityKey}");
 
             await ProcessTransaction(server, nextKey, HttpStatusCode.InternalServerError);
+        }
+
+        [TestMethod]
+        public async Task MultipleEntityCategoryOperationsTransactionOpenWithTransactionKeyTest()
+        {
+            var di = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(() => Guid.NewGuid().ToString("D"));
+            var entityKey = Guid.NewGuid().ToString("D");
+            Assert.Inconclusive("Implement this");
+            await Task.FromResult(0);
+        }
+
+        [TestMethod]
+        public async Task MultipleEntityCategoryOperationsTransactionOpenAndIndividualSucceedTest()
+        {
+            var di = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            //var persistenceAdapter = new Mock<IPersistenceAdapter>();
+            //di.Rebind(persistenceAdapter.Object);
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            var nextKey = Guid.NewGuid();
+            var nextKey1 = Guid.NewGuid();
+            var keyStack = new Queue<string>();
+            keyStack.Enqueue(nextKey.ToString("D"));
+            keyStack.Enqueue(nextKey1.ToString("D"));
+
+
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(keyStack.Dequeue);
+            di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
+
+            //var repo = new Mock<TransactionRepository>(di.ResolveType<IPersistenceAdapter>()) { CallBase = true };
+            //var repoDetailed = repo.As<IDetailedTransactionRepository>();
+
+            //repoDetailed.Setup(s => s.SelectTransactionsAsync(It.IsAny<Guid>()))
+            //    .ReturnsAsync(
+            //        new List<TransactionRegistryEntry>
+            //        {
+            //            new TransactionRegistryEntry() { EntityCategoryOperation = new EntityCategoryOperationEntity(), TransactionRegistryEntity = new TransactionRegistryEntity()}
+            //        });
+
+            //repoDetailed.Setup(s => s.SelectChildTransactionsAsync(It.IsAny<Guid>()))
+            //    .ReturnsAsync(
+            //        new List<TransactionRegistryEntry>());
+
+            //repoDetailed.Setup(s => s.GetFieldConfigurationsAsync(It.IsAny<string>(), It.IsAny<string>()))
+            //    .ReturnsAsync(new Dictionary<string, IEnumerable<IMemento>>());
+
+            //repoDetailed.Setup(s => s.GetEnabledEntityOperations()).ReturnsAsync(
+            //    new List<EntityOperationLookup>()
+            //    {
+            //        new EntityOperationLookup(CompanyCode, ApplicationCode, "Install", "EM", 1, false, Guid.NewGuid()),
+            //        new EntityOperationLookup(CompanyCode, ApplicationCode, "Install", "EM", 1, false, Guid.NewGuid())
+            //    });
+
+            //repoDetailed.Setup(s => s.GetRegistryEntry(It.IsAny<Guid>()))
+            //    .ReturnsAsync(
+            //        new TransactionRegistryMemento(
+            //            1,
+            //            Guid.NewGuid(),
+            //            0,
+            //            string.Empty,
+            //            CompanyCode,
+            //            ApplicationCode,
+            //            "Install",
+            //            TransactionStatusType.Pending,
+            //            string.Empty,
+            //            DateTime.UtcNow,
+            //            DateTime.UtcNow,
+            //            string.Empty,
+            //            string.Empty,
+            //            string.Empty,
+            //            1,
+            //            new List<TransactionRegistryMemento>()));
+
+            //di.Rebind<IDependencyInjectionModule>(
+            //   new AppServiceTestContainerInitializer(repoDetailed.Object))
+            //   .Named("ApplicationScopeModule");
+            //di.Rebind<ITransactionRepository>(repo.Object);
+
+            var entityKey = Guid.NewGuid().ToString("D");
+
+            var communicationHandlerMock = new Mock<ICommunicationHandler>();// new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            //var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+            di.Rebind<ICommunicationHandler>(communicationHandlerMock.Object).Named("communication-jms");
+
+            var domainBuilderMock = new Mock<DomainBuilder> { CallBase = true };
+            di.Rebind<IDomainBuilder>(domainBuilderMock.Object);
+
+            var responseMessage = await OpenTransaction(server, entityKey, "EM", "Test");
+            Assert.AreEqual(2, responseMessage.Length);
+            Assert.IsTrue(responseMessage.Contains(nextKey));
+            Assert.IsTrue(responseMessage.Contains(nextKey1));
+
+            await ProcessTransaction(server, nextKey);
+            await ProcessTransaction(server, nextKey1);
+
+            //repo.Verify(s => s.SelectTransactionsAsync(It.IsAny<Guid>()), Times.Once);
+            //repo.Verify(s => s.SelectChildTransactionsAsync(It.IsAny<Guid>()), Times.Once);
+            await Task.FromResult(0);
         }
 
         #endregion
@@ -534,7 +641,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                     server.CreateRequest($"listener/TransactionRegistry({nextKey})/AMSLLC.Listener.Succeed()")
                         .AddHeader("AMS-Company", CompanyCode)
                         .AddHeader("AMS-CompanyId", CompanyId)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
+                        .AddHeader("AMS-Application", ApplicationCode).PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, succeedResponse.StatusCode);
         }
@@ -565,12 +672,12 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         mediaType))
                         .AddHeader("AMS-Company", CompanyCode)
                         .AddHeader("AMS-CompanyId", CompanyId)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
+                        .AddHeader("AMS-Application", ApplicationCode).PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, failResponse.StatusCode);
         }
 
-        private static async Task<Guid> OpenTransaction(TestServer server, string entityKey)
+        private static async Task<Guid[]> OpenTransaction(TestServer server, string entityKey, string entityCategory = "EM", string operationKey = "Install")
         {
             var settings = new JsonSerializerSettings
             {
@@ -582,8 +689,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             var requestMessage = new OpenTransactionWrapper<InstallMeterRequestMessage>(new InstallMeterRequestMessage
             {
                 Test = "A1-S2-D3",
-                EntityCategory = "EM",
-                OperationKey = "Install",
+                EntityCategory = entityCategory,
+                OperationKey = operationKey,
                 EntityKey = entityKey
             });
             HttpResponseMessage response =
@@ -599,14 +706,14 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         mediaType))
                         .AddHeader("AMS-Company", CompanyCode)
                         .AddHeader("AMS-CompanyId", CompanyId)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
+                        .AddHeader("AMS-Application", ApplicationCode)
                         .PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             string responseBody = await response.Content.ReadAsStringAsync();
             var expando = JsonConvert.DeserializeObject<ExpandoObject>(responseBody) as IDictionary<string, object>;
-            var responseMessage = Guid.Parse(expando["value"].ToString());
-            return responseMessage;
+            var responseMessage = ((List<Object>)expando["value"]).Select(s => Guid.Parse(s.ToString()));
+            return responseMessage.ToArray();
         }
 
         private static async Task<Guid> OpenWnpBatchTransaction(TestServer server, string batchKey)
@@ -629,7 +736,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                         //         mediaType))
                         .AddHeader("AMS-Company", CompanyCode)
                         .AddHeader("AMS-CompanyId", CompanyId)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
+                        .AddHeader("AMS-Application", ApplicationCode)
                         .PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
@@ -718,7 +825,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                         mediaType))
                         .AddHeader("AMS-Company", CompanyCode)
                         .AddHeader("AMS-CompanyId", CompanyId)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e")
+                        .AddHeader("AMS-Application", ApplicationCode)
                         .PostAsync();
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
@@ -734,7 +841,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 await
                     server.CreateRequest($"listener/TransactionRegistry({nextKey})/AMSLLC.Listener.Process()")
                         .AddHeader("AMS-Company", CompanyCode)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").PostAsync();
+                        .AddHeader("AMS-Application", ApplicationCode).PostAsync();
 
             Assert.AreEqual(expectedCode, processResponse.StatusCode);
         }
@@ -746,7 +853,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                     server.CreateRequest($"listener/TransactionRegistry?$filter=RecordKey%20eq%20{nextKey}")
                         .AddHeader("AMS-Company", CompanyCode)
                         .AddHeader("AMS-CompanyId", CompanyId)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
+                        .AddHeader("AMS-Application", ApplicationCode).GetAsync();
             string rstr = await registryEntry.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, registryEntry.StatusCode, rstr);
 
@@ -763,7 +870,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 await
                     server.CreateRequest($"listener/TransactionRegistry?$filter=BatchKey%20eq%20{nextKey}")
                         .AddHeader("AMS-Company", CompanyCode)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
+                        .AddHeader("AMS-Application", ApplicationCode).GetAsync();
             string rstr = await registryEntry.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, registryEntry.StatusCode, rstr);
 
@@ -786,7 +893,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                     server.CreateRequest($"listener/TransactionMessageData?$filter=RecordKey%20eq%20{nextKey}")
                         .AddHeader("AMS-Company", CompanyCode)
                         .AddHeader("AMS-CompanyId", CompanyId)
-                        .AddHeader("AMS-Application", "dde3ff6d-e368-4427-b75e-6ec47183f88e").GetAsync();
+                        .AddHeader("AMS-Application", ApplicationCode).GetAsync();
             string rstr = await registryEntry.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, registryEntry.StatusCode, rstr);
 

@@ -53,5 +53,11 @@ namespace AMSLLC.Listener.Client.Message
         /// The transaction date.
         /// </value>
         public DateTime? TransactionDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the operation.
+        /// </summary>
+        /// <value>The name of the operation.</value>
+        public string OperationName { get; set; }
     }
 }

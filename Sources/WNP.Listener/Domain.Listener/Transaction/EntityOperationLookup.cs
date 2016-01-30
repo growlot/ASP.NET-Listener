@@ -4,6 +4,8 @@
 
 namespace AMSLLC.Listener.Domain.Listener.Transaction
 {
+    using System;
+
     /// <summary>
     /// Enabled Operation lookup entry
     /// </summary>
@@ -17,19 +19,37 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="operationName">Name of the operation.</param>
         /// <param name="entityName">Name of the entity.</param>
         /// <param name="enabledOperationId">The enabled operation identifier.</param>
+        /// <param name="autoSucceed">if set to <c>true</c> [automatic succeed].</param>
+        /// <param name="operationTransactionKey">The operation transaction key.</param>
         public EntityOperationLookup(
             string companyCode,
             string applicationKey,
             string operationName,
             string entityName,
-            int enabledOperationId)
+            int enabledOperationId,
+            bool autoSucceed,
+            Guid operationTransactionKey)
         {
             this.CompanyCode = companyCode;
             this.ApplicationKey = applicationKey;
             this.OperationName = operationName;
             this.EntityName = entityName;
             this.EnabledOperationId = enabledOperationId;
+            this.AutoSucceed = autoSucceed;
+            this.OperationTransactionKey = operationTransactionKey;
         }
+
+        /// <summary>
+        /// Gets or sets the operation transaction key.
+        /// </summary>
+        /// <value>The operation transaction key.</value>
+        public Guid OperationTransactionKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [automatic succeed].
+        /// </summary>
+        /// <value><c>true</c> if [automatic succeed]; otherwise, <c>false</c>.</value>
+        public bool AutoSucceed { get; set; }
 
         /// <summary>
         /// Gets the name of the entity.

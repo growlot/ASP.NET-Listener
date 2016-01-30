@@ -140,12 +140,16 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.CreatedDateTime = createdDateTime;
             if (fieldConfigurations != null)
             {
-                var hashElements =
-                    this.ChildTransactions
-                        .ToDictionary<ChildTransactionRegistryEntity, object, FieldConfigurationCollection>(
-                            childTransactionRegistryEntity => childTransactionRegistryEntity.Data,
-                            childTransactionRegistryEntity =>
-                               new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId]));
+                Dictionary<object, FieldConfigurationCollection> hashElements = new Dictionary<object, FieldConfigurationCollection>();
+                foreach (ChildTransactionRegistryEntity childTransactionRegistryEntity in this.ChildTransactions)
+                {
+                    if (!hashElements.ContainsKey(childTransactionRegistryEntity.Data))
+                    {
+                        hashElements.Add(
+                            childTransactionRegistryEntity.Data,
+                            new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId]));
+                    }
+                }
 
                 if (!hashElements.Any() && fieldConfigurations.ContainsKey(this.EntityCategoryOperationId))
                 {

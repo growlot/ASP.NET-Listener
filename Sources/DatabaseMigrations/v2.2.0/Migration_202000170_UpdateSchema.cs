@@ -57,6 +57,32 @@ namespace AMSLLC.Listener.DatabaseMigrations
             this.Update.Table("EntityCategoryOperation").Set(new { CompanyId = 0 }).AllRows();
 
             this.Alter.Table("EntityCategoryOperation").AlterColumn("CompanyId").AsInt32().NotNullable();
+
+            this.Alter.Table("EntityCategoryOperation")
+                .AddColumn("OperationTransactionKey")
+                .AsGuid()
+                .NotNullable()
+                .WithDefault(SystemMethods.NewGuid);
+
+            this.Alter.Table("EntityCategoryOperation")
+                .AddColumn("OperationTransactionName")
+                .AsString()
+                .Nullable();
+
+            this.Alter.Table("EntityCategoryOperation")
+                .AddColumn("AutoSucceed")
+                .AsBoolean()
+                .NotNullable().WithDefaultValue(false);
+
+            this.Insert.IntoTable("EntityCategoryOperation").Row(new
+            {
+                EntityCategoryId = 1,
+                EnabledOperationId = 4,
+                FieldConfigurationId = 1,
+                CompanyId = 0,
+                OperationTransactionName = "Test As Left",
+                AutoSucceed = false
+            });
         }
 
         /// <summary>

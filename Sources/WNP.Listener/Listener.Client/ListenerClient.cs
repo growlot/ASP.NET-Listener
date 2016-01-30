@@ -439,6 +439,11 @@ namespace AMSLLC.Listener.Client
                     baseExpression = baseExpression.Compose(f => f.EntityKey == filter.EntityKey, Expression.AndAlso);
                 }
 
+                if (!string.IsNullOrWhiteSpace(filter.OperationName))
+                {
+                    baseExpression = baseExpression.Compose(f => f.OperationName == filter.OperationName, Expression.AndAlso);
+                }
+
                 if (!string.IsNullOrWhiteSpace(filter.BatchNumber))
                 {
                     baseExpression = baseExpression.Compose(

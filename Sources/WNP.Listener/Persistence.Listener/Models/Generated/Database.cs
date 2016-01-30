@@ -19,7 +19,7 @@ using System.Web;
 
 namespace AMSLLC.Listener.Persistence.Listener
 {
-    using Poco;
+	using Poco;
 
 	[CLSCompliant(false)]
 	public partial class ListenerDB : Database
@@ -428,6 +428,9 @@ namespace AMSLLC.Listener.Persistence.Listener
 		[Column] public int EnabledOperationId { get; set; }
 		[Column] public int? FieldConfigurationId { get; set; }
 		[Column] public int CompanyId { get; set; }
+		[Column] public Guid OperationTransactionKey { get; set; }
+		[Column] public string OperationTransactionName { get; set; }
+		[Column] public bool AutoSucceed { get; set; }
 	}
     
 	[TableName("Endpoint")]

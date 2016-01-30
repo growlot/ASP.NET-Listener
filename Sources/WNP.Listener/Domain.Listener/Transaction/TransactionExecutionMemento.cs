@@ -21,6 +21,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="transactionId">The transaction identifier.</param>
         /// <param name="recordKey">The transaction key.</param>
         /// <param name="entityCategoryOperationId">The entity category operation identifier.</param>
+        /// <param name="autoSucceed">The automatic succeed.</param>
         /// <param name="endpointConfiguration">The endpoint configuration.</param>
         /// <param name="fieldConfigurations">The field configurations.</param>
         /// <param name="childTransactions">The child transactions.</param>
@@ -32,6 +33,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             int transactionId,
             Guid recordKey,
             int entityCategoryOperationId,
+            bool autoSucceed,
             IEnumerable<IntegrationEndpointConfigurationMemento> endpointConfiguration,
             IEnumerable<FieldConfigurationMemento> fieldConfigurations,
             IEnumerable<TransactionExecutionMemento> childTransactions,
@@ -50,6 +52,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.DuplicateRecords = new ReadOnlyCollection<Guid>(new List<Guid>(duplicates));
             this.Status = status;
             this.Priority = priority;
+            this.AutoSucceed = autoSucceed;
         }
 
         /// <summary>
@@ -111,5 +114,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The priority.</value>
         public int? Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [automatic succeed the transaction
+        /// </summary>
+        /// <value><c>true</c> if [automatic succeed]; otherwise, <c>false</c>.</value>
+        public bool AutoSucceed { get; set; }
     }
 }

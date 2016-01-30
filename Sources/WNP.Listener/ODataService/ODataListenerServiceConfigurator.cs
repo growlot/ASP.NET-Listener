@@ -43,7 +43,8 @@ namespace AMSLLC.Listener.ODataService
                     openAction.Parameter<string>("EntityCategory").OptionalParameter = false;
                     openAction.Parameter<string>("OperationKey").OptionalParameter = false;
                     openAction.Parameter<string>("Body").OptionalParameter = false;
-                    openAction.Returns<Guid>();
+                    openAction.Parameter<string>("OperationTransactionIdentifier").OptionalParameter = true;
+                    openAction.ReturnsCollection<Guid>();
 
                     var openBatchAction = b.Action("Batch");
                     openBatchAction.Parameter<string>("BatchNumber").OptionalParameter = false;

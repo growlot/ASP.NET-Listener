@@ -82,6 +82,7 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="IDbRepository.cs" />
+    <Compile Include="IDetailedTransactionRepository.cs" />
     <Compile Include="IListenerPersistenceContext.cs" />
     <Compile Include="ListenerDbContext.cs" />
     <Compile Include="ListenerPersistenceAdapter.cs" />
@@ -97,6 +98,7 @@
     </Compile>
     <Compile Include="Models\IECWrapper.cs" />
     <Compile Include="Models\ProtocolTypeEntity.cs" />
+    <Compile Include="Models\TransactionRegistryEntry.cs" />
     <Compile Include="Models\ValueMapEntity.cs" />
     <Compile Include="Models\OperationEndpointEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

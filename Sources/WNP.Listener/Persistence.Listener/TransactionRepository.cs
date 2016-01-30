@@ -25,7 +25,7 @@ namespace AMSLLC.Listener.Persistence.Listener
     /// Implements <see cref="ITransactionRepository"/> for AsyncPoco
     /// </summary>
     [WithinListenerContext]
-    public class TransactionRepository : ITransactionRepository
+    public class TransactionRepository : IDetailedTransactionRepository
     {
         private readonly IPersistenceAdapter persistence;
 
@@ -142,31 +142,26 @@ INNER JOIN Operation O ON EO.OperationId = O.OperationId WHERE C.ExternalCode = 
 
             // var fieldConfigurationEntries = await _persistence.GetListAsync<FieldConfigurationEntryEntity>("SELECT * FROM FieldConfigurationEntry");
 
-            var tr =
-                await
-                    this.persistence.GetAsync<TransactionRegistryEntity>(
-                        "SELECT * FROM TransactionRegistry WHERE RecordKey = @0",
-                        recordKey);
+            var trList = await this.SelectTransactionsAsync(recordKey);
+
+            var tr = trList.SingleOrDefault();
 
             var childTr =
                 await
-                    this.persistence.GetListAsync<TransactionRegistryEntity>(
-                        "SELECT TR1.* FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.RecordKey = TR1.BatchKey WHERE TR.RecordKey = @0",
-                        false,
-                        recordKey);
-            var entityCategoryOperations = childTr.Select(s => s.EntityCategoryOperationId).ToList();
-            entityCategoryOperations.Add(tr.EntityCategoryOperationId);
+                    this.SelectChildTransactionsAsync(recordKey);
+            var entityCategoryOperations = childTr.Select(s => s.EntityCategoryOperation.EntityCategoryOperationId).ToList();
+            entityCategoryOperations.Add(tr.EntityCategoryOperation.EntityCategoryOperationId);
 
-            var recordKeys = childTr.Select(s => s.RecordKey).ToList();
+            var recordKeys = childTr.Select(s => s.TransactionRegistryEntity.RecordKey).ToList();
             if (!recordKeys.Any())
             {
                 recordKeys.Add(recordKey);
             }
 
-            var transactionKeys = childTr.Select(s => s.IncomingHash).ToList();
+            var transactionKeys = childTr.Select(s => s.TransactionRegistryEntity.IncomingHash).ToList();
             //if (!transactionKeys.Any())
             //{
-            transactionKeys.Add(tr.IncomingHash);
+            transactionKeys.Add(tr.TransactionRegistryEntity.IncomingHash);
             //}
 
             Func<EndpointEntity, OperationEndpointEntity, EntityCategoryOperationEntity, IECWrapper> callback = (ee,
@@ -236,53 +231,75 @@ WHERE ECO.EntityCategoryOperationId IN (@operations)";
                     new
                     {
                         transactionKeys = transactionKeys.ToArray(),
-                        successStatus = new[]
-                        {
-                            (int)TransactionStatusType.Success
-                        }
+                        successStatus = new[] { TransactionStatusType.Success }
                     });
 
                 returnValue = new TransactionExecutionMemento(
-                    tr.TransactionId,
+                    tr.TransactionRegistryEntity.TransactionId,
                     recordKey,
-                    tr.EntityCategoryOperationId,
-                    endpoints.Where(e => e.EntityCategoryOperationId == tr.EntityCategoryOperationId)
+                    tr.TransactionRegistryEntity.EntityCategoryOperationId,
+                    tr.EntityCategoryOperation.AutoSucceed,
+                    endpoints.Where(e => e.EntityCategoryOperationId == tr.TransactionRegistryEntity.EntityCategoryOperationId)
                         .Select(s => s.IntegrationEndpointConfigurationMemento),
-                    fieldConfigurationEntries.Where(fc => fc.EntityCategoryOperationId == tr.EntityCategoryOperationId),
+                    fieldConfigurationEntries.Where(fc => fc.EntityCategoryOperationId == tr.TransactionRegistryEntity.EntityCategoryOperationId),
                     childTr.Select(
                         ctr =>
                             new TransactionExecutionMemento(
-                                ctr.TransactionId,
-                                ctr.RecordKey,
-                                ctr.EntityCategoryOperationId,
-                                endpoints.Where(e => e.EntityCategoryOperationId == ctr.EntityCategoryOperationId)
+                                ctr.TransactionRegistryEntity.TransactionId,
+                                ctr.TransactionRegistryEntity.RecordKey,
+                                ctr.TransactionRegistryEntity.EntityCategoryOperationId,
+                                ctr.EntityCategoryOperation.AutoSucceed,
+                                endpoints.Where(e => e.EntityCategoryOperationId == ctr.TransactionRegistryEntity.EntityCategoryOperationId)
                                     .Select(s => s.IntegrationEndpointConfigurationMemento),
                                 fieldConfigurationEntries.Where(
-                                    fc => fc.EntityCategoryOperationId == ctr.EntityCategoryOperationId),
+                                    fc => fc.EntityCategoryOperationId == ctr.TransactionRegistryEntity.EntityCategoryOperationId),
                                 null,
-                                string.IsNullOrWhiteSpace(ctr.Data)
+                                string.IsNullOrWhiteSpace(ctr.TransactionRegistryEntity.Data)
                                     ? null
-                                    : JsonConvert.DeserializeObject<ExpandoObject>(ctr.Data),
+                                    : JsonConvert.DeserializeObject<ExpandoObject>(ctr.TransactionRegistryEntity.Data),
                                 duplicates.Where(
                                     d =>
                                         string.Compare(
                                             (string)d.IncomingHash,
-                                            ctr.IncomingHash,
+                                            ctr.TransactionRegistryEntity.IncomingHash,
                                             StringComparison.InvariantCulture) == 0 &&
-                                        (Guid)d.RecordKey != ctr.RecordKey).Select(s => (Guid)s.RecordKey),
-                                (TransactionStatusType)ctr.TransactionStatusId, ctr.Priority)),
-                    string.IsNullOrWhiteSpace(tr.Data) ? null : JsonConvert.DeserializeObject<ExpandoObject>(tr.Data),
+                                        (Guid)d.RecordKey != ctr.TransactionRegistryEntity.RecordKey).Select(s => (Guid)s.RecordKey),
+                                (TransactionStatusType)ctr.TransactionRegistryEntity.TransactionStatusId, ctr.TransactionRegistryEntity.Priority)),
+                    string.IsNullOrWhiteSpace(tr.TransactionRegistryEntity.Data) ? null : JsonConvert.DeserializeObject<ExpandoObject>(tr.TransactionRegistryEntity.Data),
                     duplicates.Where(
                         d =>
                             string.Compare(
                                 (string)d.IncomingHash,
-                                tr.IncomingHash,
-                                StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.RecordKey)
+                                tr.TransactionRegistryEntity.IncomingHash,
+                                StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.TransactionRegistryEntity.RecordKey)
                         .Select(s => (Guid)s.RecordKey),
-                    (TransactionStatusType)tr.TransactionStatusId, tr.Priority);
+                    (TransactionStatusType)tr.TransactionRegistryEntity.TransactionStatusId, tr.TransactionRegistryEntity.Priority);
             }
 
             return returnValue;
+        }
+
+        public virtual Task<List<TransactionRegistryEntry>> SelectTransactionsAsync(
+            Guid recordKey)
+        {
+            return this.persistence.ProjectionAsync(
+                (TransactionRegistryEntity t,
+                    EntityCategoryOperationEntity e) => new TransactionRegistryEntry
+                    {
+                        TransactionRegistryEntity = t,
+                        EntityCategoryOperation = e
+                    },
+                "SELECT TR.*, ECO.* FROM TransactionRegistry TR INNER JOIN EntityCategoryOperation ECO ON TR.EntityCategoryOperationId = ECO.EntityCategoryOperationId WHERE RecordKey = @0",
+                recordKey);
+        }
+
+        public virtual Task<List<TransactionRegistryEntry>> SelectChildTransactionsAsync(
+            Guid recordKey)
+        {
+            return this.persistence.ProjectionAsync(
+                (TransactionRegistryEntity t, EntityCategoryOperationEntity e) => new TransactionRegistryEntry { TransactionRegistryEntity = t, EntityCategoryOperation = e },
+                "SELECT TR1.*, ECO.* FROM TransactionRegistry TR INNER JOIN TransactionRegistry TR1 ON TR.RecordKey = TR1.BatchKey INNER JOIN EntityCategoryOperation ECO ON TR1.EntityCategoryOperationId = ECO.EntityCategoryOperationId WHERE TR.RecordKey = @0",
+                recordKey);
         }
 
         /// <inheritdoc/>
@@ -359,7 +376,9 @@ FROM
                                         a.RecordKey,
                                         o.Name,
                                         ec.Name,
-                                        eco.EnabledOperationId),
+                                        eco.EnabledOperationId,
+                                        eco.AutoSucceed,
+                                        eco.OperationTransactionKey),
                                 select);
         }
 
@@ -500,7 +519,7 @@ WHERE TR.RecordKey = @0";
                 await this.persistence.UpdateAsync(
                     entity,
                     transactionRegistry.RecordKey,
-                    new[] 
+                    new[]
                     {
                         "TransactionStatusId",
                         "UpdatedDateTime",
