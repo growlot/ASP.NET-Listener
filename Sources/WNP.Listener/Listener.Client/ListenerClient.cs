@@ -150,15 +150,15 @@ namespace AMSLLC.Listener.Client
         /// <typeparam name="TRequest">The type of the request.</typeparam>
         /// <param name="request">The request.</param>
         /// <returns>The unique transaction key.</returns>
-        public virtual Task<Guid> OpenTransactionAsync<TRequest>(TRequest request)
+        public virtual Task<IEnumerable<Guid>> OpenTransactionAsync<TRequest>(TRequest request)
             where TRequest : BaseListenerRequestMessage
         {
-            DataServiceActionQuerySingle<Guid> result = this.container.Open(
+            DataServiceActionQuery<Guid> result = this.container.Open(
                 request.EntityCategory,
                 request.OperationKey,
                 JsonConvert.SerializeObject(request));
 
-            return result.GetValueAsync();
+            return result.ExecuteAsync();
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>The transaction key.</returns>
-        public virtual Guid OpenTransaction(
+        public virtual Guid[] OpenTransaction(
             BaseListenerRequestMessage message)
         {
             if (message == null)
@@ -318,11 +318,11 @@ namespace AMSLLC.Listener.Client
                 throw new ArgumentNullException(nameof(message));
             }
 
-            DataServiceActionQuerySingle<Guid> result = this.container.Open(
+            DataServiceActionQuery<Guid> result = this.container.Open(
                 message.EntityCategory,
                 message.OperationKey,
                 JsonConvert.SerializeObject(message));
-            return result.GetValue();
+            return result.Execute().ToArray();
         }
 
         /// <summary>
@@ -330,12 +330,12 @@ namespace AMSLLC.Listener.Client
         /// </summary>
         /// <param name="batchKey">The batch key.</param>
         /// <returns>The transaction key.</returns>
-        public virtual Guid OpenBatch(
+        public virtual Guid[] OpenBatch(
             string batchKey)
         {
-            DataServiceActionQuerySingle<Guid> result = this.container.BuildBatch(batchKey);
+            DataServiceActionQuery<Guid> result = this.container.BuildBatch(batchKey);
 
-            return result.GetValue();
+            return result.Execute().ToArray(); // .GetEnumerator();
         }
 
         /// <summary>
@@ -475,56 +475,59 @@ namespace AMSLLC.Listener.Client
         }
 
         private void Execute(
-            Func<Guid> opener)
+            Func<IEnumerable<Guid>> opener)
         {
-            Guid transactionKey;
+            IEnumerable<Guid> transactionKeys;
             try
             {
-                transactionKey = opener();
+                transactionKeys = opener();
 
-                Log.Logger.Information("Opened transaction {0}", transactionKey);
+                Log.Logger.Information("Opened transaction {0}", transactionKeys);
             }
             catch (System.Exception exc)
             {
                 throw new FailedToOpenTransactionException(exc.Message, exc);
             }
 
-            try
+            foreach (Guid transactionKey in transactionKeys)
             {
-                this.ProcessTransaction(transactionKey);
-                Log.Logger.Information("Processed transaction {0}", transactionKey);
-            }
-            catch (AggregateException exc)
-            {
-                exc.Handle(
-                    x =>
-                    {
-                        Log.Logger.Error(x, "Failed to process transaction");
-                        string excMessage = x.Message;
-                        string stacktrace = x.StackTrace;
-                        this.FailTransaction(transactionKey, excMessage, stacktrace);
-                        return true;
-                    });
-                throw new FailedToProcessTransactionException(exc.Message, exc);
-            }
-            catch (System.Exception exc)
-            {
-                Log.Logger.Error(exc, "Failed to process transaction");
-                string excMessage = exc.Message;
-                string stacktrace = exc.StackTrace;
-                this.FailTransaction(transactionKey, excMessage, stacktrace);
-                throw new FailedToProcessTransactionException(exc.Message, exc);
-            }
+                try
+                {
+                    this.ProcessTransaction(transactionKey);
+                    Log.Logger.Information("Processed transaction {0}", transactionKey);
+                }
+                catch (AggregateException exc)
+                {
+                    exc.Handle(
+                        x =>
+                        {
+                            Log.Logger.Error(x, "Failed to process transaction");
+                            string excMessage = x.Message;
+                            string stacktrace = x.StackTrace;
+                            this.FailTransaction(transactionKey, excMessage, stacktrace);
+                            return true;
+                        });
+                    throw new FailedToProcessTransactionException(exc.Message, exc);
+                }
+                catch (System.Exception exc)
+                {
+                    Log.Logger.Error(exc, "Failed to process transaction");
+                    string excMessage = exc.Message;
+                    string stacktrace = exc.StackTrace;
+                    this.FailTransaction(transactionKey, excMessage, stacktrace);
+                    throw new FailedToProcessTransactionException(exc.Message, exc);
+                }
 
-            try
-            {
-                this.SucceedTransaction(transactionKey);
-                Log.Logger.Information("Succeeded transaction {0}", transactionKey);
-            }
-            catch (System.Exception exc)
-            {
-                Log.Logger.Error(exc, "Failed to succeed transaction");
-                throw new FailedToSucceedTransactionException(exc.Message, exc);
+                try
+                {
+                    this.SucceedTransaction(transactionKey);
+                    Log.Logger.Information("Succeeded transaction {0}", transactionKey);
+                }
+                catch (System.Exception exc)
+                {
+                    Log.Logger.Error(exc, "Failed to succeed transaction");
+                    throw new FailedToSucceedTransactionException(exc.Message, exc);
+                }
             }
         }
 

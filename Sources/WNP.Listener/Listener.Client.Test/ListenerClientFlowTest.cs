@@ -5,6 +5,7 @@
 namespace AMSLLC.Listener.Client.Test
 {
     using System;
+    using System.Collections.Generic;
     using System.Net;
     using Exception;
     using Message;
@@ -14,7 +15,7 @@ namespace AMSLLC.Listener.Client.Test
     [TestClass]
     public class ListenerClientFlowTest
     {
-        private Guid basicResponse = Guid.NewGuid();
+        private Guid[] basicResponse = { Guid.NewGuid() };
 
         [TestMethod]
         public void TestListenerClientSuccess()

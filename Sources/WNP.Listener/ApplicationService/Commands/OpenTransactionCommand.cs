@@ -56,10 +56,10 @@ namespace AMSLLC.Listener.ApplicationService.Commands
         /// <value>The name of the entity.</value>
         public string EntityName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the operation transaction identifier.
-        /// </summary>
-        /// <value>The operation transaction identifier.</value>
-        public string OperationTransactionIdentifier { get; set; }
+        ///// <summary>
+        ///// Gets or sets the operation transaction identifier.
+        ///// </summary>
+        ///// <value>The operation transaction identifier.</value>
+        // public string OperationTransactionIdentifier { get; set; }
     }
 }

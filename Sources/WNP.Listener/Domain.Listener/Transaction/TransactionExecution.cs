@@ -244,7 +244,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
                 : new Dictionary<int, List<IDomainEvent>>()
                 {
                     {
-                        0, ProcessTransaction(this, this.hashBuilder)
+                        0, ProcessTransaction(this, this.hashBuilder, this.AutoSucceed)
                     }
                 };
             var ordered = endpointExecutionData.OrderBy(s => s.Key).ToList();

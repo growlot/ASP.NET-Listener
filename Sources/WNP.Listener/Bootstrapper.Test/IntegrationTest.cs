@@ -70,7 +70,60 @@ namespace AMSLLC.Listener.Bootstrapper.Test
 
         #region Test
         [TestMethod]
-        public async Task OpenAndSucceedTransactionTest()
+        public async Task OpenAndSucceedTransactionWithoutAutoSucceedTest()
+        {
+            var di = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
+            var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
+            var nextKey = Guid.NewGuid();
+            transactionRecordKeyBuilder.Setup(s => s.Create()).Returns(nextKey.ToString("D"));
+            var entityKey = Guid.NewGuid().ToString("D");
+            string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"EM\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Add\"}}}}";
+            object receivedData = string.Empty;
+
+            var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
+            var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
+
+            communicationHandlerMock.Setup(
+                s => s.PutMessage(It.IsAny<JmsConnectionConfiguration>(), It.Is<TransactionDataReady>(dr => dr.RecordKey == nextKey), It.IsAny<ProtocolConfiguration>()))
+                .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
+                {
+                    receivedData = data.Data;
+                });
+
+            di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
+            di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
+
+            var responseMessage = await OpenTransaction(server, entityKey, "EM", "Add");
+            Assert.AreEqual(1, responseMessage.Length);
+            Assert.AreEqual(nextKey, responseMessage.Single());
+
+            await ProcessTransaction(server, nextKey);
+            communicationHandler.Verify(
+                s =>
+                    s.Handle(
+                        It.Is<TransactionDataReady>(
+                            ready =>
+                                string.Compare(JsonConvert.SerializeObject(ready.Data), expectedMessage,
+                                    StringComparison.InvariantCulture) == 0), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
+                Times.Once, "Received unexpected {0}{1}Expected: {2}".FormatWith(JsonConvert.SerializeObject(receivedData), Environment.NewLine, expectedMessage));
+
+            var transactionStatusId = await GetTransactionStatus(server, nextKey);
+
+            Assert.AreEqual(TransactionStatusType.Processing, (TransactionStatusType)transactionStatusId);
+
+            await SucceedTransaction(server, nextKey);
+
+            transactionStatusId = await GetTransactionStatus(server, nextKey);
+
+            Assert.AreEqual(TransactionStatusType.Success, (TransactionStatusType)transactionStatusId);
+
+            var transactionMessageData = await GetTransactionData(server, nextKey);
+            Assert.AreEqual(expectedMessage, transactionMessageData);
+        }
+
+
+        [TestMethod]
+        public async Task OpenAndAutoSucceedTransactionTest()
         {
             var di = (TestDependencyInjectionAdapter)ApplicationIntegration.DependencyResolver;
             var transactionRecordKeyBuilder = new Mock<IRecordKeyBuilder>();
@@ -93,7 +146,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var responseMessage = await OpenTransaction(server, entityKey);
+            var responseMessage = await OpenTransaction(server, entityKey, "EM", "Install");
             Assert.AreEqual(1, responseMessage.Length);
             Assert.AreEqual(nextKey, responseMessage.Single());
 
@@ -106,8 +159,6 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                                 string.Compare(JsonConvert.SerializeObject(ready.Data), expectedMessage,
                                     StringComparison.InvariantCulture) == 0), It.IsAny<IConnectionConfiguration>(), It.IsAny<IProtocolConfiguration>()),
                 Times.Once, "Received unexpected {0}{1}Expected: {2}".FormatWith(JsonConvert.SerializeObject(receivedData), Environment.NewLine, expectedMessage));
-
-            await SucceedTransaction(server, nextKey);
 
             var transactionStatusId = await GetTransactionStatus(server, nextKey);
 
@@ -132,8 +183,8 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
             di.Rebind<ICommunicationHandler>(communicationHandler.Object).Named("communication-jms");
 
-            var transactionRecordKeys1 = await OpenTransaction(server, entityKey);
-            var transactionRecordKeys2 = await OpenTransaction(server, entityKey);
+            var transactionRecordKeys1 = await OpenTransaction(server, entityKey, "EM", "Add");
+            var transactionRecordKeys2 = await OpenTransaction(server, entityKey, "EM", "Add");
             Assert.AreEqual(1, transactionRecordKeys1.Length);
             Assert.AreEqual(1, transactionRecordKeys2.Length);
             await ProcessTransaction(server, transactionRecordKeys1.Single());

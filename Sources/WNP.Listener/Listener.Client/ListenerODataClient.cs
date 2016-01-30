@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generation date: 1/27/2016 5:15:35 AM
+// Generation date: 1/30/2016 4:30:25 AM
 namespace AMSLLC.Listener.Persistence.Listener
 {
     using System;
@@ -2481,6 +2481,8 @@ namespace AMSLLC.Listener.Persistence.Listener
         /// <param name="entityCategoryId">Initial value of EntityCategoryId.</param>
         /// <param name="enabledOperationId">Initial value of EnabledOperationId.</param>
         /// <param name="companyId">Initial value of CompanyId.</param>
+        /// <param name="operationTransactionKey">Initial value of OperationTransactionKey.</param>
+        /// <param name="autoSucceed">Initial value of AutoSucceed.</param>
         /// <param name="enabledOperation">Initial value of EnabledOperation.</param>
         /// <param name="entityCategory">Initial value of EntityCategory.</param>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
@@ -2488,6 +2490,8 @@ namespace AMSLLC.Listener.Persistence.Listener
                     int entityCategoryId, 
                     int enabledOperationId, 
                     int companyId, 
+                    global::System.Guid operationTransactionKey, 
+                    bool autoSucceed, 
                     global::AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity enabledOperation, 
                     global::AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity entityCategory)
         {
@@ -2496,6 +2500,8 @@ namespace AMSLLC.Listener.Persistence.Listener
             entityCategoryOperationEntity.EntityCategoryId = entityCategoryId;
             entityCategoryOperationEntity.EnabledOperationId = enabledOperationId;
             entityCategoryOperationEntity.CompanyId = companyId;
+            entityCategoryOperationEntity.OperationTransactionKey = operationTransactionKey;
+            entityCategoryOperationEntity.AutoSucceed = autoSucceed;
             if ((enabledOperation == null))
             {
                 throw new global::System.ArgumentNullException("enabledOperation");
@@ -2623,6 +2629,75 @@ namespace AMSLLC.Listener.Persistence.Listener
         private int _CompanyId;
         partial void OnCompanyIdChanging(int value);
         partial void OnCompanyIdChanged();
+        /// <summary>
+        /// There are no comments for Property OperationTransactionKey in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("OperationTransactionKey")]
+        public global::System.Guid OperationTransactionKey
+        {
+            get
+            {
+                return this._OperationTransactionKey;
+            }
+            set
+            {
+                this.OnOperationTransactionKeyChanging(value);
+                this._OperationTransactionKey = value;
+                this.OnOperationTransactionKeyChanged();
+                this.OnPropertyChanged("OperationTransactionKey");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private global::System.Guid _OperationTransactionKey;
+        partial void OnOperationTransactionKeyChanging(global::System.Guid value);
+        partial void OnOperationTransactionKeyChanged();
+        /// <summary>
+        /// There are no comments for Property OperationTransactionName in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("OperationTransactionName")]
+        public string OperationTransactionName
+        {
+            get
+            {
+                return this._OperationTransactionName;
+            }
+            set
+            {
+                this.OnOperationTransactionNameChanging(value);
+                this._OperationTransactionName = value;
+                this.OnOperationTransactionNameChanged();
+                this.OnPropertyChanged("OperationTransactionName");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private string _OperationTransactionName;
+        partial void OnOperationTransactionNameChanging(string value);
+        partial void OnOperationTransactionNameChanged();
+        /// <summary>
+        /// There are no comments for Property AutoSucceed in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("AutoSucceed")]
+        public bool AutoSucceed
+        {
+            get
+            {
+                return this._AutoSucceed;
+            }
+            set
+            {
+                this.OnAutoSucceedChanging(value);
+                this._AutoSucceed = value;
+                this.OnAutoSucceedChanged();
+                this.OnPropertyChanged("AutoSucceed");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "2.4.0")]
+        private bool _AutoSucceed;
+        partial void OnAutoSucceedChanging(bool value);
+        partial void OnAutoSucceedChanged();
         /// <summary>
         /// There are no comments for Property EnabledOperation in the schema.
         /// </summary>
@@ -4420,6 +4495,9 @@ namespace AMSLLC.Listener
         <Property Name=""EnabledOperationId"" Type=""Edm.Int32"" Nullable=""false"" />
         <Property Name=""FieldConfigurationId"" Type=""Edm.Int32"" />
         <Property Name=""CompanyId"" Type=""Edm.Int32"" Nullable=""false"" />
+        <Property Name=""OperationTransactionKey"" Type=""Edm.Guid"" Nullable=""false"" />
+        <Property Name=""OperationTransactionName"" Type=""Edm.String"" />
+        <Property Name=""AutoSucceed"" Type=""Edm.Boolean"" Nullable=""false"" />
         <NavigationProperty Name=""EnabledOperation"" Type=""AMSLLC.Listener.Persistence.Listener.EnabledOperationEntity"" Nullable=""false"" ContainsTarget=""true"" />
         <NavigationProperty Name=""EntityCategory"" Type=""AMSLLC.Listener.Persistence.Listener.EntityCategoryEntity"" Nullable=""false"" ContainsTarget=""true"" />
         <NavigationProperty Name=""OperationEndpoints"" Type=""Collection(AMSLLC.Listener.Persistence.Listener.OperationEndpointEntity)"" ContainsTarget=""true"" />
@@ -4476,16 +4554,16 @@ namespace AMSLLC.Listener
         <Parameter Name=""EntityCategory"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
         <Parameter Name=""OperationKey"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
         <Parameter Name=""Body"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
-        <ReturnType Type=""Edm.Guid"" Nullable=""false"" />
+        <ReturnType Type=""Collection(Edm.Guid)"" Nullable=""false"" />
       </Action>
       <Action Name=""Batch"">
         <Parameter Name=""BatchNumber"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
         <Parameter Name=""Body"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
-        <ReturnType Type=""Edm.Guid"" Nullable=""false"" />
+        <ReturnType Type=""Collection(Edm.Guid)"" Nullable=""false"" />
       </Action>
       <Action Name=""BuildBatch"">
         <Parameter Name=""batchKey"" Type=""Edm.String"" Nullable=""false"" Unicode=""false"" />
-        <ReturnType Type=""Edm.Guid"" Nullable=""false"" />
+        <ReturnType Type=""Collection(Edm.Guid)"" Nullable=""false"" />
       </Action>
       <Function Name=""CountByStatus"" IsBound=""true"">
         <Parameter Name=""bindingParameter"" Type=""Collection(AMSLLC.Listener.Persistence.Listener.TransactionRegistryViewEntity)"" />
@@ -4551,9 +4629,9 @@ namespace AMSLLC.Listener
         /// There are no comments for Open in the schema.
         /// </summary>
         [global::Microsoft.OData.Client.OriginalNameAttribute("Open")]
-        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid> Open(string EntityCategory, string OperationKey, string Body)
+        public global::Microsoft.OData.Client.DataServiceActionQuery<global::System.Guid> Open(string EntityCategory, string OperationKey, string Body)
         {
-            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/Open", new global::Microsoft.OData.Client.BodyOperationParameter("EntityCategory", EntityCategory),
+            return new global::Microsoft.OData.Client.DataServiceActionQuery<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/Open", new global::Microsoft.OData.Client.BodyOperationParameter("EntityCategory", EntityCategory),
                     new global::Microsoft.OData.Client.BodyOperationParameter("OperationKey", OperationKey),
                     new global::Microsoft.OData.Client.BodyOperationParameter("Body", Body));
         }
@@ -4561,18 +4639,18 @@ namespace AMSLLC.Listener
         /// There are no comments for Batch in the schema.
         /// </summary>
         [global::Microsoft.OData.Client.OriginalNameAttribute("Batch")]
-        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid> Batch(string BatchNumber, string Body)
+        public global::Microsoft.OData.Client.DataServiceActionQuery<global::System.Guid> Batch(string BatchNumber, string Body)
         {
-            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/Batch", new global::Microsoft.OData.Client.BodyOperationParameter("BatchNumber", BatchNumber),
+            return new global::Microsoft.OData.Client.DataServiceActionQuery<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/Batch", new global::Microsoft.OData.Client.BodyOperationParameter("BatchNumber", BatchNumber),
                     new global::Microsoft.OData.Client.BodyOperationParameter("Body", Body));
         }
         /// <summary>
         /// There are no comments for BuildBatch in the schema.
         /// </summary>
         [global::Microsoft.OData.Client.OriginalNameAttribute("BuildBatch")]
-        public global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid> BuildBatch(string batchKey)
+        public global::Microsoft.OData.Client.DataServiceActionQuery<global::System.Guid> BuildBatch(string batchKey)
         {
-            return new global::Microsoft.OData.Client.DataServiceActionQuerySingle<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/BuildBatch", new global::Microsoft.OData.Client.BodyOperationParameter("batchKey", batchKey));
+            return new global::Microsoft.OData.Client.DataServiceActionQuery<global::System.Guid>(this, this.BaseUri.OriginalString.Trim('/') + "/BuildBatch", new global::Microsoft.OData.Client.BodyOperationParameter("batchKey", batchKey));
         }
     }
     /// <summary>
