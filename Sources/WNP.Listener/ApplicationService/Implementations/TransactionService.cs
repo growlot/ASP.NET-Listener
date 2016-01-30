@@ -101,9 +101,9 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
-        public async Task<Guid> Open(OpenBatchTransactionCommand requestMessage)
+        public async Task<Guid[]> Open(OpenBatchTransactionCommand requestMessage)
         {
-            Guid returnValue = Guid.Empty;
+            List<Guid> returnValue = new List<Guid>();
             using (var scope = ApplicationServiceScope.Create())
             {
                 var transactionRepository = scope.RepositoryBuilder.Create<ITransactionRepository>();
@@ -113,93 +113,96 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                     requestMessage.SourceApplicationKey);
 
                 var enabledOperations = await transactionRepository.GetEnabledEntityOperations();
-                var enabledOperation = enabledOperations.Single(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
+                var enabledOperation = enabledOperations.Where(s => string.Compare(s.ApplicationKey, requestMessage.SourceApplicationKey, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.CompanyCode, requestMessage.CompanyCode, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.OperationName, BatchOperationName, StringComparison.InvariantCulture) == 0
                 && string.Compare(s.EntityName, BatchEntityCategory, StringComparison.InvariantCulture) == 0);
 
-                List<TransactionRegistryMemento> batch = new List<TransactionRegistryMemento>();
-
-                foreach (BatchTransactionEntry transaction in requestMessage.Batch)
+                foreach (EntityOperationLookup bEntityOperationLookup in enabledOperation)
                 {
-                    var enabledChildOperation =
-                        enabledOperations.Where(
-                            s =>
-                                string.Compare(
-                                    s.ApplicationKey,
-                                    requestMessage.SourceApplicationKey,
-                                    StringComparison.InvariantCulture) == 0 &&
-                                string.Compare(
-                                    s.CompanyCode,
-                                    requestMessage.CompanyCode,
-                                    StringComparison.InvariantCulture) == 0 &&
-                                string.Compare(
-                                    s.OperationName,
-                                    transaction.OperationKey,
-                                    StringComparison.InvariantCulture) == 0 &&
-                                string.Compare(
-                                    s.EntityName,
-                                    transaction.EntityCategory,
-                                    StringComparison.InvariantCulture) == 0);
+                    List<TransactionRegistryMemento> batch = new List<TransactionRegistryMemento>();
 
-                    foreach (EntityOperationLookup entityOperationLookup in enabledChildOperation)
+                    foreach (BatchTransactionEntry transaction in requestMessage.Batch)
                     {
-                        batch.Add(new TransactionRegistryMemento(
+                        var enabledChildOperation =
+                            enabledOperations.Where(
+                                s =>
+                                    string.Compare(
+                                        s.ApplicationKey,
+                                        requestMessage.SourceApplicationKey,
+                                        StringComparison.InvariantCulture) == 0 &&
+                                    string.Compare(
+                                        s.CompanyCode,
+                                        requestMessage.CompanyCode,
+                                        StringComparison.InvariantCulture) == 0 &&
+                                    string.Compare(
+                                        s.OperationName,
+                                        transaction.OperationKey,
+                                        StringComparison.InvariantCulture) == 0 &&
+                                    string.Compare(
+                                        s.EntityName,
+                                        transaction.EntityCategory,
+                                        StringComparison.InvariantCulture) == 0);
+
+                        foreach (EntityOperationLookup cEntityOperationLookup in enabledChildOperation)
+                        {
+                            batch.Add(new TransactionRegistryMemento(
+                            0,
+                            Guid.Empty,
+                            transaction.Priority,
+                            null,
+                            requestMessage.CompanyCode,
+                            requestMessage.SourceApplicationKey,
+                            transaction.OperationKey,
+                            TransactionStatusType.Pending,
+                            transaction.User,
+                            scope.ScopeCreated,
+                            null,
+                            transaction.Data,
+                            null,
+                            null,
+                            cEntityOperationLookup.EnabledOperationId,
+                            null));
+                        }
+                    }
+
+                    var memento = new TransactionRegistryMemento(
                         0,
                         Guid.Empty,
-                        transaction.Priority,
+                        null,
                         null,
                         requestMessage.CompanyCode,
                         requestMessage.SourceApplicationKey,
-                        transaction.OperationKey,
+                        BatchOperationName,
                         TransactionStatusType.Pending,
-                        transaction.User,
+                        requestMessage.User,
                         scope.ScopeCreated,
                         null,
-                        transaction.Data,
+                        JsonConvert.SerializeObject(new { BatchNumber = requestMessage.BatchNumber, Size = batch.Count }),
                         null,
                         null,
-                        entityOperationLookup.EnabledOperationId,
-                        null));
-                    }
+                        bEntityOperationLookup.EnabledOperationId,
+                        batch);
+
+                    var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
+                    ((IOriginator)transactionRegistry).SetMemento(memento);
+
+                    var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EntityCategoryOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
+                    {
+                        var item = new FieldConfiguration();
+                        ((IOriginator)item).SetMemento(s);
+                        return item;
+                    }));
+
+                    transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
+                    Log.Logger.Information("Opening batch transaction {0} with {1} children", transactionRegistry.RecordKey, transactionRegistry.ChildTransactions.Count);
+                    await transactionRepository.CreateTransactionRegistryAsync(transactionRegistry);
+
+                    returnValue.Add(transactionRegistry.RecordKey);
                 }
-
-                var memento = new TransactionRegistryMemento(
-                    0,
-                    Guid.Empty,
-                    null,
-                    null,
-                    requestMessage.CompanyCode,
-                    requestMessage.SourceApplicationKey,
-                    BatchOperationName,
-                    TransactionStatusType.Pending,
-                    requestMessage.User,
-                    scope.ScopeCreated,
-                    null,
-                    JsonConvert.SerializeObject(new { BatchNumber = requestMessage.BatchNumber, Size = batch.Count }),
-                    null,
-                    null,
-                    enabledOperation.EnabledOperationId,
-                    batch);
-
-                var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
-                ((IOriginator)transactionRegistry).SetMemento(memento);
-
-                var fieldConfigurations = fieldConfigurationMemento.Values.SelectMany(s => s).Cast<FieldConfigurationMemento>().GroupBy(o => o.EntityCategoryOperationId).ToDictionary(g => g.Key, g => g.Select(s =>
-                {
-                    var item = new FieldConfiguration();
-                    ((IOriginator)item).SetMemento(s);
-                    return item;
-                }));
-
-                transactionRegistry.Create(scope.ScopeCreated, fieldConfigurations);
-                Log.Logger.Information("Opening batch transaction {0} with {1} children", transactionRegistry.RecordKey, transactionRegistry.ChildTransactions.Count);
-                await transactionRepository.CreateTransactionRegistryAsync(transactionRegistry);
-
-                returnValue = transactionRegistry.RecordKey;
             }
 
-            return returnValue;
+            return returnValue.ToArray();
         }
 
         /// <inheritdoc/>

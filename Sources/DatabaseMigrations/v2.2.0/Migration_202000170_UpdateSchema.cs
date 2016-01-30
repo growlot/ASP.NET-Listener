@@ -6,6 +6,7 @@ namespace AMSLLC.Listener.DatabaseMigrations
 {
     using System;
     using FluentMigrator;
+    using FluentMigrator.Runner.Extensions;
 
     /// <summary>
     /// Database migration step
@@ -76,13 +77,17 @@ namespace AMSLLC.Listener.DatabaseMigrations
 
             this.Insert.IntoTable("EntityCategoryOperation").Row(new
             {
+                EntityCategoryOperationId = 11,
                 EntityCategoryId = 1,
                 EnabledOperationId = 4,
                 FieldConfigurationId = 1,
                 CompanyId = 0,
                 OperationTransactionName = "Test As Left",
                 AutoSucceed = false
-            });
+            }).WithIdentityInsert();
+
+            this.Update.Table("EntityCategoryOperation").Set(new { OperationTransactionName = "Test As Found" }).Where(new { EntityCategoryOperationId = 7 });
+            this.Update.Table("EntityCategoryOperation").Set(new { AutoSucceed = 1 }).Where(new { EntityCategoryOperationId = 1 });
         }
 
         /// <summary>

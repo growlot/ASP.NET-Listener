@@ -19,15 +19,15 @@ namespace AMSLLC.Listener.ApplicationService
         /// Opens the specified request message.
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
-        /// <returns>The string.</returns>
+        /// <returns>Task&lt;Guid[]&gt;.</returns>
         Task<Guid[]> Open(OpenTransactionCommand requestMessage);
 
         /// <summary>
         /// Opens the given batch transaction
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
-        /// <returns>Task&lt;System.String&gt;.</returns>
-        Task<Guid> Open(OpenBatchTransactionCommand requestMessage);
+        /// <returns>Task&lt;Guid[]&gt;.</returns>
+        Task<Guid[]> Open(OpenBatchTransactionCommand requestMessage);
 
         /// <summary>
         /// Processes the specified request message.

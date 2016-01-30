@@ -51,11 +51,11 @@ namespace AMSLLC.Listener.ODataService
                     openBatchAction.Parameter<string>("Body").OptionalParameter = false;
                     //// openBatchAction.Parameter<BatchRequestMessage>("request").OptionalParameter = false;
                     //// openBatchAction.CollectionParameter<BatchRequestMessage>("request").OptionalParameter = false;
-                    openBatchAction.Returns<Guid>();
+                    openBatchAction.ReturnsCollection<Guid>();
 
                     var buildBatchAction = b.Action("BuildBatch");
                     buildBatchAction.Parameter<string>("batchKey").OptionalParameter = false;
-                    buildBatchAction.Returns<Guid>();
+                    buildBatchAction.ReturnsCollection<Guid>();
 
                     configuration.Ignore(p => p.TransactionId);
                 },

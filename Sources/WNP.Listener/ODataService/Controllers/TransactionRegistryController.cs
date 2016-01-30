@@ -116,7 +116,7 @@ namespace AMSLLC.Listener.ODataService.Controllers
                     }
                 }
 
-                return this.Ok((await this.transactionService.Open(message)).ToString());
+                return this.Ok(await this.transactionService.Open(message));
             }
             catch (Exception exc)
             {
