@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ListenerLiveTest.Client.Message
 {
     using AMSLLC.Listener.Client.Message;
-    public class InstallMeterRequestMessage : BaseListenerRequestMessage
+    public class AddMeterRequestMessage : BaseListenerRequestMessage
     {
         public string Test { get; set; }
 
@@ -15,8 +15,8 @@ namespace ListenerLiveTest.Client.Message
 
         public string EntityKey { get; set; }
 
-        public InstallMeterRequestMessage()
-            : base("EM", "Install")
+        public AddMeterRequestMessage()
+            : base("EM", "Add")
         {
         }
     }

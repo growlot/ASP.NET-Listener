@@ -64,6 +64,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public Collection<Guid> DuplicateTransactions { get; } = new Collection<Guid>();
 
         /// <summary>
+        /// Gets the operation transaction key.
+        /// </summary>
+        /// <value>The operation transaction key.</value>
+        public Guid OperationTransactionKey { get; private set; }
+
+        /// <summary>
         /// Gets or sets the status.
         /// </summary>
         /// <value>The status.</value>
@@ -105,6 +111,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             {
                 this.DuplicateTransactions.Add(duplicateRecord);
             }
+
+            this.OperationTransactionKey = myMemento.OperationTransactionKey;
         }
     }
 }

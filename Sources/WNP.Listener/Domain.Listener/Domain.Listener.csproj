@@ -108,6 +108,7 @@
     <Compile Include="Transaction\FieldConfiguration.cs" />
     <Compile Include="Transaction\FieldConfigurationCollection.cs" />
     <Compile Include="Transaction\FieldConfigurationMemento.cs" />
+    <Compile Include="Transaction\HashData.cs" />
     <Compile Include="Transaction\IConnectionConfigurationBuilder.cs" />
     <Compile Include="Transaction\IEndpointDataProcessor.cs" />
     <Compile Include="Transaction\IEndpointDataProcessorResult.cs" />

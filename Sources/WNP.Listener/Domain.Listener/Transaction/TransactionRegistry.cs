@@ -111,6 +111,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public Dictionary<string, object> Summary { get; } = new Dictionary<string, object>();
 
         /// <summary>
+        /// Gets the operation transaction key.
+        /// </summary>
+        /// <value>The operation transaction key.</value>
+        public Guid OperationTransactionKey { get; private set; }
+
+        /// <summary>
         /// Gets the child transactions.
         /// </summary>
         /// <value>The child transactions.</value>
@@ -140,21 +146,33 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.CreatedDateTime = createdDateTime;
             if (fieldConfigurations != null)
             {
-                Dictionary<object, FieldConfigurationCollection> hashElements = new Dictionary<object, FieldConfigurationCollection>();
+                List<HashData> hashElements = new List<HashData>();
+
                 foreach (ChildTransactionRegistryEntity childTransactionRegistryEntity in this.ChildTransactions)
                 {
-                    if (!hashElements.ContainsKey(childTransactionRegistryEntity.Data))
+                    var hData = new HashData
                     {
-                        hashElements.Add(
-                            childTransactionRegistryEntity.Data,
-                            new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId]));
-                    }
+                        Data = childTransactionRegistryEntity.Data,
+                        OperationTransactionKey = childTransactionRegistryEntity.OperationTransactionKey
+                    };
+
+                    hData.FieldConfiguration.AddRange(fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId]);
+
+                    hashElements.Add(hData);
                 }
 
                 if (!hashElements.Any() && fieldConfigurations.ContainsKey(this.EntityCategoryOperationId))
                 {
                     // assuming non-batch transaction
-                    hashElements.Add(this.Data, new FieldConfigurationCollection(fieldConfigurations[this.EntityCategoryOperationId]));
+                    var hData = new HashData
+                    {
+                        Data = this.Data,
+                        OperationTransactionKey = this.OperationTransactionKey
+                    };
+
+                    hData.FieldConfiguration.AddRange(fieldConfigurations?[this.EntityCategoryOperationId]);
+
+                    hashElements.Add(hData);
                 }
 
                 this.IncomingHash =
@@ -173,15 +191,18 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             {
                 childTransactionRegistryEntity.RecordKey = Guid.Parse(this.KeyBuilder.Create());
                 childTransactionRegistryEntity.CreatedDateTime = createdDateTime;
+
+                var hData = new HashData
+                {
+                    Data = childTransactionRegistryEntity.Data,
+                    OperationTransactionKey = childTransactionRegistryEntity.OperationTransactionKey
+                };
+
+                hData.FieldConfiguration.AddRange(fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId]);
+
                 childTransactionRegistryEntity.IncomingHash =
                     this.TransactionHashBuilder.Create(
-                        new Dictionary<object, FieldConfigurationCollection>
-                        {
-                            {
-                                childTransactionRegistryEntity.Data,
-                               new FieldConfigurationCollection(fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId])
-                            }
-                        },
+                        new[] { hData },
                         f => f.IncomingSequence);
                 childTransactionRegistryEntity.Status = TransactionStatusType.Pending;
                 this.SummaryBuilder.Build(childTransactionRegistryEntity.Data, childTransactionRegistryEntity.Summary, fieldConfigurations?[childTransactionRegistryEntity.EntityCategoryOperationId]);
@@ -286,6 +307,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Id = myMemento.TransactionId;
             this.IncomingHash = myMemento.IncomingHash;
             this.EntityCategoryOperationId = myMemento.EntityCategoryOperationId;
+            this.OperationTransactionKey = myMemento.OperationTransactionKey;
             this.ChildTransactions = new ReadOnlyCollection<ChildTransactionRegistryEntity>(myMemento.ChildTransactions.Select(s =>
             {
                 var childMemento = (TransactionRegistryMemento)s;

@@ -35,6 +35,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="details">The details.</param>
         /// <param name="entityCategoryOperationId">The entity category operation identifier.</param>
         /// <param name="childTransactions">The child transactions.</param>
+        /// <param name="operationTransactionKey">The operation transaction key.</param>
         public TransactionRegistryMemento(
             int transactionId,
             Guid recordKey,
@@ -51,7 +52,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             string message,
             string details,
             int entityCategoryOperationId,
-            IEnumerable<TransactionRegistryMemento> childTransactions)
+            IEnumerable<TransactionRegistryMemento> childTransactions,
+            Guid operationTransactionKey)
         {
             this.TransactionId = transactionId;
             this.RecordKey = recordKey;
@@ -69,6 +71,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.EntityCategoryOperationId = entityCategoryOperationId;
             this.Priority = priority;
             this.ChildTransactions = new ReadOnlyCollection<TransactionRegistryMemento>(new List<TransactionRegistryMemento>(childTransactions ?? new TransactionRegistryMemento[0]));
+            this.OperationTransactionKey = operationTransactionKey;
         }
 
         /// <summary>
@@ -166,5 +169,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The child transactions.</value>
         public ReadOnlyCollection<TransactionRegistryMemento> ChildTransactions { get; private set; } = new ReadOnlyCollection<TransactionRegistryMemento>(new TransactionRegistryMemento[0]);
+
+        /// <summary>
+        /// Gets the operation transaction key.
+        /// </summary>
+        /// <value>The operation transaction key.</value>
+        public Guid OperationTransactionKey { get; private set; }
     }
 }

@@ -231,7 +231,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(testMessageData)),
                 new List<Guid>(),
                 TransactionStatusType.Pending,
-                null);
+                null,
+                Guid.NewGuid());
 
             transactionRepositoryMock.Setup(s => s.GetExecutionContextAsync(Guid.Parse(recordKey)))
                 .Returns((Guid taId) => Task.FromResult((IMemento)memento));
@@ -259,7 +260,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         string.Empty,
                         string.Empty,
                         0,
-                        new List<TransactionRegistryMemento>()));
+                        new List<TransactionRegistryMemento>(),
+                        Guid.NewGuid()));
 
             // var dn = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(testMessageData));
             //transactionRepositoryMock.Setup(s => s.GetTransactionDataAsync(Guid.Parse(recordKey)))
@@ -598,7 +600,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         new object(),
                         new List<Guid>(),
                         TransactionStatusType.Pending,
-                        null));
+                        null,
+                        Guid.NewGuid()));
 
             transactionRepositoryMock.Setup(s => s.GetRegistryEntry(It.IsAny<Guid>()))
                 .ReturnsAsync(
@@ -618,7 +621,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         string.Empty,
                         string.Empty,
                         0,
-                        new List<TransactionRegistryMemento>()));
+                        new List<TransactionRegistryMemento>(),
+                        Guid.NewGuid()));
 
             jmsEndpointProcessorMock.Setup(s => s.Process(It.IsAny<object>(), It.IsAny<IList<FieldConfiguration>>()))
                 .Returns(
@@ -749,7 +753,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         new object(),
                         new List<Guid>(),
                         TransactionStatusType.Pending,
-                        null));
+                        null,
+                        Guid.NewGuid()));
 
             transactionRepositoryMock.Setup(s => s.GetRegistryEntry(It.IsAny<Guid>()))
                 .ReturnsAsync(
@@ -769,7 +774,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         string.Empty,
                         string.Empty,
                         0,
-                        new List<TransactionRegistryMemento>()));
+                        new List<TransactionRegistryMemento>(),
+                        Guid.NewGuid()));
 
             jmsEndpointProcessorMock.Setup(s => s.Process(It.IsAny<object>(), It.IsAny<IList<FieldConfiguration>>()))
                 .Returns(
@@ -940,7 +946,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         new object(),
                         new List<Guid>(),
                         TransactionStatusType.Pending,
-                        null));
+                        null,
+                        Guid.NewGuid()));
 
             transactionRepositoryMock.Setup(s => s.GetRegistryEntry(It.IsAny<Guid>()))
                 .ReturnsAsync(
@@ -960,7 +967,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         string.Empty,
                         string.Empty,
                         0,
-                        new List<TransactionRegistryMemento>()));
+                        new List<TransactionRegistryMemento>(),
+                        Guid.NewGuid()));
 
             transactionRepositoryMock.Setup(s => s.UpdateHashAsync(It.IsAny<Dictionary<Guid, string>>()))
                 .Callback((Dictionary<Guid, string> d) => Log.Logger.Information("Received number of child hash: {0}", d.Count())).Returns(Task.CompletedTask);
@@ -1156,7 +1164,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         new object(),
                         new List<Guid>(),
                         TransactionStatusType.Pending,
-                        null));
+                        null,
+                        Guid.NewGuid()));
 
             transactionRepositoryMock.Setup(s => s.GetRegistryEntry(It.IsAny<Guid>()))
                 .ReturnsAsync(
@@ -1176,7 +1185,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                         string.Empty,
                         string.Empty,
                         0,
-                        new List<TransactionRegistryMemento>()));
+                        new List<TransactionRegistryMemento>(),
+                        Guid.NewGuid()));
 
             transactionRepositoryMock.Setup(s => s.UpdateHashAsync(It.IsAny<Dictionary<Guid, string>>()))
                 .Callback((Dictionary<Guid, string> d) => Log.Logger.Information("Received number of child hash: {0}", d.Count())).Returns(Task.CompletedTask);
@@ -1253,7 +1263,8 @@ namespace AMSLLC.Listener.ApplicationService.Test
                 new object(),
                 new List<Guid>(),
                 TransactionStatusType.Pending,
-                priority);
+                priority,
+                Guid.NewGuid());
         }
         #endregion
 

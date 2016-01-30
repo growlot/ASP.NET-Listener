@@ -22,17 +22,17 @@ namespace AMSLLC.Listener.ApplicationService
     {
         /// <inheritdoc/>
         public string Create(
-            Dictionary<object, FieldConfigurationCollection> elements,
+            ICollection<HashData> hashData,
             Func<FieldConfiguration, short?> hashSequenceSelector)
         {
-            if (elements == null)
+            if (hashData == null)
             {
                 throw new ArgumentNullException(
-                    nameof(elements),
-                    "Can not process data there are no hash elements.");
+                    nameof(hashData),
+                    "Can not process data there are no hash data.");
             }
 
-            if (elements.Any(e => e.Value == null))
+            if (hashData.Any(e => e.FieldConfiguration == null || !e.FieldConfiguration.Any()))
             {
                 throw new ArgumentException(
                     "All hash elements must have field configuration specified");
@@ -44,11 +44,10 @@ namespace AMSLLC.Listener.ApplicationService
             }
 
             List<string> hashCollection = new List<string>();
-
-            foreach (var element in elements)
+            foreach (var element in hashData)
             {
-                var data = element.Key;
-                var fieldConfigurations = element.Value;
+                var data = element.Data;
+                var fieldConfigurations = element.FieldConfiguration;
 
                 object workData = data;
                 var value = data as string;
@@ -58,6 +57,7 @@ namespace AMSLLC.Listener.ApplicationService
                 }
 
                 Dictionary<short, object> hashElements = new Dictionary<short, object>();
+
                 foreach (var fieldConfiguration in fieldConfigurations)
                 {
                     var seq = hashSequenceSelector(fieldConfiguration);
@@ -78,6 +78,7 @@ namespace AMSLLC.Listener.ApplicationService
                    hashElements.Where(s => s.Value != null).OrderBy(s => s.Key).ToList();
 
                 StringBuilder hashSourceBuilder = new StringBuilder();
+                hashSourceBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}_", element.OperationTransactionKey);
                 for (int i = 0; i < hashSorted.Count; i++)
                 {
                     var hashElement = hashSorted[i].Value;

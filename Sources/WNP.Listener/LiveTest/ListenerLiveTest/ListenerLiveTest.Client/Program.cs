@@ -57,7 +57,7 @@ namespace ListenerLiveTest.Client
                             f.StatusTypes.Add(TransactionStatusType.Pending);
                             QueryData(f);
                             UseClient(20);
-                            UseManager(parallelCount, 20);                          
+                            UseManager(parallelCount, 20);
                             UseExplicit();
                             UseClientForBatch();
                             break;
@@ -109,16 +109,20 @@ namespace ListenerLiveTest.Client
             try
             {
                 Log.Logger.Information("Opening transaction");
-                var t = client.OpenTransactionAsync(new InstallMeterRequestMessage { EntityKey = Guid.NewGuid().ToString("D") });
+                var t = client.OpenTransactionAsync(new AddMeterRequestMessage { EntityKey = Guid.NewGuid().ToString("D") });
                 t.Wait();
                 //var obj = JsonConvert.DeserializeObject<ExpandoObject>(t.Result) as IDictionary<string, object>;
-                var transactionKey = t.Result;
-                Log.Logger.Information("Processing {0}", transactionKey);
-                var t1 = client.ProcessTransactionAsync(transactionKey);
-                t1.Wait();
-                Log.Logger.Information("Succeeding {0}", transactionKey);
-                var t2 = client.SucceedTransactionAsync(transactionKey);
-                t2.Wait();
+                var transactionKeys = t.Result;
+                foreach (var transactionKey in transactionKeys)
+                {
+                    Log.Logger.Information("Processing {0}", transactionKey);
+                    var t1 = client.ProcessTransactionAsync(transactionKey);
+                    t1.Wait();
+                    Log.Logger.Information("Succeeding {0}", transactionKey);
+                    var t2 = client.SucceedTransactionAsync(transactionKey);
+                    t2.Wait();
+                }
+
             }
             finally
             {

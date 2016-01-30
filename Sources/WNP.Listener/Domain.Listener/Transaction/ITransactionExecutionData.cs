@@ -53,5 +53,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value>The duplicate transaction.</value>
         Collection<Guid> DuplicateTransactions { get; }
+
+        /// <summary>
+        /// Gets the operation transaction key.
+        /// </summary>
+        /// <value>The operation transaction key.</value>
+        Guid OperationTransactionKey { get; }
     }
 }

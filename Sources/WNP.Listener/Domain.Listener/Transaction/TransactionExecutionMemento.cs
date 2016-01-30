@@ -29,6 +29,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <param name="duplicates">The duplicates.</param>
         /// <param name="status">The status.</param>
         /// <param name="priority">The priority.</param>
+        /// <param name="operationTransactionKey">The operation transaction key.</param>
         public TransactionExecutionMemento(
             int transactionId,
             Guid recordKey,
@@ -40,7 +41,8 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             object data,
             IEnumerable<Guid> duplicates,
             TransactionStatusType status,
-            int? priority)
+            int? priority,
+            Guid operationTransactionKey)
         {
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfigurationMemento>(endpointConfiguration.ToList());
             this.TransactionId = transactionId;
@@ -53,6 +55,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Status = status;
             this.Priority = priority;
             this.AutoSucceed = autoSucceed;
+            this.OperationTransactionKey = operationTransactionKey;
         }
 
         /// <summary>
@@ -120,5 +123,11 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// </summary>
         /// <value><c>true</c> if [automatic succeed]; otherwise, <c>false</c>.</value>
         public bool AutoSucceed { get; set; }
+
+        /// <summary>
+        /// Gets the operation transaction key.
+        /// </summary>
+        /// <value>The operation transaction key.</value>
+        public Guid OperationTransactionKey { get; private set; }
     }
 }

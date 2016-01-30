@@ -65,7 +65,7 @@ namespace ListenerLiveTest.Client.Communication
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
-        private Task<Guid> OpenTransaction(Uri uri, BaseListenerRequestMessage request)
+        private Task<Guid[]> OpenTransaction(Uri uri, BaseListenerRequestMessage request)
         {
             var d = request;
             ListenerClient client = new ListenerClient(uri);
@@ -89,7 +89,7 @@ namespace ListenerLiveTest.Client.Communication
                     Log.Information("Opened transaction at {0}", uri);
                 }
 
-                return t.Result;
+                return t.Result.ToArray();
             });
         }
 

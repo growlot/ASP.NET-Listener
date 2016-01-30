@@ -94,6 +94,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public Collection<Guid> DuplicateTransactions { get; } = new Collection<Guid>();
 
         /// <summary>
+        /// Gets the operation transaction key.
+        /// </summary>
+        /// <value>The operation transaction key.</value>
+        public Guid OperationTransactionKey { get; private set; }
+
+        /// <summary>
         /// Gets the status.
         /// </summary>
         /// <value>The status.</value>
@@ -161,6 +167,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.EndpointConfigurations = new ReadOnlyCollection<IntegrationEndpointConfiguration>(myMemento.EndpointConfigurations.Select(cfgMemento => this.DomainBuilder.Create<IntegrationEndpointConfiguration>(cfgMemento)).ToList());
             this.Data = myMemento.Data;
             this.AutoSucceed = myMemento.AutoSucceed;
+            this.OperationTransactionKey = myMemento.OperationTransactionKey;
             this.FieldConfigurations = new ReadOnlyCollection<FieldConfiguration>(new List<FieldConfiguration>(myMemento.FieldConfigurations.Select(s =>
             {
                 var itm = new FieldConfiguration();
@@ -187,13 +194,17 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             var processor = ApplicationIntegration.DependencyResolver.ResolveType<IEndpointDataProcessor>();
 
             var preparedData = processor.Process(transactionExecutionData.Data, transactionExecutionData.FieldConfigurations);
+            var hData = new HashData
+            {
+                Data = transactionExecutionData.Data,
+                OperationTransactionKey = transactionExecutionData.OperationTransactionKey
+            };
+
+            hData.FieldConfiguration.AddRange(transactionExecutionData.FieldConfigurations);
             string hashCode = hashBuilder.Create(
-                new Dictionary<object, FieldConfigurationCollection>
+                new List<HashData>
                 {
-                    {
-                        transactionExecutionData.Data,
-                        new FieldConfigurationCollection(transactionExecutionData.FieldConfigurations)
-                    }
+                    hData
                 },
                 f => f.OutgoingSequence);
 

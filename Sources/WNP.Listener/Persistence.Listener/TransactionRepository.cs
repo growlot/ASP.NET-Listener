@@ -264,7 +264,8 @@ WHERE ECO.EntityCategoryOperationId IN (@operations)";
                                             ctr.TransactionRegistryEntity.IncomingHash,
                                             StringComparison.InvariantCulture) == 0 &&
                                         (Guid)d.RecordKey != ctr.TransactionRegistryEntity.RecordKey).Select(s => (Guid)s.RecordKey),
-                                (TransactionStatusType)ctr.TransactionRegistryEntity.TransactionStatusId, ctr.TransactionRegistryEntity.Priority)),
+                                (TransactionStatusType)ctr.TransactionRegistryEntity.TransactionStatusId, ctr.TransactionRegistryEntity.Priority,
+                                ctr.EntityCategoryOperation.OperationTransactionKey)),
                     string.IsNullOrWhiteSpace(tr.TransactionRegistryEntity.Data) ? null : JsonConvert.DeserializeObject<ExpandoObject>(tr.TransactionRegistryEntity.Data),
                     duplicates.Where(
                         d =>
@@ -273,7 +274,8 @@ WHERE ECO.EntityCategoryOperationId IN (@operations)";
                                 tr.TransactionRegistryEntity.IncomingHash,
                                 StringComparison.InvariantCulture) == 0 && (Guid)d.RecordKey != tr.TransactionRegistryEntity.RecordKey)
                         .Select(s => (Guid)s.RecordKey),
-                    (TransactionStatusType)tr.TransactionRegistryEntity.TransactionStatusId, tr.TransactionRegistryEntity.Priority);
+                    (TransactionStatusType)tr.TransactionRegistryEntity.TransactionStatusId, tr.TransactionRegistryEntity.Priority,
+                    tr.EntityCategoryOperation.OperationTransactionKey);
             }
 
             return returnValue;
@@ -387,11 +389,11 @@ FROM
             Guid recordKey)
         {
             Func
-                <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity,
+                <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, EntityCategoryOperationEntity,
                     TransactionRegistryMemento> callback = CreateRegistryEntryProjectionCallback(null);
 
             var selectChildren = @"
-SELECT TR.*, A.*, C.*, O.*
+SELECT TR.*, A.*, C.*, O.*, ECO.*
     FROM TransactionRegistry TR
     INNER JOIN EntityCategoryOperation ECO ON TR.EntityCategoryOperationId = ECO.EntityCategoryOperationId
     INNER JOIN EnabledOperation EO ON ECO.EnabledOperationId = EO.EnabledOperationId
@@ -403,7 +405,7 @@ WHERE TR.BatchKey = @0";
             var childTransactions = await this.persistence.ProjectionAsync(callback, selectChildren, recordKey);
 
             var select = @"
-SELECT TR.*, A.*, C.*, O.*
+SELECT TR.*, A.*, C.*, O.*, ECO.*
 FROM TransactionRegistry TR 
     INNER JOIN EntityCategoryOperation ECO ON TR.EntityCategoryOperationId = ECO.EntityCategoryOperationId
     INNER JOIN EnabledOperation EO ON ECO.EnabledOperationId = EO.EnabledOperationId
@@ -650,16 +652,17 @@ WHERE TR.RecordKey = @0";
                 "TransactionId");
         }
 
-        private static Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, TransactionRegistryMemento> CreateRegistryEntryProjectionCallback(
+        private static Func<TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity, EntityCategoryOperationEntity, TransactionRegistryMemento> CreateRegistryEntryProjectionCallback(
             IEnumerable<TransactionRegistryMemento> childTransactions)
         {
             Func
-                <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity,
+                <TransactionRegistryEntity, ApplicationEntity, CompanyEntity, OperationEntity,EntityCategoryOperationEntity,
                     TransactionRegistryMemento> callback = (
                         tr,
                         app,
                         cmp,
-                        op) =>
+                        op,
+                        eco) =>
                         new TransactionRegistryMemento(
                             tr.TransactionId,
                             tr.RecordKey,
@@ -676,7 +679,8 @@ WHERE TR.RecordKey = @0";
                             tr.Message,
                             tr.Details,
                             tr.EntityCategoryOperationId,
-                            childTransactions);
+                            childTransactions,
+                            eco.OperationTransactionKey);
             return callback;
         }
 

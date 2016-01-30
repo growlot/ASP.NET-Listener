@@ -80,6 +80,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         public int? Priority { get; set; }
 
         /// <summary>
+        /// Gets the operation transaction key.
+        /// </summary>
+        /// <value>The operation transaction key.</value>
+        public Guid OperationTransactionKey { get; private set; }
+
+        /// <summary>
         /// Restores objects state from provided memento.
         /// </summary>
         /// <param name="memento">The memento.</param>
@@ -97,6 +103,7 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
             this.Message = myMemento.Message;
             this.Details = myMemento.Details;
             this.Priority = myMemento.Priority;
+            this.OperationTransactionKey = myMemento.OperationTransactionKey;
         }
     }
 }

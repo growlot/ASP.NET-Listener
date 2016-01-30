@@ -15,12 +15,12 @@ namespace AMSLLC.Listener.Domain.Listener.Transaction
         /// <summary>
         /// Creates the transaction key
         /// </summary>
-        /// <param name="elements">The elements.</param>
+        /// <param name="hashData">The hash data.</param>
         /// <param name="hashSequenceSelector">The hash sequence selector.</param>
         /// <returns>Transaction key</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Need generic to pass function")]
         string Create(
-            Dictionary<object, FieldConfigurationCollection> elements,
+            ICollection<HashData> hashData,
             Func<FieldConfiguration, short?> hashSequenceSelector);
     }
 }

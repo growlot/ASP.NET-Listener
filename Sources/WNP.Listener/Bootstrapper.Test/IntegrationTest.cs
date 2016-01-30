@@ -79,6 +79,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             var entityKey = Guid.NewGuid().ToString("D");
             string expectedMessage = $"{{\"Data\":{{\"Test\":\"A1-S2-D3\",\"UserName\":\"ListenerUser\",\"EntityCategory\":\"EM\",\"EntityKey\":\"{entityKey}\",\"OperationKey\":\"Add\"}}}}";
             object receivedData = string.Empty;
+            IProtocolConfiguration pCfg = null;
 
             var communicationHandlerMock = new Mock<JmsDispatcher>(di.ResolveType<ITransactionDataRepository>()) { CallBase = true };
             var communicationHandler = communicationHandlerMock.As<ICommunicationHandler>();
@@ -88,6 +89,7 @@ namespace AMSLLC.Listener.Bootstrapper.Test
                 .Callback((IConnectionConfiguration conn, TransactionDataReady data, IProtocolConfiguration pcfg) =>
                 {
                     receivedData = data.Data;
+                    pCfg = pcfg;
                 });
 
             di.Rebind<IRecordKeyBuilder>(transactionRecordKeyBuilder.Object).InSingletonScope();
@@ -110,6 +112,12 @@ namespace AMSLLC.Listener.Bootstrapper.Test
             var transactionStatusId = await GetTransactionStatus(server, nextKey);
 
             Assert.AreEqual(TransactionStatusType.Processing, (TransactionStatusType)transactionStatusId);
+
+            var messageType = JmsDispatcher.CreateMessageType(
+                receivedData,
+                ((AMSLLC.Listener.Communication.Jms.ProtocolConfiguration)pCfg).MessageTypeTemplate);
+
+            Assert.AreEqual("EM:Add", messageType);
 
             await SucceedTransaction(server, nextKey);
 

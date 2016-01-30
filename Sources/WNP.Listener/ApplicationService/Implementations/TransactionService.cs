@@ -73,7 +73,8 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                    null,
                    null,
                    entityOperationLookup.EnabledOperationId,
-                   null);
+                   null,
+                   entityOperationLookup.OperationTransactionKey);
 
                     var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                     ((IOriginator)transactionRegistry).SetMemento(memento);
@@ -162,7 +163,8 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                             null,
                             null,
                             cEntityOperationLookup.EnabledOperationId,
-                            null));
+                            null,
+                            cEntityOperationLookup.OperationTransactionKey));
                         }
                     }
 
@@ -182,7 +184,8 @@ namespace AMSLLC.Listener.ApplicationService.Implementations
                         null,
                         null,
                         bEntityOperationLookup.EnabledOperationId,
-                        batch);
+                        batch,
+                        bEntityOperationLookup.OperationTransactionKey);
 
                     var transactionRegistry = scope.DomainBuilder.Create<TransactionRegistry>();
                     ((IOriginator)transactionRegistry).SetMemento(memento);

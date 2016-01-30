@@ -88,6 +88,27 @@ namespace AMSLLC.Listener.DatabaseMigrations
 
             this.Update.Table("EntityCategoryOperation").Set(new { OperationTransactionName = "Test As Found" }).Where(new { EntityCategoryOperationId = 7 });
             this.Update.Table("EntityCategoryOperation").Set(new { AutoSucceed = 1 }).Where(new { EntityCategoryOperationId = 1 });
+
+            var record = new
+            {
+                EndpointId = 2,
+                Name = "Test Jms Endpoint",
+                ProtocolTypeId = 1,
+                ConnectionConfiguration = "{\"Host\":\"localhost\", \"Port\":7001, \"QueueName\":\"jms/AMSIntegration\", \"UserName\":\"ams\", \"Password\":\"Password1\"}",
+                EndpointTriggerTypeId = 2,
+                AdapterConfiguration = "{\"MessageTypeTemplate\":\"{Data.EntityCategory}:{Data.OperationKey}:AsLeft\"}",
+                CompanyId = 0
+            };
+
+            this.IfSqlServer().Insert.IntoTable("Endpoint").WithIdentityInsert()
+                .Row(record);
+
+            this.Insert.IntoTable("OperationEndpoint").Row(new
+            {
+                OperationEndpointId = 10,
+                EntityCategoryOperationId = 11,
+                EndpointId = 2
+            }).WithIdentityInsert();
         }
 
         /// <summary>
